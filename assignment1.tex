@@ -1,0 +1,271 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{braket}
+\usepackage[normalem]{ulem} % for strikeout line
+% \usepackage{graphicx}
+% \usepackage{epstopdf}
+
+%-------------------------------------------------------%
+\newcounter{pcounter}                                   %
+\newenvironment{problem}                                %
+{                                                       %
+    \stepcounter{pcounter}                              %
+    \textbf{\arabic{pcounter}.}                         %
+}{}                                                     %
+\newenvironment{solution}                               %
+{\textbf{Solution:} \\}{$\blacksquare$\newline}         %
+%-------------------------------------------------------%
+\newcommand{\tab}{\ \ \ \ }                             %
+\newcommand{\leadto}{\Rightarrow}                       %
+\newcommand{\domR}{\mathbb{R}}                          %
+\newcommand{\domS}{\mathbb{S}}                          %
+\newcommand{\abss}[1]{\| #1 \|}                         %
+\newcommand{\tr}[1]{\textbf{tr}(#1)}                    %
+\newcommand{\vecOne}{\textbf{1}}                        %
+%-------------------------------------------------------%
+\newcommand{\GmodP}{\times{g}\text{ mod p}}
+\newcommand{\modP}{\text{ mod p}}
+
+\begin{document}
+    %------------------- The Title -------------------%
+    \parindent 0in
+    \parskip 1em
+    \title{COMP8802 Assignment 1 Solution Sheet}
+    \author{3030058647, HONG Yuncong}
+    \maketitle
+
+    %=================== Problem 1 ===================%
+    \begin{problem}
+        The following ciphertext was created using the Hill cipher with $m=2$. The original mesage consists of English letters only.
+
+        \begin{gather*}
+            \text{CHKIGMUINKXVPKTTHFTISMIB}
+        \end{gather*}
+
+        Given the following plaintext-ciphertext pairs, recover the encryption key as well as the original message.
+
+        \begin{gather*}
+            \text{Plaintext=KP, Ciphertext=ZN; Plaintext=HZ, Ciphertext=YL}
+        \end{gather*}
+    \end{problem}
+
+    \begin{solution}
+        firstly we decide to encode the original plaintext letter, mapping from 'A'-'Z' to '0'-'25'; so for the two given plaintext-cipher text pair: (KP, ZN), (HZ, YL), we have the encoded pair ([10, 15], [25, 13]), ([7, 25], [24, 11]) respondingly.
+
+        As we know that the ciphertext are created using Hill cipher which could be expressed in the following matrix form:
+
+        $$
+            AP = C \leadto A (mod\ 26) = C P^{-1} (mod\ 26) \text{(if P is invertible)}
+        $$
+
+        And we having:
+        \begin{align*}
+            A &= C P^{-1} \\
+            &=  
+                \begin{bmatrix}
+                    25 & 24 \\
+                    13 & 11
+                \end{bmatrix}
+                \cdot
+                \begin{bmatrix}
+                    10 & 7 \\
+                    15 & 25
+                \end{bmatrix}^{-1} (mod\ 26) \\
+            &=  145
+                \begin{bmatrix}
+                    25 & 24 \\
+                    13 & 11
+                \end{bmatrix}
+                \cdot
+                \begin{bmatrix}
+                    25 & 11 \\
+                    19 & 10
+                \end{bmatrix} (mod\ 26) \\
+            &= 
+        \end{align*}
+
+        So the original plaintext chunked as "CH KI GM UI NK XV PK TT HF TI SM IB", could be interpreted as:
+
+    \end{solution}
+
+    %=================== Problem 2 ===================%
+    \begin{problem}
+        The following ciphertext is known to be produced by the Vigenere cipher, try to determine the length of the keyword. [If you are interested, you can try to recover the plaintext, but it is not required]
+
+        TSMVMMPPCWCZUGXHPECPRFAUEIOBQWPPIMSFXIPCTSQPK \\
+        SZNULOPACRDDPKTSLVFWELTKRGHIZSFNIDFARMUENOSKR \\
+        GDIPHWSGVLEDMCMSMWKPIYOJSTLVFAHPBJIRAQIWHLDGA \\
+        IYOU
+
+    \end{problem}
+    
+    \begin{solution}
+        As we know that for English plaintext, we should expect that after the  
+        
+        $$
+            \sum\limits_{j=0}^{25} f_{j}^2 \approx 0.065
+        $$
+
+        (Key Length:5; Key: ALICE)
+
+        Plaintext: THE TIME HAS COME THE WALRUS SAID TO SPEAK OF MANY THINGS OF SHOES AND SHIPS AND SEALING WAX OF CABBAGE SAND KINGS AND WHY THE SEA IS BOILING HOT AND WHETHER PIGS HAVE WINGS.
+
+        After Searching Engine: "The time has come," the Walrus said, "To talk of many things: Of shoes - and ships - and sealing-wax -- Of cabbages - and kings - And why the sea is boiling hot - And whether pigs have wings."
+
+        Reference: \\
+        https://www.dcode.fr/vigenere-cipher \\
+        https://www.poetryfoundation.org/poems/43914/the-walrus-and-the-carpenter-56d222cbc80a9
+    \end{solution}
+
+    %=================== Problem 3 ===================%
+    \begin{problem}
+        (a) Find integers $x$ and $y$ such that $65537x+3511y=1$;
+        
+        (b) Solve x for the equation $1234567890x \equiv 1$ (mod 13579).
+    \end{problem}
+    
+    \begin{solution}
+        (a) \\
+        gcd(65537, 3511) $\dots\dots$ (d, x, y) $\rightarrow$ (d, x, y)\\
+        gcd(3511, 2339) \\
+        gcd(2339, 1172) \\
+        gcd(1172, 1167) \\
+        gcd(1167, 5) \\
+        gcd(5, 2) \\
+        gcd(2, 1) \\
+        gcd(1, 0)
+
+
+        (b) \\
+        gcd(1234567890, 13579) \\
+        gcd(13579, 5947) \\
+        gcd(5947, 1685) \\
+        gcd(1685, 892) \\
+        gcd(892, 793) \\
+        gcd(793, 99) \\
+        gcd(99, 1) \\
+        gcd(1, 0)
+    \end{solution}
+
+    %=================== Problem 4 ===================%
+    \begin{problem}
+        Let $p = 29$.
+
+        (a) Give a generator g for $Z^*_p$;
+
+        (b) Based on your chosen generator g in (a), find the agreed key of A and B after executing the \textbf{Diffie-Hellman} key exchange protocol, where A selects $x=25$ and B selects $y=17$. [Show your work]
+    \end{problem}
+    
+    \begin{solution}
+        (a) As $p = 29$ is a prime number, so for the cyclic group $Z^*_{29}$, we could easily choose one generator $g = 2$, which is relative prime to 29.
+
+        (b) The agreed key is $g^{xy} \text{(mod p)} = 2^{25*17} \text{(mod 29)}$; while 
+        \begin{align*}
+            &2^{25*17} \text{ mod 29} \\
+            &= 2^{110101001} \text{ mod 29} \\
+            &= (((((((g^2 \GmodP)^2 \modP)^2 \GmodP)^2 \modP)^2 \GmodP)^2 \modP)^2 \modP)^2 \GmodP \\
+            &\text{(where $g=2$, $p=29$)} \\
+            &= 7
+        \end{align*}
+
+    \end{solution}
+
+    %=================== Problem 5 ===================%
+    \begin{problem}
+        \\
+        (a) Consider the RSA encryption scheme. Let $p=17, q=23, e=29$.
+
+        \tab (i) What is the secret key $d$?
+
+        \tab (ii) What is the ciphertext for $128$?
+        
+        (b) Mary and May are using RSA encryption scheme and their public keys are derived from the same modulus.
+        Mary's public key is $461$, and May's public key is $463$.
+        If $c_1 = 447$ and $c_2 = 489$ are the ciphertexts of the same message encrypted by the public keys of Mary and May respectively, recover the original message (take $n=589$)
+    \end{problem}
+    
+    \begin{solution}
+        (a)
+
+        (i) $n=pq=391$; $\Phi(n) = (p-1)(q-1) = 352$; \\
+        $ed \equiv 1\ mod\ \Phi(n) \leadto 29d \equiv 1\ mod\ 352$ \\
+        After repeated the Extended Eucleadian Algorithm, we could have the secrete key $d=$
+        \\
+        (ii) $c = m^e \modP = 128^{29}\ mod\ 391 = 157$
+
+        (b) Mary and May use the same modulo $n=589$, then we could know that there exist $a,b$ such that:
+        $$
+            a e_1 + b e_2 = 1
+        $$
+        And $m = (c_1^{-1})^{-a} \times c_2^b \text{ mod n} = $
+    \end{solution}
+
+    %=================== Problem 6 ===================%
+    \begin{problem}
+        The following shows the idea of a public-key encryption scheme. Consider the functions:
+            $f_1(x_1)      = z_1$,
+            $f_2(x_2, y_2) = z_2$,
+            $f_3(x_2, y_3) = z_3$; where all values are integers with $1 \leq x_i, y_i, z_i \leq N$.
+        
+        Function $f_1$ can be represented by a vector $M1$ of length $N$, in which \textbf{the k-th entry is the value of $f_1(k)$}. Similarly, $f_2$ and $f_3$ can be represented by $N \times N$ matrices $M2$ and $M3$, respectively.
+        The intention is to represent the encryption/decryption process by \textbf{table lookups} for tables with vary large values of N.
+        
+        The scheme works as follows:
+            Construct $M1$ with a random permutation of all integers between 1 and N; that is, each integer appears exactly once in M1.
+            Construct $M2$ so that each row contains a random permutation of the first N integers.
+            Finally, fill in M3 to satisfy following condition:
+            $$
+                \pmb{f_3(} {f_2(f_1(k), p)} \pmb{, k)} = p \text{ for all k, p with $1 \leq k,p \leq N$}
+            $$
+        
+        In words, \\
+        \tab 1. M1 takes an input k and produces an output x.\\
+        \tab 2. M2 takes inputs x and p giving output z.\\
+        \tab 3. M3 takes inputs z and k and produces p.
+
+        The three tables, once constructed, are made public. \\
+        (a) It should be clear that it is possible to construct M3 to satisfy the preceding condition.
+        As an example, fill in M3 for the following simple case (N = 5):
+        $$
+        M1 =
+        \begin{tabular}{|l|}
+            \hline 5 \\
+            \hline 4 \\
+            \hline 2 \\
+            \hline 3 \\
+            \hline 1 \\
+            \hline
+        \end{tabular}
+        \tab\tab
+        M2 = 
+        \begin{tabular}{|l|l|l|l|l|}
+            \hline 5 & 2 & 3 & 4 & 1 \\
+            \hline 4 & 2 & 5 & 1 & 3 \\
+            \hline 1 & 3 & 2 & 4 & 5 \\
+            \hline 3 & 1 & 2 & 4 & 5 \\
+            \hline 2 & 5 & 3 & 4 & 1 \\
+            \hline
+        \end{tabular}
+        $$
+
+        (b) Show how RSA can be represented by matrices \textbf{M1, M2 and M3}.
+    \end{problem}
+    
+    \begin{solution}
+        (a) \\
+        After python programming, we could find that:
+        \begin{center}
+            M3 = 
+            \begin{tabular}{|l|l|l|l|l|}
+                \hline 5 & 2 & 4 & 1 & 5 \\
+                \hline 1 & 3 & 2 & 3 & 2 \\
+                \hline 3 & 1 & 5 & 2 & 3 \\
+                \hline 4 & 4 & 1 & 4 & 4 \\
+                \hline 2 & 5 & 3 & 5 & 1 \\
+                \hline
+            \end{tabular}
+        \end{center}
+    \end{solution}
+
+\end{document}
