@@ -96,13 +96,12 @@
     \end{problem}
 
     \begin{solution}
-        (1) $p(x, y) = \sum_x p(y|x) p(x)$, while
-        $$
-        p(x) = \Gaussian(x | 0, \IdenMat)
-        \\
-        p(y|x) = \Gaussian(y | \mu+\Lambda x, \Psi)
-        \\
-        $$
+        (1) $p(x, y) = \int_x p(y|x) p(x)$, while
+        \begin{align*}
+            p(x) &= \Gaussian(x | 0, \IdenMat) \\
+            p(y|x) &= \Gaussian(y | \mu+\Lambda x, \Psi) \\
+        \end{align*}
+
     \end{solution}
 
     %=================== Problem 2 ===================%
