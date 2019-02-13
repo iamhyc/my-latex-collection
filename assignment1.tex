@@ -4,7 +4,8 @@
 \usepackage{amssymb}
 \usepackage{braket}
 \usepackage[normalem]{ulem} % for strikeout line
-% \usepackage{graphicx}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
 % \usepackage{epstopdf}
 
 %-------------------------------------------------------%
@@ -32,8 +33,8 @@
     %------------------- The Title -------------------%
     \parindent 0in
     \parskip 1em
-    \title{COMP8802 Assignment 1 Solution Sheet}
-    \author{3030058647, HONG Yuncong}
+    \title{COMP9501 Assignment 1 Solution Sheet}
+    \author{HONG Yuncong, 3030058647}
     \maketitle
 
     %=================== Problem 1 ===================%
@@ -96,11 +97,67 @@
     \end{problem}
 
     \begin{solution}
-        (1) $p(x, y) = \int_x p(y|x) p(x)$, while
+        (1) Assume that the joint distribution of $(X, Y)$ is
+        $$
+        p(\begin{pmatrix}
+            x \\ y
+        \end{pmatrix}) = 
+        \Gaussian(
+            \begin{pmatrix}
+                x \\ y
+            \end{pmatrix}
+            | 
+            \begin{pmatrix}
+                \mu_x \\ \mu_y
+            \end{pmatrix}, 
+            \begin{pmatrix}
+                \Sigma_{x} & \Sigma_{xy} \\
+                \Sigma_{yx} & \Sigma_{y}
+            \end{pmatrix}
+        )
+        $$
+        As marginal distribution of $x$ is $p(x) = \Gaussian(x | 0, \IdenMat)$, we know that: 
         \begin{align*}
-            p(x) &= \Gaussian(x | 0, \IdenMat) \\
-            p(y|x) &= \Gaussian(y | \mu+\Lambda x, \Psi) \\
+            & \mu_x = 0 \\
+            & \Sigma_{x} = \IdenMat
         \end{align*}
+        and by the "known useful properties of Gaussian", we know that:
+        \begin{align*}
+            \mu_{y|x} = \mu_y + \Sigma_{yx} \Sigma_{x}^{-1}(x - \mu_x) \\
+            \Sigma_{y|x} = \Sigma_{y} - \Sigma_{yx} \Sigma_{x}^{-1} \Sigma_{xy}
+        \end{align*}
+        As $p(y|x) = \Gaussian(y | \mu+\Lambda x, \Psi)$, we know that:
+        \begin{align*}
+            \mu_y &= \mu \\
+            \Lambda = \Sigma_{yx} 
+                &\leadto \Sigma_{yx}=\Sigma_{xy}^T=\Lambda\\
+            \Psi = \Sigma_{y} - \Sigma_{yx} \Sigma_{xy}
+                &\leadto \Sigma_{y} = \Psi + \Sigma_{yx} \Sigma_{xy}
+        \end{align*}
+        And with all the information above we could have:
+        $$
+        p(
+            \begin{pmatrix}
+                x \\ y
+            \end{pmatrix}
+        ) = 
+        \Gaussian(
+            \begin{pmatrix}
+                x \\ y
+            \end{pmatrix}
+            |
+            \begin{pmatrix}
+                0 \\ \mu
+            \end{pmatrix}
+            ,
+            \begin{pmatrix}
+                \IdenMat & \Lambda^T \\
+                \Lambda & \Lambda \Lambda^T + \Psi
+            \end{pmatrix}
+        )
+        $$
+
+        (2) 
 
     \end{solution}
 
@@ -144,6 +201,97 @@
     \end{problem}
 
     \begin{solution}
+        (1) [Basic Concepts and Properties]
+
+        (a) \\
+        As we know that for 1-D Poisson distribution, $p(x | \lambda) = e^{-\lambda} \frac{\lambda^x}{x!}$; then for i.i.d collection Poisson distribution r.v. collection X,
+        \begin{align*}
+            p(X | \lambda) &= \prod\limits_{i=1}^{N} e^{-\lambda} \frac{\lambda^{x_i}}{x_i!} \\
+            &= (\prod\limits_{i=1}^{N}{\frac{1}{x_i!}}) \cdot
+               exp\{ log{\lambda}\sum\limits_{i=1}^{N}{x_i} - \sum\limits_{i=1}^{N}{\lambda} \} \\
+        \end{align*}
+        where:
+        \begin{align*}
+            & h(x) = \prod\limits_{i=1}^{N}{\frac{1}{x_i!}} \\
+            & T(x) = \sum\limits_{i=1}^{N}{x_i}\\
+            & \eta = log{\lambda}\\
+            & A(\eta) = \sum\limits_{i=1}^{N}{\lambda} = \sum\limits_{i=1}^{N}{e^{\eta}} \\
+            & \text{($N$ is the number of the coolection of random variables)}
+        \end{align*}
+
+        (b) sufficient statistics of $X$: $T(x) = \sum\limits_{i=1}^{N}{x_i}$
+
+        (c) log-partition function of $X$: $A(\eta) = \sum\limits_{i=1}^{N}{\lambda} = \sum\limits_{i=1}^{N}{e^{\eta}}$
+
+        (d) response function
+        $$
+            \mu = \frac{\partial A(\eta)}{\partial \eta}
+            = \sum\limits_{i=1}^{N}{e^{\eta}}
+        $$
+
+        (e)
+        As we know that:
+        \begin{align*}
+            E[T(X)|\eta] &= \frac{\partial A(\eta)}{\partial \eta}
+            = \sum\limits_{i=1}^{N}{e^{\eta}}
+            \\
+            E[T(x)^2|\eta] &= \frac{\partial^2 A(\eta)}{\partial \eta^2}
+            = \sum\limits_{i=1}^{N}{e^{\eta}}
+        \end{align*}
+        Then we have:
+        \begin{align*}
+            E[X|\eta] &= \sum\limits_{i=1}^{N}{e^{\eta}}
+            \\
+            Var[X|\eta] &= E[X^2|\eta] - E[X|\eta]^2
+            = \sum\limits_{i=1}^{N}{e^{\eta}} (1 - \sum\limits_{i=1}^{N}{e^{\eta}})
+        \end{align*}
+
+        (f) As data $X=\{x_1, \dots, x_n\}$ are fed to i.i.d random variables respectively,
+        the MLE is for 1-D Poisson distribution, which is:
+        $$
+        \hat{\mu}_{MLE} = \frac{1}{n} \sum\limits_{k=1}^{n} T(x_k) = \frac{1}{n} \sum\limits_{k=1}^{n} x_k
+        $$
+
+        (g) The posterior distribution of $\lambda$ is:
+        \begin{align*}
+            p(\lambda | X) &\propto p(\lambda) \cdot p(X|\lambda) \\
+            &\propto
+                (\lambda^{\alpha -1} e^{-\beta \lambda}) \cdot
+                (\lambda^{\sum_{k=1}^{n} x_k} e^{-n\lambda})
+             = \lambda^{\sum_{k=1}^{n} x_k + \alpha -1} \cdot e^{-(\beta+n) \lambda} \\
+            &\propto Gamma(\lambda;\sum_{k=1}^{n} x_k + \alpha -1, \beta+n)
+        \end{align*}
+        Then we have:
+        \begin{align*}
+            \lambda_{MAP} &= arg\max_{\lambda}log\ p(\lambda | X) \\
+            &= \frac{\alpha - 1 + \sum_{k=1}^{n} x_k}{n + \beta}
+        \end{align*}
+
+        (2) [MLE and MAP simulation]
+
+        (a) \\
+        \includegraphics[width=0.75\textwidth]{images/a1_histo.eps}
         
+        (b) MLE of $\lambda$ is: 
+        $\hat{\mu}_{MLE} = \frac{1}{n} \sum\limits_{k=1}^{n} x_k = 10.0171$
+
+        (c) for $\alpha=1, \beta=1$:
+        $$
+        \lambda_{MAP} = \frac{\alpha - 1 + \sum_{k=1}^{n} x_k}{n + \beta} = 10.0161
+        $$
+
+        (d) for $\alpha=100, \beta=1$:
+        $$
+        \lambda_{MAP} = \frac{\alpha - 1 + \sum_{k=1}^{n} x_k}{n + \beta} = 10.0260
+        $$
+
+        (e) for $\alpha=10, \beta=1$:
+        $$
+        \lambda_{MAP} = \frac{\alpha - 1 + \sum_{k=1}^{n} x_k}{n + \beta} = 10.0170
+        $$
+
+        (f) I think the approximation in e) is best, which is the closet one to the MLE value; 
+        The bigger $\alpha$ makes the curve right-shifted;
+
     \end{solution}
 \end{document}
