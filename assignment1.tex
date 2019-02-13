@@ -51,42 +51,77 @@
     \end{problem}
 
     \begin{solution}
-        firstly we decide to encode the original plaintext letter, mapping from 'A'-'Z' to '0'-'25'; so for the two given plaintext-cipher text pair: (KP, ZN), (HZ, YL), we have the encoded pair ([10, 15], [25, 13]), ([7, 25], [24, 11]) respondingly.
+        firstly we encode the original plaintext letter by its alphabetic order, mapping from 'A'-'Z' to '0'-'25'; so for the two given plaintext-cipher text pair: (KP, ZN), (HZ, YL), we have the corresponding encoded pair ([10, 15], [25, 13]), ([7, 25], [24, 11]).
 
         As we know that the ciphertext are created using Hill cipher which could be expressed in the following matrix form:
 
         $$
-            AP = C \leadto A (mod\ 26) = C P^{-1} (mod\ 26) \text{(if P is invertible)}
+            AP = C \leadto A^{-1} (mod\ 26) = P C^{-1} (mod\ 26)\text{ (if C is invertible)}
         $$
+        where $A$ is the encryption matrix, $P$ and $C$ are corresponding plaintext-cipher pairs we already know in each column.
 
-        And we having:
+        Thus we have:
         \begin{align*}
-            A &= C P^{-1} \\
+            A^{-1} &= P C^{-1} (mod\ 26) \\
             &=  
-                \begin{bmatrix}
-                    25 & 24 \\
-                    13 & 11
-                \end{bmatrix}
-                \cdot
                 \begin{bmatrix}
                     10 & 7 \\
                     15 & 25
-                \end{bmatrix}^{-1} (mod\ 26) \\
-            &=  145
-                \begin{bmatrix}
-                    25 & 24 \\
-                    13 & 11
                 \end{bmatrix}
                 \cdot
                 \begin{bmatrix}
-                    25 & 11 \\
-                    19 & 10
-                \end{bmatrix} (mod\ 26) \\
-            &= 
+                    25 & 24 \\
+                    13 & 11
+                \end{bmatrix}^{-1} (mod\ 26) \\
+            &=  -\frac{1}{37}
+                \begin{bmatrix}
+                    10 & 7 \\
+                    15 & 25
+                \end{bmatrix}
+                \cdot
+                \begin{bmatrix}
+                    11 & 2 \\
+                    13 & 25
+                \end{bmatrix} (mod\ 26) \\    
         \end{align*}
 
-        So the original plaintext chunked as "CH KI GM UI NK XV PK TT HF TI SM IB", could be interpreted as:
+        To find the integer number corresponding to $k=\frac{1}{37} (mod\ 26) \leadto 37k \equiv 1 (mod\ 26)$, we have to solve the following Eucleadian algorithm: \\
+        gcd(37, 26)$\dots\dots$ (d, x, y) $\rightarrow$ (1, -7, y)\\
+        gcd(26, 11)$\dots\dots$ (1, 3, -7)\\
+        gcd(11, 4) $\dots\dots$ (1, -1, 3)\\
+        gcd(4, 3)  $\dots\dots$ (1, 1, -1)\\
+        gcd(3, 1)  $\dots\dots$ (1, 0, 1)\\
+        gcd(1, 0)  $\dots\dots$ (1, 1, 0)\\
 
+        And we have $k=-7$ and:
+        \begin{align*}
+            A^{-1} &= P C^{-1} (mod\ 26) \\
+            &=  7
+                \begin{bmatrix}
+                    10 & 7 \\
+                    15 & 25
+                \end{bmatrix}
+                \cdot
+                \begin{bmatrix}
+                    11 & 2 \\
+                    13 & 25
+                \end{bmatrix} (mod\ 26) \\
+            &= 
+                \begin{bmatrix}
+                    1407 & 1365 \\
+                    3430 & 4585
+                \end{bmatrix} (mod\ 26) \\
+            &= 
+                \begin{bmatrix}
+                    3 & 13 \\
+                    24 & 9
+                \end{bmatrix}
+        \end{align*}
+
+        So the original plaintext chunked as "CH KI GM UI NK XV PK TT HF TI SM IB", could be represented as 
+        [2, 7; 10, 8; 6, 12; 20, 8; 13, 10; 23, 21; 15, 10; 19, 19; 7, 5; 19, 8; 18, 12; 8, 1]
+        could be decrypted as:
+        [19, 7; 4, 0; 18, 18; 8, 6; 13, 12; 4, 13; 19, 8; 18, 3; 8, 5; 5, 8; 2, 20; 11, 19], which is: "THEASSIGNMENTISDIFFICULT"
     \end{solution}
 
     %=================== Problem 2 ===================%
@@ -102,20 +137,30 @@
     
     \begin{solution}
         As we know that for English plaintext, we should expect that after the  
-        
+        index of conincidence
         $$
-            \sum\limits_{j=0}^{25} f_{j}^2 \approx 0.065
+            IC(p) \approx \sum\limits_{j=0}^{25} f_{j}^2 \approx 0.065
         $$
 
-        (Key Length:5; Key: ALICE)
+        As Vigenere Cipher tries to hide the relative frequencies of letters, we do the statistics among the groups chunked by key length; And we guess the key length starting from 1 to see how the index of conincidence change.
 
-        Plaintext: THE TIME HAS COME THE WALRUS SAID TO SPEAK OF MANY THINGS OF SHOES AND SHIPS AND SEALING WAX OF CABBAGE SAND KINGS AND WHY THE SEA IS BOILING HOT AND WHETHER PIGS HAVE WINGS.
+        Key Length=1: $IC(p) \approx$ \\
+        Key Length=2: $IC(p) \approx$ \\
+        Key Length=3: $IC(p) \approx$ \\
+        Key Length=4: $IC(p) \approx$ \\
+        Key Length=5: $IC(p) \approx$ \\
+        Key Length=6: $IC(p) \approx$ \\
+        $\dots \dots$
+
+        Then we guess that the key length is 5; and by leverage the tool in [1], we could crack the key with 'ALICE', and the original plaintext is:
+
+        THE TIME HAS COME THE WALRUS SAID TO SPEAK OF MANY THINGS OF SHOES AND SHIPS AND SEALING WAX OF CABBAGE SAND KINGS AND WHY THE SEA IS BOILING HOT AND WHETHER PIGS HAVE WINGS.
 
         After Searching Engine: "The time has come," the Walrus said, "To talk of many things: Of shoes - and ships - and sealing-wax -- Of cabbages - and kings - And why the sea is boiling hot - And whether pigs have wings."
 
         Reference: \\
-        https://www.dcode.fr/vigenere-cipher \\
-        https://www.poetryfoundation.org/poems/43914/the-walrus-and-the-carpenter-56d222cbc80a9
+        \text{[1] https://www.dcode.fr/vigenere-cipher} \\
+        \text{[2] https://www.poetryfoundation.org/poems/43914/the-walrus-and-the-carpenter-56d222cbc80a9}
     \end{solution}
 
     %=================== Problem 3 ===================%
@@ -126,26 +171,29 @@
     \end{problem}
     
     \begin{solution}
-        (a) \\
-        gcd(65537, 3511) $\dots\dots$ (d, x, y) $\rightarrow$ (d, x, y)\\
-        gcd(3511, 2339) \\
-        gcd(2339, 1172) \\
-        gcd(1172, 1167) \\
-        gcd(1167, 5) \\
-        gcd(5, 2) \\
-        gcd(2, 1) \\
-        gcd(1, 0)
+        (a) By solving the Euclidean algorithm:\\
+        gcd(65537, 3511) $\dots\dots$ (d, x, y) $\rightarrow$ (1, -1405, 26226)\\
+        gcd(3511, 2339)  $\dots\dots$ (1, 936, -1405)\\
+        gcd(2339, 1172)  $\dots\dots$ (1, -469, 936)\\
+        gcd(1172, 1167)  $\dots\dots$ (1, 467, -469)\\
+        gcd(1167, 5)     $\dots\dots$ (1, -2, 467)\\
+        gcd(5, 2)        $\dots\dots$ (1, 1, -2)\\
+        gcd(2, 1)        $\dots\dots$ (1, 0, 1)\\
+        gcd(1, 0)        $\dots\dots$ (1, 1, 0)
 
+        Then we have: $x=-1405$, $y=26226$, such that $65537x+3511y=1$;
 
-        (b) \\
-        gcd(1234567890, 13579) \\
-        gcd(13579, 5947) \\
-        gcd(5947, 1685) \\
-        gcd(1685, 892) \\
-        gcd(892, 793) \\
-        gcd(793, 99) \\
-        gcd(99, 1) \\
-        gcd(1, 0)
+        (b) By solving the extended Euclidean algorithm:\\
+        gcd(1234567890, 13579) $\dots\dots$ (d, x, y) $\rightarrow$ (1, -137, 12455689)\\
+        gcd(13579, 5947)       $\dots\dots$ (1, 60, -137)\\
+        gcd(5947, 1685)        $\dots\dots$ (1, -17, 60)\\
+        gcd(1685, 892)         $\dots\dots$ (1, 9, -17)\\
+        gcd(892, 793)          $\dots\dots$ (1, -8, 9)\\
+        gcd(793, 99)           $\dots\dots$ (1, 1, -8)\\
+        gcd(99, 1)             $\dots\dots$ (1, 0, 1)\\
+        gcd(1, 0)              $\dots\dots$ (1, 0, 0)
+
+        As $d=1$, we have $x=-137$.
     \end{solution}
 
     %=================== Problem 4 ===================%
@@ -189,16 +237,28 @@
         (a)
 
         (i) $n=pq=391$; $\Phi(n) = (p-1)(q-1) = 352$; \\
-        $ed \equiv 1\ mod\ \Phi(n) \leadto 29d \equiv 1\ mod\ 352$ \\
-        After repeated the Extended Eucleadian Algorithm, we could have the secrete key $d=$
+        ${ed \equiv 1\ mod\ \Phi(n)} \leadto {29d \equiv 1\ mod\ 352}$ \\
+
+        gcd(352, 29) $\rightarrow$ (1, -7, 85)\\
+        gcd(29, 4)   $\rightarrow$ (1, 1, -7)\\
+        gcd(4, 1)    $\rightarrow$ (1, 0, 1)\\
+        gcd(1, 0)    $\rightarrow$ (1, 1, 0)
+
+        After repeated the Extended Eucleadian Algorithm, we could have the secrete key $d=85$
         \\
         (ii) $c = m^e \modP = 128^{29}\ mod\ 391 = 157$
 
         (b) Mary and May use the same modulo $n=589$, then we could know that there exist $a,b$ such that:
         $$
-            a e_1 + b e_2 = 1
+            a \cdot e_1 + b \cdot e_2 = 1
         $$
-        And $m = (c_1^{-1})^{-a} \times c_2^b \text{ mod n} = $
+        By solving Euclidean algorithm, we have $a=231, b=-230$, And 
+        \begin{align*}
+            m &= c_1^{a} \times (c_2^{-1})^{-b} \text{ mod n} \\
+              &= 447^231 \times (489^{-1})^230 \text{ mod 589} \\
+              &= 447^231 \times 53^230 \text{ mod 589} \\
+              &= 3
+        \end{align*}
     \end{solution}
 
     %=================== Problem 6 ===================%
@@ -266,6 +326,9 @@
                 \hline
             \end{tabular}
         \end{center}
+
+        (b) \\
+
     \end{solution}
 
 \end{document}
