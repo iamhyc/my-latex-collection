@@ -121,7 +121,9 @@
         So the original plaintext chunked as "CH KI GM UI NK XV PK TT HF TI SM IB", could be represented as 
         [2, 7; 10, 8; 6, 12; 20, 8; 13, 10; 23, 21; 15, 10; 19, 19; 7, 5; 19, 8; 18, 12; 8, 1]
         could be decrypted as:
-        [19, 7; 4, 0; 18, 18; 8, 6; 13, 12; 4, 13; 19, 8; 18, 3; 8, 5; 5, 8; 2, 20; 11, 19], which is: "THEASSIGNMENTISDIFFICULT"
+        [19, 7; 4, 0; 18, 18; 8, 6; 13, 12; 4, 13; 19, 8; 18, 3; 8, 5; 5, 8; 2, 20; 11, 19], which is: \\
+        "THEASSIGNMENTISDIFFICULT"
+
     \end{solution}
 
     %=================== Problem 2 ===================%
@@ -142,21 +144,22 @@
             IC(p) \approx \sum\limits_{j=0}^{25} f_{j}^2 \approx 0.065
         $$
 
-        As Vigenere Cipher tries to hide the relative frequencies of letters, we do the statistics among the groups chunked by key length; And we guess the key length starting from 1 to see how the index of conincidence change.
-
-        Key Length=1: $IC(p) \approx$ \\
-        Key Length=2: $IC(p) \approx$ \\
-        Key Length=3: $IC(p) \approx$ \\
-        Key Length=4: $IC(p) \approx$ \\
-        Key Length=5: $IC(p) \approx$ \\
-        Key Length=6: $IC(p) \approx$ \\
+        As Vigenere Cipher tries to hide the relative frequencies of letters, we do the statistics among the groups chunked by key length; And we guess the key length starting from 2 to see how the index of conincidence change (calculation by using Matlab).
+        
+        Key Length=2: $IC(p) \approx (0.05265 + 0.05653)/2 = 0.05459$ \\
+        Key Length=3: $IC(p) \approx (0.06020 + 0.06337 + 0.05341)/3 = 0.05899$ \\
+        Key Length=4: $IC(p) \approx (0.06938 + 0.07755 + 0.06448 + 0.06857)/4 = 0.07000$ \\
+        Key Length=5: $IC(p) \approx (0.07653 + 0.09948 + 0.08418 + 0.09948 + 0.07780)/5 = 0.08749$ \\
+        Key Length=6: $IC(p) \approx (0.07291 + 0.11631 + 0.08506 + 0.08159 + 0.06076 + 0.06076)/6 = 0.07956$ \\
         $\dots \dots$
 
-        Then we guess that the key length is 5; and by leverage the tool in [1], we could crack the key with 'ALICE', and the original plaintext is:
+        Then we guess that the key length is 4, the IC of which is most close to 0.065; but, by using the tool [1] on the internet, we could crack the key with 'ALICE' of length 5, and the original plaintext is:
 
         THE TIME HAS COME THE WALRUS SAID TO SPEAK OF MANY THINGS OF SHOES AND SHIPS AND SEALING WAX OF CABBAGE SAND KINGS AND WHY THE SEA IS BOILING HOT AND WHETHER PIGS HAVE WINGS.
 
-        After Searching Engine: "The time has come," the Walrus said, "To talk of many things: Of shoes - and ships - and sealing-wax -- Of cabbages - and kings - And why the sea is boiling hot - And whether pigs have wings."
+        After Searching Engine: "The time has come," the Walrus said, "To talk of many things: Of shoes - and ships - and sealing-wax -- Of cabbages - and kings - And why the sea is boiling hot - And whether pigs have wings." [2]
+
+        So key length of 4 is not the correct answer. I guess the reason is that you have to compare every certain occurence frequencis on characters with the statistics, but not only on IC(p).
 
         Reference: \\
         \text{[1] https://www.dcode.fr/vigenere-cipher} \\
@@ -179,8 +182,7 @@
         gcd(1167, 5)     $\dots\dots$ (1, -2, 467)\\
         gcd(5, 2)        $\dots\dots$ (1, 1, -2)\\
         gcd(2, 1)        $\dots\dots$ (1, 0, 1)\\
-        gcd(1, 0)        $\dots\dots$ (1, 1, 0)
-
+        gcd(1, 0)        $\dots\dots$ (1, 1, 0) \\
         Then we have: $x=-1405$, $y=26226$, such that $65537x+3511y=1$;
 
         (b) By solving the extended Euclidean algorithm:\\
@@ -191,8 +193,7 @@
         gcd(892, 793)          $\dots\dots$ (1, -8, 9)\\
         gcd(793, 99)           $\dots\dots$ (1, 1, -8)\\
         gcd(99, 1)             $\dots\dots$ (1, 0, 1)\\
-        gcd(1, 0)              $\dots\dots$ (1, 0, 0)
-
+        gcd(1, 0)              $\dots\dots$ (1, 0, 0)\\
         As $d=1$, we have $x=-137$.
     \end{solution}
 
@@ -208,7 +209,7 @@
     \begin{solution}
         (a) As $p = 29$ is a prime number, so for the cyclic group $Z^*_{29}$, we could easily choose one generator $g = 2$, which is relative prime to 29.
 
-        (b) The agreed key is $g^{xy} \text{(mod p)} = 2^{25*17} \text{(mod 29)}$; while 
+        (b) The agreed key is $g^{xy} \text{(mod p)} = 2^{25*17} \text{(mod 29)}$, and the exact value could be computed using the algorithm descbibed below: 
         \begin{align*}
             &2^{25*17} \text{ mod 29} \\
             &= 2^{110101001} \text{ mod 29} \\
@@ -216,7 +217,6 @@
             &\text{(where $g=2$, $p=29$)} \\
             &= 7
         \end{align*}
-
     \end{solution}
 
     %=================== Problem 5 ===================%
@@ -237,15 +237,15 @@
         (a)
 
         (i) $n=pq=391$; $\Phi(n) = (p-1)(q-1) = 352$; \\
-        ${ed \equiv 1\ mod\ \Phi(n)} \leadto {29d \equiv 1\ mod\ 352}$ \\
+        ${ed \equiv 1\ mod\ \Phi(n)} \leadto {29d \equiv 1\ mod\ 352}$
 
         gcd(352, 29) $\rightarrow$ (1, -7, 85)\\
         gcd(29, 4)   $\rightarrow$ (1, 1, -7)\\
         gcd(4, 1)    $\rightarrow$ (1, 0, 1)\\
         gcd(1, 0)    $\rightarrow$ (1, 1, 0)
 
-        After repeated the Extended Eucleadian Algorithm, we could have the secrete key $d=85$
-        \\
+        After repeated the Extended Eucleadian Algorithm, we could obtain the secrete key $d=85$
+        
         (ii) $c = m^e \modP = 128^{29}\ mod\ 391 = 157$
 
         (b) Mary and May use the same modulo $n=589$, then we could know that there exist $a,b$ such that:
@@ -255,8 +255,8 @@
         By solving Euclidean algorithm, we have $a=231, b=-230$, And 
         \begin{align*}
             m &= c_1^{a} \times (c_2^{-1})^{-b} \text{ mod n} \\
-              &= 447^231 \times (489^{-1})^230 \text{ mod 589} \\
-              &= 447^231 \times 53^230 \text{ mod 589} \\
+              &= 447^{231} \times (489^{-1})^{230} \text{ mod 589} \\
+              &= 447^{231} \times 53^{230} \text{ mod 589} \\
               &= 3
         \end{align*}
     \end{solution}
@@ -314,7 +314,7 @@
     
     \begin{solution}
         (a) \\
-        After python programming, we could find that:
+        According to the description, the entry of $M3$ could be represented by: $M3_{f2, k} = p$, where $f2 = f_2(f_1(k), p)$. After python programming, we could find that:
         \begin{center}
             M3 = 
             \begin{tabular}{|l|l|l|l|l|}
@@ -328,7 +328,13 @@
         \end{center}
 
         (b) \\
+        for RSA algorithm: the parameter $p$ should represent message $m$, and $k$ should represent decryption key $d$ correspondingly.
 
+        for M1: $f_1(\cdot)$ is the procedure to generate encryption key $e$ with $d$ by calculating $ed \equiv 1$ (mod $\phi(n)$); as solution $e$ is only and unique when $e$ is determined and relative prime to $\phi(n)$, \textbf{M1 is a vector and all the entries of M1 compose a permutation over [0, $\phi(n)$]};
+        
+        for M2: $M2_{e, m} = m^e$ (mod n), where $e = f_1(d)$;
+
+        for M3: $M3_{f2, d} = m$ (mod n), where $f2$ is the ciphertext with $d$ and $m$ chosen in $f_1$ and $f_2$.
     \end{solution}
 
 \end{document}

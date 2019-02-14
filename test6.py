@@ -11,13 +11,13 @@ M2 = [
 
 M3 = [[0,0,0,0,0] for i in range(5)]
 
-for p in range(5):
-    for k in range(5):
+for k in range(5):
+    for p in range(5):
         f2 = M2[M1[k]-1][p] -1
         M3[f2][k] = p+1
 
 print(M3)
 
-# k=1 ===> f_1(k)=5
+# k=1          ===> f_1(k)=5
 # f_1(k)=5,p=1 ===> f_2(f_1,p)= 2
-# f_3[f2, k] = p
+#                   f_3[f2, k] = p
