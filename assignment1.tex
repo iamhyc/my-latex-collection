@@ -99,7 +99,7 @@
     \end{problem}
 
     \begin{solution}
-        {[}The solution in (1) and (2) uses the "Useful Porperties of Gaussian" on the slides; the proof processes of the two should resembling the same form and regardless of the order of the two random variables $X$ and $Y$; so the proof process is obsoleted{]}
+        {[}The solution in (1) and (2) uses the "Useful Porperties of Gaussian" on the slides. The proof processes of the two should resembles in the same form and regardless of the order of the two random variables $X$ and $Y$; so the proof process is obsoleted{]}
 
         (1) Assume that the joint distribution of $(X, Y)$ is
         $$
@@ -125,7 +125,7 @@
             & \mu_x = 0 \\
             & \Sigma_{x} = \IdenMat
         \end{align*}
-        and by the "known useful properties of Gaussian", we know that:
+        and by the "known useful properties of Gaussian" on the slides, we know that:
         \begin{align*}
             \mu_{y|x} = \mu_y + \Sigma_{yx} \Sigma_{x}^{-1}(x - \mu_x) \\
             \Sigma_{y|x} = \Sigma_{y} - \Sigma_{yx} \Sigma_{x}^{-1} \Sigma_{xy}
@@ -182,7 +182,7 @@
                -\frac{1}{2} \sum_{i=1}^{n}{(y_i-\mu)^T \Sigma_y^{-1} (y_i-\mu)} \\
             &= -\frac{1}{2} \sum_{i=1}^{n} \{log(|2 \pi \Sigma_y|) + (y_i-\mu)^T \Sigma_y^{-1} (y_i-\mu)\} \\
             &= -\frac{1}{2} \{
-                2n\pi \cdot log|\Psi+\Lambda \Lambda^T| + tr[(\Psi+\Lambda \Lambda^T)^{-1} S]
+                n \cdot log|2\pi(\Psi+\Lambda \Lambda^T)| + tr[(\Psi+\Lambda \Lambda^T)^{-1} S]
             \}
         \end{align*}
         \\
@@ -194,11 +194,30 @@
             l_c(\theta, \mathcal{D}) &= log \prod_{i=1}^{n}{p(x_i, y_i)} \\
             &= log \prod_{i=1}^{n} \{p(x_i) \cdot p(y_i|x_i)\} \\
             &= -\frac{1}{2}\{2n\pi \cdot log|I| + \sum_{k=1}^{n} x_i^T x_i\}
-               -\frac{1}{2}\{2n\pi \cdot log|\Psi| + \sum_{i=1}^{n}(y_i-\Lambda x_i)^T \Psi^{-1} (y_i-\Lambda x_i)\} \\
-            &= -\frac{1}{2}\{2n\pi log|\Psi| + \sum_{i=1}^{n}{x_i^T x_i} + \}
+               -\frac{1}{2}\{2n\pi \cdot log|\Psi| + \sum_{i=1}^{n}(y_i-\mu-\Lambda x_i)^T \Psi^{-1} (y_i-\mu-\Lambda x_i)\} \\
+            &= -\frac{1}{2}\{n log|2 \pi \Psi| + \sum_{i=1}^{n}{x_i^T x_i} + n \cdot tr[S \Psi^{-1}]\}
         \end{align*} \\
-        b) 
+        b) \\
+        \begin{align*}
+            & \frac{\partial l_{\theta, \mathcal{D}}}{\partial \Psi} = 0 \\
+            \leadto &
+                \Psi^{-1} - S \Psi^{-1} \Psi^{-1} = 0 \\
+            \leadto &
+                \Psi = S
+            \\
+            \\
+            & \frac{\partial l_{\theta, \mathcal{D}}}{\partial \Lambda} = 0 \\
+            \leadto &
+                -2 \Psi^{-1} \sum_{i=1}^{n}{(y_i - \Lambda x_i)x_i^T} = 0 \\
+            \leadto &
+                \sum_{i=1}^{n}(y_i x_i^T) = \Lambda \sum_{i=1}^{n}(x_i x_i^T) \\
+            \leadto &
+                \Lambda = (\sum_{i=1}^{n}y_i x_i^T) \cdot (\sum_{i=1}^{n}x_i x_i^T)^{-1}
+        \end{align*}      
 
+        Reference:\\
+        \text{[1] https://www.cs.cmu.edu/~epxing/Class/10708-14/scribe\_notes/scribe\_note\_lecture11.pdf}
+        \text{[2] https://www.ics.uci.edu/~welling/teaching/KernelsICS273B/MatrixCookBook.pdf}
     \end{solution}
 
     %=================== Problem 2 ===================%
@@ -346,7 +365,7 @@
         $$
 
         (f) As number of the data samples is large enough, so I think the approximation in e) is the best which is the closest to the MLE value; 
-        The bigger $\alpha$ / smaller $\beta$ is, the MAP estimates tend to right-shift from MLE; the smaller $\alpha$ / bigger $\beta$ is, the MAP estimates tend to left-shift from MLE.
+        The bigger $\alpha$/smaller $\beta$ is, the MAP estimates tend to right-shift from MLE; the smaller $\alpha$/bigger $\beta$ is, the MAP estimates tend to left-shift from MLE.
 
     \end{solution}
 \end{document}
