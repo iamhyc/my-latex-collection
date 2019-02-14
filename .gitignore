@@ -1,5 +1,6 @@
 .vscode
 *.aux
+*.asv
 *.fdb_latexmk
 *.fls
 *.blg
