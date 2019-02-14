@@ -84,7 +84,8 @@
         l(\theta, \mathcal{D}) = log \prod\limits_{i=1}^{n} p(y_i)
         $$
         \tab a) Please compute the incomplete log likelihood, which should involve $\Lambda, \Psi$, and adata covariance matrix 
-        $S=\sum_{i=1}^n (y_i - \mu)(y_i - \mu)^T$ \\
+        $S=\sum_{i=1}^n (y_i - \mu)(y_i - \mu)^T$
+        
         \tab b) Try to compute the MLE estimate for $\theta = (\Lambda, \Psi)$ and explain what is the main difficulty that prevents you from getting the result.
 
         (4) [Complete log likelihood] The complete log likelihood is defined as 
@@ -92,11 +93,14 @@
         l_c(\theta, \mathcal{D}) = log \prod\limits_{i=1}^{n} p(x_i, y_i)
         $$
         \tab a) Please compute the complete log likelihood, which should involve $\Lambda, \Psi$, and adata covariance matrix 
-        $S=\frac{1}{n} \sum_{i=1}^n (y_i - \Lambda x_i)(y_i - \Lambda x_i)^T$ \\
+        $S=\frac{1}{n} \sum_{i=1}^n (y_i - \Lambda x_i)(y_i - \Lambda x_i)^T$
+
         \tab b) Try to compute the MLE estimate for $\theta = (\Lambda, \Psi)$ and explain why it is simpler that 1.3(b).
     \end{problem}
 
     \begin{solution}
+        {[}The solution in (1) and (2) uses the "Useful Porperties of Gaussian" on the slides; the proof processes of the two should resembling the same form and regardless of the order of the two random variables $X$ and $Y$; so the proof process is obsoleted{]}
+
         (1) Assume that the joint distribution of $(X, Y)$ is
         $$
         p(\begin{pmatrix}
@@ -157,7 +161,43 @@
         )
         $$
 
-        (2) 
+        (2) for $p(x|y)$: similarly, we use the properties mentioned in (1) and we have:
+        \begin{align*}
+            \mu_{x|y} &= \Sigma{x|y}(\Lambda_{x}\mu_x-\Lambda_{xy}(y-\mu_y)) \\
+            &= \Sigma_{x|y}(-\Lambda_{xy})(y-\mu) \\
+            &= \Sigma_{x|y}[I^{-1} \Lambda^T (\Lambda \Lambda^T+\Psi-\Lambda I^{-1} \Lambda^T)^{-1}](y-\mu) \\
+            &= \Sigma_{x|y} \Lambda^T \Psi^{-1}(y-\mu)
+            \\
+            \Sigma_{x|y} &= \Sigma_x - \Sigma_{xy} \Sigma_y^{-1} \Sigma_{yx} \\
+            &= I - \Lambda^T (\Lambda \Lambda^T + \Psi)^{-1} \Lambda \\
+            &= (I + \Lambda^T \Psi^{-1} \Lambda)^{-1}
+        \end{align*}
+
+        (3) \\
+        a) As we know that $p(y) = \Gaussian(y|\mu, \Psi+\Lambda \Lambda^T)$,
+        \begin{align*}
+            l(\theta, \mathcal{D}) &= log \prod_{i=1}^{n}{p(y_i)} \\
+            &= log \prod_{i=1}^{n} |2 \pi \Sigma_y|^{-1/2} exp\{-1/2 (y_i-\mu)^T \Sigma_y^{-1} (y_i-\mu)\} \\
+            &= -\frac{1}{2} \sum_{i=1}^{n} log(|2 \pi \Sigma_y|)
+               -\frac{1}{2} \sum_{i=1}^{n}{(y_i-\mu)^T \Sigma_y^{-1} (y_i-\mu)} \\
+            &= -\frac{1}{2} \sum_{i=1}^{n} \{log(|2 \pi \Sigma_y|) + (y_i-\mu)^T \Sigma_y^{-1} (y_i-\mu)\} \\
+            &= -\frac{1}{2} \{
+                2n\pi \cdot log|\Psi+\Lambda \Lambda^T| + tr[(\Psi+\Lambda \Lambda^T)^{-1} S]
+            \}
+        \end{align*}
+        \\
+        b) The MLE estimate may hard to compute cause $\Lambda \Lambda^T + \Psi^{-1}$ is highly coupled and could not be calculated;
+
+        (4) \\
+        a)
+        \begin{align*}
+            l_c(\theta, \mathcal{D}) &= log \prod_{i=1}^{n}{p(x_i, y_i)} \\
+            &= log \prod_{i=1}^{n} \{p(x_i) \cdot p(y_i|x_i)\} \\
+            &= -\frac{1}{2}\{2n\pi \cdot log|I| + \sum_{k=1}^{n} x_i^T x_i\}
+               -\frac{1}{2}\{2n\pi \cdot log|\Psi| + \sum_{i=1}^{n}(y_i-\Lambda x_i)^T \Psi^{-1} (y_i-\Lambda x_i)\} \\
+            &= -\frac{1}{2}\{2n\pi log|\Psi| + \sum_{i=1}^{n}{x_i^T x_i} + \}
+        \end{align*} \\
+        b) 
 
     \end{solution}
 
@@ -216,7 +256,7 @@
             & T(x) = \sum\limits_{i=1}^{N}{x_i}\\
             & \eta = log{\lambda}\\
             & A(\eta) = \sum\limits_{i=1}^{N}{\lambda} = \sum\limits_{i=1}^{N}{e^{\eta}} \\
-            & \text{($N$ is the number of the coolection of random variables)}
+            & \text{($N$ is the number of the collection of random variables)}
         \end{align*}
 
         (b) sufficient statistics of $X$: $T(x) = \sum\limits_{i=1}^{N}{x_i}$
@@ -235,19 +275,34 @@
             E[T(X)|\eta] &= \frac{\partial A(\eta)}{\partial \eta}
             = \sum\limits_{i=1}^{N}{e^{\eta}}
             \\
-            E[T(x)^2|\eta] &= \frac{\partial^2 A(\eta)}{\partial \eta^2}
+            Var[T(x)^2|\eta] &= \frac{\partial^2 A(\eta)}{\partial \eta^2}
             = \sum\limits_{i=1}^{N}{e^{\eta}}
-        \end{align*}
-        Then we have:
-        \begin{align*}
-            E[X|\eta] &= \sum\limits_{i=1}^{N}{e^{\eta}}
             \\
-            Var[X|\eta] &= E[X^2|\eta] - E[X|\eta]^2
-            = \sum\limits_{i=1}^{N}{e^{\eta}} (1 - \sum\limits_{i=1}^{N}{e^{\eta}})
+            T(x) &= \sum_{i=1}^{N}{x_i}
+        \end{align*}
+        As the components of $X$ are i.i.d, we could easily obtain that:
+        \begin{align*}
+            E[X|\eta] &= (E[X_1], \dots, E[X_n])^T \\
+            &= (E[T(X)]/N, \dots, E{T(X)}/N)\\
+            &= (e^\eta, \dots, e^\eta)^T
+            \\
+            Var(X|\eta) &= E[(X-E[X])(X-E[X])^T] \\
+            &= \begin{pmatrix}
+                Var[X_1] & 0 & \dots & 0 \\
+                0 & Var[X_2] & \dots & 0 \\
+                \vdots & \vdots & \ddots & \vdots \\
+                0 & 0 & \dots & Var[X_N]
+            \end{pmatrix} \\
+            &= \begin{pmatrix}
+                e^{\eta} & 0 & \dots & 0 \\
+                0 & e^{\eta} & \dots & 0 \\
+                \vdots & \vdots & \ddots & \vdots \\
+                0 & 0 & \dots & e^{\eta}
+            \end{pmatrix}
         \end{align*}
 
         (f) As data $X=\{x_1, \dots, x_n\}$ are fed to i.i.d random variables respectively,
-        the MLE is for 1-D Poisson distribution, which is:
+        the MLE is for 1-D Poisson distribution which is:
         $$
         \hat{\mu}_{MLE} = \frac{1}{n} \sum\limits_{k=1}^{n} T(x_k) = \frac{1}{n} \sum\limits_{k=1}^{n} x_k
         $$
@@ -259,9 +314,9 @@
                 (\lambda^{\alpha -1} e^{-\beta \lambda}) \cdot
                 (\lambda^{\sum_{k=1}^{n} x_k} e^{-n\lambda})
              = \lambda^{\sum_{k=1}^{n} x_k + \alpha -1} \cdot e^{-(\beta+n) \lambda} \\
-            &\propto Gamma(\lambda;\sum_{k=1}^{n} x_k + \alpha -1, \beta+n)
+            &\propto Gamma(\lambda;\sum_{k=1}^{n} x_k + \alpha, \beta+n)
         \end{align*}
-        Then we have:
+        after setting $\frac{\partial p(\lambda|X)}{\partial \lambda} = 0$ we have:
         \begin{align*}
             \lambda_{MAP} &= arg\max_{\lambda}log\ p(\lambda | X) \\
             &= \frac{\alpha - 1 + \sum_{k=1}^{n} x_k}{n + \beta}
@@ -290,8 +345,8 @@
         \lambda_{MAP} = \frac{\alpha - 1 + \sum_{k=1}^{n} x_k}{n + \beta} = 10.0170
         $$
 
-        (f) I think the approximation in e) is best, which is the closet one to the MLE value; 
-        The bigger $\alpha$ makes the curve right-shifted;
+        (f) As number of the data samples is large enough, so I think the approximation in e) is the best which is the closest to the MLE value; 
+        The bigger $\alpha$ / smaller $\beta$ is, the MAP estimates tend to right-shift from MLE; the smaller $\alpha$ / bigger $\beta$ is, the MAP estimates tend to left-shift from MLE.
 
     \end{solution}
 \end{document}
