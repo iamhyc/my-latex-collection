@@ -1,0 +1,62 @@
+\documentclass[10pt, conference, letterpaper]{IEEEtran}
+% \documentclass[journal]{IEEEtran}
+
+\usepackage{xcolor,soul,framed}
+\usepackage[pdftex]{graphicx}
+\usepackage[cmex10]{amsmath}
+\usepackage{array}
+\usepackage{mdwmath}
+\usepackage{mdwtab}
+\usepackage{eqparbox}
+\usepackage{url}
+\usepackage{multirow}
+\usepackage{extarrows}
+\usepackage[noend]{algpseudocode}
+\usepackage{algorithmicx}
+\usepackage{algorithm}
+
+\begin{document}
+
+    %=============================== TITLE ===============================%
+    \title{
+        Solve a Practical Problem with Finite Horizon MDP as Practice
+    }
+    \author{
+        \IEEEauthorblockN{HONG Yuncong}
+        \IEEEauthorblockA{
+            \textit{Department of CS}, The University of Hong Kong, China \\
+            ychong@cs.hku.hk
+        }
+    }
+    \maketitle
+
+    %============================== ABSTRACT ==============================%
+    \begin{abstract}
+        \label{sec:abstract}
+    \end{abstract}
+
+    \begin{IEEEkeywords}
+        finite horizon MDP
+    \end{IEEEkeywords}
+
+    %============================ INTRODUCTION ============================%
+    \begin{section}{INTRODUCTION}
+        \label{sec:introduction}
+        We all like this book \cite{sutton1998introduction}.
+    \end{section}
+
+    %============================== MAINBODY ==============================%
+    \input{review.tex}
+    \input{formulation.tex}
+    \input{algorithm.tex}
+    \input{evaluation.tex}
+
+    %============================= CONCLUSION =============================%
+    \begin{section}{CONCLUTION}
+        \label{sec:conclusion}
+    \end{section}
+
+    %============================== REFERENCE =============================%
+    \bibliographystyle{IEEEtran}
+    \bibliography{main.bib}
+\end{document}
