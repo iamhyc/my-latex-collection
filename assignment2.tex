@@ -1,0 +1,408 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{braket}
+\usepackage[normalem]{ulem} % for strikeout line
+% \usepackage{graphicx}
+% \usepackage{epstopdf}
+
+%-------------------------------------------------------%
+\newcounter{pcounter}                                   %
+\newenvironment{problem}                                %
+{                                                       %
+    \stepcounter{pcounter}                              %
+    \textbf{\arabic{pcounter}.}                         %
+}{}                                                     %
+\newenvironment{solution}                               %
+{\textbf{Solution:} \\}{$\blacksquare$\newline}         %
+%-------------------------------------------------------%
+\newcommand{\leadto}{\Rightarrow}                       %
+\newcommand{\domR}{\mathbb{R}}                          %
+\newcommand{\domS}{\mathbb{S}}                          %
+\newcommand{\abss}[1]{\| #1 \|}                         %
+\newcommand{\tr}[1]{\textbf{tr}(#1)}                    %
+\newcommand{\vecOne}{\textbf{1}}                        %
+%-------------------------------------------------------%
+
+\begin{document}
+
+%------------------- The Title -------------------%
+\parindent 0in
+\parskip 1em
+\title{COMP9602 Assignment 2 Solution Sheet}
+\author{3030058647, HONG Yuncong}
+\maketitle
+
+%=================== Problem 1 ===================%
+\begin{problem}
+    You are given the following optimization problem:
+    \begin{gather*}
+        maximize\ \frac{r^T x+d}{\abss{Rx+q}}_2 \\
+        subject\ to\ \sum_{i=1}^{n} f_i(x_i) \leq b \\
+        x \succeq c.
+    \end{gather*}
+    The variable is $x \in \domR^n$. $r,c \in \domR^n$, R is a ${m}\times{n}$ matrix, $q \in \domR^m$; and $d,b \ in \domR^m$ and $d,b \in \domR$. The functions $f_i,\ i=1,\dots,n$, are defined as
+    \begin{gather*}
+        f_i(x_i) = \alpha_i x_i + \beta_i |x_i| + \gamma_i |x_i|^{3/2},
+    \end{gather*}
+    with $\beta_i > |\alpha_i|$, $\gamma_i > 0$. We assume there exists a feasible $x$ with $r^{T}x+d>0$. Show that this problem can be solved by solving an SOCP or a sequence of SOCP feasibility problems (you only need to show one of the two possible ways).
+\end{problem}
+
+\begin{solution}
+    A SOCP should have the following form:
+    \begin{align*}
+        minimize\ &f^T x \\
+        subject\ to\ &\abss{A_i x + b_i} \leq c_i^T x + d_i,\ i=1,\dots,m \\
+        &Fx = g \\
+        &(A_i \in \domR^{n_i \times n}, F \in \domR^{p \times n})
+    \end{align*}
+    while in this problem, the \textit{Equality Constraints} don't have to be considered. And for the \textit{Inequality Constraints}, the affine fucntion $(Ax+b, c^T x + d)$ lies in the second-order cone in $\domR^{k+1}$. (So the inequality constraints could in the form like more specifally LP or QCQP)
+
+    Firstly, we change the objective function into \textit{minimization} by taking its inverse (as there exists a feasible $x$ with $r^T + d > 0$):
+    \[
+        minimize\ \frac{\abss{Rx+q}_2}{r^T x+d}
+    \]
+    And then we use epigraph equivalent form to reformulate the \textit{objective function} into:
+    \begin{align*}
+        minimize\ &\ t \\
+        subject\ to\ &\frac{\abss{Rx+q}_2}{r^T x + d} \leq t
+                        \leadto {\abss{Rx+q}_2} \leq {t(r^T x + d)} \\
+        &\sum_{i=1}^{n} f_i(x_i) \leq b \\
+        &x \succeq c.
+    \end{align*}
+    And we still have one constraint, $\sum_{i=1}^{n} f_i(x_i) \leq b$, not in standard form.
+
+    With $\beta_i > |\alpha_i|$ and $\gamma_i >0$, we could have:
+    $\beta_i > |\alpha_i| \leadto \beta_i |x_i| + \alpha_i x_i > 0 \leadto f_i(x_i) > 0$.
+    Then we could try to change $\sum_{i=1}^{n} f_i(x_i) \leq b$ into a standard linear form:
+    \begin{align*}
+        \sum_{i=1}^n f_i(x_i) &= \sum_{i=1}^n \alpha_i x_i + \beta_i |x_i| + \gamma_i |x_i|^{3/2} \\
+        &= \alpha^T x + \beta^T x' + \gamma^T x'' \\
+        &\geq \alpha^T y_1 + \beta^T y_2 + \gamma^T y_3 \\
+        &= P^T y
+    \end{align*}
+    where $P=[\alpha\ \beta\ \gamma]$.
+    
+    Here we use $y_1=x_1, y_2 \preceq x', y_3  \preceq x''$ to relax the condition and makes each component independent, where $x'=[|x_1|, \dots, |x_n|]^T$, $x''=[|x_1|^{3/2}, \dots, |x_n|^{3/2}]^T$.
+
+    And finally we could have the optimization problem into a SOCP form:
+    \begin{align*}
+        minimize\ &\ t \\
+        subject\ to\ 
+            & {\abss{Rx+q}_2} \leq {t(r^T x + d)} \\
+            & P^T y \leq b \\
+            & x \succeq c
+    \end{align*}
+    And the original problem can be solved by solving the SOCP above.
+
+\end{solution}
+
+%=================== Problem 2 ===================%
+\begin{problem}
+    Consider a QCQP, with nonnegative variables $x \in \domR^n$:
+    \begin{gather*}
+        minimize\ f_0(x) \\
+        subject\ to\ f_i(x) \leq 0, i=1,\dots,m \\
+        x \succeq 0,
+    \end{gather*}
+    where $f_i(x) = (1/2)x^T P_i x + q_i^T x + r_i$, with $P_i \in \domS^n$, $q_i \in \domR^n$, for $i=0,\dots,m$. We do not assume that $P_i \succeq 0$, so this need not be a convex problem.
+
+    Suppose that $q_i \preceq 0$, and $P_i$ has non-positive off-diagonal entries, i.e.,
+    \[
+        (P_i)_{jk} \leq 0, j \neq k, j,k=1,\dots,n  
+    \]
+    for $i=0,\dots,m$. Reformulate this problem as a convex problem.
+
+    [Hint: Change variables using $y_i = \Phi(x_i)$, for some suitable function $\Phi$]
+    
+\end{problem}
+
+\begin{solution}
+    In this QCQP, we have $P_i \in \domS^n$ but not \textit{positive definite} or \textit{positive semidefinite}. With the quadratic form, we firstly expand it into following:
+    \begin{align*}
+        f_i(x) &= 1/2 x^T P_i x + q_i^T x + r_i \\
+        &= (1/2 \sum_{j=1}^n (P_i)_{jj} x_j^2 + \sum_{j \neq k}^n (P_i)_{jk} x_j x_k) + \sum_{j=1}^n (q_i)_j x_j + r_i
+    \end{align*}
+
+    Notice that $x \succeq 0$, we could simply have $y_i = x_i^2$, then the above form could be written as:
+    \begin{gather*}
+       f_i(y) =  1/2 \sum_{j=1}^n (P_i)_{jj} y_j + \sum_{j \neq k} (P_i)_{jk} \sqrt{y_j y_k} + \sum_{j=1}^n (q_i)_j \sqrt{y_j} + r_i
+    \end{gather*}
+    which is of affine combination. And we try to look into each term and check the convexity.
+    
+    For the first term $\sum_{j=1}^n (P_i)_{jj} y_j$ is affine combination over $\domR_+$ thus convex.
+    For the second term, as $y_j$ is independent of $y_k$, and the off-diagonal entries $(P_i)_{jk}\ (j \neq k)$ are non-positive, so the second term is convex over $z_{jk} = \sqrt{y_j y_k} \in \domR_+$ because of the multiplication of two concave function.
+    And for the third term $sum_{j=1}^n (q_i)_j \sqrt{y_j} + r_i$ is same as the second term, as $(q_i) \preceq 0$, this term is also convex.
+    
+    As all the terms in $f_i(y)$ is convex, hence the affine combination of the convex terms is convex over $y \in R_+$. And after the simple substituion, $f_i(y)$ is one convex problem.
+
+\end{solution}
+
+%=================== Problem 3 ===================%
+\begin{problem}
+    Consider the pair of primal and dual SDPs
+    \begin{align*}
+        (P)\ &minimize\ c^T x \\
+        &subject\ to\ F(x) \preceq 0 \\
+        \\
+        (D)\ &maximize\ \tr{F_0 Z} \\
+        &subject\ to\ \tr{F_i Z} + c_i = 0, i=1,\dots,n \\
+        &Z \succeq 0,
+    \end{align*}
+    where $c,x \in \domR^n$, $F(x) = F_0+x_1 F_1+\dots+x_n F_n$ and $F_i \in \domS_p$ for i=0,\dots,n. Let $Z^*$ be an optimal solution of (D). Show that every optimal solution $x^*$ of the following unconstrained problem
+    \[
+        minimize\ c^T x+M\ max\{0, \lambda_{max}(F(x))\},
+    \]
+    where constant $M > \tr{Z^*}$ and $\lambda_{max}(F(x))$ denotes the largest eigenvalue of $F(x)$, is an optimal solution of (P).
+\end{problem}
+
+\begin{solution}
+    As for the unconstrained problem, we try to move the $\textit{maximum}$ part onto constraint, then we define $t = max\{0, \lambda_{max}(F(x))\}$, and the problem could be written in constrained form:
+    \begin{align*}
+        minimize\ &c^T x + Mt \\
+        subject\ to\ & max\{0, \lambda_{max}(F(x))\} \leq t
+    \end{align*}
+    And for the constraint, we could write it into:
+    \begin{align*}
+        \lambda_{max}(F(x)) &\leq t
+            \leadto F(x) \preceq tI \\
+        t &\geq 0
+    \end{align*}
+    And we could rewrite this problem into a \textbf{standard primal SDP}:
+    \begin{align*}
+        minimize\ &[c\ M]^T [x\ t] \\
+        subject\ to\ 
+            & F(x) - tI \preceq 0 \\
+            & -t \leq 0
+    \end{align*}
+
+    And we try to derive the dual problem of this primal SDP:
+    \begin{align*}
+        L(x, t, \mu, Z) &= c^T x + Mt + \tr{(F(x)-tI)Z} - \mu t \\
+        &= (c^T x + \tr{F(x)Z}) + (M - \mu - \tr{Z})t \\
+        &= tr(F_0 Z) + \sum_{i=1}^{n} (\tr{F_i Z + c_i})x_i + (M - \mu - \tr{Z})t
+    \end{align*}
+    where $Z \in \domS^p, \mu \in \domR$; and
+    \begin{align*}
+        g(\mu, Z) &= inf_{x, t} L(x, t, \mu, Z) \\
+        &= 
+        \begin{cases}
+            tr(F_0 Z), & \tr{F_i Z + c_i} = 0, M - \mu - \tr{Z} = 0 \\
+            -\infty, & otherwise.
+        \end{cases}
+    \end{align*}
+
+    And we could develope the dual problem of this transformed SDP:
+    \begin{align*}
+        minimize\ &\tr{F_0 Z} \\
+        subject\ to\ 
+            & \tr{F_i Z + c_i} = 0, i = 1, \dots, n \\
+            & M - \mu - \tr{Z} = 0 \\
+            & Z \succeq 0
+    \end{align*}
+
+    According to the $complmentary slackness$, we have $\mu^* t^* = 0$.
+    As we know that $M > \tr{Z^*}$, we have $\mu^* = M - \tr{Z^*} > 0 \leadto t^* = 0$, and we have:
+    \[
+        L(x, t^*, \mu^*, Z^*) = c^T x + \tr{F(x)Z}
+    \]
+    which is the optimal Lagrangian function for problem (P).
+
+    As we know that the primal and dual optimal values are equal for SDP and $x^*$ is the optimal solution to the original unconstrained problem, then we have $x^*$ could minimize $L(x, t^*, \mu^*, Z^*)$. With $t^* = 0$ always holds, $x^*$ is also the optimal solution of (P).
+
+\end{solution}
+
+%=================== Problem 4 ===================%
+\begin{problem}
+    Consider the problem
+    \begin{align}
+        &minimize\ f_0(x) \\
+        &subject\ to\ f_i(x) \leq 0, i=1,\dots,m \nonumber
+    \end{align}
+    where the functions $f_i:\domR^n \rightarrow \domR$ are differentiable and convex.
+
+    (a) Show that
+    \[
+        \Phi(x) = f_0(x) + \alpha \sum_{i=1}^m max\{0,f_i(x)\}^2,
+    \]
+    where $\alpha > 0$, is a convex function.
+
+    (b) Suppose $\tilde{x}$ minimizes $\Phi$. Find a lower bound on the optimal value of (1) using $\tilde{x}$ (i.e., thw lower bound can be expressed as a function on $\tilde{x}$).
+
+    [Hint: you can find a feasible point for the dual of (1) from $\tilde{x}$]
+\end{problem}
+
+\begin{solution}
+    (a) define $f'_i(x) = max\{0, f_i(x)\}^2$. As $f_i(x)$ is convex, the pointwise maximization of two convex functions (the constant function is both convex and concave) $max\{0, f_i(x)\}$, is convex and non-negative over $\domR$;    
+    function $(\cdot)^2$ is \textit{convex and non-decreasing} over domain $\domR_+$, hence $f'_i(x) = max\{0, f_i(x)\}^2$ is convex.
+
+    With $\alpha > 0$, the $\Phi(x)$ is affine combination of convex functions ($f_0(x), f'_1(x), \dots, f'_m(x)$), $\Phi(x)$ is convex over $\domR$. \\
+
+    (b) Firstly, we try to derive the dual problem of (1). We define the Lagrangian function of (1) as:
+    \begin{align*}
+        L(x, \lambda) &= f_0(x) + \sum_{i=1}^m \lambda_i f_i(x) \\
+        g(\lambda) &= inf_{x} L(x, \lambda)
+    \end{align*}
+    Because $f_i(x)$ is differentiable and convex, we could find $x^*$ that optimize $L(x, \lambda)$ by set paritally differentiate it over $x$ to zero:
+    \begin{gather*}
+        \frac{\partial{L(x, \lambda)}}{\partial x} = 0
+            \leadto D{f_0}(x^*) + \sum_{i=1}^m \lambda_i D{f_i}(x^*) = 0
+    \end{gather*}
+    And we could rewrite the dual problem of problem (1) as:
+    \begin{align*}
+        maximize\ &g(\lambda) = f_0(x^*) + \sum_{i=1}^m \lambda_i f_i(x^*)\\
+        subject\ to\ 
+            & \nabla{f_0}(x^*) + \sum_{i=1}^m \lambda_i \nabla{f_i}(x^*) = 0 \\
+            & \lambda \succeq_R 0
+    \end{align*}
+
+    Then we look back on the convex function $\Phi(x)$;
+    we denote $y(x) = max\{0, x\}^2$ which is obviously differentiable over the domain of $x$, then we have:
+    \begin{align*}
+        \nabla y(f_i(x)) = \nabla f_i(x) \cdot max\{0, 2f_i(x)\}
+    \end{align*}
+    as $\tilde{x}$ minimizes $\Phi$ and $f_i(x) \leq 0$ always holds, we have:
+    \begin{align*}
+        & \nabla \Phi(x) = 0 \\
+        \leadto &\nabla f_0(\tilde{x}) + \alpha \sum_{i=1}^m \nabla max\{0, f_i(\tilde{x})\}^2 = 0 \\
+        \leadto &\nabla f_0(\tilde{x}) + \sum_{i=1}^m \alpha max\{0, 2f_i(\tilde{x})\} \nabla{f_i(x)} = 0
+    \end{align*}
+
+    This zero-equality resembles the constraints we have inside the dual problem of problem (1). Then we replace $\lambda_i = \alpha max\{0, 2f_i(\tilde{x})\}$ in the dual problem, and now we have $\tilde{x}$ is the optimal solution to the dual problem.
+
+    And the lower bound for problem (1) could be expressed with the hlp of dual problem as:
+    \begin{align*}
+        &p* = g* = max g(\lambda) \\
+        = & f_0(\tilde{x}) + \sum_{i=1}^m \alpha max\{0, 2f_i(\tilde{x})\} f_i(\tilde{x}) \\
+        = & f_0(\tilde{x}) + 2\alpha \sum_{i=1}^m max\{0, f_i(\tilde{x})\} f_i(\tilde{x})
+    \end{align*}
+
+\end{solution}
+
+%=================== Problem 5 ===================%
+\begin{problem}
+    In the traveling salesman problem, given $n$ cities and the distances $d_{ij}$ between each pair of cities $i$ and $j$, we try to find the shortest possible route that visits each city exactly once and returns to the origin city.
+
+    (1) Formulate the traveling salesman problem as an integer linear program (ILP).
+
+    (2) If you relax the integrality constraints of the ILP you formulated in (1) and solve the resulting relaxed LP, can you obtain the optimal solution to the original ILP? Give your reason.
+
+    (3) Derive the dual problem of the relaxed LP.
+
+    (4) Write down the KKT conditions of the relaxed LP.
+\end{problem}
+
+\begin{solution}
+    (1) Define the distance matrix $D = [d_{ij}] \in \domS^n$; to represent the route the salesman taken in the distance matrix, we define:
+    \[
+        x_{ij} = 
+        \begin{cases}
+            1 & \text{when salesman take route from i to j} \\
+            0 & \text{otherwise} \\
+        \end{cases}
+    \]
+
+    Then the problem could be formulated as ILP in the following form:
+    \begin{align*}
+        minimize\ & \sum_{i=1}^n\sum_{j=1}^n d_{ij} x_{ij} \\
+        subject\ to\ 
+        & \sum_i x_{ij} = 1,\ \forall i \in {1, \dots, n} \\
+        & \sum_i x_{ji} = 1,\ \forall i \in {i, \dots,n} \\
+        & 0 \leq x_{ij} \leq 1,\ \forall i,j \in {1, \dots, n} \\
+        & u_i \in \textbf{Z},
+          1 \leq u_i \leq n\ \forall i \in {i, \dots,n} \\
+        & u_i - u_j + 1 \leq (n - 1)(1 - x_{ij}),\ 1 \leq i \neq j \leq n
+    \end{align*}
+    where $u_i$ is a dummy variable used to prevent subtour, as the arc-constraint for $(i,j)$ forces $u_j \geq u_i + 1$ when $x_{ij} = 1$.
+
+    (2) I can't have the optimal solution to the original problem. The integrality constraints with dummy varialbes $u_i$ confine the order of the salesman traveled.
+    \textbf{(Not Completed)}
+
+    (3) Write down the Lagrangian function:
+    \begin{align*}
+        L(X, \lambda, \mu) &= \sum_{i=1}^n\sum_{j=1}^n{ d_{ij}x_{ij} } + 
+                            \lambda 
+    \end{align*}
+    \textbf{(Not Completed)}
+
+    (4) \textbf{(Not Completed)}
+
+\end{solution}
+
+%=================== Problem 6 ===================%
+\begin{problem}
+    (a) Suppose $a \in \domR^n$ with $a_1 \geq a_2 \geq \dots \geq a_n > 0$, and $b \in \domR^n$ with $b_k = 1/a_k$, $\forall k=1,\dots,n$.
+
+    Derive the KKT conditions for the following convex optimization problem
+    \begin{align*}
+        &minimize\ -log(a^T x) - log(b^T x) \\
+        &subject\ to\ x \succeq 0, \vecOne^T x = 1.
+    \end{align*}
+
+    Show that $x=(1/2, 0, \dots, 0, 1/2) \in \domR^n$ is optimal (i.e., $x_1=x_n=1/2$ and $x_k=0, \forall k=2,\dots,n-1$).
+
+    (b) Suppose $A \in \domS_{++}^n$ with eigenvalues $\lambda_k, k=1,\dots,n$, sorted in non-increasing order. That is, consider eigenvalue decomposition $A=Q \Lambda Q^T$, where
+    \[
+        \Lambda = 
+        \begin{bmatrix}
+            \lambda_1 &\ &\ \\
+            \ &\dots &\ \\
+            \ &\ &\lambda_n
+        \end{bmatrix}
+    \]
+    $(\lambda_1 \geq \lambda_2 \geq \dots \geq \lambda_n > 0)$ and $Q$ is an orthogonal matrix whose columns are normalized eigenvectors of $A$ corresponding to the respective eigenvaluse in $\Lambda$. Apply the result of (a), with $a_k=\lambda_k$, to prove the Kantorovich inequality:
+    \[
+        2 (u^T A u)^{1/2} (u^T A^{-1} u)^{1/2}
+            \leq \sqrt{\frac{\lambda_1}{\lambda_n}} + \sqrt{\frac{\lambda_n}{\lambda_1}}
+    \]
+    for all $u \in \domR^n$ with $\abss{u}_2 = 1$.
+
+\end{problem}
+
+\begin{solution}
+    (a) As $a \in \domR^n, b_k=1/a_k, \forall k=1, \dots, n$,
+        denote $f(x) = -log(a^T x) - log(b^T x)$.
+        The Lagrangian function of this problem is:
+        \begin{align*}
+            L(x, \lambda, \mu) &= f(x) - \lambda^T x + \mu (\vecOne^T x - 1) \\
+            & = f(x) + (\mu\vecOne - \lambda)^T x - \mu
+        \end{align*}
+        where $\lambda \in \domR^n_+, \mu \in \domR$.
+
+        And we have KKT condition for this convex problem as:
+        \begin{align*}
+            & \text{(1) primal constrains: } -x \preceq 0, \vecOne^T x - 1 = 0 \\
+            & \text{(2) dual constrains: } \lambda \succeq 0 \\
+            & \text{(3) complementary slackness: } \lambda^T x = 0 \\
+            & \text{(4) gradient with Lagrangian with respect to x vanaishes: }
+        \end{align*}
+        \begin{align*}
+            &\ \nabla f(x) + \mu\vecOne - \lambda = 0 \\
+            \leadto & - (\frac{a}{a^T x} + \frac{b}{b^T x}) + \mu\vecOne - \lambda = 0 \\
+            \leadto & - (\frac{a_i}{a^T x} + \frac{b_i}{b^T x}) + \mu - \lambda_i = 0, \forall i=1, \dots, n
+        \end{align*}
+
+        Then we try to find out the optimal $x^*$ using the dual problem; firstly we have:
+        \begin{align*}
+            g(\lambda, \mu) = inf_{x} L(x, \lambda, \mu)
+        \end{align*}
+        \textbf{(Not Completed)}
+
+    (b) Firstly, we try to replace $A$ with $\Lambda$; we achieve it by have $u' = Qu$.
+    And the equality to be proved changes into:
+    \begin{align*}
+        2 (u'^T \Lambda u')^{1/2} (u'^T \Lambda^{-1} u')^{1/2}
+        \leq \sqrt{\frac{\lambda_1}{\lambda_n}} + \sqrt{\frac{\lambda_n}{\lambda_1}}
+    \end{align*}
+    This transform is acceptable, because for the matrix $Q$, $Q^T = Q^{-1} (A \in \domS^n_{++})$.
+
+    Then for the descent-order sorted eigen-value of matrix $A$, by applying the result in (a), we have $u'^* = (1/2, 0, \dots, 0, 1/2)$ to make the equality hold. That is:
+    \begin{align*}
+        &2 [1/2 (\lambda_1 + \lambda_n)]^{1/2} [1/2 (1/\lambda_1 + 1/\lambda_n)]^{1/2} \\
+        =& \sqrt{\lambda_1 + \lambda_2} \cdot \sqrt{\frac{\lambda_1+\lambda_2}{\lambda_1\lambda_2}} \\
+        =&\sqrt{\frac{\lambda_1}{\lambda_n}} + \sqrt{\frac{\lambda_n}{\lambda_1}}
+    \end{align*}
+
+\end{solution}
+
+\end{document}

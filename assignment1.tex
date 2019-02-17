@@ -1,0 +1,338 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{braket}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{inputenc}
+\usepackage{geometry}
+
+\title{Assignment \#1 Student Solution Sheet}
+\author{3030058647, HONG Yuncong}
+
+\begin{document}
+\maketitle
+
+1. Convex Set
+
+(a) Is the set $\set{a=(a_1, a_2, \dots, a_n)\in\mathbb{R}^n|p(0)=1, |p(t)|\leq 1 \ for\ \alpha\leq t \leq\beta}$, where
+\begin{align}
+	p(t)=a_1+a_2 t+\dots+a_n t_{n-1},\nonumber
+\end{align}
+convex? Prove your answer. \\
+
+\textbf{Solution}:
+denote the set illustrated as A; For any $\exists \ a^{(1)}, a^{(2)} \in A; \alpha, \beta \in \mathbb{R}_+$, and $\alpha+\beta=1$; \\
+giving the affine combinatation of a new point
+\begin{align}
+	a' = \alpha a^{(1)} + \beta a^{(2)} \nonumber
+\end{align}
+such that $p(t)^{(a')} = a^{'T}[1,\dots,t_{n-1}] = \alpha a^{(1)T}t' + \beta a^{(2)T}t'$; \\
+i) As given that, $p(0)^{(a^0)} = a^{(0)T}0 = 0,\ p(0)^{(a^1)} = 0 \Rightarrow p(0)^{a'} = 0$; \\
+ii) $|p(t)^{a^{(0)}}| \leq 1, |p(t)^{a^{(0)}}| \leq 1 \Rightarrow |p(t)^{a'}|=|\alpha p(t)^{a^{(0)}} + \beta p(t)^{a^{(1)}}| \leq {\alpha |p(t)^{a^{(0)}}| + \beta |p(t)^{a^{(1)}}}| \leq {\alpha*1 + \beta*1}=1$ \\
+with i) and ii), we can concludes that $a' \in A$, thus set A is convex set. $\blacksquare$ \\
+
+(b) Show that the hyperbolic set $\set{x \in \mathbb{R}^2_+ | x_1x_2=1}$ is convex. As a generalization, show that $\set{x \in \mathbb{R}^2_+ | \prod^n_{i=1}x_i \geq 1}$ is convex. \\
+
+\textbf{Solution}:
+denote the set illustrated as A; For any $\exists \ x^{(1)}, x^{(2)} \in A; \alpha, \beta \in \mathbb{R}_+$, and $\alpha+\beta=1$; \\
+giving the affine combinatation of a new point
+\begin{align}
+	x = \alpha x^{(1)} + \beta x^{(2)} \nonumber
+\end{align}
+
+such that 
+\[
+	\prod^n_{i=1}x_i = \prod^n_{i=1}(\alpha x^{(1)}_i + \beta x^{(2)}_i) \geq \prod^n_{i=1}( (x^{(1)}_i)^\alpha (x^{(2)}_i)^\beta) = \prod^n_{i=1}(x^{(1)}_i)^\alpha \times \prod^n_{i=1}(x^{(2)}_i)^\beta
+\]
+
+cause $\alpha, \beta \geq 0$, and $ x \in \mathbb{R}_+^2$, then we have
+\[
+	(\prod^n_{i=1}(x^{(1)}_i))^\alpha \geq 1,\ \prod^n_{i=1}(x^{(2)}_i))^\beta \geq 1
+\]
+
+thus $x \in A$, and A is a convex set. $\blacksquare$ \\
+
+2. Convex Function
+
+(a) Show that the function $f(x,t) = -log(t^2 - x^Tx)$, with $\textbf{dom} f=\set{(x,t) \in \mathbb{R}^n \times \mathbb{R} | t \geq \|x\|_2}$ is convex. \\
+
+\textbf{Solution}:
+Firstly giving any two $ (x, t_x),(y, t_y) \in \textbf{dom}f $; and for any $\alpha, \beta \in \mathbb{R}_+$ that $\alpha + \beta = 1$, the combination point $ (z, t_z) = \alpha (x, t_x) + \beta (y, t_y)$ is obviously in the set, thus $\textbf{dom} f$ is convex.
+
+The we show that, to prove $f(z, t_z) \leq \alpha f(x, t_x) + \beta f(y, t_y)$, is equal to prove, 
+\begin{align*}
+	&e^{f(z, t_z)} \leq e^{\alpha f(x, t_x)} \cdot e^{\beta f(y, t_y)} \\
+	&\Leftrightarrow [(\alpha t_x + \beta t_y)^2 - \|\alpha x + \beta y\|^2_2] \leq (t_x^2 - \|x\|^2_2)^{\alpha}
+		\cdot (t_y^2 - \|y\|^2_2)^{\beta}
+\end{align*}
+
+With the \textit{Hint shown in Problem 1(b)}, we have
+\begin{align*}
+	&(t_x^2 - \|x\|^2_2)^{\alpha} \cdot (t_y^2 - \|y\|^2_2)^{\beta}
+		\leq \alpha[t_x^2 - \|x\|^2_2] + \beta [t_y^2 - \|y\|^2_2] \\
+	And& \\
+	&\alpha[t_x^2 - \|x\|^2_2] + \beta [t_y^2 - \|y\|^2_2] \leq [(\alpha t_x + \beta t_y)^2 - \|\alpha x + \beta y\|^2_2] \\
+	\Rightarrow&\ (t_x^2 - \|x\|^2_2)^{\alpha} \cdot (t_y^2 - \|y\|^2_2)^{\beta}
+					\leq [(\alpha t_x + \beta t_y)^2 - \|\alpha x + \beta y\|^2_2]
+\end{align*}
+
+The desired inequality is satisfied, thus the function illustrated is conex. \\
+
+(b) Suppose that $f:\mathbb{R}^n \to \mathbb{R}$ is non-negative and convex, and $g:\mathbb{R}^n \to \mathbb{R} $ is positive and concave. Show that the function $f^2/g$, with domain $\textbf{dom}f \cap \textbf{dom}g$, is convex. \\
+
+\textbf{Solution}:
+Firstly, $\textbf{dom}f \cap \textbf{dom}g = \mathbb{R}_{++}^n$ is still convex.
+Then, denote $h = f' \cdot g'$, where $f' = f^2, g'=g^{-1}$.
+
+While $f$ convex, $(\cdot)^2$ over $\mathbb{R}_{++}$ convex and nondecreasing, $f'$ is convex and non-negative;
+$g$ concave, $(\cdot)^{-1}$ convex and non-increasing, $g'$ is convex and positive.
+
+Thus for $h = f' \cdot g'$, $\tilde{h}$ is non-decreasing in each arguments; then we could conclude that, $h$ is convex over $\textbf{dom}f \cap \textbf{dom}g$. \\
+
+3. Suppose $\lambda_1, \dots, \lambda_n$ are positive. Show that the function $f:\mathbb{R}^n\to\mathbb{R}$, given by \\
+\begin{align}
+	f(x)=\prod_{i=1}^n (1-e^{-x_i})^{\lambda_i} \nonumber
+\end{align}
+is concave on
+\begin{align}
+	\textbf{dom} f = \set{x\in\mathbb{R}_{++}^n | \sum_{i=1}^n \lambda_i e^{-x_i}} \nonumber
+\end{align} \\
+
+\textbf{Solution}:
+To prove the concavity of $f(x)$, is equal to prove, the Hessian Matrix of $f(x)$ is negative semidefinite.
+\[
+	\frac{d^2}{dx_i^2}(1-e^{-x_i})^{\lambda_i} = \frac{d}{dx_i}(\lambda_i(1-e^{-x_i})e^{-x_i}) = -\frac{\lambda_i(1-e^{-x_i})^{\lambda_i}(e^{x_i}-\lambda_i)}{(e^{x_i}-1)^2}
+\]
+\[
+	\frac{\partial^2}{\partial x_i^2} f(x) = [\prod_{i=1}^n (1-e^{-x_i})^{\lambda_i}] \frac{\lambda_i(e^{x_i}-\lambda_i)}{(e^{x_i}-1)^2} =
+	f(x) \cdot -\frac{\lambda_i(e^{x_i}-\lambda_i)}{(e^{x_i}-1)^2}
+\]
+\[
+	\frac{\partial^2}{\partial x_i x_j} f(x) = f(x) \cdot \frac{\lambda_i \lambda_j}{(e^{x_i} - 1)(e^{x_j} - 1)}
+\]
+Then we have,
+\[
+	\nabla^2 f(x) = [d_{ij}],
+	\begin{cases}
+		f(x) \cdot -\frac{\lambda_i(e^{x_i}-\lambda_i)}{(e^{x_i}-1)^2} & \text{when i = j} \\
+		f(x) \cdot \frac{\lambda_i \lambda_j}{(e^{x_i} - 1)(e^{x_j} - 1)} & \text{when i $\neq$ j}
+	\end{cases}
+\]
+
+\[
+	\nabla^2 f(x) = f(x) \cdot
+	\begin{bmatrix}
+		-\frac{x'_1(1-x'_1)}{(1-e^{-x'_1})^2} &
+		\dots &
+		\frac{x'_1 x'_n}{(1-e^{-x'_1})(1-e^{-x'_n})} \\
+
+		\vdots &  \ddots & \vdots \\
+		
+		\frac{x'_n x'_1}{(1-e^{-x'_n})(1-e^{-x'_1})} &
+		\dots &
+		-\frac{x'_n(1-x'_n)}{(1-e^{-x'_n})^2} \\
+	\end{bmatrix}
+	\textbf{, where}\ x'_i = \lambda_i e^{-x_i}.
+\]
+
+
+And $\forall y \in \textbf{dom}f$,
+\begin{align*}
+	y^T \nabla^2f(x) y &= \sum_{i=1}^n d_{ii}y_i^2 + 2\sum_{i<j}d_{ij}{y_i y_j} \\
+	&= -f(x) \cdot 
+		[
+			\sum_{i=1}^n \frac{x'_i(1-x'_i)}{(1-e^{-x'_i})^2} y_i^2 -
+			\sum_{i<j} \frac{x'_i x'_j}{(1-e^{-x'_i})(1-e^{-x'_j})} {2 y_i y_j}
+		] \\
+	&= -f(x) \cdot
+		[
+			\sum_{i=1}^n \frac{x'_i}{(1-e^{-x'_i})^2} y_i^2 -
+			(\sum_{i=1}^n \frac{x'_i}{(1-e^{-x'_i})} y_i)^2
+		] \\
+	&\leq -f(x) \cdot
+		[
+			\sum_{i=1}^n \frac{x'_i}{(1-e^{-x'_i})^2} y_i^2 -
+			\sum_{i=1}^n (\frac{y_i}{1-e^{-x'_i}})^2 \cdot
+			\sum_{i=1}^n x'^2_i
+		] \\
+	&= -f(x) \cdot
+		\sum_{i=1}^n \frac{x'_i}{(1-e^{-x'_i})^2} y_i^2
+			\cdot (1-\sum_{i=1}^n x'_i) \\
+	&\leq 0
+\end{align*}
+
+% And $\forall x \in \textbf{dom}f$,
+% \[
+% 	x^T \nabla^2f(x) x = \sum_{i=1}^n d_{ii}x_i^2 + 2\sum_{i<j}d_{ij}{x_i x_j} = -f(x) \cdot
+% 		[
+% 			\sum_{i=1}^n \frac{\lambda_i(e^{x_i}-\lambda_i)}{(e^{x_i}-1)^2} x_i^2 -
+% 			\sum_{i<j} \frac{\lambda_i \lambda_j}{(e^{x_i} - 1)(e^{x_j} - 1)} {2 x_i x_j}
+% 		]
+% \]
+% \[
+% 	= -f(x) \cdot
+% 	[
+% 		\sum_{i=1}^n \frac{(\lambda_i e^{-x})(1-\lambda_i e^{-x})}{(1-e^{-x_i})^2} x_i^2 -
+% 		\sum_{i<j} \frac{(\lambda_i e^{-x_i})(\lambda_j e^{-x_j})}{(1-e^{-x_i})(1-e^{-x_j})} {2 x_i x_j}
+% 	]
+% \]
+% \[
+% 	\leq -f(x) \cdot
+% 	[
+% 		\sum_{i=1}^n \frac{x_i^2}{(1-e^{-x_i})^2} -
+% 		\sum_{i<j} \frac{2 x_i x_j}{(1-e^{-x_i})(1-e^{-x_j})}
+% 	]
+% 	\leq 0.
+% \]
+
+% denote $x'_i = \lambda_i e^{-x_i}\ (0 < \sum_{i=1}^n x' \leq 1)$, 
+% \[
+% 	x^T \nabla^2f(x) x
+% 	= -f(x) \cdot
+% 	[
+% 		\sum_{i=1}^n \frac{x'_i(1-x'_i)}{(1-e^{-x_i})^2} d_i^2 -
+% 		\sum_{i<j} \frac{x'_i x'_j}{(1-e^{-x'_i})(1-e^{-x'_j})} {2 d_i d_j}
+% 	]
+% \]
+$f$ is concave on its domain. $\blacksquare$ \\
+
+4. Show that the following functions $f:\mathbb{R}^n\to\mathbb{R}$ are convex.
+
+(a) $f(x)=-exp(-g(x))$ where $g:\mathbb{R}^n\to\mathbb{R}$ has a convex domain and satisfies
+\[
+	\begin{bmatrix}
+		\nabla^2 g(x) & \nabla g(x) \\
+		\nabla g(x)^T & 0
+	\end{bmatrix}
+	\succeq 0
+\]
+for $x \in \textbf{dom}\ g$. \\
+
+\textbf{Solution}:
+
+\[
+	\nabla f(x) = \nabla g(x) e^{-g(x)}
+\]
+\[
+	\nabla^2 f(x) = e^{-g(x)} [\nabla^2 g(x) - \nabla g(x) \nabla g(x)^T]
+\]
+$\forall x \in \mathbb{R}^n, e^{-g(x)} > 0$; and with
+\[
+	P = 
+	\begin{bmatrix}
+		I & -1/2\nabla g(x) \\
+		0_{1 \times n} & 0
+	\end{bmatrix}
+\],
+the matrix illustrated is congruent to
+\[
+	P^T
+	\begin{bmatrix}
+		\nabla^2 g(x) & \nabla g(x) \\
+		\nabla g(x)^T & 0
+	\end{bmatrix}
+	P =
+	\begin{bmatrix}
+		\nabla^2 g(x) - \nabla g(x) \nabla g(x)^T & 0_{n \times 1} \\
+		0_{1 \times n} & 0
+	\end{bmatrix}
+\]
+As all the primary minors of positive semidefinite is non-negative, then the sub-level matrix is also positive semi-definite, $\nabla^2 g(x) - \nabla g(x) \nabla g(x)^T \succeq 0$.
+
+Then we finally have $\nabla^2 f(x) \succeq 0$, and f(x) is convex function. $\blacksquare$ \\
+
+(b) The function
+\begin{align}
+	f(x) = max\{ \|ABx-b\|_p | \text{ B is a $n \times n$ permutation matrix}\} \nonumber
+\end{align}
+with $x \in \mathbb{R}^n, A \in \mathbb{R}^{m \times n}, b \in \mathbb{R}^m$. A permutation matrix is a square binary matrix that has exactly one 1 in each row and each column and 0s elsewhere. \\
+
+\textbf{Solution}:
+As $B$ is permutation matrix, $AB$ is a permutation of row vectors of matrix $A$; denote matrix $A=[a_1, \dots, a_n]^T$, where $a_i \in \mathbb{R}^m$; and after permutation, we have a series of matrix $A_i$, where $i\in \set{1, \dots, n!}$; accordingly we have $\|A_{i}x-b\|_p$ for one specific B. 
+
+Here we rewrite $f(x)$ as
+\[
+	f(x) = max\{f_0(x), \dots, f_{n!}(x)\}
+\]
+
+For $f_i(x) = \|A_{i}x-b\|_p$, $ \| \cdot \|_p $ is convex function over the domain, then its composition with affine function $(A_i(\cdot)-b)$ is also convex.
+
+Then the \textit{pointwise maximization} function $f(x)$ of a series of convex function $f_i(x)$, is also convex. $\blacksquare$ \\
+
+5. Suppose $A \in \mathbb{R}^{m \times n}$ with $\textbf{rank} A=m$, and g is defined as $g(x)=f(Ax)$, where $f:\mathbb{R}^m \to \mathbb{R}$ is convex. Show that
+\begin{align}
+	g^*(y)=f^*( (A^\dagger)^Ty ), \textbf{dom}(g^*) = A^T\textbf{dom}(f^*), \nonumber
+\end{align}
+where $A^\dagger=(A^T A)A^T$ is the pseudo-inverse of A, such that $A^\dagger A = I$. \\
+
+\textbf{Solution}:
+By definition, $ f^*(y) = \underset{x \in \textbf{dom}f}{sup} (y^Tx - f(x))$, which is convex function;
+
+Then we drive the expression for $g^*(y)$ with the following setp,
+\begin{align*}
+	g^*(y) &= \underset{x' \in \textbf{dom}g}{sup} (y^Tx' - g(x')) \\
+	&= \underset{x' \in \textbf{dom}g}{sup} (y^Tx' - f(Ax')) \\
+	&= \underset{(x=Ax') \in \textbf{dom}f}{sup} (y^Tx' - f(x)) \\
+	&= \underset{x \in \textbf{dom}f}{sup} (y^T(A^{\dagger}x) - f(x)) \\
+	&= \underset{x \in \textbf{dom}f}{sup} ((A^{\dagger}y)^T x) - f(x)) \\
+	&= f*((A^\dagger)^T y)
+\end{align*}
+
+$\blacksquare$ \\
+
+6. Suppose the function $h:\mathbb{R}\to\mathbb{R}$ is convex, nondecreasing, with $\textbf{dom}\ h=\mathbb{R}$, and $h(t)=h(0)$ for $t<0$.
+
+(a) Show that the function $f(x)=h(\|x\|_2)$ is convex on $\mathbb{R}^n$. \\
+
+\textbf{Solution}:
+
+For $x \in \mathbb{R}^n$, $ \|x\|_2 $ is always non-negative; denote $ g(x) = \|x\|_2 $, is convex over $\mathbb{R}^n$; as $h(x)$ is convex and non-decreasing on $\mathbb{R}$, $f(x)$ is convex on $\mathbb{R}^n$. $\blacksquare$ \\
+
+(b) Show that the conjugate of $f$ is $f^*(y)=h^*(\|y\|_2)$. \\
+
+\textbf{Solution}:
+
+As definition,
+\[
+	h^*(y) = \underset{x \in \textbf{dom}h}{sup} (y^Tx - h(x))
+\]
+
+And
+\begin{align*}
+	f^*(y) &= \underset{x \in \mathbb{R}^n}{sup} (y^Tx - f(x)) \\
+	&= \underset{x \in \mathbb{R}^n}{sup} (y^Tx - h(\|x\|_2)) \\
+	&= \underset{\|x\|_2 \in \mathbb{R}}{sup} (\|y\|_2 \|x\|_2 - h(\|x\|_2))
+\end{align*}
+
+% As h non-dereasing, the optimal value achieve when y in direction with x $\in \mathbb{R}^n$, and we have
+% \[
+% \]
+
+which lead to the conclusion that $f^*(y) = h^*(\|y\|_2)$. $\blacksquare$ \\
+
+(c) Derive the conjugate of $f(x) = (1/p)\|x\|^p_2$ for $p > 1$, by applying the result of part (b) with the function
+\[
+	h(t) = \frac{1}{p}max\{0,t\}^p =
+	\begin{cases}
+		\frac{1}{p}t^p & \quad t \geq 0 \\
+		0              & \quad t < 0
+	\end{cases}
+\] \\
+
+\textbf{Solution}:
+The optimal value achieved for $h^*(y)$ when
+\[
+	\frac{\partial}{\partial x} (yx - h(x)) = 0 \Rightarrow
+	x = y^{1/(p-1)}\ (x,y \in \mathbb{R}_+)
+\]
+
+and we have
+\begin{align*}
+	h^*(y) &= y^{p/(p-1)} - \frac{1}{p} y^{p/(p-1)} \\
+	& = \frac{p-1}{p} y^{\frac{p}{p-1}} \\
+\end{align*}
+
+using the conclusion in (b) and we have: $f^*(y) = \frac{p-1}{p} \|y\|_2^{\frac{p}{p-1}} $. $\blacksquare$
+
+\end{document}
