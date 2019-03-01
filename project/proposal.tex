@@ -4,7 +4,7 @@
 % \usepackage[preprint]{nips_2018} % compile a preprint version
 % \usepackage[final]{nips_2018} % to compile a camera-ready version
 % \usepackage[nonatbib]{nips_2018} % to avoid loading the natbib package
-\usepackage[final, nonatbib]{nips_2018}
+\usepackage[preprint, nonatbib]{nips_2018}
 
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
@@ -13,8 +13,9 @@
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{amsfonts}       % blackboard math symbols
 \usepackage{microtype}      % microtypography
-
-\title{Proposal: Caching Placement Decision with Deep Reinforcement Learning}
+\usepackage{cite}
+\usepackage{color}
+\title{Project Proposal: Caching Placement Decision with Deep Reinforcement Learning}
 
 \author{
   HONG Yuncong \\ %\thanks{Use footnote for providing further information about author}
@@ -33,57 +34,42 @@
 \maketitle
 
 \begin{abstract}
-  Motivated by the developing of edge computing, there are urgin needs in efficiency network cache placement mechanism design in case to imrpove user experience and imrpove the network performance.
-  The state-of-art cache placement design, use heuristic algorithm or simple online algorithm, trying to achieve better real-time performance. But with the development of deep reinfocement learning, we could consider and solve more complicated dynamic progamming online.
-  In this paper, we come up with the ideas to use Deep Reinforcement Learning to overcome the challenge that we could not solve the MDP problem within accepted time.
-  The evaluation on our implementation would be examined unser real data trace from Google which is widely used.
+  
+  With the development of cache technology, the performance of real-time networks keeps increasing. The traditional designs for cache placement problem ordinarily employ simple online algorithms, resulting in limitations of solvable problem domain. In this paper, we consider a complicated dynamic programming problem, which is difficult to be solved efficiently with the traditional algorithms. Here, we propose to solve the caching placement problem within acceptable time with deep reinforcement learning (DRL). The performance of our implementations will be evaluated with the real users' data from Google.
 \end{abstract}
 
 \section{Introduction}
-  \textbf{(Identify Problem Area \& Its Importance)}
-  With the development of the network application, the network caching is becoming one unigorable factor in the network functionality.
-  Cache is a promising technology to improve the transmission efficiency of 
 
-  One practice design is CDN (Content Deliver Network), which caches the contents from network server. The CDN servers keep updating with the original contents holder, and helps improve website access experience from users' side \cite{cloudflare}.
-
-  The situation when desired files could be found in cache node is called a \textit{cache hit}. The percentage of accesses that result in cache hits is known as the **hit rate** or **hit ratio** of the cache.
-
-  \textbf{(Reviewing Current Knowledge)}
-  The problem existing in how to behave better in CDN is about caching.
-  However, CDN are always facing with the problems to balance the communication and cost and hit rate from user.
-  technologies are facing problems now. Because the network edge is becoming more and more complicated.
-
-  \textbf{(Point out Research Gap)}
-  We are going to use DRL to solve such problem, by observing on the \textit{bandwidth, resource usage} of the request link. By taking 
+  Caching is a widely used technology in system to reduce the load on access communication links and shorten access time to the selected contents \cite{general-cache}. This technique is often aimed at caching the contents from the cloud server in advance. In this particular way, the time and resources needed to request and transport contents from upper level cloud server can be effectively saved. 
+  
+  As for caching placement problem, one practical design is content delivery network (CDN) which is a network of servers linked together in order to deliver contents with high performance \cite{cloudflare}. Emerging areas, such as information cetric networks (ICNs) and cloud computing frameworks, \cite{ref1,ref2,ref3,ref4} are based on caching problem and are attracting researchers' attention. Many algorithms for caching placement problems are elaborated in related works \cite{dl-mec,dl-icn,expert-cdn}.
+  
+However, with content caching rises the policy control problem, in which we have to explore and decide which contents to store in caches \cite{DBLP:journals/corr/abs-1712-08132}. Although many related works have exploited their algorithms, few of them can adapt to the online production environment with complicated control problem very well. Inspired by deep reinforcement learning method, we propose to design a DRL algorithm for caching decisions. Our concern in this proposal is to formulate the basic frame for cache hit rate, cache replacement cost and communication cost, and to train a neural network to select the optimal online placement decision for cache nodes. 
 
 % \section{Related Works}
 %   \label{review}
 %   In this section
 
-% The work in \cite{expert-cdn} cited, ... ...
-
-% The work in \cite{expert-cdn} cited, ... ...
-
-% The work in \cite{expert-cdn} cited, ... ...
-
 \section{Proposal}
-  In this section, we are going to fulfil the content required in the first proposal, which would includes the following part: Problem formulation, Machine Learning Algorithm to be used, and the evaluation method to examine our results.
+
+  In this section, we sketch the proposal for our course project, which includes three parts: problem formulation, suitable machine learning algorithms for this problem, and ways to evaluate the performance of the algorithms.
 
   \subsection{Problem Formulation}
-  The caching problem could be represented in the following format.
-  As the all available file set $\mathcal{F}$, could be cached on the cache nodes set $\mathcal{S}$; one request from the user could be in the joint set $R = \mathcal{F} \times \mathcal{S}$.
+
+A general caching problem can be expressed as the following: 
+we denote all the available files as the set $\mathcal{F}$. The file $f_i\in\mathcal{F},(i=1,\cdots,m)$ can be cached on the cache nodes $s_j,(j=1,\cdots,n)$ which form the set $\mathcal{S}$. Here we assume that we have $m$ files and $n$ cache nodes. The request from the user is in the joint set $\mathcal{R}=\mathcal{F}\times\mathcal{S}$. For our own problem, in order to make it clear, we formulate it into dynamic programming format. The system state $x(t)$ is defined as the location distribution of files over cache nodes, and it is worth noting that each file can have more than one copy exists at one time. The control vector $u(t)$ is proactive control to fetch files from the cloud server when request is failed to satisfy. The reward function $R(t)$ is consist of three parts: hit times, loss penalty and communication cost.
 
   \subsection{Algorithm Selection}
-    This paper is inspired by \cite{Pensieve}, which use an Actor-Critic Network to implement online ABR algorithm for better video streaming QoS.
-    Which could achieves 0.2\% compared to the online optimal solution under certain situation.
 
-    This algorithm based on Reinforcement Learning, which is well-covered in this book \cite{rl-intro}.
-    The basic introduction could be given by:
+Inspired by \cite{Pensieve}, we propose to design the algorithm based on reinforcement learning (RL). Consider the standard reinforcement learning setting where an agent interacts with an environment $\mathcal{E}$ over a number of discrete time steps. At each time step $t$, the agent receives a state $s_t$ and selects an action $a_t$ from some set of possible actions $\mathcal{A}$ according to its policy $\pi$, where $\pi$ is a mapping from state $s_t$ to action $a_t$. In return, the agent receives the next state $s_{t+1}$ and receives a scalar reward $r_t$. The process continues until the agent reaches a terminal state after which the process restarts. The return $R_t=\sum_{k=0}^{\infty}\gamma^k r_{t+k}$ is the total accumulated return from time step $t$ with discount factor $\gamma\in(0,1]$. The goal of the agent is to maximize the expected return from each state $s_t$ \cite{rl-intro}. The action value $Q^{\pi}(s,a)=\mathbb{E}[R_t|s_t=s,a]$ is the expected return for selecting action $a$ in state $s$ and following policy $\pi$. The optimal value function $Q^*(s,a)=\max_{\pi}Q^{\pi}(s,a)$ gives the maximum action value for state $s$ and action $a$ achievable by any policy. The value of state $s$ under policy $\pi$ is defined as $V^{\pi}(s)=\mathbb{E}[R_t|s_t=s]$ and is the expected return for following policy $\pi$ from state $s$ \cite{DBLP:journals/corr/MnihBMGLHSK16}. The value function can be represented using a neural network, for example, an actor-critic network. The algorithm is proposed to perform online and hoped to achieve high efficiency.
+%Let $Q(s,a;\theta)$ be an approximate action-value function with parameter $\theta$. 
+%The general RL problem is formalized as a discrete time stochastic control process where an agent interacts with its environment $s_0\in\mathcal{S}$, by gathering an initial observation $\omega_0\in\Omega$. At each time step $t$, the agent has to take an action $a_t\in\mathcal{A}$. It follows three consequences: the agent obtains a reward $r_t\in\mathcal{R}$, the state transitions to $s_{t+1}\in\mathcal{S}$, and the agent obtains an observation $\omega_{t+1}\in\Omega$ \cite{DBLP:journals/corr/abs-1811-12560}. 
+
+
 
   \subsection{Evaluation Plan}
-  We are going to use the real production data from Google \cite{clusterdata:Reiss2011}.
-  We are going to examine the data traces under our single criteria with , considering QoS (Quality of Service).
 
+We have obtained the real users' data from Google \cite{clusterdata:Reiss2011}. We plan to examine the data trace under the criterion with consideration of quality of service (QoS). In order to highlight our algorithm performance, we also propose to compare the result from our DRL algorithm with that from heuristic algorithms. The time consumption and feasibility of different algorithms will be included in discussion and be a kind of evaluation as well. By taking Google production data trace as an evaluation test-bed, we expect our algorithm could outperform other simple heuristic algorithms.
 % \subsubsection*{Acknowledgments}
 % Thanks for the inspiration from \textit{Pensieve} the paper that we could make up this model. Thanks for Pro TAN Haisheng's description on basic caching problem.
 
