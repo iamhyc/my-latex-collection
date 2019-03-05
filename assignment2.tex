@@ -1,0 +1,154 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{braket}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage[normalem]{ulem} % for strikeout line
+% \usepackage{graphicx}
+% \usepackage{epstopdf}
+
+%-------------------------------------------------------%
+\newcounter{pcounter}                                   %
+\newenvironment{problem}                                %
+{                                                       %
+    \color{gray}                                        %
+    \stepcounter{pcounter}                              %
+    \textbf{\arabic{pcounter}.}                         %
+}{}                                                     %
+\newenvironment{solution}                               %
+{\textbf{Solution:} \\}{$\blacksquare$\newline}         %
+%-------------------------------------------------------%
+\newcommand{\tab}{\ \ \ \ }                             %
+\newcommand{\leadto}{\Rightarrow}                       %
+\newcommand{\domR}{\mathbb{R}}                          %
+\newcommand{\domS}{\mathbb{S}}                          %
+\newcommand{\abss}[1]{\| #1 \|}                         %
+\newcommand{\tr}[1]{\textbf{tr}(#1)}                    %
+\newcommand{\vecOne}{\textbf{1}}                        %
+%-------------------------------------------------------%
+
+\begin{document}
+    %------------------- The Title -------------------%
+    \parindent 0in
+    \parskip 1em
+    \title{COMP8802 Assignment 2 Solution Sheet}
+    \author{3030058647, HONG Yuncong}
+    \maketitle
+
+    %=================== Problem 1 ===================%
+    \begin{problem}
+        Let S=$acggtcgt$ and T=$acctgtt$. Define V[i,j] as the edit distance between S[1..i] and T[1..j]; s[1..0] (T[1..0]) as empty string; and V[0, 0] = 0. Show all entries in the V table and give the edit distance between S and T.
+    \end{problem}
+
+    \begin{solution}
+        
+    \end{solution}
+
+    %=================== Problem 2 ===================%
+    \begin{problem}
+        Design and OT${^3}_1$ (oblivious transfer) protocol such that Alice has three messages m$_1$, m$_2$ and m$_3$.
+        She wants to let Bob obtain \underline{exactly one} of the messages with requirements that: Alice doest not know which message Bob selects and Bob cannotknow any information about the meesages except the one he selects.
+        Show all steps of the protocol (You do NOT need to argue that the protocol satisfies the requirements).
+        \\
+        {[Bonus: Can you extend it to an OT${^3}_2$ protocol, i.e., Alice wants to let Bob obtain exactly two of the messages with the same security requirements?]}
+    \end{problem}
+
+    \begin{solution}
+        
+    \end{solution}
+
+    %=================== Problem 3 ===================%
+    \begin{problem}
+        Let S and T be DNA strings (strings with characters \{a, c, g, t\}) of 3 characters.
+        Alice holds S and Bob holds T. If we want to use the secure pattern matching protocol discussed in the lecture (Protocol 1, i.e., Alice creates a garbled circuit for the edit distance of S and T and passes it to Bob) to compute the edit distance of S and T;
+        Answer the following questiongs (NO NEED to explain your answers).
+        \\
+        \begin{enumerate}[label=(\alph*)]
+            \item How manu input bits are required?
+            \item Provide an encoding of the characters \{a, c, g, t\}.
+            \item What are the possible values for the edit distance?
+            \item How manu output bits are required?
+            \item What is the number of rows in the truth table for computing the edit distance of S and T?
+            \item How many encryptions Alice has to do?
+            \item How many random numbers Alice has to generate?
+            \item How many random numbers Alice has to pass to Bob?
+            \item How many OT${^2}_1$ oblivious tansfer protocols they have to execute?
+            \item How many decryptions Bob has to do?
+        \end{enumerate}
+    \end{problem}
+
+    \begin{solution}
+        
+    \end{solution}
+
+    %=================== Problem 4 ===================%
+    \begin{problem}
+        Provide the whole truth table for the equality circuit discussed in the lecture (Slide 37) for the secure string matching problem. We assume that S and T, each has only 3 characters.
+    \end{problem}
+
+    \begin{solution}
+        
+    \end{solution}
+
+    %=================== Problem 5 ===================%
+    \begin{problem}
+        Provide the whole truth table for the Min3 circuit discussed in the lecture (Slide 37) for the secure string matching problem. We assume that S and T, each has only 3 characters.
+    \end{problem}
+
+    \begin{solution}
+        
+    \end{solution}
+
+    %=================== Problem 6 ===================%
+    \begin{problem}
+        Extend the meet-in-the-middle attack to 3DES with 3 different keys and give the complexity for the attack.
+    \end{problem}
+
+    \begin{solution}
+        
+    \end{solution}
+
+    %=================== Problem 7 ===================%
+    \begin{problem}
+        Provide a real-life example that a chosen-ciphertext attack is feasible.
+    \end{problem}
+
+    \begin{solution}
+        
+    \end{solution}
+
+    %=================== Problem 8 ===================%
+    \begin{problem}
+        Comment (with an example) that the modified one-time-pad scheme II using a pseudorandom function cannot solve the problem of message integrity.
+    \end{problem}
+
+    \begin{solution}
+        
+    \end{solution}
+
+    %=================== Problem 9 ===================%
+    \begin{problem}
+        {[Exercise 2.10 of the reference text]} Let G be a pseudorandom generator and define G'(s) to be the output of G truncated to n bits (where |s|=n). Prove that the function $F_k(s)=G'(k) \bigoplus x$ is not psedurandom.
+    \end{problem}
+
+    \begin{solution}
+        
+    \end{solution}
+
+    %=================== Problem 10 ===================%
+    \begin{problem}
+        Consider the following public-key scheme. The public key is $(G, p, g, h)$ and the private key is $x$, generated exactly as in the Elgamal encryption scheme, where $h=g^x$. In order to encrypt a bit $b$, the sender does the following.
+
+        \begin{enumerate}[label=(\alph*)]
+            \item If $b=0$, then choose a random y from $Z_q^*$ and compute $c_1=g^y$ and $c_2=h^y$. The ciphertext if $(c_1, c_2)$.
+            \item If $b=1$, then choose independent random $y$, $z$ from $Z_q^*$, compute $c_1=g^y$ and $c_2=g^z$, and set the ciphertext equal to $(c_1, c_2)$.
+        \end{enumerate}
+
+        Show that it is possible to decrypt efficiently given knowledge of $x$.
+    \end{problem}
+
+    \begin{solution}
+        
+    \end{solution}
+\end{document}
