@@ -1,0 +1,98 @@
+\documentclass{article}
+
+% \usepackage{nips_2018} % ready for submission
+% \usepackage[preprint]{nips_2018} % compile a preprint version
+% \usepackage[final]{nips_2018} % to compile a camera-ready version
+% \usepackage[nonatbib]{nips_2018} % to avoid loading the natbib package
+\usepackage[preprint, nonatbib]{nips_2018}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{microtype}      % microtypography
+\usepackage{cite}
+\usepackage{color}
+\usepackage{soul}
+
+\title{Project Proposal: Caching Placement Decision with Deep Reinforcement Learning}
+
+\author{
+  HONG Yuncong \\ %\thanks{Use footnote for providing further information about author}
+  Department of Computer Science \\
+  The University of Hong Kong \\
+  \texttt{ychong@cs.hku.hk} \\
+  \And % Using \AND forces a line break at that point
+  ZENG Qunsong \\
+  Department of Electrical and Electronic Engineering \\
+  The University of Hong Kong \\
+  \texttt{qszeng@eee.hku.hk} \\
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+  \st{With the development of cache technology, the performance of real-time networks keeps increasing. The traditional designs for cache placement problem ordinarily employ simple online algorithms, resulting in limitations of solvable problem domain. In this paper, we consider a complicated dynamic programming problem, which is difficult to be solved efficiently with the traditional algorithms. Here, we propose to solve the caching placement problem within acceptable time with deep reinforcement learning (DRL). The performance of our implementations will be evaluated with the real users' data from Google.}
+
+  Your review may:
+  \begin{itemize}
+    \item \st{discuss a key concept in your research}
+    \item discuss previous findings related to your research
+  \end{itemize}
+
+  You should:
+  \begin{itemize}
+    \item begin with clear introductory paragraph including a statement of the research topic and purpose of the review
+    \item make reference to 5-10 relevant sources; discuss the literature critically and \textbf{indentify the research gap}, highlighting differences among the sources your cite, and, include the research aim, hypotheses and/or one to two possible research questions, aring from the review
+    \item Use an appropriate style for citations and references.
+  \end{itemize}
+\end{abstract}
+
+\section{Introduction}
+
+  \textbf{(Introductionary)}\\
+  Research Topic: Online Reinforcement Learning with Network Cache Placement \\
+  Purpose of the Review: to gain interests on why online reinforcement learning could acheive better results compared to the defects introduced by other algorithms. \\
+  Caching is a widely used technology in system to reduce the load on access communication links and shorten access time to the selected contents \cite{general-cache}. This technique is often aimed at caching the contents from the cloud server in advance. In this particular way, the time and resources needed to request and transport contents from upper level cloud server can be effectively saved. 
+  
+  \textbf{(Review - Network Cache with Online Algorithm)}\\
+  As for caching placement problem, one practical design is content delivery network (CDN) which is a network of servers linked together in order to deliver contents with high performance \cite{cloudflare}. Emerging areas, such as information cetric networks (ICNs) and cloud computing frameworks, \cite{ref1,ref2,ref3,ref4} are based on caching problem and are attracting researchers' attention. Many algorithms for caching placement problems are elaborated in related works \cite{dl-mec,dl-icn,expert-cdn}.
+  
+  \textbf{(Review - Network Cache with Machine Learning)}\\
+
+  However, with content caching rises the policy control problem, in which we have to explore and decide which contents to store in caches \cite{DBLP:journals/corr/abs-1712-08132}. Although many related works have exploited their algorithms, few of them can adapt to the online production environment with complicated control problem very well. Inspired by deep reinforcement learning method, we propose to design a DRL algorithm for caching decisions. Our concern in this proposal is to formulate the basic frame for cache hit rate, cache replacement cost and communication cost, and to train a neural network to select the optimal online placement decision for cache nodes. 
+
+\bibliographystyle{IEEEtran}
+\bibliography{proposal.bib}
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{figure}
+%   \centering
+%   \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
+%   \caption{Sample figure caption.}
+% \end{figure}
+
+% \ref{sample-table}
+% \begin{table}
+%   \caption{Sample table title}
+%   \label{sample-table}
+%   \centering
+%   \begin{tabular}{lll}
+%     \toprule
+%     \multicolumn{2}{c}{Part}                   \\
+%     \cmidrule(r){1-2}
+%     Name     & Description     & Size ($\mu$m) \\
+%     \midrule
+%     Dendrite & Input terminal  & $\sim$100     \\
+%     Axon     & Output terminal & $\sim$10      \\
+%     Soma     & Cell body       & up to $10^6$  \\
+%     \bottomrule
+%   \end{tabular}
+% \end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
