@@ -42,20 +42,48 @@
     \end{problem}
 
     \begin{solution}
-        
+        As string S is of length 8 and string T of length 7, the V[i, j] matrix is of size 8*7;
+        And the edit distance of each entries are following:
+        \begin{center}
+            \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+                \hline
+                  &         $\epsilon$  & a & c & c & t & g & t & t \\ \hline
+                $\epsilon$& 0           & -1& -2& -3& -4& -5& -6& -7\\ \hline
+                a         & -1          & 2 & 1 & 0 & -1& -2& -3& -4\\ \hline
+                c         & -2          & 1 & 4 & 3 & 2 & 1 & 0 & -1 \\ \hline
+                g         & -3          & 0 & 3 & 3 & 2 & 4 & 3 & 2 \\ \hline
+                g         & -4          & -1& 2 & 2 & 2 & 4 & 3 & 2 \\ \hline
+                t         & -5          & -2& 1 & 1 & 4 & 3 & 6 & 5 \\ \hline
+                c         & -6          & -3& 0 & 3 & 3 & 3 & 5 & 5 \\ \hline
+                g         & -7          & -4& -1& 2 & 2 & 5 & 4 & 4 \\ \hline
+                t         & -8          & -5& -2& 1 & 4 & 4 & 7 & 6 \\ \hline
+            \end{tabular}
+        \end{center}
     \end{solution}
 
     %=================== Problem 2 ===================%
     \begin{problem}
-        Design and OT${^3}_1$ (oblivious transfer) protocol such that Alice has three messages m$_1$, m$_2$ and m$_3$.
-        She wants to let Bob obtain \underline{exactly one} of the messages with requirements that: Alice doest not know which message Bob selects and Bob cannotknow any information about the meesages except the one he selects.
+        Design an OT${^3}_1$ (oblivious transfer) protocol such that Alice has three messages m$_1$, m$_2$ and m$_3$.
+        She wants to let Bob obtain \underline{exactly one} of the messages with requirements that: Alice does not know which message Bob selects and Bob cannot know any information about the meesages except the one he selects.
         Show all steps of the protocol (You do NOT need to argue that the protocol satisfies the requirements).
         \\
-        {[Bonus: Can you extend it to an OT${^3}_2$ protocol, i.e., Alice wants to let Bob obtain exactly two of the messages with the same security requirements?]}
+        Bonus: Can you extend it to an OT${^3}_2$ protocol, i.e., Alice wants to let Bob obtain exactly two of the messages with the same security requirements?
     \end{problem}
 
     \begin{solution}
-        
+        The design for OT${^3}_1$ protocol:
+        \begin{enumerate}
+            \item Alice generates a RSA key pair comprising $(n, e, d)$, and 3 random numbers: $x_0, x_1, x_2$;
+            \item Alice sends Bob 3 random numbers and the public key: $x_0, x_1, x_2, (n, e)$;
+            \item Bob chooses the message he wants with $b=0,1,2$, and sends back to Alice the blinded $x_b$ with randomly generated $k$: $v = (x_b + k^e) \mod{n}$
+            \item Alice calculates $k_{b'} = (v - x_{b'})^d \mod{n}$ for all the random number, and sends all the message blinded with $k_{b'}$ to Bob as: $m_{b'} + k_{b'}$;
+            \item Bob could only figure out the message he chosen with $b' = b$ and easily obtain the message he chosen (and he could not figure out other message as $k_{b' \neq b}$ is random number for him).
+        \end{enumerate}
+
+        {[Bonus]} The design for OT${^3}_2$ protocol:
+        \begin{enumerate}
+            \item 
+        \end{enumerate}
     \end{solution}
 
     %=================== Problem 3 ===================%
@@ -65,10 +93,10 @@
         Answer the following questiongs (NO NEED to explain your answers).
         \\
         \begin{enumerate}[label=(\alph*)]
-            \item How manu input bits are required?
+            \item How many input bits are required?
             \item Provide an encoding of the characters \{a, c, g, t\}.
             \item What are the possible values for the edit distance?
-            \item How manu output bits are required?
+            \item How many output bits are required?
             \item What is the number of rows in the truth table for computing the edit distance of S and T?
             \item How many encryptions Alice has to do?
             \item How many random numbers Alice has to generate?
@@ -79,16 +107,47 @@
     \end{problem}
 
     \begin{solution}
-        
+        \begin{enumerate}[label=(\alph*)]
+            \item Input required: 3*2*2 = 12 bits;
+            \item a='00', c='01', g='10', 't'='11';
+            \item maximum similarity scores 6, minimum similarity scores -3 (match with scoring 2, otherwise -1); the possible values range is [-3, 6];
+            \item Output required: 4 bits;
+            \item Number of rows: $2^{12} = 4096$ rows;
+            \item Alice has to carry out $4096x8x4=131072$ encryptions;
+            \item Alice has to generate $12*2*3=72$ random numbers;
+            \item Alice has to pass $(6+6*2)*3=54$ random numbers to Bob;
+            \item OT${^2}_1$ oblivious transfer have to be excuted $6$ times;
+            \item Bob has to carry out $131072$ decryptions.
+        \end{enumerate}
     \end{solution}
 
     %=================== Problem 4 ===================%
     \begin{problem}
-        Provide the whole truth table for the equality circuit discussed in the lecture (Slide 37) for the secure string matching problem. We assume that S and T, each has only 3 characters.
+        Provide the whole truth table for the equality circuit discussed in the lecture (Slide 37) for the secure string matching problem.
     \end{problem}
 
     \begin{solution}
-        
+        \begin{center}
+            \begin{tabular}{c|c|c}
+                S[i]    &   T[j]    &   $\delta$(S[i], T[j]) \\ \hline
+                00      &   00      &   1 \\
+                00      &   01      &   0 \\
+                00      &   10      &   0 \\
+                00      &   11      &   0 \\ \hline
+                01      &   00      &   0 \\
+                01      &   01      &   1 \\
+                01      &   10      &   0 \\
+                01      &   11      &   0 \\ \hline
+                10      &   00      &   0 \\
+                10      &   01      &   0 \\
+                10      &   10      &   1 \\
+                10      &   11      &   0 \\ \hline
+                11      &   00      &   0 \\
+                11      &   01      &   0 \\
+                11      &   10      &   0 \\
+                11      &   11      &   1 \\ \hline
+            \end{tabular}
+        \end{center}
     \end{solution}
 
     %=================== Problem 5 ===================%
@@ -97,7 +156,14 @@
     \end{problem}
 
     \begin{solution}
-        
+        As S and T of length 3, the bits required for V(i,j) is $\lceil log_2 (6+1)\rceil = 3$;
+        \begin{center}
+            \begin{tabular}{c|c|c|c|c}
+                V(i-1,j) & V(i, j-1) & V(i-1,j-1) & $\delta$(S[i], T[j]) & V(i,j) \\ \hline
+                  000    &    000    &     000    &          0           &  000   \\
+                  000    &    000    &     000    &          1           &  001   \\ \hline
+            \end{tabular}
+        \end{center}
     \end{solution}
 
     %=================== Problem 6 ===================%
@@ -115,7 +181,7 @@
     \end{problem}
 
     \begin{solution}
-        
+        CCA would be feasible for any public key encryption scheme, cause public key is known to everyone.
     \end{solution}
 
     %=================== Problem 8 ===================%
