@@ -306,7 +306,7 @@
                 By setting $\nabla_\theta J(\theta) = 0$ we could obtain MLE for categorical distribtuion GLIM as:
                 \begin{align*}
                     \hat{\mu_{MLE}} &= \frac{1}{n} \sum_{i=1}^{n} T(x_i) \\
-                    &= [\sum_{i=1}^{n} I(x^{(i)}_1=1), \dots, \sum_{i=1}^{n} I(x^{(i)}_{K-1}=1)]^T
+                    &= \frac{1}{n} [\sum_{i=1}^{n} I(x^{(i)}_1=1), \dots, \sum_{i=1}^{n} I(x^{(i)}_{K-1}=1)]^T
                 \end{align*}
                 
                 \item The batch gradient descent algorithm follows:\\
