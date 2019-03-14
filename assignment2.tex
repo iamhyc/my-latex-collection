@@ -38,7 +38,7 @@
     %------------------- The Title -------------------%
     \parindent 0in
     \parskip 1em
-    \title{COMP9501 Assignment 1 Solution Sheet}
+    \title{COMP9501 Assignment 2 Solution Sheet}
     \author{HONG Yuncong, 3030058647}
     \maketitle
 
@@ -76,20 +76,20 @@
 
         \begin{solution}
             \begin{enumerate}[label=(\alph*)]
-                \item $X_1 \not\perp X_2 | X_3$; As $X_1, X_2, X_3$ form one Fork graph, the ball could move along $X_1 \to X_3 \to X_2$, or $X_2 \to X_3 \to X_1$, with the observation state $X_3$;
+                \item No, $X_1 \not\perp X_2 | X_3$; As $X_1, X_2, X_3$ form one Fork graph, the ball could move along $X_1 \to X_3 \to X_2$, or $X_2 \to X_3 \to X_1$, with the observation state $X_3$;
                 
-                \item $X_1 \not\perp X_2 | X_4$; As $X_1, X_3, X_4, X_2$ form one V-strusture graph, the ball could move along $X_1 \to X_3 \to X_4 \to X_3 \to X_Z$, with the observation state $X_4$;
+                \item No, $X_1 \not\perp X_2 | X_4$; As $X_1, X_3, X_4, X_2$ form one V-strusture graph, the ball could move along $X_1 \to X_3 \to X_4 \to X_3 \to X_Z$, with the observation state $X_4$;
                 
-                \item $X_1 \perp X_2$; because $Pr(X_1) Pr(X_2) = \frac{Pr(X_1, X_2, X_3)}{Pr(X_3|X_1, X_2)} = \frac{Pr(X_1) Pr(X_2) Pr(X_3|X_1,X_2) }{Pr(X_3|X_1, X_2)} = Pr(X, Y)$;
+                \item Yes, $X_1 \perp X_2$; because $Pr(X_1) Pr(X_2) = \frac{Pr(X_1, X_2, X_3)}{Pr(X_3|X_1, X_2)} = \frac{Pr(X_1) Pr(X_2) Pr(X_3|X_1,X_2) }{Pr(X_3|X_1, X_2)} = Pr(X, Y)$;
                 
-                \item $X_4 \not\perp X_7 | X_1$; condition is not complete because:
+                \item No, $X_4 \not\perp X_7 | X_1$; condition is not complete because:
                 \begin{align*}
                     Pr(X_4, X_7 | X_1, X_2, X_3) &=
                     \frac{Pr(X_1, X_2, X_3, X_4, X_5)}{Pr(X_1) Pr(X_2|X_1) Pr(X_3|X_1)} \\
                     &= Pr(X_4|X_2) Pr(X_7|X_3)
                 \end{align*}
                 
-                \item $X_4 \not\perp X_5 | X_1$; condition is not complete because:
+                \item No, $X_4 \not\perp X_5 | X_1$; condition is not complete because:
                 \begin{align*}
                     Pr(X_4, X_5 | X_1, X_2) &= \frac{Pr(X_1, X_2, X_4 X_5)}{Pr(X_1, X_2)} \\
                     &= \frac{Pr(X_1) Pr(X_2|X_1) Pr(X_4|X_2) Pr(X_5|X_2)}{Pr(X_1) Pr(X_2|X_1)} \\
@@ -344,14 +344,27 @@
             \end{enumerate}
             For all of the above estimation procedures:
             \begin{enumerate}[resume, label=(\alph*)]
-                \item Calculate $RSS(\hat{\beta}) = \frac{1}{n} \sum_{i=1}^{n} (yi - \hat{\beta} x_i)^2$ in the training dataset;
+                \item Calculate $RSS(\hat{\beta}) = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{\beta} x_i)^2$ in the training dataset;
                 \item Calculate $RSS(\hat{\beta})$ in the test dataset;
                 \item For each of the estimated values of $\hat{\beta}$, what is $E[Y|X=[1,135]^T, \hat{\beta}]$ ?
             \end{enumerate}
         \end{problem}
 
         \begin{solution}
-            
+            \begin{enumerate}[label=(\alph*)]
+                \item The program using \textbf{normal euqation} is attached as \textbf{a2\_3\_normal.m};\\
+                The estimated result is: $\hat{\beta} = [69.9422; 15.1191; 0.3210]$
+                
+                \item The program using \textbf{SGD} is attached as \textbf{a2\_3\_sgd.m};\\
+                The estimated result is: $\hat{\beta} = [69.2205; 14.9835; 0.3272]$ (with fixed step size as $10^{-6}$ and stop criteria with $10^{-5}$);
+                
+                \item The program using \textbf{ridge regression normal equation} is attached as \textbf{a2\_3\_ridge.m};\\
+                The estimated result is: $\hat{\beta} = [65.9129; 14.3522; 0.3479]$ with $\lambda=1$;
+                
+                \item $RSS(\hat{\beta})$ for training set: $98.7293$ for (a); $98.7866$ for (b); $99.0059$ for (c);
+                \item $RSS(\hat{\beta})$ for test set: $115.7324$ for (a); $115.5875$ for (b); $115.2347$ for (c);
+                \item $E[Y|X=[1,135], \hat{\beta}]$: $128.4001$ for (a); $128.3729$ for (b); $127.2297$ for (c);
+            \end{enumerate}
         \end{solution}
 
         %=================== Problem 3.2 ===================%
@@ -368,7 +381,12 @@
         \end{problem}
 
         \begin{solution}
-            
+            \begin{enumerate}[label=(\alph*)]
+                \item The program with \textbf{Newton-Raphon Descent} algorithm is attached as \textbf{a2\_3\_logistic.m};
+                \item $RSS(\hat{\beta})$ for training set: $3.9255$;
+                \item $RSS(\hat{\beta})$ for test set: $3.8566$;
+                \item $E[Y|X=[1,135], \hat{\beta}] = -2.3461$; 
+            \end{enumerate}
         \end{solution}
     \end{section}
 
