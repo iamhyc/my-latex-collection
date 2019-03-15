@@ -1,0 +1,197 @@
+\documentclass{article}
+\usepackage{mathrsfs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{braket}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage[noend]{algorithm2e}
+\usepackage[normalem]{ulem} % for strikeout line
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+% \usepackage{epstopdf}
+
+%-------------------------------------------------------%
+\newcounter{pcounter}                                   %
+\newenvironment{problem}                                %
+{                                                       %
+    \color{gray}                                        %
+    \stepcounter{pcounter}                              %
+    \textbf{\arabic{pcounter}.}                         %
+}{}                                                     %
+\newenvironment{solution}                               %
+{\textbf{Solution:} }{$\blacksquare$}                   %
+%-------------------------------------------------------%
+\newcommand{\tab}{\ \ \ \ }                             %
+\newcommand{\leadto}{\Rightarrow}                       %
+\newcommand{\domR}{\mathcal{R}}                         %
+\newcommand{\domS}{\mathbb{S}}                          %
+\newcommand{\Gaussian}{\mathcal{N}}                     %
+\newcommand{\IdenMat}{\textit{I}}                       %
+\newcommand{\abss}[1]{\| #1 \|}                         %
+\newcommand{\tr}[1]{\textbf{tr}(#1)}                    %
+\newcommand{\vecOne}{\textbf{1}}                        %
+%-------------------------------------------------------%
+
+\begin{document}
+    %------------------- The Title -------------------%
+    \parindent 0in
+    \parskip 1em
+    \title{COMP9501 Assignment 3 Solution Sheet}
+    \author{HONG Yuncong, 3030058647}
+    \maketitle
+
+    \begin{section}{Problem 1}
+        \setcounter{pcounter}{0}
+        In a typical regression problem we have labels $\mathbf{y} = y_1, \dots, y_n$ of the function at points $\mathbf{X} = \{x_1, \dots, x_n\}$. Here $y_i=y(x_i) \in \domR, x_i = [x_i^{(1)}, \dots, x_i^{(d)}] \in \domR^{d}$. We are interested in estimating the value of the function $y_* = y(x_*)$, 
+        \textbf{GPs} (Gaussian Process) provide a nice framework for obtaining an estimate for the gradient and integral, as well as quantifying the uncertainty.
+
+        %=================== Problem 1.1 ===================%
+        \begin{problem}
+            [Gradients using Gaussian Processes] \\
+            Recall the gradient at $x_*$ is a $d$-vector containing the $d$ partial derivatives. Denote the pratial derivatives of $y$ as $g_i(x) = \frac{\partial y(x)}{x^{(i)}}$, where $g_i : \domR^{d} \to \domR, i=1, \dots, d$. the gradient is $\mathbf{g}(x) = [g_1(x), \dots, g_d(x)]^T$. Write $g_{i*} = g_i(x_*)$ and $\mathbf{g}_* = g(x_*)$. \\
+            We will model our observation as a Gaussian Process $y(x)$ over $\domR^d$ with zero mean and auto covariance $K$. We know that if a function $y$ is sampled from a GP, the distribution of $y_1, \dots, y_n, y_*$ at $x_1, \dots, x_n, x_*$ follow a Gaussian distribution. It can claso be shown that the gradient $\mathbf{g}_*$ and the function values $y_1, \dots, y_n$ are jointly Gaussian, i.e.
+            $$
+                [y, g_*] = [y_1, \dots, y_n, g_1(x_*), \dots, g_n(x_*)] \in \domR^{n+d}
+            $$
+            is also a Gaussian. This Gaussian has zero mean. The covariance $K_i$ between $y(x_1)$ and $g_i(x_2)$ and the covariance $K_{ij}$ between $g_i(x_1)$ and $g_i(x_2)$ are given respectively by
+            $$
+                K_i(x_1, x_2) = \frac{\partial K(x_1, x_2)}{\partial x_2^{(i)}}
+                \\
+                K_{ij} (x_1, x_2) = \frac{\partial^2 K(x_1, x_2)}
+                                        {\partial{x_1^{(i)}} \partial{x_2^{(j)}}}
+            $$
+            \begin{enumerate}[label=\alph*)]
+                \item Let $\mathbf{K} \in \domR^{n \times n}$, $\mathbf{J} \in \domR^{n \times d}$, and $\mathbf{B} \in \domR^{d \times d}$ such that
+                $$
+                    \mathbf{K}_{ij} = K(x_i, x_j),
+                    \mathbf{J}_{ij} = \frac{\partial K(x_i, x_*)}{\partial x_*^{(j)}},
+                    \mathbf{B}_{ij} = \frac{\partial^2 K(x_*, x_*)}{\partial x_*^{(i)} \partial x_*^{(j)}}
+                $$
+                Write the (Gaussian) prior over $[\mathbf{y}, \mathbf{g}_*]$ in terms of $\mathbf{K, J, B}$ if we don't have any observation yet.
+
+                \item Derive the posterior for $\mathbf{g_*}$ given that $\mathbf{y}$ was observed.
+                
+                \item Verify that the posterior mean of $\mathbf{g_*}$ is the same as the gradient of the posterior mean for $y(x_*)$.
+            \end{enumerate}
+        \end{problem}
+
+        \begin{solution}
+            \begin{enumerate}[label=\alph*)]
+                \item % Answer for (a)
+                
+                \item % Answer for (b)
+                
+                \item % Answer for (c)
+                
+            \end{enumerate}
+        \end{solution}
+
+        %=================== Problem 1.2 ===================%
+        \begin{problem}
+            [Integration using Gaussian Process] \\
+            Now we want to estimate the value of $\int_{a}^{b} y(t) dt$, i.e., the integral of a continuous 1-dimensional (i.e. $d=1$) function $y(x)$ over the interval $[a,b]$ from labels $\mathbf{y} = y_1, \dots, y_n$ at points $\mathbf{X} = \{x_1, \dots, x_n\}$ hwere $y_i = y(x)$ and $x_i \in \domR$. \\
+            We define a function $Y(x) = \int_{0}^{x} y(t) dt$, and according to the Newton Leibniz formula, there is $\int_{a}^{b} y(t) dt = Y(b) - Y(a)$.
+            \begin{enumerate}[label=\alph*)]
+                \item We treat $Y$ as a GP with kernel $K_Y$, then the joint distribution of $y$ and $Y$ can be described by Gaussians. Using the properties described in Problem 1, outline a procedure to obtain this joint distribtuion $(\mathbf{y}, \mathbf{Y})$, where $\mathbf{Y} = [Y(b), Y(a)]^T$.\\
+                Hint: you may want do define $K_y(x_1, x_2) = \frac{\partial^2 K_Y(x_1, x_2)}{\partial x_1 \partial x_2}$ and ${K_y}_{Y}(x_1, x_2) = \frac{\partial K_Y(x_1, x_2)}{\partial x_2}$.
+
+                \item Derive the posterior $\mathbf{Y}|X, \mathbf{y}, a, b$ (which is also a Gaussian distribution);
+                
+                \item Derive the posterior distribution of the integral $\int_{a}^{b} y(t) dt$.
+            \end{enumerate}
+        \end{problem}
+
+        \begin{solution}
+            \begin{enumerate}[label=\alph*)]
+                \item % Answer for (a)
+                
+                \item % Answer for (b)
+                
+                \item % Answer for (c)
+                
+            \end{enumerate}
+        \end{solution}
+    \end{section}
+
+    \begin{section}{Problem 2}
+        \setcounter{pcounter}{0}
+        By now you may be used to minimizing problems with respect to squared error loss. But there are many other loss functions. In this problem, we will investigate the regression problem using a different loss funciton.
+
+        %=================== Problem 2.1 ===================%
+        \begin{problem}
+            [Quantile loss]\\
+            \begin{enumerate}[label=(\alph*)]
+                \item Let's define the following loss
+                $$
+                    p_{\tau}(z) = z \cdot (\tau - \IdenMat(z < 0)) = 
+                    \begin{cases}
+                        z \cdot (\tau - 1) & \text{if $z < 0$} \\
+                        z \cdot \tau & \text{if $z \geq 0$}
+                    \end{cases}
+                $$
+                where $\tau \in (0,1)$ is called the $\tau$-th quantile, and $\IdenMat(z < 0)$ is the indicator function, i.e. $1$ if $z < 0$ and $0$ otherwise.
+                \\
+                Show that:
+                $$
+                    arg\ min_{\omega} \sum_{i} \rho_\tau (y_i - y_{\omega}) = y_{\tau}
+                $$
+                where $y_{\tau}$ is an observation sitting at the $\tau$-th top percentile of the observations (specifically, this means that $y_{\tau}$ is at leat exactly $\tau$ percent of the obervations).
+                \\
+                Hint: split the problem into positive and negative parts.
+
+                \item When $\tau = 0.5$, this loss function has a well-known name in statistics. Whatis that?
+            \end{enumerate}
+        \end{problem}
+
+        \begin{solution}
+            \begin{enumerate}[label=(\alph*)]
+                \item % Answer for (a)
+                
+                \item % Answer for (b)
+                
+            \end{enumerate}
+        \end{solution}
+
+        %=================== Problem 2.2 ===================%
+        \begin{problem}
+            [Quantile regression]\\
+            \begin{enumerate}[label=(\alph*)]
+                \item Let $\{x_i\}_{i=1, \dots, N}$ be points in $\domR^K$ with outputs $\{y_i\}_{i=1, \dots, N}$. Let $X = \{x_1, \dots, x_N\}$. We define the regression quantile as 
+                $$
+                    \hat{\beta}(\tau) = arg\ \min_{\beta \ in \domR^K} \sum_{i=1}^{N} \rho_\tau (y_i - x_i^T \beta)
+                $$
+                Prove that the solution of this problem is equivalent to the solution of the following linear program:
+                \begin{gather*}
+                    arg\ \min\limits_{\beta \in \domR^K, u,v \in \domR^N} mu^T \mathbf{1} \tau + v^T \mathbf{1} (1- \tau) \\
+                    \text{subject to } X^T \beta - y + u -v = 0 \\
+                    u \geq 0 \\
+                    v \geq 0
+                \end{gather*}
+                Hint: split the problem into positive and negative parts.
+
+                \item Show that the dual of the above linear program is:
+                \begin{gather*}
+                    \max_z y^T z \\
+                    \text{subject to } X z = (1 - \tau) X \mathbf{1} \\
+                    z \ in [0,1]^n
+                \end{gather*}
+
+                \item What does the value of $z_i$ in the dual problem tell us about $y_i - x_i^T \beta$ in the primal? specifically, using the KKT conditions, if $z_i=0$, hwat can you say aoubt $y_i - x_i^T \beta$? What if $z=1$? What if $z \in (0,1)$
+            \end{enumerate}
+        \end{problem}
+
+        \begin{solution}
+            \begin{enumerate}[label=(\alph*)]
+                \item % Answr for (a)
+                
+                \item % Answr for (b)
+                
+                \item % Answr for (c)
+                
+            \end{enumerate}
+        \end{solution}
+    \end{section}
+
+\end{document}
