@@ -79,11 +79,6 @@
             \item Alice calculates $k_{b'} = (v - x_{b'})^d \mod{n}$ for all the random number, and sends all the message blinded with $k_{b'}$ to Bob as: $m_{b'} + k_{b'}$;
             \item Bob could only figure out the message he chosen with $b' = b$ and easily obtain the message he chosen (and he could not figure out other message as $k_{b' \neq b}$ is random number for him).
         \end{enumerate}
-
-        {[Bonus]} The design for OT${^3}_2$ protocol:
-        \begin{enumerate}
-            \item 
-        \end{enumerate}
     \end{solution}
 
     %=================== Problem 3 ===================%
@@ -156,12 +151,64 @@
     \end{problem}
 
     \begin{solution}
-        As S and T of length 3, the bits required for V(i,j) is $\lceil log_2 (6+1)\rceil = 3$;
+        As S and T of length 3, the bits required for V(i,j) is $\lceil log_2 (3+1)\rceil = 2$;
         \begin{center}
-            \begin{tabular}{c|c|c|c|c}
+            \begin{tabular}{|c|c|c|c|c|}[H]
                 V(i-1,j) & V(i, j-1) & V(i-1,j-1) & $\delta$(S[i], T[j]) & V(i,j) \\ \hline
-                  000    &    000    &     000    &          0           &  000   \\
-                  000    &    000    &     000    &          1           &  001   \\ \hline
+                00 	&	 00 	&	 00 	&	 0 	&	 00 \\ 
+                00 	&	 00 	&	 00 	&	 1 	&	 01 \\ \hline
+                00 	&	 00 	&	 01 	&	 0 	&	 01 \\ 
+                00 	&	 00 	&	 01 	&	 1 	&	 01 \\ \hline
+                00 	&	 00 	&	 10 	&	 0 	&	 01 \\ 
+                00 	&	 00 	&	 10 	&	 1 	&	 01 \\ \hline
+                00 	&	 01 	&	 00 	&	 0 	&	 00 \\ 
+                00 	&	 01 	&	 00 	&	 1 	&	 01 \\ \hline
+                00 	&	 01 	&	 01 	&	 0 	&	 01 \\ 
+                00 	&	 01 	&	 01 	&	 1 	&	 01 \\ \hline
+                00 	&	 01 	&	 10 	&	 0 	&	 01 \\ 
+                00 	&	 01 	&	 10 	&	 1 	&	 01 \\ \hline
+                00 	&	 10 	&	 00 	&	 0 	&	 00 \\ 
+                00 	&	 10 	&	 00 	&	 1 	&	 01 \\ \hline
+                00 	&	 10 	&	 01 	&	 0 	&	 01 \\ 
+                00 	&	 10 	&	 01 	&	 1 	&	 01 \\ \hline
+                00 	&	 10 	&	 10 	&	 0 	&	 01 \\ 
+                00 	&	 10 	&	 10 	&	 1 	&	 01 \\ \hline
+                01 	&	 00 	&	 00 	&	 0 	&	 00 \\ 
+                01 	&	 00 	&	 00 	&	 1 	&	 01 \\ \hline
+                01 	&	 00 	&	 01 	&	 0 	&	 01 \\ 
+                01 	&	 00 	&	 01 	&	 1 	&	 01 \\ \hline
+                01 	&	 00 	&	 10 	&	 0 	&	 01 \\ 
+                01 	&	 00 	&	 10 	&	 1 	&	 01 \\ \hline
+                01 	&	 01 	&	 00 	&	 0 	&	 00 \\ 
+                01 	&	 01 	&	 00 	&	 1 	&	 01 \\ \hline
+                01 	&	 01 	&	 01 	&	 0 	&	 01 \\ 
+                01 	&	 01 	&	 01 	&	 1 	&	 10 \\ \hline
+                01 	&	 01 	&	 10 	&	 0 	&	 10 \\ 
+                01 	&	 01 	&	 10 	&	 1 	&	 10 \\ \hline
+                01 	&	 10 	&	 00 	&	 0 	&	 00 \\ 
+                01 	&	 10 	&	 00 	&	 1 	&	 01 \\ \hline
+                01 	&	 10 	&	 01 	&	 0 	&	 01 \\ 
+                01 	&	 10 	&	 01 	&	 1 	&	 10 \\ \hline
+                01 	&	 10 	&	 10 	&	 0 	&	 10 \\ 
+                01 	&	 10 	&	 10 	&	 1 	&	 10 \\ \hline
+                10 	&	 00 	&	 00 	&	 0 	&	 00 \\ 
+                10 	&	 00 	&	 00 	&	 1 	&	 01 \\ \hline
+                10 	&	 00 	&	 01 	&	 0 	&	 01 \\ 
+                10 	&	 00 	&	 01 	&	 1 	&	 01 \\ \hline
+                10 	&	 00 	&	 10 	&	 0 	&	 01 \\ 
+                10 	&	 00 	&	 10 	&	 1 	&	 01 \\ \hline
+                10 	&	 01 	&	 00 	&	 0 	&	 00 \\ 
+                10 	&	 01 	&	 00 	&	 1 	&	 01 \\ \hline
+                10 	&	 01 	&	 01 	&	 0 	&	 01 \\ 
+                10 	&	 01 	&	 01 	&	 1 	&	 10 \\ \hline
+                10 	&	 01 	&	 10 	&	 0 	&	 10 \\ 
+                10 	&	 01 	&	 10 	&	 1 	&	 10 \\ \hline
+                10 	&	 10 	&	 00 	&	 0 	&	 00 \\ 
+                10 	&	 10 	&	 00 	&	 1 	&	 01 \\ \hline
+                10 	&	 10 	&	 01 	&	 0 	&	 01 \\ 
+                10 	&	 10 	&	 01 	&	 1 	&	 10 \\ \hline
+                10 	&	 10 	&	 10 	&	 0 	&	 10 \\ 
+                10 	&	 10 	&	 10 	&	 1 	&	 11 \\ \hline
             \end{tabular}
         \end{center}
     \end{solution}
@@ -172,7 +219,22 @@
     \end{problem}
 
     \begin{solution}
-        
+        Firstly we should elaborate the 3DES scheme with 3 different keys:
+        \begin{gather*}
+            C = E_{K3}[D_{K2}[E_{K1}(P)]]
+            \\
+            P = D_{K1}[E_{K2}[D_{K3}(C)]]
+        \end{gather*}
+        Then for meet-in-middle attack, we should focus on the following middle encryption results:
+        $$
+            D_{K3} = D_{K2}[E_{K1}(P)]
+        $$
+        Attacker coudl firstly store encryption results with respect to $K2$ and store the resutls in table $T[D_{K2}[P], K2]$ (the storage space is $2^{56}$). Then the attacker should try the decryption with repect to $(K3, C)$ to find the entry in the previous table, which would cost $2^{56+56} = 2^{112}$ operations for the composition of key $K1, K2$.\\
+        The complexity for this attack costs total $2^{112} + 2^{56} \approx 2^{112}$ operations on encryption and decryption tries.
+
+        Reference:
+        {[1] https://crypto.stackexchange.com/questions/6345/why-is-triple-des-using-three-different-keys-vulnerable-to-a-meet-in-the-middle} \\
+        {[2] http://stephanemoore.com/pdf/meetinthemiddle.pdf}
     \end{solution}
 
     %=================== Problem 7 ===================%
@@ -181,25 +243,36 @@
     \end{problem}
 
     \begin{solution}
-        CCA would be feasible for any public key encryption scheme, cause public key is known to everyone.
+        CCA would be feasible for any public key encryption scheme, cause public key is known to everyone. That means attacker could always get decryptions of the chosen ciphertext with the public key, so CCA is feasible in real-life. 
     \end{solution}
 
     %=================== Problem 8 ===================%
     \begin{problem}
-        Comment (with an example) that the modified one-time-pad scheme II using a pseudorandom function cannot solve the problem of message integrity.
+        Comment (with an example) that the modified one-time-pad scheme II using a pseudorandom function cannot solve the problem of \textbf{message integrity}.
     \end{problem}
 
     \begin{solution}
-        
+        For the modeified one-time-pad scheme II, the message integrity check should follow the scheme: the sender encrypt message $m$ with $I=(r, F_k(r) \oplus m)$, then send $(m, I)$ to receiver. At receiver side, calculating $m'=I \oplus F_k(r)$; if $m'=m$ then the integrity check pass, otherwise it's not the original message.
+        \\
+        However, anyone in the middle could modify the pair $(m, I)$ with $(m \oplus c, I \oplus c)$ and also pass the integrity examination at the receiver side. So this scheme could not guarantee message integrity.
     \end{solution}
 
     %=================== Problem 9 ===================%
     \begin{problem}
-        {[Exercise 2.10 of the reference text]} Let G be a pseudorandom generator and define G'(s) to be the output of G truncated to n bits (where |s|=n). Prove that the function $F_k(s)=G'(k) \bigoplus x$ is not psedurandom.
+        {[Exercise 3.10 of the reference text]} Let G be a pseudorandom generator and define G'(s) to be the output of G truncated to n bits (where $|s|=n$). Prove that the function $F_k(x)=G'(k) \oplus x$ is not pseudorandom.
     \end{problem}
 
     \begin{solution}
-        
+        To prove that the function $F_k(\cdot)$ is not pseudorandom, is equaivalent to the following expression: for a distinguisher $D$, it could not distinguish $F_k(\cdot)$ with a random function $f(\cdot)$ given any two input $x$ and $x'$ within polynomial time. \\
+        Firstly for the pseudorandom function $F_k(\cdot)$, the distinguisher could have:
+        $$
+            y = G'(k) \oplus x, y' = G'(k)
+        $$
+        then we find that $y \oplus y' = x \oplus x'$ with probability equals to 1.\\
+        But for a real random function $f(\cdot)$, we coudl only find $y \oplus y' = x \oplus x'$ when they are exactly the same which is probability $2^{-n}$. Therefore we could find non-negligible probability with $1 - \frac{1}{2^n}$ between the two functions. We come to conclude that the function $F_k(x)$ is not pseudorandom.
+
+        Reference: \\
+        {[1] http://www.cs.fsu.edu/\texttt{\~{}}burmeste/cis5371/quiz/HA3-sol.pdf}
     \end{solution}
 
     %=================== Problem 10 ===================%
@@ -215,6 +288,16 @@
     \end{problem}
 
     \begin{solution}
-        
+        As following the ElGamal encryption scheme, the decryption side could calculate $m' = c_2 \times (c_1^x)^{-1}$ to tell the bit $b$;\\
+        For case (a), we have $m' = h^y \times g^{-xy} = g^{xy} \times g^{-xy} = 1$; for case (b), we have $m' = g^{xz} \times g^{-xy}$ which should be random.
+        Then we could easily obtain bit $b$ with knowledge of $x$ by:
+        $$
+            b = \begin{cases}
+                1, &\text{if $m'$=1} \\
+                0, &\text{otherwise}
+            \end{cases}
+        $$
+        Reference:\\
+        {[1] https://en.wikipedia.org/wiki/ElGamal\_encryption}
     \end{solution}
 \end{document}
