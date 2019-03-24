@@ -32,6 +32,7 @@
 \newcommand{\abss}[1]{\| #1 \|}                         %
 \newcommand{\tr}[1]{\textbf{tr}(#1)}                    %
 \newcommand{\vecOne}{\textbf{1}}                        %
+\renewcommand{\vec}[1]{\mathbf{#1}}                     %
 %-------------------------------------------------------%
 
 \begin{document}
@@ -44,46 +45,94 @@
 
     \begin{section}{Problem 1}
         \setcounter{pcounter}{0}
-        In a typical regression problem we have labels $\mathbf{y} = y_1, \dots, y_n$ of the function at points $\mathbf{X} = \{x_1, \dots, x_n\}$. Here $y_i=y(x_i) \in \domR, x_i = [x_i^{(1)}, \dots, x_i^{(d)}] \in \domR^{d}$. We are interested in estimating the value of the function $y_* = y(x_*)$, 
-        \textbf{GPs} (Gaussian Process) provide a nice framework for obtaining an estimate for the gradient and integral, as well as quantifying the uncertainty.
+        In a typical regression problem we have labels $\vec{y} = y_1, \dots, y_n$ of the function at points $\vec{X} = \{x_1, \dots, x_n\}$. Here $y_i=y(x_i) \in \domR, x_i = [x_i^{(1)}, \dots, x_i^{(d)}] \in \domR^{d}$. We are interested in estimating the value of the function $y_* = y(x_*)$, 
+        \textbf{GPs} (Gaussian Process) provide a nice framework for obtaining an estimate for the \textbf{gradient and integral}, as well as quantifying the uncertainty.
 
         %=================== Problem 1.1 ===================%
         \begin{problem}
             [Gradients using Gaussian Processes] \\
-            Recall the gradient at $x_*$ is a $d$-vector containing the $d$ partial derivatives. Denote the pratial derivatives of $y$ as $g_i(x) = \frac{\partial y(x)}{x^{(i)}}$, where $g_i : \domR^{d} \to \domR, i=1, \dots, d$. the gradient is $\mathbf{g}(x) = [g_1(x), \dots, g_d(x)]^T$. Write $g_{i*} = g_i(x_*)$ and $\mathbf{g}_* = g(x_*)$. \\
-            We will model our observation as a Gaussian Process $y(x)$ over $\domR^d$ with zero mean and auto covariance $K$. We know that if a function $y$ is sampled from a GP, the distribution of $y_1, \dots, y_n, y_*$ at $x_1, \dots, x_n, x_*$ follow a Gaussian distribution. It can claso be shown that the gradient $\mathbf{g}_*$ and the function values $y_1, \dots, y_n$ are jointly Gaussian, i.e.
+            Recall the gradient at $x_*$ is a $d$-vector containing the $d$ partial derivatives. Denote the pratial derivatives of $y$ as $g_i(x) = \frac{\partial y(x)}{x^{(i)}}$, where $g_i : \domR^{d} \to \domR, i=1, \dots, d$. the gradient is $\vec{g}(x) = [g_1(x), \dots, g_d(x)]^T$. Write $g_{i*} = g_i(x_*)$ and $\vec{g}_* = g(x_*)$. \\
+            We will model our observation as a Gaussian Process $y(x)$ over $\domR^d$ with zero mean and auto covariance $K$. We know that if a function $y$ is sampled from a GP, the distribution of $y_1, \dots, y_n, y_*$ at $x_1, \dots, x_n, x_*$ follow a Gaussian distribution. It can claso be shown that the gradient $\vec{g}_*$ and the function values $y_1, \dots, y_n$ are jointly Gaussian, i.e.
             $$
                 [y, g_*] = [y_1, \dots, y_n, g_1(x_*), \dots, g_n(x_*)] \in \domR^{n+d}
             $$
             is also a Gaussian. This Gaussian has zero mean. The covariance $K_i$ between $y(x_1)$ and $g_i(x_2)$ and the covariance $K_{ij}$ between $g_i(x_1)$ and $g_i(x_2)$ are given respectively by
-            $$
+            \begin{gather*}
                 K_i(x_1, x_2) = \frac{\partial K(x_1, x_2)}{\partial x_2^{(i)}}
                 \\
                 K_{ij} (x_1, x_2) = \frac{\partial^2 K(x_1, x_2)}
                                         {\partial{x_1^{(i)}} \partial{x_2^{(j)}}}
-            $$
+            \end{gather*}
             \begin{enumerate}[label=\alph*)]
-                \item Let $\mathbf{K} \in \domR^{n \times n}$, $\mathbf{J} \in \domR^{n \times d}$, and $\mathbf{B} \in \domR^{d \times d}$ such that
+                \item Let $\vec{K} \in \domR^{n \times n}$, $\vec{J} \in \domR^{n \times d}$, and $\vec{B} \in \domR^{d \times d}$ such that
                 $$
-                    \mathbf{K}_{ij} = K(x_i, x_j),
-                    \mathbf{J}_{ij} = \frac{\partial K(x_i, x_*)}{\partial x_*^{(j)}},
-                    \mathbf{B}_{ij} = \frac{\partial^2 K(x_*, x_*)}{\partial x_*^{(i)} \partial x_*^{(j)}}
+                    \vec{K}_{ij} = K(x_i, x_j),
+                    \vec{J}_{ij} = \frac{\partial K(x_i, x_*)}{\partial x_*^{(j)}},
+                    \vec{B}_{ij} = \frac{\partial^2 K(x_*, x_*)}{\partial x_*^{(i)} \partial x_*^{(j)}}
                 $$
-                Write the (Gaussian) prior over $[\mathbf{y}, \mathbf{g}_*]$ in terms of $\mathbf{K, J, B}$ if we don't have any observation yet.
+                Write the (Gaussian) prior over $[\vec{y}, \vec{g}_*]$ in terms of $\vec{K, J, B}$ if we don't have any observation yet.
 
-                \item Derive the posterior for $\mathbf{g_*}$ given that $\mathbf{y}$ was observed.
+                \item Derive the posterior for $\vec{g_*}$ given that $\vec{y}$ was observed.
                 
-                \item Verify that the posterior mean of $\mathbf{g_*}$ is the same as the gradient of the posterior mean for $y(x_*)$.
+                \item Verify that the posterior mean of $\vec{g_*}$ is the same as the gradient of the posterior mean for $y(x_*)$.
             \end{enumerate}
         \end{problem}
 
         \begin{solution}
             \begin{enumerate}[label=\alph*)]
                 \item % Answer for (a)
-                
+                As we know that $[\vec{y}, \vec{g_*}]$ follows Gaussian distribution with zero, then we could have:
+                $$
+                    y^* \triangleq [\vec{y}, \vec{g_*}] \sim \Gaussian(0, \Sigma))
+                $$
+                where the entries $\sigma_{i,j}$ of $\Sigma$ is covariance between $y^*_{i}$ and $y^*_{j}$; With respect to $\vec{K}, \vec{J}, \vec{B}$ we could represent $\Sigma$ in the following form:
+                $$
+                    \Sigma = \begin{pmatrix}
+                        \vec{K}     &   \vec{J} \\
+                        \vec{J}^T   &   \vec{B}
+                    \end{pmatrix}
+                $$
+                Then we have the Gaussian prior over $[\vec{y}, \vec{g_*}]$ is:
+                $$
+                    Pr(\begin{pmatrix}
+                        \vec{y}^T \\ \vec{g_*}^T
+                    \end{pmatrix}) = \Gaussian(0, 
+                        \begin{pmatrix}
+                            \vec{K}     &   \vec{J} \\
+                            \vec{J}^T   &   \vec{B}
+                        \end{pmatrix}
+                    )
+                $$
+
                 \item % Answer for (b)
-                
+                To derive the posterior distribution $p(\vec{g_*} | \vec{y})$, we leverage the properties learned in \textbf{Lecture 2} that:
+                \begin{gather*}
+                    p(\vec{x_1} | \vec{x_2}) = \Gaussian(\vec{x_1} | \mu_{1|2}, \Sigma_{1|2}) \\
+                    \mu_{1|2} = \mu_1 + \Sigma_{12} \Sigma_{22}^{-1}(\vec{x_2} - \mu_2) \\
+                    \Sigma_{1|2} = \Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1} \Sigma_{21}
+                \end{gather*}
+                As we know that $\vec{y}$ and $\vec{g_*}$ both follow Gaussian distribution with zero mean, then we could have:
+                \begin{gather*}
+                    \mu_{g_*|y} = \vec{J}^T \vec{K}^{-1} \vec{y} \\
+                    \Sigma_{g_*|y} = \vec{B} - \vec{J}^T \vec{K}^{-1} \vec{J}
+                \end{gather*}
+                and $p(\vec{g_*} | \vec{y}) = \Gaussian(\vec{g_*} | \vec{J}^T \vec{K}^{-1} \vec{y}, \vec{B} - \vec{J}^T \vec{K}^{-1} \vec{J})$
+
                 \item % Answer for (c)
+                The posterior distribution for $[\vec{y(x_*)} | \vec{y(x)}]$ could be denoted by
+                \begin{gather*}
+                    p(\vec{y(x_*)}^T | \vec{y(x)}^T) = \Gaussian(\mu_{y_*|y}, \Sigma_{y_*|y})
+                \end{gather*}
+                \begin{align*}
+                    \mu_{y_*|y} &= \Sigma_{y_* y} \Sigma_{y y}^{-1} \vec{y} \\
+                    &= \Sigma_{y_* y} \vec{K}^{-1} \vec{y}
+                \end{align*}
+                Then we could have the gradient of this posterior as:
+                \begin{align*}
+                    \nabla \mu_{y_*|y} &= \frac{\partial \Sigma_{y_* y}}{\partial x_*} \vec{K}^{-1} \vec{y} \\
+                    &= J^T \vec{K}^{-1} \vec{y}
+                \end{align*}
+                which is exactly the posterior mean of $g_*$
                 
             \end{enumerate}
         \end{solution}
@@ -91,13 +140,13 @@
         %=================== Problem 1.2 ===================%
         \begin{problem}
             [Integration using Gaussian Process] \\
-            Now we want to estimate the value of $\int_{a}^{b} y(t) dt$, i.e., the integral of a continuous 1-dimensional (i.e. $d=1$) function $y(x)$ over the interval $[a,b]$ from labels $\mathbf{y} = y_1, \dots, y_n$ at points $\mathbf{X} = \{x_1, \dots, x_n\}$ hwere $y_i = y(x)$ and $x_i \in \domR$. \\
+            Now we want to estimate the value of $\int_{a}^{b} y(t) dt$, i.e., the integral of a continuous 1-dimensional (i.e. $d=1$) function $y(x)$ over the interval $[a,b]$ from labels $\vec{y} = y_1, \dots, y_n$ at points $\vec{X} = \{x_1, \dots, x_n\}$ hwere $y_i = y(x)$ and $x_i \in \domR$. \\
             We define a function $Y(x) = \int_{0}^{x} y(t) dt$, and according to the Newton Leibniz formula, there is $\int_{a}^{b} y(t) dt = Y(b) - Y(a)$.
             \begin{enumerate}[label=\alph*)]
-                \item We treat $Y$ as a GP with kernel $K_Y$, then the joint distribution of $y$ and $Y$ can be described by Gaussians. Using the properties described in Problem 1, outline a procedure to obtain this joint distribtuion $(\mathbf{y}, \mathbf{Y})$, where $\mathbf{Y} = [Y(b), Y(a)]^T$.\\
+                \item We treat $Y$ as a GP with kernel $K_Y$, then the joint distribution of $y$ and $Y$ can be described by Gaussians. Using the properties described in Problem 1, outline a procedure to obtain this joint distribution $(\vec{y}, \vec{Y})$, where $\vec{Y} = [Y(b), Y(a)]^T$.\\
                 Hint: you may want do define $K_y(x_1, x_2) = \frac{\partial^2 K_Y(x_1, x_2)}{\partial x_1 \partial x_2}$ and ${K_y}_{Y}(x_1, x_2) = \frac{\partial K_Y(x_1, x_2)}{\partial x_2}$.
 
-                \item Derive the posterior $\mathbf{Y}|X, \mathbf{y}, a, b$ (which is also a Gaussian distribution);
+                \item Derive the posterior $\vec{Y}|X, \vec{y}, a, b$ (which is also a Gaussian distribution);
                 
                 \item Derive the posterior distribution of the integral $\int_{a}^{b} y(t) dt$.
             \end{enumerate}
@@ -106,10 +155,58 @@
         \begin{solution}
             \begin{enumerate}[label=\alph*)]
                 \item % Answer for (a)
+                Firstly we define the covariance matrix $K_{yY}$ between $y$ and $Y$ as:
+                \begin{gather*}
+                    K_y(x_1, x_2) = \frac{\partial^2 K_Y(x_1,x_2)}{\partial x_1 \partial x_2} \\
+                    K_{yY}(x_1, x_2) = \frac{\partial K_Y(x_1, x_2)}{\partial x_2}
+                \end{gather*}
+                As we know that the distribution of $(\vec{y}, \vec{Y})$ follows Gaussian distribuiton with zero means as:
+                \begin{gather*}
+                    \begin{pmatrix}
+                        \vec{y} \\ \vec{Y}
+                    \end{pmatrix}
+                    \sim \Gaussian(0, \Sigma)
+                    \\
+                    \Sigma = \begin{pmatrix}
+                        \Sigma_{yy} & \Sigma_{yY} \\
+                        \Sigma_{Yy} & \Sigma_{YY} \\
+                    \end{pmatrix}
+                \end{gather*}
+                where we denote each entry of covariance matrix with the definition above according to Problem 1 as:
+                \begin{align*}
+                    \Sigma_{yy} &= \vec{K} \\
+                    \Sigma_{yY} &= \begin{pmatrix}
+                        K_{yY}(x_1, b) & K_{yY}(x_1, a) \\
+                        \dots & \dots \\
+                        K_{yY}(x_n, b) & K_{yY}(x_n, a)
+                    \end{pmatrix} \\
+                    \Sigma_{Yy} &= \Sigma_{yY}^T \\
+                    \Sigma_{YY} &= \begin{pmatrix}
+                        K_Y(b,b) & K_Y(b,a) \\
+                        K_Y(a,b) & K_Y(b,b)
+                    \end{pmatrix}
+                \end{align*}
                 
                 \item % Answer for (b)
+                As for the posterior $Y|y, X, a, b$, we have
+                \begin{gather*}
+                    \mu_{Y|y} = \Sigma_{Yy} \Sigma_{yy}^{-1} \vec{y} \\
+                    \Sigma_{Y|y} = \Sigma_{YY} - \Sigma_{Yy} \Sigma_{yy}^{-1} \Sigma_{yY}
+                \end{gather*}
+                and $Y|y, X, a, b \sim \Gaussian(\mu_{Y|y}, \Sigma_{Y|y})$
                 
                 \item % Answer for (c)
+                According to the Newton Leivniz formula, we have
+                $$
+                    \vec{\hat{y}} \triangleq \int_{a}^{b} y(t) dt = Y(b) - Y(a)
+                $$
+                Then the posterior distribution of $\vec{\hat{y}}$ given observation of $\vec{y}$ following Gaussian distribution with:
+                \begin{gather*}
+                    \vec{\hat{y} | y} \sim \Gaussian(\hat{\mu_{Y|y}}, \hat{\Sigma_{Y|y}})
+                    \\
+                    \hat{\mu_{Y|y}} = (1,0)^T \mu_{Y|y} - (0,1)^T \mu_{Y|y} = (1,-1)^T \mu_{Y|y} \\
+                    \hat{\Sigma_{Y|y}} = (1,-1)^T \Sigma_{Y|y} (1,-1)
+                \end{gather*}
                 
             \end{enumerate}
         \end{solution}
@@ -125,7 +222,7 @@
             \begin{enumerate}[label=(\alph*)]
                 \item Let's define the following loss
                 $$
-                    p_{\tau}(z) = z \cdot (\tau - \IdenMat(z < 0)) = 
+                    p_{\tau}(z) = z \cdot (\tau - I(z < 0)) = 
                     \begin{cases}
                         z \cdot (\tau - 1) & \text{if $z < 0$} \\
                         z \cdot \tau & \text{if $z \geq 0$}
@@ -135,7 +232,7 @@
                 \\
                 Show that:
                 $$
-                    arg\ min_{\omega} \sum_{i} \rho_\tau (y_i - y_{\omega}) = y_{\tau}
+                    arg\ min_{\omega} \sum_{i} \rho_\tau (y_i - \omega) = y_{\tau}
                 $$
                 where $y_{\tau}$ is an observation sitting at the $\tau$-th top percentile of the observations (specifically, this means that $y_{\tau}$ is at leat exactly $\tau$ percent of the obervations).
                 \\
@@ -148,8 +245,29 @@
         \begin{solution}
             \begin{enumerate}[label=(\alph*)]
                 \item % Answer for (a)
-                
+                Firstly we denote the loss function as 
+                \begin{align*}
+                    l(\omega) &= \sum_{i} \rho_\tau (y_i - \omega) \\
+                    &= (\tau - 1) \sum_{y_i < \omega} (y_i - \omega)
+                        + \tau \sum_{y_i \geq \omega} (y_i - \omega)
+                \end{align*}
+                By setting the derivative of $l(\omega)$ to zero we have
+                \begin{align*}
+                    & \frac{d l(\omega)}{d \omega} = 0 \\
+                    \Rightarrow & -(\tau-1)\sum_{i} I[y_i < \omega] + \tau \sum_{i} I[y_i \geq \omega] = 0 \\
+                    \Rightarrow & \tau = \frac{\sum_{i} I[y_i < \omega]}{N}
+                \end{align*}
+                Then we have the optimal $\omega^* = y_\tau$, where $y_\tau$ is the $\tau$-th top percentile of the observations.
+
                 \item % Answer for (b)
+                When $\tau=0.5$ the loss function is in the following form:
+                $$
+                    \rho_{0.5}(z) = \begin{cases}
+                        -0.5z & \text{if $z < 0$} \\
+                        0.5z & \text{if $z \geq 0$}
+                    \end{cases}
+                $$
+                which is the well-known $L_1$-loss function.
                 
             \end{enumerate}
         \end{solution}
@@ -160,12 +278,12 @@
             \begin{enumerate}[label=(\alph*)]
                 \item Let $\{x_i\}_{i=1, \dots, N}$ be points in $\domR^K$ with outputs $\{y_i\}_{i=1, \dots, N}$. Let $X = \{x_1, \dots, x_N\}$. We define the regression quantile as 
                 $$
-                    \hat{\beta}(\tau) = arg\ \min_{\beta \ in \domR^K} \sum_{i=1}^{N} \rho_\tau (y_i - x_i^T \beta)
+                    \hat{\beta}(\tau) = arg\ \min_{\beta \in \domR^K} \sum_{i=1}^{N} \rho_\tau (y_i - x_i^T \beta)
                 $$
                 Prove that the solution of this problem is equivalent to the solution of the following linear program:
                 \begin{gather*}
-                    arg\ \min\limits_{\beta \in \domR^K, u,v \in \domR^N} mu^T \mathbf{1} \tau + v^T \mathbf{1} (1- \tau) \\
-                    \text{subject to } X^T \beta - y + u -v = 0 \\
+                    arg\ \min\limits_{\beta \in \domR^K, u,v \in \domR^N} u^T \vec{1} \tau + v^T \vec{1} (1- \tau) \\
+                    \text{subject to } X^T \beta - y + u - v = 0 \\
                     u \geq 0 \\
                     v \geq 0
                 \end{gather*}
@@ -174,22 +292,96 @@
                 \item Show that the dual of the above linear program is:
                 \begin{gather*}
                     \max_z y^T z \\
-                    \text{subject to } X z = (1 - \tau) X \mathbf{1} \\
-                    z \ in [0,1]^n
+                    \text{subject to } X z = (1 - \tau) X \vec{1} \\
+                    z \in [0,1]^n
                 \end{gather*}
 
-                \item What does the value of $z_i$ in the dual problem tell us about $y_i - x_i^T \beta$ in the primal? specifically, using the KKT conditions, if $z_i=0$, hwat can you say aoubt $y_i - x_i^T \beta$? What if $z=1$? What if $z \in (0,1)$
+                \item What does the value of $z_i$ in the dual problem tell us about $y_i - x_i^T \beta$ in the primal? specifically, using the KKT conditions, if $z_i=0$, what can you say about $y_i - x_i^T \beta$? What if $z=1$? What if $z \in (0,1)$
             \end{enumerate}
         \end{problem}
 
         \begin{solution}
             \begin{enumerate}[label=(\alph*)]
-                \item % Answr for (a)
-                
-                \item % Answr for (b)
-                
-                \item % Answr for (c)
-                
+                \item % Answer for (a)
+                Firstly we split the expression of $\hat{\beta(\tau)}$ in the two parts
+                \begin{align*}
+                    \hat{\beta}(\tau) &= \arg\min_{\beta \in \domR^K} \sum_{i=1}^{N} \rho_\tau (y_i - x_i^T \beta) \\
+                    &= \arg\min_{\beta \in \domR^K} (\tau-1)\sum_{i=1}^{N} I[y_i < x_i^T \beta] (y_i - x_i^T \beta) + \tau \sum_{i=1}^{N} I[y_i \geq x_i^T \beta] (y_i - x_i^T \beta) \\
+                    &= \arg\min_{\beta \in \domR^K} ([Y - \vec{X}^T \beta]_+ \vec{1}) \tau + ([\vec{X}^T \beta - Y]_+ \vec{1}) (1-\tau)
+                \end{align*}
+                Then we denote
+                \begin{gather*}
+                    u = [u_1, \dots, u_N], v = [v_1, \dots, v_N] \\
+                    \text{where, } u_i = (y_i - x_i^T \beta) \\
+                    v_i = (x_i^T \beta - y_i) \\
+                    \text{s.t. } u - v = \vec{X}^T \beta - y \\
+                    u \geq 0, v \geq 0
+                \end{gather*}
+                And then the original problem could written in the following Linear Program:
+                \begin{gather*}
+                    \arg\min\limits_{\beta \in \domR^K, u,v \in \domR^N} u^T \vec{1} \tau + v^T \vec{1} (1- \tau) \\
+                    \text{subject to } X^T \beta - y + u - v = 0 \\
+                    u \geq 0 \\
+                    v \geq 0
+                \end{gather*}
+
+                \item % Answer for (b)
+                Firstly we transform the above Linear Program into the canonical form:
+                \begin{gather*}
+                    \arg\min\limits_{\omega} c^T \omega \\
+                    \text{s.t. } A \omega = b \\
+                    u \geq 0 \\
+                    v \geq 0
+                \end{gather*}
+                where, 
+                \begin{gather*}
+                    \omega = (\beta, u, v) \\
+                    c = (0, \vec{1}\tau, \vec{1}(1-\tau)) \\
+                    A = diag(X^T, -I_n, I_n)\\
+                    b = y
+                \end{gather*}
+                Then we could directly have the dual problem of the linear program as
+                \begin{gather*}
+                    \arg\max_{z} y^T z \\
+                    \text{s.t. } A^T z \leq c
+                \end{gather*}
+                From $A^T z \leq c$ we could have
+                \begin{align*}
+                    & A^T z \leq c \\
+                    \Rightarrow& z \leq \vec{1}\tau, z \leq \vec{1}(1-\tau) \\
+                                & X^T z = 0 \\
+                    \Rightarrow& z \in [\vec{1}\tau - \vec{1}, \vec{1}\tau] \\
+                                & X^T z = 0 \\
+                    \Rightarrow& \tilde{z} \in [0, 1] \\
+                                & X^T \tilde{z} = (1-\tau) \vec{X 1} \\
+                        \text{where } &\tilde{z} = z + (1-\tau) \vec{1}
+                \end{align*}
+                And finnaly we write the daul problem in the following form:
+                \begin{gather*}
+                    \max_z y^T z \\
+                    \text{subject to } X z = (1 - \tau) X \vec{1} \\
+                    z \in [0,1]^n
+                \end{gather*}
+
+                \item % Answer for (c)
+                With KKT condition,
+                \begin{gather*}
+                    \lambda^T [u, v] = 0 \\
+                    \mu (x_i^T \beta - y_i + u_i - v_i) = 0\\
+                    u, v, \lambda, \mu \geq 0
+                \end{gather*}
+                To conclude,
+                $$
+                    \begin{cases}
+                        y_i - x_i^T \beta > 0, & z_i = 0 \\
+                        y_i - x_i^T \beta < 0, & z_i = 1 \\
+                        y_i - x_i^T \beta = 0, & z_i \in (0,1)
+                    \end{cases}
+                $$
+                             
+                if $z_i = 0$, $y_i - x_i^T \beta > 0$; \\
+                if $z_i = 1$, $y_i - x_i^T \beta < 0$; \\
+                if $z_i \in (0,1)$, $y_i - x_i^T \beta = 0$;
             \end{enumerate}
         \end{solution}
     \end{section}
