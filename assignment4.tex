@@ -238,7 +238,30 @@
         \end{problem}
 
         \begin{solution}
-            
+            The complete log-likelihood we obtained in \textit{Assignment 1} is:
+            \begin{align*}
+                l(\theta, \mathcal{D}) &= l\sum_i \log{p(x_i, y_i)} \\
+                &= -\frac{1}{2} \sum_{i=1}^n tr(x_i x_i^T)
+                   - \frac{N}{2} \log{|\Psi|} - \frac{N}{2} tr(\Psi^{-1}S)
+            \end{align*}
+            where the covariance matrix $S=\frac{1}{N}\sum_{i=1}^N (y_i-\Lambda x_i)(y_i-\Lambda x_i)^T$.\\
+            The we have expected log-likelihood as:
+            $$
+            \langle{l_c(\theta, \mathcal{D})}\rangle = 
+                -\frac{1}{2} \sum_{i=1}^n tr(\langle{x_i x_i^T}\rangle)
+                - \frac{N}{2} \log{|\Psi|} - \frac{N}{2} tr(\Psi^{-1}\langle{S}\rangle)
+            $$
+            So, for E-step we have the following expectations:
+            \begin{gather*}
+                \langle{S}\rangle = \frac{1}{N} \sum_{n=1}^{N} (y_n y_n^T - y_n \langle{X_N}\rangle^T \Lambda^T - \Lambda \langle{X_n}\rangle Y_n^T + \Lambda \langle{X_n X_N^T}\rangle \Lambda^T)\\
+                \langle{X_n}\rangle = E[X_n|y_n] = \mu_{x|y} \\
+                \langle{X_n X_N^T}\rangle = Var[X_n|y_n] + E[X_n|y_n] E[X_n|y_n]^T = \Sigma_{x|y} + \mu_{x|y} \mu_{x|y}^T\\
+            \end{gather*}
+            where:
+            \begin{gather*}
+                \mu_{x|y} = \Sigma_{x|y} \Lambda^T \Psi^{-1} (y-\mu) \\
+                \Sigma_{x|y} = (I + \Lambda^T \Psi^{-1} \Lambda)^{-1}
+            \end{gather*}
         \end{solution}
 
         %=================== Problem 2.2 ===================%
@@ -247,7 +270,12 @@
         \end{problem}
 
         \begin{solution}
-            
+            For M-step, by taking partial derivatives w.r.t $\Psi, \Lambda$ respectively of the complete log-likelihood function, we obtain the two update rules:
+            \begin{gather*}
+                \Psi^{t+1} = \langle{S}\rangle
+                \\
+                \Lambda^{t+1} = (\sum_n y_n \langle{X_n^T}\rangle) (\sum_n  \langle{X_n X_n^T}\rangle)^{-1}
+            \end{gather*}
         \end{solution}
     \end{section}
 
