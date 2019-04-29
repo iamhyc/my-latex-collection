@@ -1,0 +1,156 @@
+\documentclass{article}
+\usepackage{mathrsfs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{braket}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage[noend]{algorithm2e}
+\usepackage[normalem]{ulem} % for strikeout line
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+% \usepackage{epstopdf}
+
+%-------------------------------------------------------%
+\newcounter{pcounter}                                   %
+\newenvironment{problem}                                %
+{                                                       %
+    \color{gray}                                        %
+    \stepcounter{pcounter}                              %
+    \textbf{\arabic{pcounter}.}                         %
+}{}                                                     %
+\newenvironment{solution}                               %
+{\textbf{Solution:} }{$\blacksquare$}                   %
+%-------------------------------------------------------%
+\newcommand{\tab}{\ \ \ \ }                             %
+\newcommand{\leadto}{\Rightarrow}                       %
+\newcommand{\domR}{\mathcal{R}}                         %
+\newcommand{\domS}{\mathbb{S}}                          %
+\newcommand{\Gaussian}{\mathcal{N}}                     %
+\newcommand{\IdenMat}{\textit{I}}                       %
+\newcommand{\abss}[1]{\| #1 \|}                         %
+\newcommand{\tr}[1]{\textbf{tr}(#1)}                    %
+\newcommand{\vecOne}{\textbf{1}}                        %
+\renewcommand{\vec}[1]{\mathbf{#1}}                     %
+%-------------------------------------------------------%
+
+\begin{document}
+    %------------------- The Title -------------------%
+    \parindent 0in
+    \parskip 1em
+    \title{COMP9501 Assignment 4 Solution Sheet}
+    \author{HONG Yuncong, 3030058647}
+    \maketitle
+
+    \begin{section}{Problem 1}
+        \setcounter{pcounter}{0}
+        We have discussed the \emph{Baum-Welch algorithm} in class, which is used to find the unknown parameters $(a,b,\pi)$ of a hidden Markov model (HMM),
+        where $a$ is the stochastic transition matrix, $b$ is the matrix for the emission probability, and $\pi$ is the initial state distribution. The lecture provides the backbone of the Baum-Welch algorithm, now we are going to write down everything in detail.
+
+        The Baum-Welch is an iterative algorithm, which starts with random initial conditions for $(a,b,\pi)$. They can also be set using prior information about the parameters if available; this can speed up the algorithm and also steer it toward the desired local optimum. Each iteration will have two parts: 1) the forward/backward stage; 2) the update stage.
+
+        %=================== Problem 1.1 ===================%
+        \begin{problem}
+            [Forward/Backward Stage]
+
+            \begin{enumerate}[label=\alph*)]
+                \item Using the \textit{message passing framework} that we discussed in class to show that the backward/backward can be written using the parameter $(a,b,\pi)$ computed in the last iteration, where the forward process is:
+                $$
+                \alpha_t(i) = \sum_j a_{t-1}(j) \cdot a_{j,i} \cdot b_{j,x_{t-1}}
+                $$
+                and the backward process is:
+                $$
+                \beta_t(i) = \sum_j \beta_{t+1}(j) \cdot b_{j,x_{t+1}} \cdot a_{i,j}
+                $$
+                and $\alpha_1 = \pi, \beta_T = \vecOne$
+
+                \item Derive the probabilistic meaning for $\alpha$ and $\beta$:
+                $$
+                \alpha_t(i) = p(x_1, \dots, x_{t-1}, y_t=i)
+                $$
+                and
+                $$
+                \beta_t(i) = p(x_{t+1}, \dots, x_T | y_t=i)
+                $$
+            \end{enumerate}
+        \end{problem}
+
+        \begin{solution}
+            \begin{enumerate}[label=\alph*)]
+                \item % Answer for (a)
+                Given that the definition of forward message $\alpha_k$ for observed states in HMM is described as follow:
+                $$
+                \alpha_k(x_k) = \sum_{x_{k-1}} \alpha_{k-1}(x_{k-1} \cdot p(x_k|x_{k-1}))
+                $$
+                Assume that at $k$-th stage, we have $x_k=i$; and furthermore the expression for 
+
+                \item % Answer for (b)
+                
+            \end{enumerate}
+        \end{solution}
+
+        %=================== Problem 1.2 ===================%
+        \begin{problem}
+            [Update] \\
+            In the update stage, we actually are performing the EM algorithm to optimize the expected log-likelihood for HMM.
+            \begin{enumerate}[label=\alph*)]
+                \item In the E-step, we need to compute $\gamma_{t,i}=p(y_t=i|x_1, \dots, x_T)$ and $\xi_{t,i,j} = p(y_{t-1}=i, y_{t}=j|x_1, \dots, x_T)$.
+                Write down the details about how to compute $\gamma$ and $\xi$ using the $\alpha$ nad $\beta$ that we computed.
+
+                \item after E-step, we fill in the values of unknown hidden variables using their sufficient statistics. Them, we can solve the "completed" version of the log-likelihood and compute the updated parameters. Follow the lecture, derive the update by yourself.
+            \end{enumerate}
+        \end{problem}
+
+        \begin{solution}
+            \begin{enumerate}[label=\alph*)]
+                \item % Answer for (a)
+                
+                \item % Answer for (b)
+                
+            \end{enumerate}
+        \end{solution}
+        
+        %=================== Problem 1.3 ===================%
+        \begin{problem}
+            [Choose different $\alpha$ and $\beta$]
+            If you check the standard literature for HMM, you will find that the forward/backward is slightly different. In particular, one alternative way to define the messages are:
+            \begin{gather*}
+                \alpha_t(y_t) = p(x_1, \dots, x_t, y_t)
+                \\
+                \beta_t(y_t)  = p(x_{t+1}, \dots, x_T|y_t)
+            \end{gather*}
+            Please derive the entire HMM, including the forward/backward and the parameter update using such slightly different messages.
+        \end{problem}
+
+        \begin{solution}
+            
+        \end{solution}
+    \end{section}
+
+    \begin{section}{Problem 2}
+        \setcounter{pcounter}{0}
+        Let's go back and look at the Problem 1 in Assignment 1. As we discussed here, if both $X$ and $Y$ are observable, then we can maximize the complete log-likelihood to easily compute the MLE of the parameters. However, in practice, we only observe $Y$ and this results in an incomplete log-likelihood and thus the optimizations is difficult.
+
+        Similar to HMM, we can also use the EM algorithm to solve the MLE of the incomplete log-likelihood recursively.
+
+        %=================== Problem 2.1 ===================%
+        \begin{problem}
+            In the E-step, we need to write down the expected complete log-likelihood, i.e. $<l_c(\theta,D)> = E_{X|y;\theta^{(t-1)}[l_c(\theta,D)]}$. Based on what you get from Assignment 1, write down the result.
+        \end{problem}
+
+        \begin{solution}
+            
+        \end{solution}
+
+        %=================== Problem 2.2 ===================%
+        \begin{problem}
+            In the M-step, we need to update the parameters. Please write down the details.
+        \end{problem}
+
+        \begin{solution}
+            
+        \end{solution}
+    \end{section}
+
+\end{document}
