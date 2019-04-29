@@ -79,14 +79,48 @@
         \begin{solution}
             \begin{enumerate}[label=\alph*)]
                 \item % Answer for (a)
-                Given that the definition of forward message $\alpha_k$ for observed states in HMM is described as follow:
+                Given that the definition of forward message $\alpha_k$ in HMM for the observed state $y_k$ is described as follow:
                 $$
-                \alpha_k(x_k) = \sum_{x_{k-1}} \alpha_{k-1}(x_{k-1} \cdot p(x_k|x_{k-1}))
+                \alpha_k(y_k) = \sum_{y_{k-1}} \alpha_{k-1}(y_{k-1}) \cdot p(y_k|y_{k-1})
                 $$
-                Assume that at $k$-th stage, we have $x_k=i$; and furthermore the expression for 
+                Assume that at $k$-th stage, we have $y_k=i$; and furthermore the expression for $p(y_k | y_{k-1})$ could be described with transition matrix $a$ and emission matrix $b$ as:
+                $$
+                p(y_k | y_{k-1}, x_{k-1}) = a_{y_{k-1}, y_k} \cdot b_{j, x_{k-1}}
+                $$
+                And bind up the two formulas we come up with:
+                $$
+                \alpha_t(i) = \sum_j \alpha_{t-1}(j) \cdot a_{j,i}b_{j,x_{t-1}}
+                $$
+                And similarly for backward message $\beta_k$ in HMM we have:
+                $$
+                \beta_t(i) = \sum_j \beta_{t+1}(j) \cdot b_{j,x_{t+1}}a_{i,j}
+                $$
 
                 \item % Answer for (b)
+                Given that $\alpha_1=\pi$, then for the forward elimination process, we have:
+                \begin{align*}
+                    \alpha_2(i) &= \sum_j \pi_j \cdot b_{j,x_1}a_{j,i} = p(x_1,y_2=i)
+                    \\
+                    \alpha_3(i) &= \sum_j \pi_j \cdot b_{j,x_2}a_{j,i} = p(x_1,x_2,y_3=i)
+                    \\
+                    & \dots\ \dots
+                \end{align*}
+                Then we come up with:
+                $$
+                \alpha_t(i) = p(x_1, \dots, x_{t-1}, y_t=i)
+                $$
+                which implies the the forward message $\alpha_t$ is the probability distribution of series of observing states from start to time $t-1$. \\
+                Similarly, given $\beta_T=\vecOne$, for backward elimination process, we have:
+                \begin{align*}
+                    \beta_{T-1} &= \sum_j \vecOne \cdot b_{j,x_T}a_{i,j} = p(x_T|y_{T-1}=i)
+                    \\
+                    \dots \dots
+                    \\
+                    \beta_t(i) &= p(x_{t+1}, \dots, x_T | y_t=i)
+                \end{align*}
+                which implies that the backward message $\beta_t$ is the probability distribution of series of observing states from time $t-1$ to ending.
                 
+                And the heuristic conclusion is that: $p(i)=\alpha_t(i) \cdot \beta_t(i)$.
             \end{enumerate}
         \end{solution}
 
@@ -98,22 +132,55 @@
                 \item In the E-step, we need to compute $\gamma_{t,i}=p(y_t=i|x_1, \dots, x_T)$ and $\xi_{t,i,j} = p(y_{t-1}=i, y_{t}=j|x_1, \dots, x_T)$.
                 Write down the details about how to compute $\gamma$ and $\xi$ using the $\alpha$ nad $\beta$ that we computed.
 
-                \item after E-step, we fill in the values of unknown hidden variables using their sufficient statistics. Them, we can solve the "completed" version of the log-likelihood and compute the updated parameters. Follow the lecture, derive the update by yourself.
+                \item after E-step, we fill in the values of unknown hidden variables using their sufficient statistics. Then, we can solve the "completed" version of the log-likelihood and compute the updated parameters. Follow the lecture, derive the update by yourself.
             \end{enumerate}
         \end{problem}
 
         \begin{solution}
             \begin{enumerate}[label=\alph*)]
                 \item % Answer for (a)
+                With $\alpha, \beta$ given, $\gamma$ could be obtained by:
+                \begin{align*}
+                    \gamma_{t,i} &= p(y_t=i | x_1, \dots, x_T) \\
+                    &= \frac{p(x_1, \dots, x_T, y_t=i)}{p(x_1, \dots, x_T)} \\
+                    &= \frac{\alpha_t(i)\beta_t(i) \cdot p(x_t|y_t=i)}{\sum_j \alpha_t(j)\beta_t(j) \cdot p(x_t|y_t=j)} \\
+                    &= \frac{\alpha_t(i)\beta_t(i) \cdot b_{i,x_t}}
+                            {\sum_j \alpha_t(j)\beta_t(j) \cdot b_{j,x_t}}
+                \end{align*}
+                and $\xi$ could be obtained by:
+                \begin{align*}
+                    \xi_{t,i,j} &= p(y_{t-1}=i,y_t=j | x_1,\dots,x_T) \\
+                    &= \frac{p(x_1,\dots,x_T, y_{t-1}=i, y_{t}=j)}{p(x_1, \dots, x_T)} \\
+                    &= \frac{a_{i,j} \cdot (\alpha_{t-1}(i)\beta_{t}(j)) \cdot (b_{i,x_{t-1}}b_{j,x_t})}
+                            {\sum_j \alpha_t(j)\beta_t(j) \cdot b_{j,x_t}}
+                \end{align*}
                 
                 \item % Answer for (b)
-                
+                According to the \textit{Lecture 9} slides, we have expected completed log-likelihood in the following expression:
+                \begin{align*}
+                    \langle{l_c(a,b,\pi)}\rangle &=
+                    \sum_{n=1}^N \langle{y_1^{(n)}}\rangle^T \log{\pi} \\
+                    & + \sum_{n=1}^{N}\sum_{t=2}^{T} tr(\langle{ y_{t-1}^{(n)}( y_t^{(n)} )^T}\rangle \log(a)) \\
+                    & + \sum_{n=1}^{N}\sum_{t=1}^{T} tr( x^{(n)}_t \langle{y^{(n)}_t}\rangle^T \log{b})
+                \end{align*}
+                where: $\langle{y^{(n)}_{1,i}}\rangle = \gamma^{(n)}_{1,i}, 
+                \langle{y^{(n)}_{t,i}}\rangle = \gamma^{(n)}_{t,i};
+                \langle{y^{(n)}_{t-1,i}(y^{(n)}_t)}\rangle = \xi^{(n)}_{t,i,j}$.\\
+                With setting the derivative w.r.t 3 parameters to zero, we could have the MLE for the three parameters as:
+                \begin{align*}
+                    \pi_{i}^{MLE} &= \frac{\sum_n \gamma^{(n)}_{t,i}}{N}\\
+                    a_{i,j}^{MLE} &= \frac{\sum_n\sum_{t=2}^T \xi^{(n)}_{t,i,j}}{\sum_n\sum_{t=1}^{T-1} \gamma^{(n)}_{t,i}}\\
+                    b_{i,k}^{MLE} &=
+                                \frac{\sum_n\sum_{t=1}^T \gamma^{(n)}_{t,i} x^{(n)}_{t,k}}
+                                {\sum_n\sum_{t=1}^T \gamma^{(n)}_{t,i}}
+                \end{align*}
+
             \end{enumerate}
         \end{solution}
         
         %=================== Problem 1.3 ===================%
         \begin{problem}
-            [Choose different $\alpha$ and $\beta$]
+            [Choose different $\alpha$ and $\beta$]\\
             If you check the standard literature for HMM, you will find that the forward/backward is slightly different. In particular, one alternative way to define the messages are:
             \begin{gather*}
                 \alpha_t(y_t) = p(x_1, \dots, x_t, y_t)
@@ -124,7 +191,38 @@
         \end{problem}
 
         \begin{solution}
-            
+            Given the definition for forward and backward message, $\alpha_t(i)$ and $\beta_t(i)$ meets at $y_t$.\\
+            For the forward elimination process:
+            \begin{align*}
+                \alpha_t(i) &= p(x_1, \dots, x_t, y_t=i)\\
+                &= \sum_j p(x_1, \dots, x_{t-1}, y_{t-1}=j) \cdot a_{j,i} \cdot p(x_t|y_t=i) \\
+                &= \sum_j \alpha_{t-1}(j) \cdot a_{j,i}b_{i,x_t}
+            \end{align*}
+            For the backward elimination process:
+            \begin{align*}
+                \beta_t(i) &= p(x_{t+1}, \dots, x_T| y_t=i) \\
+                &= \sum_j p(x_{t+2}, \dots, x_T|y_{t+1}=j) \cdot a_{j,i} \cdot p(x_{t+1}|y_{t+1}=j) \\
+                &= \sum_j \beta_{t+1}(j) \cdot a_{i,j}b_{j,x_{t+1}}
+            \end{align*}
+
+            Then for EM-algorithm, we firstly compute $\gamma_{t,i}$ and $\xi_{t,i,j}$ in E-step:
+            \begin{align*}
+                \gamma_{t,i} &= p(y_t=i | x_1, \dots, x_T) \\
+                &= \frac{p(x_1, \dots, x_t, y_t=i)\cdot p(x_{t+1},\dots,x_T|y_t=i)}{p(x_1, \dots, x_T)} \\
+                &= \frac{\alpha_t(i)\beta_t(i)}{\sum_j \alpha_t(j)\beta_t(j)}
+                \\
+                \xi_{t,i,j} &= p(y_{t-1}=i, y_t=j|x_1, \dots, x_T) \\
+                &= \frac{\alpha_{t-1}(i)\beta_t(j)\cdot a_{i,j}b_{j,x_t}}
+                    {\sum_j \alpha_t(j)\beta_t(j)}
+            \end{align*}
+            In M-step, the log-likelihood is of the same expression as the expression for $\gamma, \xi$ is re-formulated above. So, the parameter update is same as:
+            \begin{align*}
+                \pi_{i}^{MLE} &= \frac{\sum_n \gamma^{(n)}_{t,i}}{N}\\
+                    a_{i,j}^{MLE} &= \frac{\sum_n\sum_{t=2}^T \xi^{(n)}_{t,i,j}}{\sum_n\sum_{t=1}^{T-1} \gamma^{(n)}_{t,i}}\\
+                    b_{i,k}^{MLE} &=
+                                \frac{\sum_n\sum_{t=1}^T \gamma^{(n)}_{t,i} x^{(n)}_{t,k}}
+                                {\sum_n\sum_{t=1}^T \gamma^{(n)}_{t,i}}
+            \end{align*}
         \end{solution}
     \end{section}
 
@@ -136,7 +234,7 @@
 
         %=================== Problem 2.1 ===================%
         \begin{problem}
-            In the E-step, we need to write down the expected complete log-likelihood, i.e. $<l_c(\theta,D)> = E_{X|y;\theta^{(t-1)}[l_c(\theta,D)]}$. Based on what you get from Assignment 1, write down the result.
+            In the E-step, we need to write down the expected complete log-likelihood, i.e. $\langle{l_c(\theta,D)}\rangle = E_{X|y;\theta^{(t-1)}[l_c(\theta,D)]}$. Based on what you get from Assignment 1, write down the result.
         \end{problem}
 
         \begin{solution}
