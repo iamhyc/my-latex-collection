@@ -10,7 +10,7 @@
 
     %=============================== TITLE ===============================%
     \title{
-        Obsolete-Information based Priority-Delay Optimal Dispatching with MDP
+        Delay Optimal Dispatching with Obsolete Broadcast Two-Time Scale MDP
     }
     \author{
         \IEEEauthorblockN{HONG Yuncong}
@@ -24,10 +24,11 @@
     %============================== ABSTRACT ==============================%
     \begin{abstract}
         \label{sec:abstract}
+        We formulate the problem with job dispatching in distributed Edge Computing system, and we identify the difficulty exists in delayed cooperation between different APs (Access Points) and ESs (Edge Servers) to 
     \end{abstract}
 
     \begin{IEEEkeywords}
-        Edge Computing, Infinite-Horizon MDP
+        Edge Computing, delayed information, Two-time Scale MDP
     \end{IEEEkeywords}
 
     %============================ INTRODUCTION ============================%
@@ -44,11 +45,68 @@
     %============================ FORMULATION =============================%
     \begin{section}{FORMULATION}
         \label{sec:formulation}
+        In this section, we will give out illustration of our problems in the following order:
+        \begin{enumerate}
+            \item Definition of problem;
+            \item The global optimization MDP problem
+            \begin{itemize}
+                \item states of job sets, and denotations of actions;
+                \item single-step transition denotation;
+                \item value function in Bellman equation format, and average cost function brought by transition function;
+                \item optimality guarantee by value iteration;
+            \end{itemize}
+        \end{enumerate} 
+
+        \subsection{Problem Definition}
+        In a Mobile Edge Computing system, jobs arrive at each AP, and the decision is made on AP to dispatch to the Edge servers. Then the scheduling policy is carried out on each server to facilitate the global optimization target (which is heuristic). \\
+        Computation model: unrelated parallel machine, with prioritized task on independent server
+
+            \subsubsection{Communication Model}
+            The communication model in our system ignores the underlaid real communication channel underlaid, instead of simple probabilistic distribution.
+            The communication time between each AP and ES is: fixed uploading time, and fixed broadcast delay;
+            For now, we don't take the broadcast cost into consideration because it's not easily evaluated in the complicated network model (without specified).
+
+            \subsubsection{Deterministic Computation Model}
+            The computation happened on each ES is deterministic, and the computation time of each job is known previously when arrival at APs.
+
+            \subsubsection{Optimization Target}
+
+
+        So, we hope to apply the policy at AP side and then establish
+
+        \subsection{Global MDP Problem}
+        \begin{itemize}
+            \item Taking a cluster of states information for another Markovian formulation (given that broadcast delay is fixed, the length vector of fractions would be also fixed)
+            \item global cost definition
+            \item local cost definition \\
+            As we are considering broadcast delay, we could re-consider the broadcast information as partially observed collected information lasting for $\hat{x}_k$ time slots.
+            \\
+            However, according to our previous assumption: the communication delay according to propagation delay is also comparable to arrival interval and is not negligible; so, we have to accept the replay updating to this small delay compared to broadcast interval, to prevent information loss thus not Markovian.
+        \end{itemize}
+
+        \subsection{Local MDP Problem}
+        We formulate the local MDP optimization problem, with the same target as global value function. As the policy applied on each AP could not obtain the global information, we design the broadcast for every nodes to share their local states to other nodes (APs).
+        
+        However, due to the broadcast delay, we could not optimize the original global optimization problem based on states on one single AP. So we develop the local MDP problem with collected broadcast information.
+
+            \subsubsection{Multi-step Update Rule}
+            the multi-step transition is not simply iteratively run the single-step transition. Because the transition is confined by information from other nodes, the probability distribution would be deducted with Bayes' Law.
+
+            Here we develope the rule for multi-step update.
+
+            \subsubsection{Total Transition and Bellman Equation}
+            The total transition function could be obtained via the previous update rules, which we denote as $T(\Delta_{i-1}, a_{\Delta_{i-1}}, \Delta_{i})$
+
     \end{section}
 
     %============================= ALGORITHM ==============================%
     \begin{section}{ALGORITHM}
         \label{sec:algorithm}
+    \end{section}
+
+    %============================ EVALUATION ==============================%
+    \begin{section}{EVALUATION}
+        \label{sec:ealuation}
     \end{section}
 
     %============================= CONCLUSION =============================%
