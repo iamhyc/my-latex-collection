@@ -10,7 +10,7 @@
 
     %=============================== TITLE ===============================%
     \title{
-        Delay Optimal Dispatching with Obsolete Broadcast Two-Time Scale MDP
+        Delay Optimal Dispatching with Observed Broadcast Replay in Two-Time Scale MDP
     }
     \author{
         \IEEEauthorblockN{HONG Yuncong}
@@ -53,23 +53,29 @@
         \begin{subsection}{Problem Definition}
             In a Mobile Edge Computing system, jobs arrive at each AP, and the decision is made on AP to dispatch to the Edge servers. Then the scheduling policy is carried out on each server to facilitate the global optimization target (which is heuristic).
             \\
-            Computation model: unrelated parallel machine, with prioritized task on independent server
+            There are $\mathcal{K}$ APs and $\mathcal{N}$ edge servers (ESs) in our problem, the policy to derived is to minimize the average job response time (including waiting, uploading and computing) on all the APs and ESs
 
             \begin{subsubsection}{Communication Model}
+                (The uploading is assumed with fixed different time between APs and ESs) \\
                 The communication model in our system ignores the underlaid real communication channel underlaid, instead of simple probabilistic distribution.
                 The communication time between each AP and ES is: fixed uploading time, and fixed broadcast delay;
                 For now, we don't take the broadcast cost into consideration because it's not easily evaluated in the complicated network model (without specified).
             \end{subsubsection}
 
             \begin{subsubsection}{Deterministic Computation Model}
-                The computation happened on each ES is deterministic, and the computation time of each job is known previously when arrival at APs.
+                (unrelated parallel machine, with prioritized task on independent server) \\
+                The computation happened on each ES is deterministic, and the computation time of each job is known previously when arrival at APs. \\
+                The computing on each ES is with heuristic algorithm \emph{SJF} (shortest-job first) to facilitate minimizing the global cost; the optimality will be explained in the following section 
             \end{subsubsection}
 
             \begin{subsubsection}{Optimization Target}
-                (to minimize the average job response time)
+                According to \emph{Little’s Law}, to minimize average response time, is equal as to minimize the average number of jobs in a system, which is:
+                \begin{gather}
+                    \min_{\pi} \lim_{T \to \infty} E[\frac{1}{T} \sum_{t=0}^{T} N(t)]
+                \end{gather}
             \end{subsubsection}
 
-            So, we hope to apply the policy at AP side and then establish
+            So, we hope to apply the policy at AP side and then establish \dots
         \end{subsection}
 
         \begin{subsection}{Global MDP Problem}
@@ -77,15 +83,58 @@
 
             \begin{subsubsection}{Markovian States}
                 We take the problem description at the grain of jobs and we choose job set as our states (given that broadcast delay is fixed, the length vector of fractions would be also fixed).
+
+                The global states with policy applied on $k$-th AP:
+                \begin{gather*}
+                    \begin{Bmatrix}
+                        S_{k}^{(W)}(t) = \{ (L_U, L_C) \}_{N_{k}^{(W)}}
+                        \\
+                        S_{k,n}^{(U)}(t)= \{ (L_C), L_{cd}^{(U)}(t) \}_{N_{k,n}^{(U)}}
+                        \\
+                        S_{n}^{(C)}(t)  = \{ L_{cd}^{(C)}(t) \}_{N_{n}^{(C)}}
+                    \end{Bmatrix},
+                    \forall k=[1,\mathcal{K}], n=[1,\mathcal{N}]
+                \end{gather*}
+                where $L_U, L_C$ are constant vectors of length $\mathcal{N}$, each denoting the uploading time and computation time of that job on each server; and $L^{(U)}_{cd}(t), L^{(C)}_{cd}(t)$ are Countdowns for *uploading* and *computing* time remained.
             \end{subsubsection}
 
             \begin{subsubsection}{Update Rules and Transition Function}
                 \begin{figure}[h]
-                    \label{fig:trans}
                     \centering
                     \includegraphics[width=0.45\textwidth]{single-transition.png}
                     \caption{Single-step transition function composing illustration}
+                    \label{fig:trans}
                 \end{figure}
+
+                Firstly, we give the denotations for transmission expressed in figure \ref{fig:trans} as:
+                \begin{align}
+                    I^{(W \to U)}_{k,n}(N;L) &\triangleq \{ (L_i),L^{(U)}_{cd}:=T^{br}_{k,n} \}_{i \in N}
+                        \\
+                    I^{(U \to C)}_{n}(N;L) &\triangleq \{ L^{(C)}_{cd}:=L_i \}_{i \in N}
+                \end{align}
+                and we have the disturbance existing in the system as:
+                \begin{gather*}
+                    Pr\{ I^{(W \to U)}(t) | S_{k}^{(W)}(t),A^{(k)}(t), a(t) \}
+                    \\
+                        = Pr\{ A^{(k)}(t) \} \times \pi(a, \mathbf{S}'(t)|A^{(k)}(t))
+                \end{gather*}
+                where $I^{(W \to U)}(t)$ implies $S^{(W)}_{k}(t+1)$ and $S^{(U)}_{k,n}(t+1)$;
+
+                The states transition on ES is easily obtained as following because the computation process on ES is deterministic:
+                $$
+                Pr\{S_{n}^{(C)}(t+1) |S_{n}^{(C)}(t), (S_{k}^{(U)}(t))_{k \in [1,K]}  \} = 1
+                $$
+                The other interesting properties exists in the situation that when only states of ES is presence and the constraints are inversely put on APs. With \emph{Bayes' Law}, we could have:
+                \begin{align*}
+                    & Pr\{ \sum{S_k(t)} | S_n(t,t+1) \} \\
+                    =& \frac{ Pr\{\sum{S_k(t)}\} \cdot Pr\{S_n(t,t+1)|\sum{S_k(t)}\} }{ Pr\{S_n(t,t+1)\} } \\
+                    =& \frac{
+                            \prod_k Pr\{S_k(t)\}
+                        }{
+                            Pr\{S_n(t,t+1)\}
+                        }
+                \end{align*}
+                where, $S_n(t,t+1) \triangleq S_{n}^{(C)}(t+1) |S_{n}^{(C)}(t)$, and $\sum{S_k(t)} \triangleq \{S_{k}^{(U)}(t)\}_{k \in [1,K]}$.
             \end{subsubsection}
 
             \begin{subsubsection}{Cost Function and Bellman Equation}
@@ -93,6 +142,10 @@
                 As we are considering broadcast delay, we could re-consider the broadcast information as partially observed collected information lasting for $\hat{x}_k$ time slots.
                 \\
                 However, according to our previous assumption: the communication delay according to propagation delay is also comparable to arrival interval and is not negligible; but we could have \emph{piggyback} to make it work.
+                \\
+                $$
+                c(t) = N_k^{(W,U)}(t) + \sum_{k' \neq k} N_{k'}^{(W,U)}(t) + \sum_{n} N_{n}^{(C)}(t)
+                $$
             \end{subsubsection}
         \end{subsection}
 
@@ -103,21 +156,19 @@
 
             \begin{subsubsection}{Broadcast Denotations}
                 The illustration figure \ref{fig:brd} for single broadcast includes several important time points which are also important in multiple asynchronous broadcast: $x_{k,*}, d_{k,*}, T^{br}_{k,*}$
-
                 \begin{figure}[h]
-                    \label{fig:brd}
                     \centering
                     \includegraphics[width=0.45\textwidth]{single-broadcast.png}
                     \caption{Single broadcast timing illustration}
+                    \label{fig:brd}
                 \end{figure}
-
                 And with the implication from the single broadcast, we generalize the conclusion for every broadcasts with:
                 $$
                 x_{k,*} = d_{k,*} + T^{Br}_{*}
                 $$
-                which takes a reasonable assumption that $T>d$ always ($*=k'$ or $n$ for $k$-th AP).
+                which takes a reasonable assumption that $T>d$ always ($*=k',n$ for $k$-th AP).
 
-                Then we come up with the idea with collected broadcast states, which are splitted by the maximum broadcast interval which is denoted as $\hat{x}_k$:
+                Then we come up with the idea with collected broadcast states, which are split by the maximum broadcast interval which is denoted as $\hat{x}_k$:
                 $$
                 \hat{x}_k = \max(x_{k,*})
                 $$
@@ -133,28 +184,81 @@
                 \{ \Delta^{(k)}_1 \to \dots \to \Delta^{(k)}_{p_k} \} \to \Delta_{1}
                 $$
                 
-                The periodic behavior with the total $p_k$ behavior could be explained with \textit{information gap} in each period as $r_{k,*}$. Here we allows the time slot to be counted with $Z_+$, then we define the broadcast interval as \textit{additive modulo group} with respect to each node to $k$-th AP as $Z_{x_{k,*}}$.
-                \begin{align}
-                    & \hat{d}_{k,*}^{(i)} \equiv i \times \hat{x}_k \pmod{x_{k,*}}
-                    \\
-                    \text{and } & r_{k,*} \equiv \hat{x}_k \pmod{x_{k,*}}
-                    \\
-                    \text{so: } & \hat{d}_{k,*}^{(i)} = i \times r_{k,*}
-                \end{align}
+                The periodic behavior with the total $p_k$ behavior could be explained with \textit{information gap} in each period as $r_{k,*}$. Here we allows the time slot to be counted with $Z_+$, then we define the broadcast interval as \textit{additive modulo group} with respect to each node to $k$-th AP as $Z_{x_{k,*}}$. Then we find the gap in the periodic $\Delta_i$ is behaved in the remaining count-up way like:
+                $$
+                \hat{d}_{k,*}^{(i)} = i \times r_{k,*}
+                $$
+                where the remain is obtained by: $r_{k,*} \equiv \hat{x}_k \pmod{x_{k,*}}$.
+            \end{subsubsection}
+
+            \begin{subsubsection}{States Division in $\Delta_i$}
+                We take the following series of states in the $k$-th AP local optimization problem, compared with global optimization problem with single-step MDP, we compose a non-aligned multi-step MDP with respect to asynchronous broadcast.
+                \\
+                The reason for taking states of length $p_k$ in stack is: this the shortest interval to online update the global information one-time; and in this form, we establish the model-based method for the optimization problem, but not considering learning model by predicting current cost/state. Although the information is updated, we have to endure the propagation delay with respect to relative larger broadcast interval (this information could take advantage with \emph{piggyback} the little partition of information during the broadcast)
+
+                denote the *bounding time* of $S_*$ in $i$-th episode as: ($i \in [0, p_k]$):
+                $$
+                t^{(i)}_{k,*} = i \times \hat{x}_k - \hat{d}^{(i)}_{k,*}
+                $$
+                then we have all the states expression in $\Delta^{(k)}_i$-th period as:
+                $$
+                \{ S_*(t^{(i-1)}_{k,*}), S_*(t^{(i-1)}_{k,*}+1), \dots, S_*(t^{(i)}_{k,*}) \}_{* \in [1,k+n-1]}
+                $$
+                The states are denoted as previous mentioned:
+                $$
+                \Delta^{(k)}_{1}, \Delta^{(k)}_{2}, \dots, \Delta^{(k)}_{p_k}, \Delta^{(k)}_{1}, \Delta^{(k)}_{2}\dots
+                $$
             \end{subsubsection}
 
             \begin{subsubsection}{Multi-step Update Rule}
                 the multi-step transition is not simply iteratively run the single-step transition. Because the transition is confined by information from other nodes, the probability distribution would be deducted with Bayes' Law.
 
                 Here we develope the rule for multi-step update.
+                Action definition of the action generated in $\Delta_{i}$ as:
+                $$
+                a_{\vec{D_T}} = \{ a_{D_1}, \dots, a_{D_T} \}
+                $$
+                and the dimension is:
+                $$
+                \pi(a, \mathbf{\Delta}_i), |a_{\Delta_i}| \in \prod_{t \in \hat{x}_k} |2^{S^{(W)}(t)}|
+                $$
+                which is generated for all the possible states in next $\Delta_{i+1}$;
+
+                Then we have some notations for short expression of the transition from $\Delta_{i}$ to $\Delta{i+1}$ as:
+                \begin{align}
+                    P_k(T,a) &\triangleq Pr\{ S^{(W,U)}_{k,D_T}|S^{(W,U)}_{k,D_1}, a_{\vec{D_T}},A^{(k)}_{\vec{D_T} }\}
+                    \\
+                    P_n(T) &\triangleq Pr\{ S^{(C)}_{n,D_T}|S^{(C)}_{n,D_1}, S^{(U)}_{k,\vec{D_T}} \}
+                \end{align}
+                and further more we have $\Delta \triangleq \{ \bar{P}_i, R_i, P_i \}$ where $R_i$ is consisted of states aligned at start and ending, $P_i$ is not aligned at ending, and $\bar{P}_i$ is not aligned at start and complement to $P_{i-1}$.
+
+                The transition function of states $\Delta_i$ is composed of multiple single-step transitions, and impacted by inner deduction constraints due to Bayes' Law. We firstly give out the rules for update, and explain why the mathematical expression for transition function would be complex and not readable.
+                \\
+                (The update rule algorithm:)
+                \begin{enumerate}
+                    \item Complement Step: \\
+                    Firstly given ES constraints to extend AP states and complete other ES states not given, until the bound without ES constraints, $\max(\hat{d}_{k,n}^{(i-1)})$;\\
+                    Then given fixed AP to deduct AP and completes ES states until bound of $R_i$, $\max(\hat{d}^{(i-1)}_{k,*})$;
+                    \item Aligned Expansion Step: \\
+                    Simply carry out multi-step transition lasting for $( \hat{x}^{(i)}_k - \max(\hat{d}^{(i)}_{k,*}) )$
+                    \item Non-aligned Expansion Step: \\
+                    Firstly extends AP states to the maximum bound $\hat{x}^{(i)}_k$; \\
+                    Then complements needed ES states with \emph{Total Probability Theorem} and remove the un-needed AP states (the removal process is safe for the given states are removed after sum-up of total probability)
+                \end{enumerate}
+                Therefore, we could not easily write out the transition probability without the length of each broadcast information specified.
             \end{subsubsection}
 
             \begin{subsubsection}{Total Transition and Bellman Equation}
                 The total transition function could be obtained via the previous update rules, which we denote as $T(\Delta_{i-1}, a_{\Delta_{i-1}}, \Delta_{i})$
+                \begin{itemize}
+                    \item discounted factor for revised cost function
+                    \item local cost function over $\Delta_i$
+                \end{itemize}
             \end{subsubsection}
 
             \begin{subsubsection}{Optimality Gap to Global Optimization}
                 (in progress)
+                insight of optimality gap: action is fixed in the broadcast period;
             \end{subsubsection}
         \end{subsection}
 
