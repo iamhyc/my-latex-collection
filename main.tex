@@ -60,36 +60,37 @@
                 The communication model in our system ignores the underlaid physical property and MAC design. We focus on the communication process of uploading of jobs.
                 The assumed uploading time is deterministic and known in advance when the job is released to AP. The uploading time for one job may variance with respect to different ESs from the arrived AP, and the distribution of variance is not known in advance but is guaranteed with an expectation.
                 Moreover, we assume the uploading process could be parallel among jobs, which implies infinite capacity. The infinite capacity could become reasonable with special design by discouraging jobs release from users with signaling, and thus make the capacity available is always finite.
-
+                \\
                 As we are going to apply dispatching action for jobs on AP side, all the AP and ES nodes need to broadcast for cooperation. The broadcast delay is considered deterministic and rather fixed {for simplified formulation}.
                 The details of broadcast design about interval and contents will be elaborated in the \textit{Global Optimization Problem} section.
                 For now, we don't take the broadcast cost into consideration because it's not been easily evaluated in the complicated network model (without specified).
             \end{subsubsection}
 
             \begin{subsubsection}{Computation Model}
-                The computation model is assumed to be deterministic, because the jobs to be computed on ESs are all considered released inside our system from Mobile Users.
+                We assume that there is only one job being computed at one time on the edge server. The computation model is assumed to be deterministic, because the jobs to be computed on ESs are all considered released inside our system from Mobile Users.
                 Moreover, we assume unrelated parallel machine model which implies that the computation time for one job is known when released but has no relationship with respect to any servers.
             \end{subsubsection}
-
-            \begin{subsubsection}{Optimization Target}
-                % TODO: stopped at this place.
+            
+            \begin{subsubsection}{Optimization Problem}
                 We assume that there are $\mathcal{K}$ APs and $\mathcal{N}$ ESs in the MEC system.
-
-                The arrival process of jobs $A^{(k)}(t)=I(t; (L_U, L_C))$ is a indicator random process which indicates the arrival jobs at one time with the property $(L_U, L_C)$, where $L_U, L_C$ are both vectors of length $\mathcal{N}$ denote the deterministic uploading time and computation time respectively.
-                The jobs with the two attributes actually denote the communication and computation model talked above.
-                
-                According to \emph{Little’s Law}, to minimize average response time, is equal as to minimize the average number of jobs in a system, which is:
+                The arrival process of jobs at $k$-th AP is: $A^{(k)}(t)=I(t; (L_U, L_C))$ which is a indicator random process. It will return $0$ if no jobs arrive at $t$-th time slot, and return the job with property $(L_U, L_C)$ if one job arrives. $L_U, L_C$ are both vectors of length $\mathcal{N}$ denoting the deterministic uploading time and computation time respectively.
+                \\
+                For one job $j$, it will wait until the uploading decision is made for it; then it takes $L_U(n)$ time to be uploaded to $n$-th server; after uploaded, it will wait for its turn for computing until all the $L_C(n)$ components are processed and leave the system.
+                \\
+                Our optimization target is to minimize the average waiting time and computation time for each job, which is called the jobs' average response time. According to \emph{Little’s Law}, to minimize average response time, is equal to minimize the average number of jobs in a system, which is:
                 \begin{gather}
                     \min_{\pi} \lim_{T \to \infty} E[\frac{1}{T} \sum_{t=0}^{T} N(t)]
+                    \\
+                    N(t) = \sum_{k \in \mathcal{K}} (A^{(k)}(t) + N_k(t))
+                            + \sum_{n \in \mathcal{N}} N_n(t)
                 \end{gather}
-
-                The computing on each ES is with heuristic algorithm \emph{SJF} (shortest-job first) to facilitate minimizing the global cost; the optimality will be explained in the following section 
+                where $N_k(t)$ denotes the number of jobs on $k$-th AP, and $N_n(t)$ denotes the number of jobs on $n$-th ES.
+                The goal to minimize the cost caused by ESs could be simply achieved with heuristic algorithm \emph{SJF} (shortest-job first), because it is the fastest way to reduce number of jobs on the edge server. So, in the next MDP problems we will focus on the policy applied on AP side, and leave ES with fixed heuristic algorithm.
             \end{subsubsection}
-
-            So, we hope to apply the policy at AP side and then establish \dots
         \end{subsection}
 
         \begin{subsection}{Global MDP Problem}
+            % TODO: stopped here
             In this section, we give out he definition of the previous problem under the framework of MDP.
 
             \begin{subsubsection}{Markovian States}
