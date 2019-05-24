@@ -74,6 +74,7 @@
             \begin{subsubsection}{Optimization Problem}
                 We assume that there are $\mathcal{K}$ APs and $\mathcal{N}$ ESs in the MEC system.
                 The arrival process of jobs at $k$-th AP is: $A^{(k)}(t)=I(t; (L_U, L_C))$ which is a indicator random process. It will return $0$ if no jobs arrive at $t$-th time slot, and return the job with property $(L_U, L_C)$ if one job arrives. $L_U, L_C$ are both vectors of length $\mathcal{N}$ denoting the deterministic uploading time and computation time respectively.
+                $L_U$ is bounded by $T_U$ and $L_C$ is bounded by $T_C$, i.e. $L_U \in [1,T_U]$ and $L_C \in [1,T_C]$.
                 \\
                 For one job $j$, it will wait until the uploading decision is made for it; then it takes $L_U(n)$ time to be uploaded to $n$-th server; after uploaded, it will wait for its turn for computing until all the $L_C(n)$ components are processed and leave the system.
                 \\
@@ -90,24 +91,22 @@
         \end{subsection}
 
         \begin{subsection}{Global MDP Problem}
-            % TODO: stopped here
-            In this section, we give out he definition of the previous problem under the framework of MDP.
+            In this section, we give out the formulation of the optimization problem under the framework of MDP. In this section, we firstly ignore the obsolete information brought by the broadcast delay and assume a centralized agent could observe the global states in real-time. This formulation could help better understanding the structure of the problem and analyzing the optimality gap from the real localized optimization elaborated in next section.
 
             \begin{subsubsection}{Markovian States}
-                We take the problem description at the grain of jobs and we choose job set as our states (given that broadcast delay is fixed, the length vector of fractions would be also fixed).
-
-                The global states with policy applied on $k$-th AP:
+                We adapt the description at grains of jobs and formulate the states into job sets at APs and ESs:
                 \begin{gather*}
+                    \mathbf{S}_g(t) \triangleq
                     \begin{Bmatrix}
                         S_{k}^{(W)}(t) = \{ (L_U, L_C) \}_{N_{k}^{(W)}}
                         \\
                         S_{k,n}^{(U)}(t)= \{ (L_C), L_{cd}^{(U)}(t) \}_{N_{k,n}^{(U)}}
                         \\
                         S_{n}^{(C)}(t)  = \{ L_{cd}^{(C)}(t) \}_{N_{n}^{(C)}}
-                    \end{Bmatrix},
-                    \forall k=[1,\mathcal{K}], n=[1,\mathcal{N}]
+                    \end{Bmatrix}
+                    _{k \in [1,\mathcal{K}], n \in [1,\mathcal{N}]}
                 \end{gather*}
-                where $L_U, L_C$ are constant vectors of length $\mathcal{N}$, each denoting the uploading time and computation time of that job on each server; and $L^{(U)}_{cd}(t), L^{(C)}_{cd}(t)$ are Countdowns for *uploading* and *computing* time remained.
+                where $L_U, L_C$ are constant vectors of length $\mathcal{N}$, each denoting the uploading time and computation time of that job on each server; and $L^{(U)}_{cd}(t), L^{(C)}_{cd}(t)$ are countdowns for uploading and computing time remained for that job.
             \end{subsubsection}
 
             \begin{subsubsection}{Update Rules and Transition Function}
@@ -118,12 +117,12 @@
                     \label{fig:trans}
                 \end{figure}
 
-                Firstly, we give the denotations for transmission expressed in figure \ref{fig:trans} as:
-                \begin{align}
+                Firstly, we come up with some useful denotations for transmission expressed in figure \ref{fig:trans} as:
+                \begin{align*}
                     I^{(W \to U)}_{k,n}(N;L) &\triangleq \{ (L_i),L^{(U)}_{cd}:=T^{br}_{k,n} \}_{i \in N}
                         \\
                     I^{(U \to C)}_{n}(N;L) &\triangleq \{ L^{(C)}_{cd}:=L_i \}_{i \in N}
-                \end{align}
+                \end{align*}
                 and we have the disturbance existing in the system as:
                 \begin{gather*}
                     Pr\{ I^{(W \to U)}(t) | S_{k}^{(W)}(t),A^{(k)}(t), a(t) \}
@@ -133,38 +132,55 @@
                 where $I^{(W \to U)}(t)$ implies $S^{(W)}_{k}(t+1)$ and $S^{(U)}_{k,n}(t+1)$;
 
                 The states transition on ES is easily obtained as following because the computation process on ES is deterministic:
-                $$
-                Pr\{S_{n}^{(C)}(t+1) |S_{n}^{(C)}(t), (S_{k}^{(U)}(t))_{k \in [1,K]}  \} = 1
-                $$
+                \begin{gather}
+                    Pr\{ S_{n}^{(C)}(t+1) |S_{n}^{(C)}(t), (S_{k}^{(U)}(t))_{k \in [1,\mathcal{K}]} \} = 1
+                \end{gather}
                 The other interesting properties exists in the situation that when only states of ES is presence and the constraints are inversely put on APs. With \emph{Bayes' Law}, we could have:
-                \begin{align*}
-                    & Pr\{ \sum{S_k(t)} | S_n(t,t+1) \} \\
-                    =& \frac{ Pr\{\sum{S_k(t)}\} \cdot Pr\{S_n(t,t+1)|\sum{S_k(t)}\} }{ Pr\{S_n(t,t+1)\} } \\
+                \begin{align}
+                    & Pr\{ \sum{S_k(t)} | S_n(t,t+1) \} \nonumber\\
+                    =& \frac{ Pr\{\sum{S_k(t)}\} \cdot Pr\{S_n(t,t+1)|\sum{S_k(t)}\} }{ Pr\{S_n(t,t+1)\} } \nonumber\\
                     =& \frac{
                             \prod_k Pr\{S_k(t)\}
                         }{
                             Pr\{S_n(t,t+1)\}
                         }
-                \end{align*}
-                where, $S_n(t,t+1) \triangleq S_{n}^{(C)}(t+1) |S_{n}^{(C)}(t)$, and $\sum{S_k(t)} \triangleq \{S_{k}^{(U)}(t)\}_{k \in [1,K]}$.
+                \end{align}
+                where $S_n(t,t+1) \triangleq S_{n}^{(C)}(t+1) |S_{n}^{(C)}(t)$, and $\sum{S_k(t)} \triangleq \{S_{k}^{(U)}(t)\}_{k \in [1,K]}$.
             \end{subsubsection}
 
             \begin{subsubsection}{Cost Function and Bellman Equation}
-                (Value function in Bellman equation format, and average cost function brought by transition function)
-                As we are considering broadcast delay, we could re-consider the broadcast information as partially observed collected information lasting for $\hat{x}_k$ time slots.
-                \\
-                However, according to our previous assumption: the communication delay according to propagation delay is also comparable to arrival interval and is not negligible; but we could have \emph{piggyback} to make it work.
-                \\
+                According to the optimization target, we have the cost-to-go expression as followed:
                 $$
-                c(t) = N_k^{(W,U)}(t) + \sum_{k' \neq k} N_{k'}^{(W,U)}(t) + \sum_{n} N_{n}^{(C)}(t)
+                c(t) = \sum_{k \in \mathcal{K}}{|S^{(W)}_{k}(t)|}
+                        + \sum_{k \in \mathcal{K}}\sum_{k \in \mathcal{N}}{|S^{(U)}_{k,n}(t)|}
+                        + \sum_{k \in \mathcal{N}}{|S^{(C)}_{n}(t)|}
                 $$
+                The value equation in Bellman Equation format is as followed:
+                $$
+                V^{\pi}(S_g) = \sum_{S'_g} T(S_g, \pi(S_g), S'_g) (C(S_g') + \gamma V^{\pi}(S'_g))
+                $$
+                (need modification) where the dimension of possible $S'_g$ is:
+                $$
+                1 \times \sum{2^{|S^{(W)}_k|}} + (T_C \times T_U) \times \sum{2^{|S^{(W)}_k|+1}}
+                $$
+                and $C(S'_g)$ is the expectation of $c(t)$ given the arrival process as:
+                \begin{align*}
+                    C(S'_g) &= E[c(t)|(A^{(k)}(t))_{k \in [1,\mathcal{K}]}]
+                    \\
+                    &= 
+                \end{align*}
             \end{subsubsection}
         \end{subsection}
 
         \begin{subsection}{Local MDP Problem}
+            % TODO: stopped here
+            As we are considering broadcast delay, we could re-consider the broadcast information as partially observed collected information lasting for $\hat{x}_k$ time slots.
+
             We formulate the local MDP optimization problem, with the same target as global value function. As the policy applied on each AP could not obtain the global information, we design the broadcast for every nodes to share their local states to other nodes (APs).
             
             However, due to the broadcast delay, we could not optimize the original global optimization problem based on states on one single AP. So we develop the local MDP problem with collected broadcast information.
+
+            (given that broadcast delay is fixed, the length vector of fractions would be also fixed).
 
             \begin{subsubsection}{Broadcast Denotations}
                 The illustration figure \ref{fig:brd} for single broadcast includes several important time points which are also important in multiple asynchronous broadcast: $x_{k,*}, d_{k,*}, T^{br}_{k,*}$
