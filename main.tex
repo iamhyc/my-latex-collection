@@ -4,6 +4,7 @@
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
 \usepackage{graphicx}
+\usepackage{color, soul}
 \graphicspath{ {./images/} }
 
 \begin{document}
@@ -24,13 +25,11 @@
     %============================== ABSTRACT ==============================%
     \begin{abstract}
         \label{sec:abstract}
-        We formulate the problem with job dispatching in distributed Edge Computing system, and we identify the difficulty exists in delayed cooperation between different APs (Access Points) and ESs (Edge Servers) to 
-        \\
-        (in progress)
+        We formulate the problem with job dispatching in distributed Edge Computing system, and identify the difficulty exists in cooperation between APs (Access Points) and ESs (Edge Servers) with delayed information. In this work, we design the broadcast information in the system and formulate the corresponding problem into two-time-scale MDP problem.
     \end{abstract}
 
     \begin{IEEEkeywords}
-        Edge Computing, Delayed Information, Two-time Scale MDP
+        Edge Computing, Distributed Scheduling, Delayed Information, Two-time Scale MDP
     \end{IEEEkeywords}
 
     %============================ INTRODUCTION ============================%
@@ -41,34 +40,35 @@
     \end{section}
 
     %========================= LITERATURE REVIEW ==========================%
-    % \begin{section}{LITERATURE REVIEW}
-    %     \label{sec:review}
-    % \end{section}
+    \begin{section}{LITERATURE REVIEW}
+        \label{sec:review}
+        (in progress)
+    \end{section}
 
     %============================ FORMULATION =============================%
     \begin{section}{FORMULATION}
         \label{sec:formulation}
-        In this section, we will firstly explain the problem definition about jobs dispatching in the edge computing system. Then we formulate this problem under a global MDP framework, which assumes a centralized agent could apply actions globally with updated states from each node. At last, we the global optimization problem into local optimization on each AP's side. We identify that by observing the collection of obsolete broadcast information under reasonable design, the problem turns out to be a two-time-scale MDP problem.
+        In this section, we will firstly explain the problem definition about jobs dispatching in the edge computing system. Then we formulate this problem under a global MDP framework, which assumes a centralized agent could apply actions globally with updated states on each node. At last, we convert the global optimization problem into local optimization on each AP's side. We identify that by observing the collection of obsolete broadcast information under a reasonable design, the problem turns out to be a two-time-scale MDP problem.
 
         \begin{subsection}{Problem Definition}
-            In a Mobile Edge Computing system (MEC), the mobile users would firstly release their jobs to APs (Access Points), and APs make decision on which ES (Edge Servers) could better serve the job and dispatch them to corresponding ESs.
-            In our problem, we identify the process of jobs from release to be processed. We call the length of lifetime as \emph{response time} and mainly composed of: waiting time on AP to make decision, uploading time from AP to ES, and total computation time on ES.
+            In a Mobile Edge Computing system (MEC), the mobile users would firstly release their jobs to APs (Access Points), and APs make decision on which ES (Edge Servers) could better serve the job and then dispatch them to corresponding ESs.
+            In our problem, we consider the process of jobs from release to be processed. We identify the \emph{response time} of this process which is mainly composed of: waiting time on AP to make decision, uploading time from AP to ES, and total computation and waiting time on ES.
             
             The details about the communication model and computation model for jobs will be elaborated in the following subsection. And after that we will have one optimization definition for the general control problem with respect to dispatching and scheduling (but without constraints specified now).
 
             \begin{subsubsection}{Communication Model}
                 The communication model in our system ignores the underlaid physical property and MAC design. We focus on the communication process of uploading of jobs.
                 The assumed uploading time is deterministic and known in advance when the job is released to AP. The uploading time for one job may variance with respect to different ESs from the arrived AP, and the distribution of variance is not known in advance but is guaranteed with an expectation.
-                Moreover, we assume the uploading process could be parallel among jobs, which implies infinite capacity. The infinite capacity could become reasonable with special design by discouraging jobs release from users with signaling, and thus make the capacity available is always finite.
+                Moreover, we assume the uploading process could be parallel among jobs which implies infinite capacity, and the end-to-end time is domain by the propagation time and processing time rather than 
                 \\
-                As we are going to apply dispatching action for jobs on AP side, all the AP and ES nodes need to broadcast for cooperation. The broadcast delay is considered deterministic and rather fixed {for simplified formulation}.
+                As we are going to apply dispatching action for jobs on AP side, all the AP and ES nodes need to broadcast their jobs' information for cooperation. The broadcast delay is considered deterministic and asynchronous at their own pace.
                 The details of broadcast design about interval and contents will be elaborated in the \textit{Global Optimization Problem} section.
                 For now, we don't take the broadcast cost into consideration because it's not been easily evaluated in the complicated network model (without specified).
             \end{subsubsection}
 
             \begin{subsubsection}{Computation Model}
-                We assume that there is only one job being computed at one time on the edge server. The computation model is assumed to be deterministic, because the jobs to be computed on ESs are all considered released inside our system from Mobile Users.
-                Moreover, we assume unrelated parallel machine model which implies that the computation time for one job is known when released but has no relationship with respect to any servers.
+                We assume that there is only one job being computed at one time on the edge server. The computation model is assumed to be deterministic.
+                Moreover, we assume unrelated parallel machine model which implies that the computation time for one job is known when released but has no relationship among the edge servers.
             \end{subsubsection}
             
             \begin{subsubsection}{Optimization Problem}
@@ -98,7 +98,7 @@
                 \begin{gather*}
                     \mathbf{S}_g(t) \triangleq
                     \begin{Bmatrix}
-                        S_{k}^{(W)}(t) = \{ (L_U, L_C) \}_{N_{k}^{(W)}}
+                        S_{k}^{(W)}(t) = \{ (L_C) \}_{N_{k}^{(W)}}
                         \\
                         S_{k,n}^{(U)}(t)= \{ (L_C), L_{cd}^{(U)}(t) \}_{N_{k,n}^{(U)}}
                         \\
@@ -106,7 +106,7 @@
                     \end{Bmatrix}
                     _{k \in [1,\mathcal{K}], n \in [1,\mathcal{N}]}
                 \end{gather*}
-                where $L_U, L_C$ are constant vectors of length $\mathcal{N}$, each denoting the uploading time and computation time of that job on each server; and $L^{(U)}_{cd}(t), L^{(C)}_{cd}(t)$ are countdowns for uploading and computing time remained for that job.
+                where $L_C$ is a constant vector of length $\mathcal{N}$ with each denoting the computation time of that job on each server; and $L^{(U)}_{cd}(t), L^{(C)}_{cd}(t)$ are countdowns for uploading and computing time remained for that job.
             \end{subsubsection}
 
             \begin{subsubsection}{Update Rules and Transition Function}
@@ -173,14 +173,10 @@
         \end{subsection}
 
         \begin{subsection}{Local MDP Problem}
-            % TODO: stopped here
-            As we are considering broadcast delay, we could re-consider the broadcast information as partially observed collected information lasting for $\hat{x}_k$ time slots.
-
-            We formulate the local MDP optimization problem, with the same target as global value function. As the policy applied on each AP could not obtain the global information, we design the broadcast for every nodes to share their local states to other nodes (APs).
+            As we are considering broadcast delay, we could re-consider the broadcast information as partially observed collected information lasting for some time slots. We formulate the local MDP optimization problem with the same target as global value function, which means that each AP is considering the global cost for cooperation but only takes action on itself. As the policy applied on each AP could not obtain the global information, we design the broadcast for every nodes to share their local information to other nodes (APs).
             
+            Given that broadcast delay is fixed, the length vector of fractions would be also fixed.
             However, due to the broadcast delay, we could not optimize the original global optimization problem based on states on one single AP. So we develop the local MDP problem with collected broadcast information.
-
-            (given that broadcast delay is fixed, the length vector of fractions would be also fixed).
 
             \begin{subsubsection}{Broadcast Denotations}
                 The illustration figure \ref{fig:brd} for single broadcast includes several important time points which are also important in multiple asynchronous broadcast: $x_{k,*}, d_{k,*}, T^{br}_{k,*}$
@@ -203,14 +199,15 @@
                 And we denote all the partial or completed observed information (states of other nodes) in this smallest covering interval as $\Delta$.
                 We notice that there is one periodic behavior as the broadcast interval is fixed for each node, and the period is simply obtained by LCM (Least Common Multiple):
                 \begin{align*}
-                    p_{k} &= \bar{x}_k/\hat{x}_k
+                    p_{k} &= \tilde{x}_k/\hat{x}_k
                     \\
-                    \bar{x}_k &= lcm(x_{k,*})
+                    \tilde{x}_k &= LCM(x_{k,*})
                 \end{align*}
                 And the series of states over time is denoted as:
                 $$
                 \{ \Delta^{(k)}_1 \to \dots \to \Delta^{(k)}_{p_k} \} \to \Delta_{1}
                 $$
+                where the broadcast information will align at the end of each $p_k$-series and repeat the shape of the series always.
                 
                 The periodic behavior with the total $p_k$ behavior could be explained with \textit{information gap} in each period as $r_{k,*}$. Here we allows the time slot to be counted with $Z_+$, then we define the broadcast interval as \textit{additive modulo group} with respect to each node to $k$-th AP as $Z_{x_{k,*}}$. Then we find the gap in the periodic $\Delta_i$ is behaved in the remaining count-up way like:
                 $$
@@ -236,6 +233,13 @@
                 $$
                 \Delta^{(k)}_{1}, \Delta^{(k)}_{2}, \dots, \Delta^{(k)}_{p_k}, \Delta^{(k)}_{1}, \Delta^{(k)}_{2}\dots
                 $$
+
+                \begin{figure}[h]
+                    \centering
+                    \includegraphics[width=0.45\textwidth]{period-states.png}
+                    \caption{Illustration for States Division}
+                    \label{fig:division}
+                \end{figure}
             \end{subsubsection}
 
             \begin{subsubsection}{Multi-step Update Rule}
@@ -250,7 +254,8 @@
                 $$
                 \pi(a, \mathbf{\Delta}_i), |a_{\Delta_i}| \in \prod_{t \in \hat{x}_k} |2^{S^{(W)}(t)}|
                 $$
-                which is generated for all the possible states in next $\Delta_{i+1}$;
+                which is generated for all the possible states in next $\Delta_{i+1}$.
+                \hl{However, this action definition reveals the fatal error in problem formulation, as there is actually no information on $\hat{x}_k$ due to \textbf{broadcast delay}; we could always have the local information updated and derive other states given the \emph{update rule}, but is it optimal or is the gap acceptable?}
 
                 Then we have some notations for short expression of the transition from $\Delta_{i}$ to $\Delta{i+1}$ as:
                 \begin{align}
@@ -283,13 +288,7 @@
                     \item local cost function over $\Delta_i$
                 \end{itemize}
             \end{subsubsection}
-
-            \begin{subsubsection}{Optimality Gap to Global Optimization}
-                (in progress)
-                insight of optimality gap: action is fixed in the broadcast period;
-            \end{subsubsection}
         \end{subsection}
-
     \end{section}
 
     %============================= ALGORITHM ==============================%
