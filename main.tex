@@ -49,7 +49,7 @@
         \begin{itemize}
             \item We use MDP definition in \cite{sutton1998introduction}
             \item The earliest related works we find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing \emph{information}. The agent considers communication as extra action to synchronize the states and thus incurs extra cost. \\
-            However, the communication is without delay.
+            However, the communication is without delay, and converted into POMDP problem.
             \item The other work \cite{ref-02} considers continuous state observation with constant or stochastic delay with single agent. \\
             However, 
         \end{itemize}
@@ -58,14 +58,15 @@
     %============================ FORMULATION =============================%
     \begin{section}{FORMULATION}
         \label{sec:formulation}
-        In this section, we will firstly explain the problem definition about jobs dispatching in the edge computing system. Then we formulate this problem under a global MDP framework, which assumes a centralized agent could apply actions globally with updated states on each node. At last, we convert the global optimization problem into local optimization on each AP's side. We identify that by observing the collection of obsolete broadcast information under a reasonable design, the problem turns out to be a two-time-scale MDP problem.
 
-        \begin{subsection}{Problem Definition}
-            In a Mobile Edge Computing system (MEC), the mobile users would firstly release their jobs to APs (Access Points), and APs make decision on which ES (Edge Servers) could better serve the job and then dispatch them to corresponding ESs.
-            In our problem, we consider the process of jobs from release to be processed. We identify the \emph{response time} of this process which is mainly composed of: waiting time on AP to make decision, uploading time from AP to ES, and total computation and waiting time on ES.
+        In this section, we will firstly give out the definition of job dispatching models in the edge computing system. Then we illustrate the definition of the proposed optimization problem, and formulate it under MDP framework. The formulated distributed problem assumes APs apply their action independently on observation of broadcast information from other nodes with a reasonable broadcast design, and thus forms a collection of obsolete global states consensus on a global utility function. At last, we also give out the global problem definition with respect to our problem for comparison as upper bound.
+
+        \begin{subsection}{Model Definition}
+            In a Mobile Edge Computing (MEC) system, the mobile users would offload their computation jobs to the selected APs (Access Points) to the Edge Computing network. The APs would make decisions on each jobs to determine which ES (Edge Server) could better serve it and then dispatch jobs to the corresponding ES with a certain delayed time.
             
-            The details about the communication model and computation model for jobs will be elaborated in the following subsection. And after that we will have one optimization definition for the general control problem with respect to dispatching and scheduling (but without constraints specified now).
-
+            In our problem, we consider the process of jobs from release until be fully processed. We identify the \emph{response time} of this process is mainly composed of: waiting time on AP to make decision, uploading time from AP to ES, and total computation-and-waiting time on ES.
+            The details about the communication model and computation model for jobs will be elaborated in the following subsection. Moreover, to facilitate the cooperation among multiple APs, the well-designed broadcast is also elaborated in this section to help APs come to consensus on global states.
+            
             \begin{subsubsection}{Communication Model}
                 The communication model in our system ignores the underlaid physical property and MAC design. We focus on the communication process of uploading of jobs.
                 The assumed uploading time is deterministic and known in advance when the job is released to AP. The uploading time for one job may variance with respect to different ESs from the arrived AP, and the distribution of variance is not known in advance but is guaranteed with an expectation.
@@ -80,7 +81,59 @@
                 We assume that there is only one job being computed at one time on the edge server. The computation model is assumed to be deterministic.
                 Moreover, we assume unrelated parallel machine model which implies that the computation time for one job is known when released but has no relationship among the edge servers.
             \end{subsubsection}
+
+            \begin{subsubsection}{Broadcast Model}
+
+                \begin{itemize}
+                    \item global aligned broadcast; interval is far larger than the maximum delay from one nodes to the other AP nodes;
+                    \item consensus delay for $k$-th AP:
+                        \begin{align}
+                            \hat{d}_k = \max_{i\in(\mathcal{K}\cup\mathcal{N})}(d_{k,i})
+                        \end{align}
+                        and $\tau T + \hat{d}_k$ is the starting point of $\tau$-th stage for $k$-th AP;
+                    \item Stage for $k$-th AP:
+                        \begin{align}
+                            (x_k={\tau})\triangleq t \in [\tau T^{br}+\hat{d}_k, (\tau+1) T^{br}+\hat{d}_k]
+                        \end{align}
+                        where $\tau$ is the general global state between $(\tau-1) T$-th and $\tau T$-th timeslot for all the AP nodes;
+                    \item broadcast all of the information between the interval
+                    \item 
+                \end{itemize}
+
+                The illustration figure \ref{fig:brd} for single broadcast includes several important time points which are also important in multiple asynchronous broadcast: $x_{k,*}, d_{k,*}, T^{br}_{k,*}$
+                \begin{figure}[h]
+                    \centering
+                    \includegraphics[width=0.45\textwidth]{single-broadcast.png}
+                    \caption{Single broadcast timing illustration}
+                    \label{fig:brd}
+                \end{figure}
+                And with the implication from the single broadcast, we generalize the conclusion for every broadcasts with:
+                $$
+                x_{k,*} = d_{k,*} + T^{Br}_{*}
+                $$
+                which takes a reasonable assumption that $T>d$ always ($*=k',n$ for $k$-th AP).
+
+                Then we come up with the idea with collected broadcast states, which are split by the maximum broadcast interval which is denoted as $\hat{x}_k$:
+                $$
+                \hat{x}_k = \max(x_{k,*})
+                $$
+                And we denote all the partial or completed observed information (states of other nodes) in this smallest covering interval as $\Delta$.
+                We notice that there is one periodic behavior as the broadcast interval is fixed for each node, and the period is simply obtained by LCM (Least Common Multiple):
+                \begin{align*}
+                    p_{k} &= \tilde{x}_k/\hat{x}_k
+                    \\
+                    \tilde{x}_k &= LCM(x_{k,*})
+                \end{align*}
+            \end{subsubsection}
+
+        \end{subsection}
+
+        \begin{subsection}{Problem Formulation}
+            As we are considering broadcast delay, we could re-consider the broadcast information as partially observed collected information lasting for some time slots. We formulate the local MDP optimization problem with the same target as global value function, which means that each AP considers the global cost for cooperation but only takes action on itself. As the policy applied on each AP could not obtain the global information, we design the broadcast for every nodes to share their local information to other nodes (APs).
             
+            Given that broadcast delay is fixed, the length vector of fractions would be also fixed.
+            However, due to the broadcast delay, we could not optimize the original global optimization problem based on states on one single AP. So we develop the local MDP problem with collected broadcast information.
+
             \begin{subsubsection}{Optimization Problem}
                 We assume that there are $\mathcal{K}$ APs and $\mathcal{N}$ ESs in the MEC system.
                 The arrival process of jobs at $k$-th AP is: $A^{(k)}(t)=I(t; (L_U, L_C))$ which is a indicator random process. It will return $0$ if no jobs arrive at $t$-th time slot, and return the job with property $(L_U, L_C)$ if one job arrives. $L_U, L_C$ are both vectors of length $\mathcal{N}$ denoting the deterministic uploading time and computation time respectively.
@@ -98,12 +151,8 @@
                 where $N_k(t)$ denotes the number of jobs on $k$-th AP, and $N_n(t)$ denotes the number of jobs on $n$-th ES.
                 The goal to minimize the cost caused by ESs could be simply achieved with heuristic algorithm \emph{SJF} (shortest-job first), because it is the fastest way to reduce number of jobs on the edge server. So, in the next MDP problems we will focus on the policy applied on AP side, and leave ES with fixed heuristic algorithm.
             \end{subsubsection}
-        \end{subsection}
 
-        \begin{subsection}{Global MDP Problem}
-            In this section, we give out the formulation of the optimization problem under the framework of MDP. In this section, we firstly ignore the obsolete information brought by the broadcast delay and assume a centralized agent could observe the global states in real-time. This formulation could help better understanding the structure of the problem and analyzing the optimality gap from the real localized optimization elaborated in next section.
-
-            \begin{subsubsection}{Markovian States}
+            \begin{subsubsection}{Single-Step Transition}
                 We adapt the description at grains of jobs and formulate the states into job sets at APs and ESs:
                 \begin{gather*}
                     \mathbf{S}_g(t) \triangleq
@@ -117,9 +166,7 @@
                     _{k \in [1,\mathcal{K}], n \in [1,\mathcal{N}]}
                 \end{gather*}
                 where $L_C$ is a constant vector of length $\mathcal{N}$ with each denoting the computation time of that job on each server; and $L^{(U)}_{cd}(t), L^{(C)}_{cd}(t)$ are countdowns for uploading and computing time remained for that job.
-            \end{subsubsection}
-
-            \begin{subsubsection}{Update Rules and Transition Function}
+            
                 \begin{figure}[h]
                     \centering
                     \includegraphics[width=0.45\textwidth]{single-transition.png}
@@ -158,62 +205,8 @@
                 where $S_n(t,t+1) \triangleq S_{n}^{(C)}(t+1) |S_{n}^{(C)}(t)$, and $\sum{S_k(t)} \triangleq \{S_{k}^{(U)}(t)\}_{k \in [1,K]}$.
             \end{subsubsection}
 
-            \begin{subsubsection}{Cost Function and Bellman Equation}
-                According to the optimization target, we have the cost-to-go expression as followed:
-                $$
-                c(t) = \sum_{k \in \mathcal{K}}{|S^{(W)}_{k}(t)|}
-                        + \sum_{k \in \mathcal{K}}\sum_{k \in \mathcal{N}}{|S^{(U)}_{k,n}(t)|}
-                        + \sum_{k \in \mathcal{N}}{|S^{(C)}_{n}(t)|}
-                $$
-                The value equation in Bellman Equation format is as followed:
-                $$
-                V^{\pi}(S_g) = \sum_{S'_g} T(S_g, \pi(S_g), S'_g) (C(S_g') + \gamma V^{\pi}(S'_g))
-                $$
-                (need modification) where the dimension of possible $S'_g$ is:
-                $$
-                1 \times \sum{2^{|S^{(W)}_k|}} + (T_C \times T_U) \times \sum{2^{|S^{(W)}_k|+1}}
-                $$
-                and $C(S'_g)$ is the expectation of $c(t)$ given the arrival process as:
-                \begin{align*}
-                    C(S'_g) &= E[c(t)|(A^{(k)}(t))_{k \in [1,\mathcal{K}]}]
-                    \\
-                    &= 
-                \end{align*}
-            \end{subsubsection}
-        \end{subsection}
-
-        \begin{subsection}{Local MDP Problem}
-            As we are considering broadcast delay, we could re-consider the broadcast information as partially observed collected information lasting for some time slots. We formulate the local MDP optimization problem with the same target as global value function, which means that each AP considers the global cost for cooperation but only takes action on itself. As the policy applied on each AP could not obtain the global information, we design the broadcast for every nodes to share their local information to other nodes (APs).
-            
-            Given that broadcast delay is fixed, the length vector of fractions would be also fixed.
-            However, due to the broadcast delay, we could not optimize the original global optimization problem based on states on one single AP. So we develop the local MDP problem with collected broadcast information.
-
-            \begin{subsubsection}{Broadcast Denotations}
-                The illustration figure \ref{fig:brd} for single broadcast includes several important time points which are also important in multiple asynchronous broadcast: $x_{k,*}, d_{k,*}, T^{br}_{k,*}$
-                \begin{figure}[h]
-                    \centering
-                    \includegraphics[width=0.45\textwidth]{single-broadcast.png}
-                    \caption{Single broadcast timing illustration}
-                    \label{fig:brd}
-                \end{figure}
-                And with the implication from the single broadcast, we generalize the conclusion for every broadcasts with:
-                $$
-                x_{k,*} = d_{k,*} + T^{Br}_{*}
-                $$
-                which takes a reasonable assumption that $T>d$ always ($*=k',n$ for $k$-th AP).
-
-                Then we come up with the idea with collected broadcast states, which are split by the maximum broadcast interval which is denoted as $\hat{x}_k$:
-                $$
-                \hat{x}_k = \max(x_{k,*})
-                $$
-                And we denote all the partial or completed observed information (states of other nodes) in this smallest covering interval as $\Delta$.
-                We notice that there is one periodic behavior as the broadcast interval is fixed for each node, and the period is simply obtained by LCM (Least Common Multiple):
-                \begin{align*}
-                    p_{k} &= \tilde{x}_k/\hat{x}_k
-                    \\
-                    \tilde{x}_k &= LCM(x_{k,*})
-                \end{align*}
-                And the series of states over time is denoted as:
+            \begin{subsubsection}{Multi-Step Transition}
+                The series of states over time is denoted as:
                 $$
                 \{ \Delta^{(k)}_1 \to \dots \to \Delta^{(k)}_{p_k} \} \to \Delta_{1}
                 $$
@@ -224,9 +217,7 @@
                 \hat{d}_{k,*}^{(i)} = i \times r_{k,*}
                 $$
                 where the remain is obtained by: $r_{k,*} \equiv \hat{x}_k \pmod{x_{k,*}}$.
-            \end{subsubsection}
 
-            \begin{subsubsection}{States Division in $\Delta_i$}
                 We take the following series of states in the $k$-th AP local optimization problem, compared with global optimization problem with single-step MDP, we compose a non-aligned multi-step MDP with respect to asynchronous broadcast.
                 \\
                 The reason for taking states of length $p_k$ in stack is: this the shortest interval to online update the global information one-time; and in this form, we establish the model-based method for the optimization problem, but not considering learning model by predicting current cost/state. Although the information is updated, we have to endure the propagation delay with respect to relative larger broadcast interval (this information could take advantage with \emph{piggyback} the little partition of information during the broadcast)
@@ -250,9 +241,7 @@
                     \caption{Illustration for States Division}
                     \label{fig:division}
                 \end{figure}
-            \end{subsubsection}
 
-            \begin{subsubsection}{Multi-step Update Rule}
                 the multi-step transition is not simply iteratively run the single-step transition. Because the transition is confined by information from other nodes, the probability distribution would be deducted with Bayes' Law.
 
                 Here we develope the rule for multi-step update.
@@ -291,14 +280,35 @@
                 Therefore, we could not easily write out the transition probability without the length of each broadcast information specified.
             \end{subsubsection}
 
-            \begin{subsubsection}{Total Transition and Bellman Equation}
-                The total transition function could be obtained via the previous update rules, which we denote as $T(\Delta_{i-1}, a_{\Delta_{i-1}}, \Delta_{i})$
-                \begin{itemize}
-                    \item discounted factor for revised cost function
-                    \item local cost function over $\Delta_i$
-                \end{itemize}
-            \end{subsubsection}
         \end{subsection}
+
+        \begin{subsection}{Global MDP Problem\*}
+            In this section, we give out the formulation of the global optimization problem with updated information under MDP framework. The algorithm for this problem would be trivial and 
+            under the framework of MDP. In this section, we firstly ignore the obsolete information brought by the broadcast delay and assume a centralized agent could observe the global states in real-time. This formulation could help better understanding the structure of the problem and analyzing the optimality gap from the real localized optimization elaborated in next section.
+
+            \subsubsection*{Cost Function and Bellman Equation}
+                According to the optimization target, we have the cost-to-go expression as followed:
+                $$
+                c(t) = \sum_{k \in \mathcal{K}}{|S^{(W)}_{k}(t)|}
+                        + \sum_{k \in \mathcal{K}}\sum_{k \in \mathcal{N}}{|S^{(U)}_{k,n}(t)|}
+                        + \sum_{k \in \mathcal{N}}{|S^{(C)}_{n}(t)|}
+                $$
+                The value equation in Bellman Equation format is as followed:
+                $$
+                V^{\pi}(S_g) = \sum_{S'_g} T(S_g, \pi(S_g), S'_g) (C(S_g') + \gamma V^{\pi}(S'_g))
+                $$
+                (need modification) where the dimension of possible $S'_g$ is:
+                $$
+                1 \times \sum{2^{|S^{(W)}_k|}} + (T_C \times T_U) \times \sum{2^{|S^{(W)}_k|+1}}
+                $$
+                and $C(S'_g)$ is the expectation of $c(t)$ given the arrival process as:
+                \begin{align*}
+                    C(S'_g) &= E[c(t)|(A^{(k)}(t))_{k \in [1,\mathcal{K}]}]
+                    \\
+                    &= 
+                \end{align*}
+        \end{subsection}
+        
     \end{section}
 
     %============================= ALGORITHM ==============================%
@@ -316,8 +326,6 @@
     %============================= CONCLUSION =============================%
     \begin{section}{CONCLUTION}
         \label{sec:conclusion}
-        (in progress)
-
         The future work to mention:
         \begin{itemize}
             \item broadcast failure
