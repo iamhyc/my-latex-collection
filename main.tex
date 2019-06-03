@@ -29,20 +29,30 @@
     \end{abstract}
 
     \begin{IEEEkeywords}
-        Edge Computing, Distributed Scheduling, Delayed Information, Two-time Scale MDP
+        Edge Computing, Distributed Scheduling, Delayed Information, Collective Observability, Distributed Multi-agent MDP
     \end{IEEEkeywords}
 
     %============================ INTRODUCTION ============================%
     \begin{section}{INTRODUCTION}
         \label{sec:introduction}
         (in progress)
-        \cite{sutton1998introduction}
+
+        Some traits to mention compared to related works:
+        \begin{itemize}
+            \item we don't accept communication cost in broadcast, because the global information to share requires both collective information and delayed information and the waiting time for scheduling should be avoided.
+        \end{itemize}
     \end{section}
 
     %========================= LITERATURE REVIEW ==========================%
     \begin{section}{LITERATURE REVIEW}
         \label{sec:review}
-        (in progress)
+        \begin{itemize}
+            \item We use MDP definition in \cite{sutton1998introduction}
+            \item The earliest related works we find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing \emph{information}. The agent considers communication as extra action to synchronize the states and thus incurs extra cost. \\
+            However, the communication is without delay.
+            \item The other work \cite{ref-02} considers continuous state observation with constant or stochastic delay with single agent. \\
+            However, 
+        \end{itemize}
     \end{section}
 
     %============================ FORMULATION =============================%
@@ -125,24 +135,24 @@
                 \end{align*}
                 and we have the disturbance existing in the system as:
                 \begin{gather*}
-                    Pr\{ I^{(W \to U)}(t) | S_{k}^{(W)}(t),A^{(k)}(t), a(t) \}
+                    \Pr\{ I^{(W \to U)}(t) | S_{k}^{(W)}(t),A^{(k)}(t), a(t) \}
                     \\
-                        = Pr\{ A^{(k)}(t) \} \times \pi(a, \mathbf{S}'(t)|A^{(k)}(t))
+                        = \Pr\{ A^{(k)}(t) \} \times \pi(a, S_g(t)|A^{(k)}(t))
                 \end{gather*}
-                where $I^{(W \to U)}(t)$ implies $S^{(W)}_{k}(t+1)$ and $S^{(U)}_{k,n}(t+1)$;
+                where $I^{(W \to U)}(t)$ implies transition function for $S^{(W)}_{k}(t+1)$ and $S^{(U)}_{k,n}(t+1)$;
 
                 The states transition on ES is easily obtained as following because the computation process on ES is deterministic:
                 \begin{gather}
-                    Pr\{ S_{n}^{(C)}(t+1) |S_{n}^{(C)}(t), (S_{k}^{(U)}(t))_{k \in [1,\mathcal{K}]} \} = 1
+                    \Pr\{ S_{n}^{(C)}(t+1) |S_{n}^{(C)}(t), (S_{k}^{(U)}(t))_{k \in [1,\mathcal{K}]} \} = 1
                 \end{gather}
                 The other interesting properties exists in the situation that when only states of ES is presence and the constraints are inversely put on APs. With \emph{Bayes' Law}, we could have:
                 \begin{align}
-                    & Pr\{ \sum{S_k(t)} | S_n(t,t+1) \} \nonumber\\
-                    =& \frac{ Pr\{\sum{S_k(t)}\} \cdot Pr\{S_n(t,t+1)|\sum{S_k(t)}\} }{ Pr\{S_n(t,t+1)\} } \nonumber\\
+                    & \Pr\{ \sum{S_k(t)} | S_n(t,t+1) \} \nonumber\\
+                    =& \frac{ \Pr\{\sum{S_k(t)}\} \cdot \Pr\{S_n(t,t+1)|\sum{S_k(t)}\} }{ \Pr\{S_n(t,t+1)\} } \nonumber\\
                     =& \frac{
-                            \prod_k Pr\{S_k(t)\}
+                            \prod_k \Pr\{S_k(t)\}
                         }{
-                            Pr\{S_n(t,t+1)\}
+                            \Pr\{S_n(t,t+1)\}
                         }
                 \end{align}
                 where $S_n(t,t+1) \triangleq S_{n}^{(C)}(t+1) |S_{n}^{(C)}(t)$, and $\sum{S_k(t)} \triangleq \{S_{k}^{(U)}(t)\}_{k \in [1,K]}$.
@@ -173,7 +183,7 @@
         \end{subsection}
 
         \begin{subsection}{Local MDP Problem}
-            As we are considering broadcast delay, we could re-consider the broadcast information as partially observed collected information lasting for some time slots. We formulate the local MDP optimization problem with the same target as global value function, which means that each AP is considering the global cost for cooperation but only takes action on itself. As the policy applied on each AP could not obtain the global information, we design the broadcast for every nodes to share their local information to other nodes (APs).
+            As we are considering broadcast delay, we could re-consider the broadcast information as partially observed collected information lasting for some time slots. We formulate the local MDP optimization problem with the same target as global value function, which means that each AP considers the global cost for cooperation but only takes action on itself. As the policy applied on each AP could not obtain the global information, we design the broadcast for every nodes to share their local information to other nodes (APs).
             
             Given that broadcast delay is fixed, the length vector of fractions would be also fixed.
             However, due to the broadcast delay, we could not optimize the original global optimization problem based on states on one single AP. So we develop the local MDP problem with collected broadcast information.
@@ -259,9 +269,9 @@
 
                 Then we have some notations for short expression of the transition from $\Delta_{i}$ to $\Delta{i+1}$ as:
                 \begin{align}
-                    P_k(T,a) &\triangleq Pr\{ S^{(W,U)}_{k,D_T}|S^{(W,U)}_{k,D_1}, a_{\vec{D_T}},A^{(k)}_{\vec{D_T} }\}
+                    P_k(T,a) &\triangleq \Pr\{ S^{(W,U)}_{k,D_T}|S^{(W,U)}_{k,D_1}, a_{\vec{D_T}},A^{(k)}_{\vec{D_T} }\}
                     \\
-                    P_n(T) &\triangleq Pr\{ S^{(C)}_{n,D_T}|S^{(C)}_{n,D_1}, S^{(U)}_{k,\vec{D_T}} \}
+                    P_n(T) &\triangleq \Pr\{ S^{(C)}_{n,D_T}|S^{(C)}_{n,D_1}, S^{(U)}_{k,\vec{D_T}} \}
                 \end{align}
                 and further more we have $\Delta \triangleq \{ \bar{P}_i, R_i, P_i \}$ where $R_i$ is consisted of states aligned at start and ending, $P_i$ is not aligned at ending, and $\bar{P}_i$ is not aligned at start and complement to $P_{i-1}$.
 
@@ -307,6 +317,12 @@
     \begin{section}{CONCLUTION}
         \label{sec:conclusion}
         (in progress)
+
+        The future work to mention:
+        \begin{itemize}
+            \item broadcast failure
+            \item randomized broadcast delay
+        \end{itemize}
     \end{section}
 
     %============================== REFERENCE =============================%
