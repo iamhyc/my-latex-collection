@@ -5,13 +5,31 @@
 \usepackage{algorithmic}
 \usepackage{graphicx}
 \usepackage{color, soul}
+\usepackage{svg}
 \graphicspath{ {./images/} }
+
+%---------------------------------------------------------------%
+%-Include Graphics Macro:---------------------------------------%
+% \begin{figure}[h]                                             %
+%     \centering                                                %
+%     \includegraphics[width=0.45\textwidth]{*}                 %
+%     \caption{}                                                %
+%     \label{fig:*}                                             %
+% \end{figure}                                                  %
+%-Include PDF Figures Macro:------------------------------------%
+% \begin{figure}[h]                                             %
+%     \centering                                                %
+%     \includegraphics[width=0.45\textwidth, trim={0.5cm 0.5cm 0.5cm 0.5cm}, clip]{*.pdf}
+%     \caption{}                                                %
+%     \label{fig:*}                                             %
+% \end{figure}                                                  %
+%---------------------------------------------------------------%
 
 \begin{document}
 
     %=============================== TITLE ===============================%
     \title{
-        Delay Optimal Dispatching with Observed Broadcast Replay in Two-Time Scale MDP
+        Meet-in-Future: Optimized Dispatching with Obsolete Information in Edge Computing System with MDP
     }
     \author{
         \IEEEauthorblockN{HONG Yuncong}
@@ -134,6 +152,13 @@
             Given that broadcast delay is fixed, the length vector of fractions would be also fixed.
             However, due to the broadcast delay, we could not optimize the original global optimization problem based on states on one single AP. So we develop the local MDP problem with collected broadcast information.
 
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.45\textwidth, trim={0.5cm 0.5cm 0.5cm 0.5cm}, clip]{system-model.pdf}
+                \caption{The Illustration of System Model}
+                \label{fig:system}
+            \end{figure}
+
             \begin{subsubsection}{Optimization Problem}
                 We assume that there are $\mathcal{K}$ APs and $\mathcal{N}$ ESs in the MEC system.
                 The arrival process of jobs at $k$-th AP is: $A^{(k)}(t)=I(t; (L_U, L_C))$ which is a indicator random process. It will return $0$ if no jobs arrive at $t$-th time slot, and return the job with property $(L_U, L_C)$ if one job arrives. $L_U, L_C$ are both vectors of length $\mathcal{N}$ denoting the deterministic uploading time and computation time respectively.
@@ -206,63 +231,38 @@
             \end{subsubsection}
 
             \begin{subsubsection}{Multi-Step Transition}
-                The series of states over time is denoted as:
-                $$
-                \{ \Delta^{(k)}_1 \to \dots \to \Delta^{(k)}_{p_k} \} \to \Delta_{1}
-                $$
-                where the broadcast information will align at the end of each $p_k$-series and repeat the shape of the series always.
+                We adapt aligned broadcast in practice, and broadcast all the local information between the broadcast interval to establish consensus on the global states. And the agents would take action on the obsolete observed states.
+
+                We denote the collective global states between broadcasts as:
+                \begin{align}
+                    & \Delta_1, \Delta_2, \Delta_3, \dots
+                    \\
+                    \text{where, } & \Delta_i \triangleq \{S(t)\}_{t \in [iT^{br},(i+1)T^{br})} \nonumber
+                \end{align}
+                and it stresses that each agent all maintains the same $\Delta_i$ for a $T^{br}$ period but not aligned, due to different consensus delay $\hat{d}_k$ on each agent.
                 
-                The periodic behavior with the total $p_k$ behavior could be explained with \textit{information gap} in each period as $r_{k,*}$. Here we allows the time slot to be counted with $Z_+$, then we define the broadcast interval as \textit{additive modulo group} with respect to each node to $k$-th AP as $Z_{x_{k,*}}$. Then we find the gap in the periodic $\Delta_i$ is behaved in the remaining count-up way like:
-                $$
-                \hat{d}_{k,*}^{(i)} = i \times r_{k,*}
-                $$
-                where the remain is obtained by: $r_{k,*} \equiv \hat{x}_k \pmod{x_{k,*}}$.
+                In this consensus formulation, we actually let every agents know the global states with different deterministic delay. The delayed information doesn't impact on global states formulation of MDP problem, but converted into delayed composed action. For example, the agent would take actions based both on global states $\Delta_1$ and $\Delta_2$ in the period of $\Delta_3$, because in the first half period it doesn't come to consensus on global states $\Delta_2$.
 
-                We take the following series of states in the $k$-th AP local optimization problem, compared with global optimization problem with single-step MDP, we compose a non-aligned multi-step MDP with respect to asynchronous broadcast.
-                \\
-                The reason for taking states of length $p_k$ in stack is: this the shortest interval to online update the global information one-time; and in this form, we establish the model-based method for the optimization problem, but not considering learning model by predicting current cost/state. Although the information is updated, we have to endure the propagation delay with respect to relative larger broadcast interval (this information could take advantage with \emph{piggyback} the little partition of information during the broadcast)
+                We establish the following transition function for global states:
+                \begin{align}
+                    & \Pr\{\Delta_{i+1}, \Delta_{i} | \Delta_{i}, \Delta_{i-1}, \vec{\Omega}_k(\Delta_i), \vec{\Omega}_k(\Delta_{i-1})\}
+                \end{align}
+                where the output of policy $\Omega_k(\cdot)$ is a distribution of length $(\mathcal{N}+1)$ to determine the job uploading decision in the next $T^{br}$ period for $k$-th agent.
 
-                denote the *bounding time* of $S_*$ in $i$-th episode as: ($i \in [0, p_k]$):
-                $$
-                t^{(i)}_{k,*} = i \times \hat{x}_k - \hat{d}^{(i)}_{k,*}
-                $$
-                then we have all the states expression in $\Delta^{(k)}_i$-th period as:
-                $$
-                \{ S_*(t^{(i-1)}_{k,*}), S_*(t^{(i-1)}_{k,*}+1), \dots, S_*(t^{(i)}_{k,*}) \}_{* \in [1,k+n-1]}
-                $$
-                The states are denoted as previous mentioned:
-                $$
-                \Delta^{(k)}_{1}, \Delta^{(k)}_{2}, \dots, \Delta^{(k)}_{p_k}, \Delta^{(k)}_{1}, \Delta^{(k)}_{2}\dots
-                $$
+                This implies that: \hl{we cannot meet into future, but we can trace back into past}. The insight might be we have to maintain global consensus states to take action, and local states could no even come out with Markovian process.
 
                 \begin{figure}[h]
                     \centering
-                    \includegraphics[width=0.45\textwidth]{period-states.png}
-                    \caption{Illustration for States Division}
-                    \label{fig:division}
+                    \includegraphics[width=0.45\textwidth]{broadcast-trans.png}
+                    \caption{Global Consensus and Transition with Delayed Action}
+                    \label{fig:br-trans}
                 \end{figure}
-
-                the multi-step transition is not simply iteratively run the single-step transition. Because the transition is confined by information from other nodes, the probability distribution would be deducted with Bayes' Law.
-
-                Here we develope the rule for multi-step update.
-                Action definition of the action generated in $\Delta_{i}$ as:
-                $$
-                a_{\vec{D_T}} = \{ a_{D_1}, \dots, a_{D_T} \}
-                $$
-                and the dimension is:
-                $$
-                \pi(a, \mathbf{\Delta}_i), |a_{\Delta_i}| \in \prod_{t \in \hat{x}_k} |2^{S^{(W)}(t)}|
-                $$
-                which is generated for all the possible states in next $\Delta_{i+1}$.
-                \hl{However, this action definition reveals the fatal error in problem formulation, as there is actually no information on $\hat{x}_k$ due to \textbf{broadcast delay}; we could always have the local information updated and derive other states given the \emph{update rule}, but is it optimal or is the gap acceptable?}
-
                 Then we have some notations for short expression of the transition from $\Delta_{i}$ to $\Delta{i+1}$ as:
                 \begin{align}
                     P_k(T,a) &\triangleq \Pr\{ S^{(W,U)}_{k,D_T}|S^{(W,U)}_{k,D_1}, a_{\vec{D_T}},A^{(k)}_{\vec{D_T} }\}
                     \\
                     P_n(T) &\triangleq \Pr\{ S^{(C)}_{n,D_T}|S^{(C)}_{n,D_1}, S^{(U)}_{k,\vec{D_T}} \}
                 \end{align}
-                and further more we have $\Delta \triangleq \{ \bar{P}_i, R_i, P_i \}$ where $R_i$ is consisted of states aligned at start and ending, $P_i$ is not aligned at ending, and $\bar{P}_i$ is not aligned at start and complement to $P_{i-1}$.
 
                 The transition function of states $\Delta_i$ is composed of multiple single-step transitions, and impacted by inner deduction constraints due to Bayes' Law. We firstly give out the rules for update, and explain why the mathematical expression for transition function would be complex and not readable.
                 \\
@@ -282,11 +282,11 @@
 
         \end{subsection}
 
-        \begin{subsection}{Global MDP Problem\*}
+        \begin{subsection}{Global MDP Comparision}
             In this section, we give out the formulation of the global optimization problem with updated information under MDP framework. The algorithm for this problem would be trivial and 
             under the framework of MDP. In this section, we firstly ignore the obsolete information brought by the broadcast delay and assume a centralized agent could observe the global states in real-time. This formulation could help better understanding the structure of the problem and analyzing the optimality gap from the real localized optimization elaborated in next section.
 
-            \subsubsection*{Cost Function and Bellman Equation}
+            \begin{subsubsection}{Cost Function and Bellman Equation}
                 According to the optimization target, we have the cost-to-go expression as followed:
                 $$
                 c(t) = \sum_{k \in \mathcal{K}}{|S^{(W)}_{k}(t)|}
@@ -307,6 +307,7 @@
                     \\
                     &= 
                 \end{align*}
+            \end{subsubsection}
         \end{subsection}
         
     \end{section}
