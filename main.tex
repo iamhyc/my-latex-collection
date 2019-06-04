@@ -243,13 +243,48 @@
                 
                 In this consensus formulation, we actually let every agents know the global states with different deterministic delay. The delayed information doesn't impact on global states formulation of MDP problem, but converted into delayed composed action. For example, the agent would take actions based both on global states $\Delta_1$ and $\Delta_2$ in the period of $\Delta_3$, because in the first half period it doesn't come to consensus on global states $\Delta_2$.
 
+                This implies that: \hl{We meet the states in future with actions traced back in past}. The insight exists in agents would contribute into global state transition, but the limited observation with obsolete information makes them always choose action on one-step-latter global states. So, one agent should carry out \emph{policy improvement} with other agents fix their action in this period for convenience and it comes to convergence always as the observations do not change with respect to policies. 
+
+                To formulate the transition between states, we firstly give out the denotation for single-step transition with fixed policy as:
+                \begin{align}
+                    p(\vec{\Omega}) \triangleq \Pr\{ S(t+1)|S(t), \vec{\Omega},\vec{A}(t) \}
+                \end{align}
+                And we sort the index of AP due to their consensus delay $\hat{d}_k$ from small to big, i.e. $\hat{d}_1 \leq \hat{d}_2 \leq \dots \hat{d}_{\mathcal{K}}$. This order is kept as presumption in the follow section.
+
+                For the global broadcast interval $T^{br}$ we have the following composed action denotations as:
+                \begin{align}
+                    &\vec{\Omega}_{\Delta{t}} = 
+                    \begin{cases}
+                        \vec{\Omega}(\Delta_{i-1}, \dots, \Delta_{i-1}), & \Delta{t} < \hat{d}_1 \\
+                        \vec{\Omega}(\Delta_{i},\Delta_{i-1}, \dots, \Delta_{i-1}), & \hat{d}_1 \leq \Delta{t}< \hat{d}_2 \\
+                        \dots, & \dots \\
+                        \vec{\Omega}(\Delta_{i}, \dots, \Delta_{i}), & \Delta{t} \geq \hat{d}_{\mathcal{K}} \\
+                    \end{cases}
+                \end{align}
+                where,
+                \begin{align}
+                    &\vec{\Omega}(\Delta_{i}, \dots, \Delta_{i}, \Delta_{i-1}, \dots, \Delta_{i-1}) \triangleq \nonumber\\
+                    & \{\Omega^{(1)}(\Delta_{i}), \dots, \Omega^{(k-1)}(\Delta_{i}),\Omega^{(k)}(\Delta_{i-1}), \dots, \Omega^{(\mathcal{K})}(\Delta_{i-1})\}
+                \end{align}
+                and we have the one-step transition as:
+                \begin{align}
+                    & p(\vec{\Omega}_{\Delta{t}})
+                    = \prod_{\hat{d}_k<\Delta{t}}{ p(\Omega^{(k)}(\Delta_{i-1})) }
+                            \times
+                            \prod_{\hat{d}_k\geq\Delta{t}}{ p(\Omega^{(k)}(\Delta_{i})) }
+                \end{align}
+                where the output of policy $\Omega^{(k)}(\cdot)$ is a distribution of length $(\mathcal{N}+1)$ to determine the job uploading decision in the next $T^{br}$ period for $k$-th agent.
+
                 We establish the following transition function for global states:
                 \begin{align}
-                    & \Pr\{\Delta_{i+1}, \Delta_{i} | \Delta_{i}, \Delta_{i-1}, \vec{\Omega}_k(\Delta_i), \vec{\Omega}_k(\Delta_{i-1})\}
+                    & \Pr\{\Delta_{i+1}, \Delta_{i} | \Delta_{i}, \Delta_{i-1}, \vec{\Omega}(\Delta_i), \vec{\Omega}(\Delta_{i-1})\} \nonumber\\
+                    = & \prod_{\Delta{t}} p(\vec{\Omega}_{\Delta{t}})
                 \end{align}
-                where the output of policy $\Omega_k(\cdot)$ is a distribution of length $(\mathcal{N}+1)$ to determine the job uploading decision in the next $T^{br}$ period for $k$-th agent.
-
-                This implies that: \hl{we cannot meet into future, but we can trace back into past}. The insight might be we have to maintain global consensus states to take action, and local states could no even come out with Markovian process.
+                Then we denote $\tilde{\Delta}_{i} \triangleq (\Delta_{i+1}, \Delta_{i})$ and try to convert this probabilistic transition into MDP form as:
+                \begin{align}
+                    & Pr\{ \tilde{\Delta}_i | \tilde{\Delta}_{i-1}, \Omega(\tilde{\Delta}_{i-1}) \} \nonumber\\
+                    = & 
+                \end{align}
 
                 \begin{figure}[h]
                     \centering
@@ -257,27 +292,12 @@
                     \caption{Global Consensus and Transition with Delayed Action}
                     \label{fig:br-trans}
                 \end{figure}
-                Then we have some notations for short expression of the transition from $\Delta_{i}$ to $\Delta{i+1}$ as:
+                Then we have some notations for short expression of the transition from $\Delta_{i}$ to $\Delta_{i+1}$ as:
                 \begin{align}
                     P_k(T,a) &\triangleq \Pr\{ S^{(W,U)}_{k,D_T}|S^{(W,U)}_{k,D_1}, a_{\vec{D_T}},A^{(k)}_{\vec{D_T} }\}
                     \\
                     P_n(T) &\triangleq \Pr\{ S^{(C)}_{n,D_T}|S^{(C)}_{n,D_1}, S^{(U)}_{k,\vec{D_T}} \}
                 \end{align}
-
-                The transition function of states $\Delta_i$ is composed of multiple single-step transitions, and impacted by inner deduction constraints due to Bayes' Law. We firstly give out the rules for update, and explain why the mathematical expression for transition function would be complex and not readable.
-                \\
-                (The update rule algorithm:)
-                \begin{enumerate}
-                    \item Complement Step: \\
-                    Firstly given ES constraints to extend AP states and complete other ES states not given, until the bound without ES constraints, $\max(\hat{d}_{k,n}^{(i-1)})$;\\
-                    Then given fixed AP to deduct AP and completes ES states until bound of $R_i$, $\max(\hat{d}^{(i-1)}_{k,*})$;
-                    \item Aligned Expansion Step: \\
-                    Simply carry out multi-step transition lasting for $( \hat{x}^{(i)}_k - \max(\hat{d}^{(i)}_{k,*}) )$
-                    \item Non-aligned Expansion Step: \\
-                    Firstly extends AP states to the maximum bound $\hat{x}^{(i)}_k$; \\
-                    Then complements needed ES states with \emph{Total Probability Theorem} and remove the un-needed AP states (the removal process is safe for the given states are removed after sum-up of total probability)
-                \end{enumerate}
-                Therefore, we could not easily write out the transition probability without the length of each broadcast information specified.
             \end{subsubsection}
 
         \end{subsection}
@@ -329,6 +349,7 @@
         \label{sec:conclusion}
         The future work to mention:
         \begin{itemize}
+            \item non-aligned broadcast
             \item broadcast failure
             \item randomized broadcast delay
         \end{itemize}
