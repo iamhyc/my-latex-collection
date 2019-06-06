@@ -153,7 +153,7 @@
                 
                 Our optimization target is to minimize the average waiting time and computation time for each job, which is called the jobs' average response time. According to \emph{Little’s Law}, to minimize average response time, is equal to minimize the average number of jobs in a system, which is:
                 \begin{gather}
-                    \min_{\pi} \lim_{T \to \infty} E[\frac{1}{T} \sum_{t=0}^{T} N(t)]
+                    \min_{\Omega} \lim_{T \to \infty} E[\frac{1}{T} \sum_{t=0}^{T} N(t)]
                     \\
                     N(t) = \sum_{k \in \mathcal{K}} (A^{(k)}(t) + N_k(t))
                             + \sum_{n \in \mathcal{N}} N_n(t)
@@ -177,36 +177,49 @@
                 \end{align}
                 where $L_C$ is a constant vector of length $\mathcal{N}$ with each denoting the computation time of that job on each server; and $L^{(U)}_{cd}(t), L^{(C)}_{cd}(t)$ are countdowns for uploading and computing time remained for that job respectively.
             
+                The single step transition graph is given below:
                 \begin{figure}[h]
                     \centering
                     \includegraphics[width=0.45\textwidth]{single-transition.png}
                     \caption{Single-step transition function composing illustration}
                     \label{fig:trans}
                 \end{figure}
+                Besides the states definition being illustrated above, we also have policy definition for $\vec{Omega}(t) \triangleq (\Omega^{(1)}(t), \dots, \Omega^{(\mathcal{K})}(t))$. Each single policy $\Omega^{(k)}{t}$ defined on $k$-th AP is based on single action distribution $a^{(k)}(j)$.
+                The single action $a^{(k)}$ is defined for $k$-th AP as: for a $j$-type job, it should keep waiting or being uploaded to $n$-th server. As we have total $L_C^{\mathcal{N}}$ kinds of jobs for all the unrelated machine, the action is defined as following:
+                \begin{align}
+                    a^{(k)}(j) \triangleq \Pr\{N=n\}
+                \end{align}
+                where $j \in [1, L_C^{\mathcal{N}}], n \in [0,\mathcal{N}]$ with dimensionality as $L_C^{\mathcal{N}} \times (\mathcal{N}+1)$. Then we come up with the policy distribution on $k$-th AP:
+                \begin{align}
+                    & \Omega^{(k)}(a^{(k)}, S^{(W)}_k(t)|A^{(k)}(t))
+                    =  \prod_{j \in S^{(W)}_k(t) \cup A^{(k)}(t)} a^{(k)}(j)
+                \end{align}
 
-                Firstly, we come up with some useful denotations for job sets to be transitioned to next stage as expressed in figure \ref{fig:trans}:
+                We come up with some useful denotations for job sets to be sent to next stage as expressed in figure \ref{fig:trans}:
                 \begin{align}
                     I^{(W \to U)}_{k,n}(N;L) &\triangleq \{ (L_i),L^{(U)}_{cd}:=T^{prop}_{k,n} \}_{i \in N}
                     \\
                     I^{(U \to C)}_{n}(N;L) &\triangleq \{ L^{(C)}_{cd}:=L_i \}_{i \in N}
                 \end{align}
-                where $I^{(W \to U)}_{k,n}(N;L)$ denotes the jobs been marked to upload in next time slot, $I^{(U \to C)}_{n}(N;L)$ denotes the just-uploaded job to start computation in next time slot; and we have the disturbance existing in the system as:
+                where $N$ is the number of jobs and $L$ is the vector of the length $N$ of the property respectively. $I^{(W \to U)}_{k,n}(N;L)$ denotes the jobs been marked to upload in next time slot, $I^{(U \to C)}_{n}(N;L)$ denotes the just-uploaded job to start computation in next time slot. We note that this is the only disturbance on the single AP agent, and we denote its probability as:
                 \begin{align}
-                    & \Pr\{ \{I^{(W \to U)}_{k,n}(t)\}_{n \in \mathcal{N}} | S_{k}^{(W)}(t), \vec{A}(t), a(t) \} \nonumber\\
-                    = & \Pr\{ A^{(k)}(t) \} \times \pi(a, S(t))
+                    & \Pr\{ \{I^{(W \to U)}_{k,n}(t)\}_{n \in \mathcal{N}} | S_{k}^{(W)}(t), A^{(k)}(t), \Omega^{(k)}(t) \} \nonumber\\
+                    = & \Pr\{ A^{(k)}(t) \} \times \Omega^{(k)}(t)
                 \end{align}
-                and with $I^{(W \to U)}(t)$ determined, the transition function for $S^{(W)}_{k}(t)$ and $S^{(U)}_{k,n}(t)$ is also determined which is:
+                And with $I^{(W \to U)}(t)$ determined, we could obtain the joint distribution of independent AP agents with respect to $S^{(W)}(t),S^{(U)}(t)$ as:
+                the transition function for $S^{(W)}_{k}(t)$ and $S^{(U)}_{k,n}(t)$ is also determined as:
                 \begin{align}
                     & \Pr\{
                         \begin{pmatrix}
-                            S^{(W)}_{k}(t+1) \\ \{S^{(U)}_{k,n}\}_{n \in \mathcal{N}(t+1)}
+                            S^{(W)}(t+1) \\ S^{(U)}(t+1)
                         \end{pmatrix}
                         |
                         \begin{pmatrix}
-                            S^{(W)}_{k}(t) \\ \{S^{(U)}_{k,n}\}_{n \in \mathcal{N}(t)}
-                        \end{pmatrix}, \vec{A}(t), a(t) \}
+                            S^{(W)}(t) \\ S^{(U)}(t)
+                        \end{pmatrix}, \vec{A}(t), \vec{\Omega}(t)
+                    \}
                     \nonumber\\
-                    = & \prod_k \Pr\{ A^{(k)}(t) \} \times \pi(a, S(t))
+                    = & \prod_{k \in \mathcal{K}} \Pr\{ A^{(k)}(t) \} \times \Omega^{(k)}(t)
                 \end{align}
 
                 On the other side, the states transition on ES is easily obtained as following because the computation process on ES is deterministic:
@@ -216,9 +229,9 @@
 
                 At last, we could come out with the global states transition function composed of the two parts as:
                 \begin{align}
-                    & \Pr\{ S(t+1)|S(t), \vec{A}(t), a(t)  \}
+                    & \Pr\{ S(t+1)|S(t), \vec{A}(t), \vec{\Omega}(t)  \}
                     \nonumber\\
-                    = & \prod_k \Pr\{ A^{(k)}(t) \} \times \pi(a, S(t))
+                    = & \prod_{k \in \mathcal{K}} \Pr\{ A^{(k)}(t) \} \times \Omega^{(k)}(t)
                 \end{align}
 
                 % The other interesting properties exists in the situation that when only states of ES is presence and the constraints are inversely put on APs. With \emph{Bayes' Law}, we could have:
