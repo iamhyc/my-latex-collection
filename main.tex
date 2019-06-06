@@ -149,7 +149,7 @@
                 The arrival process of jobs at $k$-th AP is: $A^{(k)}(t)=I[t; L_C]$ which is a indicator random process. It will return $0$ if no jobs arrive at $t$-th time slot, and return the job with property $L_C$ if one job arrives, where $L_C$ is a vector of length $\mathcal{N}$ denoting the deterministic computation time on unrelated machines.
                 The computation time $L_C$ is bounded by $T_C$, i.e. $L_C \in [1,T_C]$.
                 
-                For one job $j$, it will wait until the uploading decision is made for it. Then it takes a general $T^{(U)}$ time to be uploaded to $n$-th server; after uploaded, it will wait for its turn for computing until all the $L_C(n)$ components are processed and leave the system.
+                For one job $j$, it will wait until the uploading decision is made for it. Then it takes a general $T^{prop}_{k,n}$ time to be uploaded to $n$-th server from $k$-th access point; after being uploaded, it will wait for its turn for computing until all the $L_C(n)$ components are processed and leave the system.
                 
                 Our optimization target is to minimize the average waiting time and computation time for each job, which is called the jobs' average response time. According to \emph{Little’s Law}, to minimize average response time, is equal to minimize the average number of jobs in a system, which is:
                 \begin{gather}
@@ -163,9 +163,9 @@
             \end{subsubsection}
 
             \begin{subsubsection}{Single-Step Transition}
-                We adapt the description at job-level grains and formulate the states into job sets at APs and ESs:
+                We adapt the problem description at job-level grains and formulate the global states at $t$-th timeslot into job sets at APs and ESs:
                 \begin{align}
-                    \mathbf{S}(t) \triangleq
+                    S(t) \triangleq
                     \begin{Bmatrix}
                         S_{k}^{(W)}(t) = \{ (L_C) \}_{N_{k}^{(W)}}
                         \\
@@ -184,23 +184,41 @@
                     \label{fig:trans}
                 \end{figure}
 
-                Firstly, we come up with some useful denotations for transmission expressed in figure \ref{fig:trans} as:
+                Firstly, we come up with some useful denotations for job sets to be transitioned to next stage as expressed in figure \ref{fig:trans}:
                 \begin{align}
-                    I^{(W \to U)}_{k,n}(N;L) &\triangleq \{ (L_i),L^{(U)}_{cd}:=T^{br}_{k,n} \}_{i \in N}
+                    I^{(W \to U)}_{k,n}(N;L) &\triangleq \{ (L_i),L^{(U)}_{cd}:=T^{prop}_{k,n} \}_{i \in N}
                     \\
                     I^{(U \to C)}_{n}(N;L) &\triangleq \{ L^{(C)}_{cd}:=L_i \}_{i \in N}
                 \end{align}
-                and we have the disturbance existing in the system as:
+                where $I^{(W \to U)}_{k,n}(N;L)$ denotes the jobs been marked to upload in next time slot, $I^{(U \to C)}_{n}(N;L)$ denotes the just-uploaded job to start computation in next time slot; and we have the disturbance existing in the system as:
                 \begin{align}
-                    & \Pr\{ I^{(W \to U)}(t) | S_{k}^{(W)}(t),A^{(k)}(t), a(t) \}
-                    \\
-                    = & \Pr\{ A^{(k)}(t) \} \times \pi(a, S_g(t)|A^{(k)}(t))
+                    & \Pr\{ \{I^{(W \to U)}_{k,n}(t)\}_{n \in \mathcal{N}} | S_{k}^{(W)}(t), \vec{A}(t), a(t) \} \nonumber\\
+                    = & \Pr\{ A^{(k)}(t) \} \times \pi(a, S(t))
                 \end{align}
-                where $I^{(W \to U)}(t)$ implies transition function for $S^{(W)}_{k}(t+1)$ and $S^{(U)}_{k,n}(t+1)$;
+                and with $I^{(W \to U)}(t)$ determined, the transition function for $S^{(W)}_{k}(t)$ and $S^{(U)}_{k,n}(t)$ is also determined which is:
+                \begin{align}
+                    & \Pr\{
+                        \begin{pmatrix}
+                            S^{(W)}_{k}(t+1) \\ \{S^{(U)}_{k,n}\}_{n \in \mathcal{N}(t+1)}
+                        \end{pmatrix}
+                        |
+                        \begin{pmatrix}
+                            S^{(W)}_{k}(t) \\ \{S^{(U)}_{k,n}\}_{n \in \mathcal{N}(t)}
+                        \end{pmatrix}, \vec{A}(t), a(t) \}
+                    \nonumber\\
+                    = & \prod_k \Pr\{ A^{(k)}(t) \} \times \pi(a, S(t))
+                \end{align}
 
-                The states transition on ES is easily obtained as following because the computation process on ES is deterministic:
+                On the other side, the states transition on ES is easily obtained as following because the computation process on ES is deterministic:
                 \begin{align}
                     \Pr\{ S_{n}^{(C)}(t+1) |S_{n}^{(C)}(t), (S_{k}^{(U)}(t))_{k \in [1,\mathcal{K}]} \} = 1
+                \end{align}
+
+                At last, we could come out with the global states transition function composed of the two parts as:
+                \begin{align}
+                    & \Pr\{ S(t+1)|S(t), \vec{A}(t), a(t)  \}
+                    \nonumber\\
+                    = & \prod_k \Pr\{ A^{(k)}(t) \} \times \pi(a, S(t))
                 \end{align}
 
                 % The other interesting properties exists in the situation that when only states of ES is presence and the constraints are inversely put on APs. With \emph{Bayes' Law}, we could have:
@@ -223,10 +241,8 @@
                 We denote the collective global consensus observation on local features as:
                 \begin{align*}
                     & S_0, S_1, S_2, S_3, \dots
-                    \\
-                    \text{where, } & S_i \triangleq S(iT^{br}) \nonumber
                 \end{align*}
-                and it stresses that each agent all maintains the same $S_i$ for a $T^{br}$ period but not aligned due to different consensus delay $\hat{d}_k$ on each agent.
+                where $S_i \triangleq S(iT^{br})$; and it stresses that each agent all maintains the same $S_i$ for a $T^{br}$ period but not aligned due to different consensus delay $\hat{d}_k$ on each agent.
                 
                 In this consensus formulation, we actually let every agents know the global states with different deterministic delay. The delayed information doesn't impact on global states formulation of MDP problem, but converted into delayed composed action. For example, the agent would take actions based both on global states $S_1$ and $S_2$ in the period of $S_3$, because in the first half period it doesn't come to consensus on global states $S_2$.
 
