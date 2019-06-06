@@ -191,8 +191,9 @@
                 \end{align}
                 where $j \in [1, L_C^{\mathcal{N}}], n \in [0,\mathcal{N}]$ with dimensionality as $L_C^{\mathcal{N}} \times (\mathcal{N}+1)$. Then we come up with the policy distribution on $k$-th AP:
                 \begin{align}
-                    & \Omega^{(k)}(a^{(k)}, S^{(W)}_k(t)|A^{(k)}(t))
-                    =  \prod_{j \in S^{(W)}_k(t) \cup A^{(k)}(t)} a^{(k)}(j)
+                    \Omega^{(k)}(t) &= \Pr(a^{(k)}, S^{(W)}_k(t)|A^{(k)}(t))
+                    \nonumber\\
+                    &= \prod_{j \in S^{(W)}_k(t) \cup A^{(k)}(t)} a^{(k)}(j)
                 \end{align}
 
                 We come up with some useful denotations for job sets to be sent to next stage as expressed in figure \ref{fig:trans}:
@@ -233,40 +234,20 @@
                     \nonumber\\
                     = & \prod_{k \in \mathcal{K}} \Pr\{ A^{(k)}(t) \} \times \Omega^{(k)}(t)
                 \end{align}
-
-                % The other interesting properties exists in the situation that when only states of ES is presence and the constraints are inversely put on APs. With \emph{Bayes' Law}, we could have:
-                % \begin{align}
-                %     & \Pr\{ \sum{S_k(t)} | S_n(t,t+1) \} \nonumber\\
-                %     =& \frac{ \Pr\{\sum{S_k(t)}\} \cdot \Pr\{S_n(t,t+1)|\sum{S_k(t)}\} }{ \Pr\{S_n(t,t+1)\} } \nonumber\\
-                %     =& \frac{
-                %             \prod_k \Pr\{S_k(t)\}
-                %         }{
-                %             \Pr\{S_n(t,t+1)\}
-                %         }
-                % \end{align}
-                % where $S_n(t,t+1) \triangleq S_{n}^{(C)}(t+1) |S_{n}^{(C)}(t)$, and $\sum{S_k(t)} \triangleq \{S_{k}^{(U)}(t)\}_{k \in [1,K]}$.
             \end{subsubsection}
 
             \begin{subsubsection}{Multi-Step Transition}
-                We adapt aligned broadcast in practice, and all of nodes will broadcast their local features at the point of broadcast, and the cost collected in the broadcast interval.
-                This joint information composes obsolete observations on all the AP nodes, and the nodes thus establish consensus on the global states. We assume that AP agents would take action on the one-step-backward obsolete observed states which result into a Markovian process and will be explained followed.
+                We adapt aligned broadcast in practice where all of nodes will broadcast their local features at the point of broadcast and the cost collected in the broadcast interval.
+                This joint information composes obsolete observations on all the AP nodes, and the nodes thus establish consensus on a global features. We assume that AP agents would take action on the one-step-backward obsolete observed states which result into a Markovian process and will be explained followed.
 
                 We denote the collective global consensus observation on local features as:
                 \begin{align*}
                     & S_0, S_1, S_2, S_3, \dots
                 \end{align*}
-                where $S_i \triangleq S(iT^{br})$; and it stresses that each agent all maintains the same $S_i$ for a $T^{br}$ period but not aligned due to different consensus delay $\hat{d}_k$ on each agent.
-                
-                In this consensus formulation, we actually let every agents know the global states with different deterministic delay. The delayed information doesn't impact on global states formulation of MDP problem, but converted into delayed composed action. For example, the agent would take actions based both on global states $S_1$ and $S_2$ in the period of $S_3$, because in the first half period it doesn't come to consensus on global states $S_2$.
+                where $S_i \triangleq S(iT^{br})$. it stresses that each agent all maintains the same $S_i$ for a $T^{br}$ period but not aligned due to different consensus delay $\hat{d}_k$ on each agent.
 
-                This implies that: \hl{The agents meet states in future with actions traced back into past}. The insight exists in agents would contribute into global state transition, but the limited observation with obsolete information makes them always choose action based on the one-step-latter global states. So, one agent should carry out \emph{policy improvement} with other agents who fix their actions in this period for convenience. This improvement iteration comes to convergence always as the observations do not change with respect to policies.
+                In this consensus formulation which is illustrated in figure \ref{fig:br-trans}, we actually let every agents know the global states with different deterministic delay. The delayed information doesn't impact on global states formulation of MDP problem, but converted into delayed composed action. For example, the agent would take actions based both on global states $S_1$ and $S_2$ in the period of $S_3$, because in the first half period it doesn't come to consensus on global states $S_2$.
 
-                To formulate the transition between states, we firstly give out the denotation for single-step transition with fixed policy as:
-                \begin{align}
-                    p(\vec{\Omega}) \triangleq \Pr\{ S(t+1)|S(t), \vec{\Omega},\vec{A}(t) \}
-                \end{align}
-                And we sort the index of AP due to their consensus delay $\hat{d}_k$ from small to big, i.e. $\hat{d}_1 \leq \hat{d}_2 \leq \dots \hat{d}_{\mathcal{K}}$. This order is kept as presumption in the follow section.
-                
                 \begin{figure}[h]
                     \centering
                     \includegraphics[width=0.45\textwidth]{broadcast-trans.png}
@@ -274,33 +255,41 @@
                     \label{fig:br-trans}
                 \end{figure}
 
+                This implies that: \hl{The agents meet states in future with actions traced back into past}. The agents would contribute into global state transition, but the limited observation with obsolete information makes them always choose action based on the one-step-latter global states. So, one agent should carry out \emph{policy improvement} with other agents who fix their actions in its iteration. This improvement iteration comes to convergence always as the observations do not change with respect to policies.
+
+                To formulate the transition between states, we firstly give out the denotation for single-step transition with fixed action as:
+                \begin{align}
+                    p_{\vec{a}}(t) \triangleq \Pr\{ S(t+1)|S(t), \vec{\Omega}(\vec{a}),\vec{A}(t) \}
+                \end{align}
+                where $\vec{a} \triangleq (a^{(1)}, \dots, a^{(\mathcal{N})})$ is the fixed action vector on each nodes. Furthermore, we sort the index of APs with respect to their consensus delay $\hat{d}_k$ from small to big, i.e. $\hat{d}_1 \leq \hat{d}_2 \leq \dots \hat{d}_{\mathcal{K}}$. This order is kept as a presumption in the follow parts.
+
                 For the global broadcast interval $T^{br}$ we have the following composed action denotations as:
                 \begin{align}
                     &\vec{\Omega}_{\Delta{t}} = 
                     \begin{cases}
-                        \vec{\Omega}(\Delta_{i-1}, \dots, \Delta_{i-1}), & \Delta{t} < \hat{d}_1 \\
-                        \vec{\Omega}(\Delta_{i},\Delta_{i-1}, \dots, \Delta_{i-1}), & \hat{d}_1 \leq \Delta{t}< \hat{d}_2 \\
-                        \dots, & \dots \\
-                        \vec{\Omega}(\Delta_{i}, \dots, \Delta_{i}), & \Delta{t} \geq \hat{d}_{\mathcal{K}} \\
+                        \vec{\Omega}(\vec{a}(S_{i-1}, \dots, S_{i-1})) &,\; 0 \leq \Delta{t} < \hat{d}_1 \\
+                        \vec{\Omega}(\vec{a}(S_{i}, S_{i-1}, \dots, S_{i-1})) &,\; \hat{d}_1 \leq \Delta{t}< \hat{d}_2 \\
+                        \dots &,\; \dots \\
+                        \vec{\Omega}(\vec{a}(S_{i}, S_{i}, \dots, S_{i})) &,\; \hat{d}_{\mathcal{K}} \leq \Delta{t} < T^{br} \\
                     \end{cases}
                 \end{align}
-                where,
+                where
                 \begin{align}
-                    &\vec{\Omega}(\Delta_{i}, \dots, \Delta_{i}, \Delta_{i-1}, \dots, \Delta_{i-1}) \triangleq \nonumber\\
-                    & \{\Omega^{(1)}(\Delta_{i}), \dots, \Omega^{(k-1)}(\Delta_{i}),\Omega^{(k)}(\Delta_{i-1}), \dots, \Omega^{(\mathcal{K})}(\Delta_{i-1})\}
+                    & \vec{a}(S_i,\dots, S_i,S_{i-1}, \dots,S_{i-1})
+                    \nonumber\\
+                    = & (a^{(1)}(S_i),\dots,a^{(k-1)}(S_i), a^{(k)}(S_i),\dots,a^{(\mathcal{K})}(S_i))
                 \end{align}
                 and we have the one-step transition as:
                 \begin{align}
                     & p(\vec{\Omega}_{\Delta{t}})
-                    = \prod_{\hat{d}_k<\Delta{t}}{ p(\Omega^{(k)}(\Delta_{i-1})) }
+                    = \prod_{\hat{d}_k<\Delta{t}}{ p_{\vec{a}(S_{i})}(t) }
                             \times
-                            \prod_{\hat{d}_k\geq\Delta{t}}{ p(\Omega^{(k)}(\Delta_{i})) }
+                            \prod_{\hat{d}_k\geq\Delta{t}}{ p_{\vec{a}(S_{i-1})}(t) }
                 \end{align}
-                where the output of policy $\Omega^{(k)}(\cdot)$ is a distribution of length $(\mathcal{N}+1)$ to determine the job uploading decision in the next $T^{br}$ period for $k$-th agent.
 
-                We establish the following transition function for global states:
+                As the action defined on the latest observed states, would actually latter two stage relative to next broadcast, we firstly establish the following transition function for the joint observation $\tilde{S}_i \triangleq (S_{i}, S_{i-1})$:
                 \begin{align}
-                    & \Pr\{\Delta_{i+1}, \Delta_{i} | \Delta_{i}, \Delta_{i-1}, \vec{\Omega}(\Delta_i), \vec{\Omega}(\Delta_{i-1})\} \nonumber\\
+                    & \Pr\{\tilde{S}_{i+1} | \tilde{S}_{i}, \vec{\Omega}(\Delta_i), \vec{\Omega}(\Delta_{i-1})\} \nonumber\\
                     = & \prod_{\Delta{t}} p(\vec{\Omega}_{\Delta{t}})
                 \end{align}
                 Then we denote $\tilde{\Delta}_{i} \triangleq (\Delta_{i+1}, \Delta_{i})$ and try to convert this probabilistic transition into MDP form as $\Pr\{ \tilde{\Delta}_i | \tilde{\Delta}_{i-1}, \vec{\Omega}(\tilde{\Delta}_{i-1}) \}$, where $\vec{\Omega}(\tilde{\Delta}_{i-1}) \equiv \vec{\Omega}_{\Delta{t}}$.
