@@ -191,7 +191,7 @@
                 \end{align}
                 where $j \in [1, L_C^{\mathcal{N}}], n \in [0,\mathcal{N}]$ with dimensionality as $L_C^{\mathcal{N}} \times (\mathcal{N}+1)$. Then we come up with the policy distribution on $k$-th AP:
                 \begin{align}
-                    \Omega^{(k)}(t) &= \Pr(a^{(k)}, S^{(W)}_k(t)|A^{(k)}(t))
+                    \Omega^{(k)}(t) &\triangleq \Pr\{a^{(k)}, S^{(W)}_k(t)|A^{(k)}(t)\}
                     \nonumber\\
                     &= \prod_{j \in S^{(W)}_k(t) \cup A^{(k)}(t)} a^{(k)}(j)
                 \end{align}
@@ -257,13 +257,13 @@
 
                 This implies that: \hl{The agents meet states in future with actions traced back into past}. The agents would contribute into global state transition, but the limited observation with obsolete information makes them always choose action based on the one-step-latter global states. So, one agent should carry out \emph{policy improvement} with other agents who fix their actions in its iteration. This improvement iteration comes to convergence always as the observations do not change with respect to policies.
 
-                To formulate the transition between states, we firstly give out the denotation for single-step transition with fixed action as:
+                To formulate the transition between states, we firstly give out the denotation for single-step transition with fixed action given previous state $s$ as:
                 \begin{align}
-                    p_{\vec{a}}(t) \triangleq \Pr\{ S(t+1)|S(t), \vec{\Omega}(\vec{a}),\vec{A}(t) \}
+                    p(\vec{a}|s) \triangleq \Pr\{ S(t+1)|S(t)=s, \vec{\Omega}(\vec{a}),\vec{A}(t) \}
                 \end{align}
-                where $\vec{a} \triangleq (a^{(1)}, \dots, a^{(\mathcal{N})})$ is the fixed action vector on each nodes. Furthermore, we sort the index of APs with respect to their consensus delay $\hat{d}_k$ from small to big, i.e. $\hat{d}_1 \leq \hat{d}_2 \leq \dots \hat{d}_{\mathcal{K}}$. This order is kept as a presumption in the follow parts.
+                where $\vec{a} \triangleq (a^{(1)}, \dots, a^{(\mathcal{N})})$ is the fixed action vector on each nodes, and $p(\vec{a})$ denotes the \emph{transition matrix} under the fixed action. Furthermore, we sort the index of APs with respect to their consensus delay $\hat{d}_k$ from small to big, i.e. $\hat{d}_1 \leq \hat{d}_2 \leq \dots \hat{d}_{\mathcal{K}}$. This order is kept as a presumption in the follow parts.
 
-                For the global broadcast interval $T^{br}$ we have the following composed action denotations as:
+                For the global broadcast interval $T^{br}$ we have the following composed action denotations for $\Delta{t} \equiv t \pmod{T^{br}}$ as:
                 \begin{align}
                     &\vec{\Omega}_{\Delta{t}} = 
                     \begin{cases}
@@ -279,20 +279,21 @@
                     \nonumber\\
                     = & (a^{(1)}(S_i),\dots,a^{(k-1)}(S_i), a^{(k)}(S_i),\dots,a^{(\mathcal{K})}(S_i))
                 \end{align}
-                and we have the one-step transition as:
+                and we have the one-step transition from $S_{i}$ to $S_{i+1}$ as:
                 \begin{align}
-                    & p(\vec{\Omega}_{\Delta{t}})
-                    = \prod_{\hat{d}_k<\Delta{t}}{ p_{\vec{a}(S_{i})}(t) }
-                            \times
-                            \prod_{\hat{d}_k\geq\Delta{t}}{ p_{\vec{a}(S_{i-1})}(t) }
+                    p(\vec{\Omega}_{\Delta{t}}) =& \prod_{k\in\mathcal{K}}{\Pr\{A^{(k)}(t)\}} \times \prod_{\hat{d}_k \leq \Delta{t}} { \Omega^{(k)}(a^{(k)}(S_{i}))}
+                    \nonumber \\
+                    & \times \prod_{\hat{d}_k > \Delta{t}} { \Omega^{(k)}(a^{(k)}(S_{i-1})) }
                 \end{align}
 
-                As the action defined on the latest observed states, would actually latter two stage relative to next broadcast, we firstly establish the following transition function for the joint observation $\tilde{S}_i \triangleq (S_{i}, S_{i-1})$:
+                As the action defined on the latest observed states would actually latter two stages relative to next broadcast, we firstly establish the following transition function for the joint observation $\tilde{S}_i \triangleq (S_{i}, S_{i-1})$ as:
                 \begin{align}
-                    & \Pr\{\tilde{S}_{i+1} | \tilde{S}_{i}, \vec{\Omega}(\Delta_i), \vec{\Omega}(\Delta_{i-1})\} \nonumber\\
-                    = & \prod_{\Delta{t}} p(\vec{\Omega}_{\Delta{t}})
+                    & \Pr\{\tilde{S}_{i+1} | \tilde{S}_{i}, \vec{\Omega}(\tilde{S}_i)\}
+                    \nonumber\\
+                    = & \Pr\{S_{i+1}, S_{i} | S_{i},S_{i-1}, \vec{\Omega}(S_{i}), \vec{\Omega}(S_{i-1})\}
+                    \nonumber\\
+                    = & p(\vec{a}(S_{i-1})|S_{i-1}) \times \prod_{\Delta{t} \in [1,T^{br})} p(\vec{\Omega}_{\Delta{t}})
                 \end{align}
-                Then we denote $\tilde{\Delta}_{i} \triangleq (\Delta_{i+1}, \Delta_{i})$ and try to convert this probabilistic transition into MDP form as $\Pr\{ \tilde{\Delta}_i | \tilde{\Delta}_{i-1}, \vec{\Omega}(\tilde{\Delta}_{i-1}) \}$, where $\vec{\Omega}(\tilde{\Delta}_{i-1}) \equiv \vec{\Omega}_{\Delta{t}}$.
             \end{subsubsection}
 
         \end{subsection}
