@@ -286,7 +286,7 @@
                 
                 Furthermore, we sort the index of APs with respect to their consensus delay $\hat{d}_k$ from small to big, i.e. $\hat{d}_1 \leq \hat{d}_2 \leq \dots \hat{d}_{K}$. This order is kept as a presumption in the follow parts. For the global broadcast interval $T^{br}$, the composed action denotations are given according to the consensus delays with $\Delta{t} \equiv t \pmod{T^{br}}$ as:
                 \begin{align}
-                    &\vec{\Omega}_{\Delta{t}} = 
+                    &\vec{\Omega}_{\Delta{t}}(S_{i-1},S_{i}) = 
                     \begin{cases}
                         \vec{\Omega}(\vec{\beta}(S_{i-1}, \dots, S_{i-1})) &,\; 0 \leq \Delta{t} < \hat{d}_1 \\
                         \vec{\Omega}(\vec{\beta}(S_{i}, S_{i-1}, \dots, S_{i-1})) &,\; \hat{d}_1 \leq \Delta{t}< \hat{d}_2 \\
@@ -315,8 +315,8 @@
                     = & \Pr\{S_{i+1}, S_{i} | S_{i},S_{i-1}, \vec{\Omega}(S_{i}), \vec{\Omega}(S_{i-1})\}
                     \nonumber\\
                     = & \{
-                            \prod_{\Delta{t} \in [1,T^{br})} P_{ss'}(\vec{\beta}_{\Delta{t}})
-                        \}_{S_i, S_{i+1}}
+                            \prod_{\Delta{t} \in [1,T^{br}]} P_{ss'}(\vec{\beta}_{\Delta{t}})
+                        \}_{S_{i}, S_{i+1}}
                 \end{align}
             \end{subsubsection}
 
@@ -325,34 +325,39 @@
         \begin{subsection}{Standard MDP Formulation}
             We formulate the standard MDP problem in this section.
 
-            \begin{subsubsection}{States}
+            \begin{subsubsection}{State and Cost}
                 \begin{align}
                     T_t \triangleq \begin{pmatrix}
-                        S_t \\ S_{t+1} \\ C(T_t)
-                    \end{pmatrix}
+                        S_t \\ S_{t-1} \\ C(t)
+                    \end{pmatrix}, t=1,2,\dots
+                \end{align}
+
+                The transition for $(S_{t}, S_{t-1})$ is with policy $\vec{\Omega}(\tilde{S}_i)$ elaborated in the last section.
+                
+                While $C(t)$ denotes the cost collected in the last broadcast interval, we have the expression as:
+                \begin{align}
+                    C(t) = \sum_{t'\in[1,T^{br}]} \sum_{s'} P_{S_{t-1},s'}^{t'}(\vec{\beta}_{\Delta{t}}) \times |s'|
+                \end{align}
+                where,
+                \begin{align}
+                    P_{S_{t-1},s'}^{t'}(\vec{\beta}_{\Delta{t}})
+                    = \{
+                        \prod_{\Delta{t} \in [1,t']} P_{ss'}(\vec{\beta}_{\Delta{t}})
+                    \}_{S_{t-1}, s'}
                 \end{align}
             \end{subsubsection}
 
             \begin{subsubsection}{Action and Policy}
+                Same as the definition in last section.
                 \begin{align}
-                    \Omega^{(k)}(S_t)
-                \end{align}
-            \end{subsubsection}
-
-            \begin{subsubsection}{Discounted Costs}
-                \begin{align}
-                    c(t) = \sum_{k \in \mathcal{K}}{|S^{(W)}_{k}(t)|}
-                        + \sum_{k \in \mathcal{K}}\sum_{n \in \mathcal{N}}{|S^{(U)}_{k,n}(t)|}
-                        + \sum_{k \in \mathcal{N}}{|S^{(C)}_{n}(t)|}
+                    \vec{\Omega}(T_t) = \vec{\Omega}(\tilde{S}_t) \equiv \vec{\Omega}_{\Delta{t}}(S_t, S_{t-1})
                 \end{align}
             \end{subsubsection}
 
             \begin{subsubsection}{Bellman Equation}
-                The value equation in Bellman Equation format is as followed:
                 \begin{align}
-                    V^{\Omega^{(k)}} = C(T_t) + \gamma \sum \Pr(T_{t+1}|T_{t}, \vec{\Omega}) V^{\Omega}(T_{t+1})
+                    V(T_t) = C(t) + \gamma \sum \Pr(T_{t+1}|T_{t}, \vec{\Omega}(T_t)) V(T_{t+1})
                 \end{align}
-                where the dimension of possible $T_t$ is: ???; and $C(T_t)$ is the expectation of $c(t)$ given the arrival process as ???.
             \end{subsubsection}
         \end{subsection}
         
