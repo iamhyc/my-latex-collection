@@ -100,12 +100,11 @@
             \end{subsubsection}
 
             \begin{subsubsection}{Broadcast Model}
-
                 \begin{itemize}
                     \item global aligned broadcast; interval is far larger than the maximum delay from one nodes to the other AP nodes;
                     \item consensus delay for $k$-th AP:
                         \begin{align}
-                            \hat{d}_k = \max_{i\in(\mathcal{K}\cup\mathcal{N})}(d_{k,i})
+                            \hat{d}_k = \max_{i\in(\mathcal{K} \cup \mathcal{N})}(d_{k,i})
                         \end{align}
                         and $\tau T + \hat{d}_k$ is the starting point of $\tau$-th stage for $k$-th AP;
                     \item Stage for $k$-th AP:
@@ -114,7 +113,6 @@
                         \end{align}
                         where $\tau$ is the general global state between $(\tau-1) T$-th and $\tau T$-th timeslot for all the AP nodes;
                     \item broadcast all of the information between the interval
-                    \item 
                 \end{itemize}
 
                 The illustration figure \ref{fig:brd} for single broadcast includes several important time points which are also important in multiple synchronous broadcast: $x_{k,j}, d_{k,j}, T^{br}_{k,j}$
@@ -145,18 +143,18 @@
             \end{figure}
 
             \begin{subsubsection}{Optimization Problem}
-                We assume that there are $\mathcal{K}$ APs and $\mathcal{N}$ ESs in the MEC system.
-                The arrival process of jobs at $k$-th AP is: $A^{(k)}(t)=I[t; L_C]$ which is a indicator random process. It will return $0$ if no jobs arrive at $t$-th time slot, and return the job with property $L_C$ if one job arrives, where $L_C$ is a vector of length $\mathcal{N}$ denoting the deterministic computation time on unrelated machines.
+                We assume that there are $K$ APs and $N$ ESs in the MEC system.
+                The arrival process of jobs at $k$-th AP is: $A^{(k)}(t)=I[t; L_C]$ which is a indicator random process. It will return $0$ if no jobs arrive at $t$-th time slot, and return the job with property $L_C$ if one job arrives, where $L_C$ is a vector of length $N$ denoting the deterministic computation time on unrelated machines.
                 The computation time $L_C$ is bounded by $T_C$, i.e. $L_C \in [1,T_C]$.
                 
-                For one job $j$, it will wait until the uploading decision is made for it. Then it takes a general $T^{prop}_{k,n}$ time to be uploaded to $n$-th server from $k$-th access point; after being uploaded, it will wait for its turn for computing until all the $L_C(n)$ components are processed and leave the system.
+                For one job $j$, it will wait until the uploading decision is made for it. Then it takes a general $T^{prop}_{k,n}$ time to be uploaded to $n$-th server from $k$-th access point; after being uploaded to $n$-th server, it will wait for its turn for computing until all the $L_C(n)$ components are processed and leave the system.
                 
                 Our optimization target is to minimize the average waiting time and computation time for each job, which is called the jobs' average response time. According to \emph{Little’s Law}, to minimize average response time, is equal to minimize the average number of jobs in a system, which is:
                 \begin{gather}
                     \min_{\Omega} \lim_{T \to \infty} E[\frac{1}{T} \sum_{t=0}^{T} N(t)]
                     \\
-                    N(t) = \sum_{k \in \mathcal{K}} (A^{(k)}(t) + N_k(t))
-                            + \sum_{n \in \mathcal{N}} N_n(t)
+                    N(t) = \sum_{k \in K} (A^{(k)}(t) + N_k(t))
+                            + \sum_{n \in N} N_n(t)
                 \end{gather}
                 where $N_k(t)$ denotes the number of jobs on $k$-th AP, and $N_n(t)$ denotes the number of jobs on $n$-th ES.
                 The goal to minimize the cost caused by ESs could be simply achieved with heuristic algorithm \emph{SJF} (shortest-job first), because it is the fastest way to reduce number of jobs on the edge server. So, in the next MDP problems we will focus on the policy applied on AP side, and leave ES with fixed heuristic algorithm.
@@ -173,30 +171,36 @@
                         \\
                         S_{n}^{(C)}(t)  = \{ L_{cd}^{(C)}(t) \}_{N_{n}^{(C)}}
                     \end{Bmatrix}
-                    _{k \in [1,\mathcal{K}], n \in [1,\mathcal{N}]}
+                    _{k\in\mathcal{K}, n\in\mathcal{N}}
                 \end{align}
-                where $L_C$ is a constant vector of length $\mathcal{N}$ with each denoting the computation time of that job on each server; and $L^{(U)}_{cd}(t), L^{(C)}_{cd}(t)$ are countdowns for uploading and computing time remained for that job respectively.
+                where $L_C$ is a constant vector of length $N$ with each denoting the computation time of that job on each server; and $L^{(U)}_{cd}(t), L^{(C)}_{cd}(t)$ are countdowns for uploading and computing time remained for that job respectively.
             
                 The single step transition graph is given below:
                 \begin{figure}[h]
                     \centering
                     \includegraphics[width=0.45\textwidth]{single-transition.png}
-                    \caption{Single-step transition function composing illustration}
+                    \caption{Single-step transition function composing graph}
                     \label{fig:trans}
                 \end{figure}
-                Besides the states definition being illustrated above, we also have policy definition for $\vec{Omega}(t) \triangleq (\Omega^{(1)}(t), \dots, \Omega^{(\mathcal{K})}(t))$. Each single policy $\Omega^{(k)}{t}$ defined on $k$-th AP is based on single action distribution $a^{(k)}(j)$.
-                The single action $a^{(k)}$ is defined for $k$-th AP as: for a $j$-type job, it should keep waiting or being uploaded to $n$-th server. As we have total $L_C^{\mathcal{N}}$ kinds of jobs for all the unrelated machine, the action is defined as following:
-                \begin{align}
-                    a^{(k)}(j) \triangleq \Pr\{N=n\}
-                \end{align}
-                where $j \in [1, L_C^{\mathcal{N}}], n \in [0,\mathcal{N}]$ with dimensionality as $L_C^{\mathcal{N}} \times (\mathcal{N}+1)$. Then we come up with the policy distribution on $k$-th AP:
-                \begin{align}
-                    \Omega^{(k)}(t) &\triangleq \Pr\{a^{(k)}, S^{(W)}_k(t)|A^{(k)}(t)\}
-                    \nonumber\\
-                    &= \prod_{j \in S^{(W)}_k(t) \cup A^{(k)}(t)} a^{(k)}(j)
-                \end{align}
+                \\
+                Besides the states definition being illustrated above, we also have policy definition for $\vec{\Omega}(t) \triangleq (\Omega^{(1)}(t), \dots, \Omega^{(K)}(t))$ given the state $S(t)$. Each single policy $\Omega^{(k)}(t)$ defined on $k$-th AP is based on job-wise policy distribution $\vec{\alpha}^{(k)}$.
 
-                We come up with some useful denotations for job sets to be sent to next stage as expressed in figure \ref{fig:trans}:
+                The single action $a^{(k)}$ is defined for $k$-th AP as: for type-$j$ job, it should keep waiting or being uploaded to $n$-th server, which is denoted as $\{0,1,\dots,N\}$. As we have total $L_C^{N}$ kinds of jobs for all the unrelated machine, the action space is:
+                \begin{align}
+                    A \triangleq \{a|a \in J \times Z_*^{N+1}\}
+                \end{align}
+                where $J=\{1, \dots, L_C^{N}\}$ denoting the job type index. To link up with the following section with different states definition, here we give the denotation of policy on a fixed job-wise policy distribution:
+                \begin{align}
+                    \vec{\alpha} \triangleq \{\alpha(1),\dots,\alpha(L_C^{N})\}
+                \end{align}
+                and thus come up with a \emph{composed fixed policy} only related with $S^{(W)}(t)$
+                but not with the whole system features at $t$-th timeslot. The distribution for \emph{composed fixed policy} on $k$-th AP at $t$-th timeslot is given as:
+                \begin{align}
+                    \Omega^{(k)}(\vec{\alpha}^{(k)}|S^{'(W)}_k(t)) &= \prod_{j \in S^{'(W)}_k(t)} \alpha^{(k)}(j)
+                \end{align}
+                where $S^{'(W)}_k(t) \triangleq S^{(W)}_k(t) \cup A^{(k)}(t)$. The output of this function gives out the distribution of the \emph{joint uploading decision} which impacts on the transition function. The \emph{composed fixed policy} is concerned with applying actions for all the waiting jobs at $t$-tht timeslot, and it's called \emph{fixed} because the job-wise distribution is not related with states definition in any MDP problem.
+
+                While the jobs processing is carried out following a well-defined procedure, we also need some denotations to characterize the intrinsic for the transition. We come up with denotations for job sets to be sent to next stage as expressed in figure \ref{fig:trans}:
                 \begin{align}
                     I^{(W \to U)}_{k,n}(N;L) &\triangleq \{ (L_i),L^{(U)}_{cd}:=T^{prop}_{k,n} \}_{i \in N}
                     \\
@@ -204,7 +208,7 @@
                 \end{align}
                 where $N$ is the number of jobs and $L$ is the vector of the length $N$ of the property respectively. $I^{(W \to U)}_{k,n}(N;L)$ denotes the jobs been marked to upload in next time slot, $I^{(U \to C)}_{n}(N;L)$ denotes the just-uploaded job to start computation in next time slot. We note that this is the only disturbance on the single AP agent, and we denote its probability as:
                 \begin{align}
-                    & \Pr\{ \{I^{(W \to U)}_{k,n}(t)\}_{n \in \mathcal{N}} | S_{k}^{(W)}(t), A^{(k)}(t), \Omega^{(k)}(t) \} \nonumber\\
+                    & \Pr\{ \{I^{(W \to U)}_{k,n}(t)\}_{n \in N} | S_{k}^{(W)}(t), A^{(k)}(t), \Omega^{(k)}(t) \} \nonumber\\
                     = & \Pr\{ A^{(k)}(t) \} \times \Omega^{(k)}(t)
                 \end{align}
                 And with $I^{(W \to U)}(t)$ determined, we could obtain the joint distribution of independent AP agents with respect to $S^{(W)}(t),S^{(U)}(t)$ as:
@@ -220,19 +224,19 @@
                         \end{pmatrix}, \vec{A}(t), \vec{\Omega}(t)
                     \}
                     \nonumber\\
-                    = & \prod_{k \in \mathcal{K}} \Pr\{ A^{(k)}(t) \} \times \Omega^{(k)}(t)
+                    = & \prod_{k \in K} \Pr\{ A^{(k)}(t) \} \times \Omega^{(k)}(t)
                 \end{align}
 
                 On the other side, the states transition on ES is easily obtained as following because the computation process on ES is deterministic:
                 \begin{align}
-                    \Pr\{ S_{n}^{(C)}(t+1) |S_{n}^{(C)}(t), (S_{k}^{(U)}(t))_{k \in [1,\mathcal{K}]} \} = 1
+                    \Pr\{ S_{n}^{(C)}(t+1) |S_{n}^{(C)}(t), (S_{k}^{(U)}(t))_{k \in [1,K]} \} = 1
                 \end{align}
 
                 At last, we could come out with the global states transition function composed of the two parts as:
                 \begin{align}
                     & \Pr\{ S(t+1)|S(t), \vec{A}(t), \vec{\Omega}(t)  \}
                     \nonumber\\
-                    = & \prod_{k \in \mathcal{K}} \Pr\{ A^{(k)}(t) \} \times \Omega^{(k)}(t)
+                    = & \prod_{k \in K} \Pr\{ A^{(k)}(t) \} \times \Omega^{(k)}(t)
                 \end{align}
             \end{subsubsection}
 
