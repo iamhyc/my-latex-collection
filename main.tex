@@ -243,7 +243,7 @@
 
                 On the server's side, the states transition is easily to obtain because the computation process on server is totally deterministic between adjacent timeslots:
                 \begin{align}
-                    \Pr\{ S_{n}^{(C)}(t+1) |S_{n}^{(C)}(t), (S_{k}^{(U)}(t))_{k \in [1,K]} \} = 1
+                    \Pr\{ S_{n}^{(C)}(t+1) |S_{n}^{(C)}(t), \{S_{k,n}^{(U)}(t)\}_{k \in \mathcal{K}} \} = 1
                 \end{align}
                 At last, we could come out with the global states transition function composed of the two parts as:
                 \begin{align}
