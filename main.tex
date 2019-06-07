@@ -197,9 +197,9 @@
 
                 Then we give the denotations of a fixed job-wise policy distribution, which is called \emph{composed fixed policy} only related with $S^{(W)}(t), A^{(k)}(t)$ but not with the whole system features at $t$-th timeslot. The distribution for \emph{composed fixed policy} on $k$-th AP at $t$-th timeslot is given as:
                 \begin{align}
-                    \Omega^{(k)}(t) &= \Pr\{a^{(k)}(j), \forall j \in S^{'(W)}_k(t)\}
+                    \Omega^{(k)}(t) &= \Pr\{a^{(k)}(j), \forall j \in S^{'(W)}_k(t) | A^{(k)}(t)\}
                     \nonumber\\
-                    &= \prod_{j \in S^{'(W)}_k(t)} \alpha_{2^{L_C}}^{(k)}(a)
+                    &= \prod_{j \in S^{'(W)}_k(t)} \alpha_{2^{(L_C)_j}}^{(k)}(a)
                 \end{align}
                 where $S^{'(W)}_k(t) \triangleq S^{(W)}_k(t) \cup A^{(k)}(t)$ and the decision on each job is based on the job type indexed with $2^{\vec{L_C}}$ and independent from each other. The output of this function gives the distribution of the \emph{joint uploading decision} of length $S^{'(W)}_k(t)$ on job set indexed with $\{1,\dots,|S^{'(W)}_k(t)|\}$.
 
@@ -263,7 +263,7 @@
                 \end{align*}
                 where $S_i \triangleq S(iT^{br})$. it stresses that each agent all maintains the same $S_i$ for a $T^{br}$ period but not aligned due to different consensus delay $\hat{d}_k$ on each agent.
 
-                In this consensus formulation which is illustrated in figure \ref{fig:br-trans}, we actually let every agents know the global states with different deterministic delay. The delayed information doesn't impact on global states formulation of MDP problem, but converted into delayed composed action. For example, the agent would take actions based both on global states $S_1$ and $S_2$ in the period of $S_3$, because in the first half period it doesn't come to consensus on global states $S_2$.
+                In this consensus formulation illustrated in figure \ref{fig:br-trans}, we actually let every agents maintain the same global states with different deterministic delay. The delayed information doesn't impact on global states formulation of MDP problem, but converted into action over delayed states. For example, the agent would take actions based both on global states $S_1$ and $S_2$ in the period of $S_3$, because in the first half period it doesn't come to consensus on global states $S_2$.
 
                 \begin{figure}[h]
                     \centering
@@ -274,33 +274,38 @@
 
                 This implies that: \hl{The agents meet states in future with actions traced back into past}. The agents would contribute into global state transition, but the limited observation with obsolete information makes them always choose action based on the one-step-latter global states. So, one agent should carry out \emph{policy improvement} with other agents who fix their actions in its iteration. This improvement iteration comes to convergence always as the observations do not change with respect to policies.
 
-                To formulate the transition between states, we firstly give out the denotation for single-step transition with fixed action given previous state $s$ as:
+                To formulate the transition between adjacent observation $S_i$ and $S_{i+1}$, we firstly give out the denotation for single-step transition with fixed action given previous state $s$ as:
                 \begin{align}
-                    p(\vec{a}|s) \triangleq \Pr\{ S(t+1)|S(t)=s, \vec{\Omega}(\vec{a}),\vec{A}(t) \}
+                    P_{ss'}(\vec{\beta}) \triangleq \Pr\{ S(t+1)=s'|S(t)=s, \vec{\Omega}(\vec{\beta},s|\vec{A}(t)),\vec{A}(t) \}
                 \end{align}
-                where $\vec{a} \triangleq (a^{(1)}, \dots, a^{(\mathcal{N})})$ is the fixed action vector on each nodes, and $p(\vec{a})$ denotes the \emph{transition matrix} under the fixed action. Furthermore, we sort the index of APs with respect to their consensus delay $\hat{d}_k$ from small to big, i.e. $\hat{d}_1 \leq \hat{d}_2 \leq \dots \hat{d}_{\mathcal{K}}$. This order is kept as a presumption in the follow parts.
-
-                For the global broadcast interval $T^{br}$ we have the following composed action denotations for $\Delta{t} \equiv t \pmod{T^{br}}$ as:
+                where $\vec{\beta} \triangleq (\vec{\alpha}^{(1)}, \dots, \vec{\alpha}^{(K)})$ is the fixed action vector on each nodes, and $\vec{\Omega}=\{\Omega^{(1)},\dots,\Omega^{(K)}\}$ with
+                \begin{align}
+                    &\Omega^{(k)}(\vec{\alpha}^{(k)},s|A^{(k)}(t)) 
+                    = \prod_{j \in s \cup A^{(k)}(t)} \alpha_{2^{(L_C)_j}}^{(k)}(a)
+                \end{align}
+                
+                Furthermore, we sort the index of APs with respect to their consensus delay $\hat{d}_k$ from small to big, i.e. $\hat{d}_1 \leq \hat{d}_2 \leq \dots \hat{d}_{K}$. This order is kept as a presumption in the follow parts. For the global broadcast interval $T^{br}$, the composed action denotations are given according to the consensus delays with $\Delta{t} \equiv t \pmod{T^{br}}$ as:
                 \begin{align}
                     &\vec{\Omega}_{\Delta{t}} = 
                     \begin{cases}
-                        \vec{\Omega}(\vec{a}(S_{i-1}, \dots, S_{i-1})) &,\; 0 \leq \Delta{t} < \hat{d}_1 \\
-                        \vec{\Omega}(\vec{a}(S_{i}, S_{i-1}, \dots, S_{i-1})) &,\; \hat{d}_1 \leq \Delta{t}< \hat{d}_2 \\
+                        \vec{\Omega}(\vec{\beta}(S_{i-1}, \dots, S_{i-1})) &,\; 0 \leq \Delta{t} < \hat{d}_1 \\
+                        \vec{\Omega}(\vec{\beta}(S_{i}, S_{i-1}, \dots, S_{i-1})) &,\; \hat{d}_1 \leq \Delta{t}< \hat{d}_2 \\
                         \dots &,\; \dots \\
-                        \vec{\Omega}(\vec{a}(S_{i}, S_{i}, \dots, S_{i})) &,\; \hat{d}_{\mathcal{K}} \leq \Delta{t} < T^{br} \\
+                        \vec{\Omega}(\vec{\beta}(S_{i}, S_{i}, \dots, S_{i})) &,\; \hat{d}_{K} \leq \Delta{t} < T^{br} \\
                     \end{cases}
                 \end{align}
-                where
+                where,
                 \begin{align}
-                    & \vec{a}(S_i,\dots, S_i,S_{i-1}, \dots,S_{i-1})
+                    & \vec{\beta}(S_i,\dots, S_i,S_{i-1}, \dots,S_{i-1}) \triangleq \vec{\beta}_{\Delta{t}}
                     \nonumber\\
-                    = & (a^{(1)}(S_i),\dots,a^{(k-1)}(S_i), a^{(k)}(S_i),\dots,a^{(\mathcal{K})}(S_i))
+                    = & [\vec{\alpha}^{(1)}(S_i),\dots,\vec{\alpha}^{(k-1)}(S_i),
+                        \vec{\alpha}^{(k)}(S_i),\dots,\vec{\alpha}^{(K)}(S_i)]
                 \end{align}
-                and we have the one-step transition from $S_{i}$ to $S_{i+1}$ as:
+                and we have the one-step transition based on this composed policy definition as:
                 \begin{align}
-                    p(\vec{\Omega}_{\Delta{t}}) =& \prod_{k\in\mathcal{K}}{\Pr\{A^{(k)}(t)\}} \times \prod_{\hat{d}_k \leq \Delta{t}} { \Omega^{(k)}(a^{(k)}(S_{i}))}
+                    P_{ss'}(\vec{\beta}_{\Delta{t}}) =& \prod_{k\in\mathcal{K}}{\Pr\{A^{(k)}(t)\}} \times \prod_{\hat{d}_k \leq \Delta{t}} { \Omega^{(k)}(\vec{\alpha}^{(k)}(S_{i}), s)}
                     \nonumber \\
-                    & \times \prod_{\hat{d}_k > \Delta{t}} { \Omega^{(k)}(a^{(k)}(S_{i-1})) }
+                    & \times \prod_{\hat{d}_k > \Delta{t}} { \Omega^{(k)}(\vec{\alpha}^{(k)}(S_{i-1}), s) }
                 \end{align}
 
                 As the action defined on the latest observed states would actually latter two stages relative to next broadcast, we firstly establish the following transition function for the joint observation $\tilde{S}_i \triangleq (S_{i}, S_{i-1})$ as:
@@ -309,7 +314,9 @@
                     \nonumber\\
                     = & \Pr\{S_{i+1}, S_{i} | S_{i},S_{i-1}, \vec{\Omega}(S_{i}), \vec{\Omega}(S_{i-1})\}
                     \nonumber\\
-                    = & p(\vec{a}(S_{i-1})|S_{i-1}) \times \prod_{\Delta{t} \in [1,T^{br})} p(\vec{\Omega}_{\Delta{t}})
+                    = & \{
+                            \prod_{\Delta{t} \in [1,T^{br})} P_{ss'}(\vec{\beta}_{\Delta{t}})
+                        \}_{S_i, S_{i+1}}
                 \end{align}
             \end{subsubsection}
 
