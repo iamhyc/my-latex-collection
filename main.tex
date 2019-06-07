@@ -191,17 +191,17 @@
                 \end{align}
                 As we have total $L_C^{N}$ kinds of jobs for all the unrelated machine, we have the set $\mathcal{J}=\{1, \dots, L_C^{N}\}$ denoting the job type index and the singleton policy on singleton action related with $j \in \mathcal{J}$ is:
                 \begin{align}
-                    \vec{\alpha} \triangleq \{\alpha_1,\dots,\alpha_{J}\}
+                    \vec{\alpha} \triangleq \{\alpha_1,\dots,\alpha_J\}
                 \end{align}
-                where $\alpha_j(a) \geq 0$ and $\sum_a \alpha_j(a) = 1$, for all $a \in A$.
+                where $\alpha_j(a) \geq 0$ for all $a \in A$ and $\sum_a \alpha_j(a) = 1$.
 
                 Then we give the denotations of a fixed job-wise policy distribution, which is called \emph{composed fixed policy} only related with $S^{(W)}(t), A^{(k)}(t)$ but not with the whole system features at $t$-th timeslot. The distribution for \emph{composed fixed policy} on $k$-th AP at $t$-th timeslot is given as:
                 \begin{align}
-                    \Omega^{(k)}(t) &= \vec{\alpha}( S^{(W)}_k(t) | A^{(k)}(t) )
+                    \Omega^{(k)}(t) &= \Pr\{a^{(k)}(j), \forall j \in S^{'(W)}_k(t)\}
                     \nonumber\\
-                    &= \prod_{j \in S^{'(W)}_k(t)} \alpha^{(k)}_j(a)
+                    &= \prod_{j \in S^{'(W)}_k(t)} \alpha_{2^{L_C}}^{(k)}(a)
                 \end{align}
-                where $S^{'(W)}_k(t) \triangleq S^{(W)}_k(t) \cup A^{(k)}(t)$ and the decision on each job is independent from each other. The output of this function gives the distribution of the \emph{joint uploading decision} of length $S^{'(W)}_k(t)$ on job set indexed with $\{1,\dots,|S^{'(W)}_k(t)|\}$.
+                where $S^{'(W)}_k(t) \triangleq S^{(W)}_k(t) \cup A^{(k)}(t)$ and the decision on each job is based on the job type indexed with $2^{\vec{L_C}}$ and independent from each other. The output of this function gives the distribution of the \emph{joint uploading decision} of length $S^{'(W)}_k(t)$ on job set indexed with $\{1,\dots,|S^{'(W)}_k(t)|\}$.
 
                 While the jobs processing is carried out following a descriptive procedure in the model section, we need some denotations to characterize the intrinsic of the transition. Firstly We come up with denotations for transition job sets expressed in figure \ref{fig:trans} as:
                 \begin{align}
