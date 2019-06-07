@@ -185,34 +185,49 @@
                 \\
                 Besides the states definition being illustrated above, we also have policy definition for $\vec{\Omega}(t) \triangleq (\Omega^{(1)}(t), \dots, \Omega^{(K)}(t))$ given the state $S(t)$. Each single policy $\Omega^{(k)}(t)$ defined on $k$-th AP is based on job-wise policy distribution $\vec{\alpha}^{(k)}$.
 
-                The single action $a^{(k)}$ is defined for $k$-th AP as: for type-$j$ job, it should keep waiting or being uploaded to $n$-th server, which is denoted as $\{0,1,\dots,N\}$. As we have total $L_C^{N}$ kinds of jobs for all the unrelated machine, the action space is:
+                The singleton action $a^{(k)}$ is defined for $k$-th AP as: for type-$j$ job, it should keep waiting or being uploaded to $n$-th server denoted as $\{0,1,\dots,N\}$. the action space is:
                 \begin{align}
-                    A \triangleq \{a|a \in J \times Z_*^{N+1}\}
+                    A \triangleq \{a|a \in Z_*^{N+1}\}
                 \end{align}
-                where $J=\{1, \dots, L_C^{N}\}$ denoting the job type index. To link up with the following section with different states definition, here we give the denotation of policy on a fixed job-wise policy distribution:
+                As we have total $L_C^{N}$ kinds of jobs for all the unrelated machine, we have the set $\mathcal{J}=\{1, \dots, L_C^{N}\}$ denoting the job type index and the singleton policy on singleton action related with $j \in \mathcal{J}$ is:
                 \begin{align}
-                    \vec{\alpha} \triangleq \{\alpha(1),\dots,\alpha(L_C^{N})\}
+                    \vec{\alpha} \triangleq \{\alpha_1,\dots,\alpha_{J}\}
                 \end{align}
-                and thus come up with a \emph{composed fixed policy} only related with $S^{(W)}(t)$
-                but not with the whole system features at $t$-th timeslot. The distribution for \emph{composed fixed policy} on $k$-th AP at $t$-th timeslot is given as:
-                \begin{align}
-                    \Omega^{(k)}(\vec{\alpha}^{(k)}|S^{'(W)}_k(t)) &= \prod_{j \in S^{'(W)}_k(t)} \alpha^{(k)}(j)
-                \end{align}
-                where $S^{'(W)}_k(t) \triangleq S^{(W)}_k(t) \cup A^{(k)}(t)$. The output of this function gives out the distribution of the \emph{joint uploading decision} which impacts on the transition function. The \emph{composed fixed policy} is concerned with applying actions for all the waiting jobs at $t$-tht timeslot, and it's called \emph{fixed} because the job-wise distribution is not related with states definition in any MDP problem.
+                where $\alpha_j(a) \geq 0$ and $\sum_a \alpha_j(a) = 1$, for all $a \in A$.
 
-                While the jobs processing is carried out following a well-defined procedure, we also need some denotations to characterize the intrinsic for the transition. We come up with denotations for job sets to be sent to next stage as expressed in figure \ref{fig:trans}:
+                Then we give the denotations of a fixed job-wise policy distribution, which is called \emph{composed fixed policy} only related with $S^{(W)}(t), A^{(k)}(t)$ but not with the whole system features at $t$-th timeslot. The distribution for \emph{composed fixed policy} on $k$-th AP at $t$-th timeslot is given as:
                 \begin{align}
-                    I^{(W \to U)}_{k,n}(N;L) &\triangleq \{ (L_i),L^{(U)}_{cd}:=T^{prop}_{k,n} \}_{i \in N}
+                    \Omega^{(k)}(t) &= \vec{\alpha}( S^{(W)}_k(t) | A^{(k)}(t) )
+                    \nonumber\\
+                    &= \prod_{j \in S^{'(W)}_k(t)} \alpha^{(k)}(j)
+                \end{align}
+                where $S^{'(W)}_k(t) \triangleq S^{(W)}_k(t) \cup A^{(k)}(t)$ and the decision on each job is independent from each other. The output of this function gives the distribution of the \emph{joint uploading decision} of length $S^{'(W)}_k(t)$ on job set indexed with $\{1,\dots,|S^{'(W)}_k(t)|\}$.
+
+                While the jobs processing is carried out following a descriptive procedure in the model section, we need some denotations to characterize the intrinsic of the transition. Firstly We come up with denotations for transition job sets expressed in figure \ref{fig:trans} as:
+                \begin{align}
+                    I^{(W \to W')}_{k}(t) & \triangleq \{ j | \vec{\alpha}_j(a=0), \forall j \in S^{'(W)}_k(t)\}
                     \\
-                    I^{(U \to C)}_{n}(N;L) &\triangleq \{ L^{(C)}_{cd}:=L_i \}_{i \in N}
+                    I^{(W \to U)}_{k,n}(t) &\triangleq \{ j | \vec{\alpha}_j(a=n), \forall j \in S^{'(W)}_k(t)\}
+                    \\
+                    I^{(U \to C)}_{k,n}(t) &\triangleq \{j|(L^{(U)}_{cd})_j=1, \forall j \in S^{(U)}_{k,n}(t)\}
+                    \\
+                    I^{(U \to U')}_{k,n}(t) &\triangleq S^{(U)}_{k,n}(t) \backslash I^{(U \to C)}_{k,n}(t)
+                    \\
+                    I^{(C \to \Phi)}_{n}(t) &\triangleq \{j|\arg\min_{j} \{(L^{(C)}_{cd})_j=1\} \}
+                    \\
+                    I^{(C \to C')}_{n}(t) &\triangleq S^{(C)}_{n}(t) \backslash I^{(C \to \Phi)}_{n}(t)
                 \end{align}
-                where $N$ is the number of jobs and $L$ is the vector of the length $N$ of the property respectively. $I^{(W \to U)}_{k,n}(N;L)$ denotes the jobs been marked to upload in next time slot, $I^{(U \to C)}_{n}(N;L)$ denotes the just-uploaded job to start computation in next time slot. We note that this is the only disturbance on the single AP agent, and we denote its probability as:
+                Then we establish the relationship between those indicator functions with $S(t+1)$:
                 \begin{align}
-                    & \Pr\{ \{I^{(W \to U)}_{k,n}(t)\}_{n \in N} | S_{k}^{(W)}(t), A^{(k)}(t), \Omega^{(k)}(t) \} \nonumber\\
-                    = & \Pr\{ A^{(k)}(t) \} \times \Omega^{(k)}(t)
+                    \begin{cases}
+                        S^{(W)}_{k}(t+1) = I^{(W \to W')}_{k}(t)
+                        \\
+                        S^{(U)}_{k,n}(t+1) = I^{(W \to U)}_{k,n}(t) + I^{(U \to U')}_{k,n}(t)
+                        \\
+                        S^{(C)}_{k,n}(t+1) = I^{(U \to C)}_{k,n}(t) + I^{(C \to C')}_{n}(t)
+                    \end{cases}
                 \end{align}
-                And with $I^{(W \to U)}(t)$ determined, we could obtain the joint distribution of independent AP agents with respect to $S^{(W)}(t),S^{(U)}(t)$ as:
-                the transition function for $S^{(W)}_{k}(t)$ and $S^{(U)}_{k,n}(t)$ is also determined as:
+                and we note that only $I^{(W \to W')}_{k}(t)$ and $I^{(W \to U)}_{k,n}(t)$ are with disturbance from arrival process and randomized policy. We could obtain the joint distribution of independent AP agents with respect to $S^{(W)}(t),S^{(U)}(t)$ as:
                 \begin{align}
                     & \Pr\{
                         \begin{pmatrix}
