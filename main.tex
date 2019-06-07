@@ -213,7 +213,7 @@
                     \\
                     I^{(U \to U')}_{k,n}(t) &\triangleq S^{(U)}_{k,n}(t) \backslash I^{(U \to C)}_{k,n}(t)
                     \\
-                    I^{(C \to \Phi)}_{n}(t) &\triangleq \{j|\arg\min_{j} \{(L^{(C)}_{cd})_j=1\} \}
+                    I^{(C \to \Phi)}_{n}(t) &\triangleq \{j|\arg\min_{j} (L^{(C)}_{cd})_j \wedge (L^{(C)}_{cd})_j=1\}
                     \\
                     I^{(C \to C')}_{n}(t) &\triangleq S^{(C)}_{n}(t) \backslash I^{(C \to \Phi)}_{n}(t)
                 \end{align}
@@ -224,29 +224,18 @@
                         \\
                         S^{(U)}_{k,n}(t+1) = I^{(W \to U)}_{k,n}(t) + I^{(U \to U')}_{k,n}(t)
                         \\
-                        S^{(C)}_{k,n}(t+1) = I^{(U \to C)}_{k,n}(t) + I^{(C \to C')}_{n}(t)
+                        S^{(C)}_{n}(t+1) = \sum_k I^{(U \to C)}_{k,n}(t) + I^{(C \to C')}_{n}(t)
                     \end{cases}
                 \end{align}
-                and we note that only $I^{(W \to W')}_{k}(t)$ and $I^{(W \to U)}_{k,n}(t)$ are with disturbance from arrival process and randomized policy. We could obtain the joint distribution of independent AP agents with respect to $S^{(W)}(t),S^{(U)}(t)$ as:
+                And we note that only $I^{(W \to W')}_{k}(t)$ and $I^{(W \to U)}_{k,n}(t)$ are affected from disturbance from arrival process and randomized policy. With $\Omega^{(k)}(t)$ and $A^{(k)}(t)$ determined, we could obtain the joint distribution of local states on $k$-th AP as:
                 \begin{align}
-                    & \Pr\{
-                        \begin{pmatrix}
-                            S^{(W)}(t+1) \\ S^{(U)}(t+1)
-                        \end{pmatrix}
-                        |
-                        \begin{pmatrix}
-                            S^{(W)}(t) \\ S^{(U)}(t)
-                        \end{pmatrix}, \vec{A}(t), \vec{\Omega}(t)
-                    \}
-                    \nonumber\\
-                    = & \prod_{k \in K} \Pr\{ A^{(k)}(t) \} \times \Omega^{(k)}(t)
+                    \prod_{k \in K} \Pr\{ A^{(k)}(t) \} \times \Omega^{(k)}(t)
                 \end{align}
 
                 On the other side, the states transition on ES is easily obtained as following because the computation process on ES is deterministic:
                 \begin{align}
                     \Pr\{ S_{n}^{(C)}(t+1) |S_{n}^{(C)}(t), (S_{k}^{(U)}(t))_{k \in [1,K]} \} = 1
                 \end{align}
-
                 At last, we could come out with the global states transition function composed of the two parts as:
                 \begin{align}
                     & \Pr\{ S(t+1)|S(t), \vec{A}(t), \vec{\Omega}(t)  \}
