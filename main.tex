@@ -57,7 +57,7 @@
 
         Some traits to mention compared to related works:
         \begin{itemize}
-            \item we don't accept communication cost in broadcast, because the global information to share requires both collective information and delayed information and the waiting time for scheduling should be avoided.
+            \item we don't accept communication cost in broadcast, because the global information to share requires both collective information and delayed information; the waiting time for scheduling should be avoided.
         \end{itemize}
     \end{section}
 
@@ -106,13 +106,6 @@
                         \begin{align}
                             \hat{d}_k = \max_{i\in(\mathcal{K} \cup \mathcal{N})}(d_{k,i})
                         \end{align}
-                        and $\tau T + \hat{d}_k$ is the starting point of $\tau$-th stage for $k$-th AP;
-                    \item Stage for $k$-th AP:
-                        \begin{align}
-                            (x_k={\tau})\triangleq t \in [\tau T^{br}+\hat{d}_k, (\tau+1) T^{br}+\hat{d}_k]
-                        \end{align}
-                        where $\tau$ is the general global state between $(\tau-1) T$-th and $\tau T$-th timeslot for all the AP nodes;
-                    \item broadcast all of the information between the interval
                 \end{itemize}
 
                 The illustration figure \ref{fig:brd} for single broadcast includes several important time points which are also important in multiple synchronous broadcast: $x_{k,j}, d_{k,j}, T^{br}_{k,j}$
