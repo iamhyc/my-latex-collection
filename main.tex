@@ -32,7 +32,7 @@
         Meet-in-Future: Optimized Job Dispatching with Obsolete Information MDP in Edge Computing System
     }
     \author{
-        \IEEEauthorblockN{HONG Yuncong}
+        \IEEEauthorblockN{Yuncong Hong}
         \IEEEauthorblockA{
             \textit{Department of CS}, The University of Hong Kong, China \\
             ychong@cs.hku.hk
@@ -198,9 +198,9 @@
 
                 While the jobs processing is carried out following a descriptive procedure in the model section, we need some denotations to characterize the intrinsic of the transition. Firstly We come up with denotations for transition job sets expressed in figure \ref{fig:trans} as:
                 \begin{align}
-                    I^{(W \to W')}_{k}(t) & \triangleq \{ j | \vec{\alpha}_j(a=0), \forall j \in S^{'(W)}_k(t)\}
+                    I^{(W \to W')}_{k}(t) & \triangleq \{ j | a^{(k)}(j)=0, \forall j \in S^{'(W)}_k(t)\}
                     \\
-                    I^{(W \to U)}_{k,n}(t) &\triangleq \{ j | \vec{\alpha}_j(a=n), \forall j \in S^{'(W)}_k(t)\}
+                    I^{(W \to U)}_{k,n}(t) &\triangleq \{ j | a^{(k)}(j)=n, \forall j \in S^{'(W)}_k(t)\}
                     \\
                     I^{(U \to C)}_{k,n}(t) &\triangleq \{j|(L^{(U)}_{cd})_j=1, \forall j \in S^{(U)}_{k,n}(t)\}
                     \\
@@ -284,7 +284,7 @@
                         \vec{\Omega}(\vec{\beta}(S_{i-1}, \dots, S_{i-1})) &,\; 0 \leq \Delta{t} < \hat{d}_1 \\
                         \vec{\Omega}(\vec{\beta}(S_{i}, S_{i-1}, \dots, S_{i-1})) &,\; \hat{d}_1 \leq \Delta{t}< \hat{d}_2 \\
                         \dots &,\; \dots \\
-                        \vec{\Omega}(\vec{\beta}(S_{i}, S_{i}, \dots, S_{i})) &,\; \hat{d}_{K} \leq \Delta{t} < T^{br} \\
+                        \vec{\Omega}(\vec{\beta}(S_{i}, S_{i}, \dots, S_{i})) &,\; \hat{d}_{K} \leq \Delta{t} < T^{br}
                     \end{cases}
                 \end{align}
                 where,
@@ -321,15 +321,15 @@
             \begin{subsubsection}{State and Cost}
                 \begin{align}
                     T_t \triangleq \begin{pmatrix}
-                        S_t \\ S_{t-1} \\ C(t)
+                        S_t \\ S_{t-1} \\ C_t
                     \end{pmatrix}, t=1,2,\dots
                 \end{align}
 
                 The transition for $(S_{t}, S_{t-1})$ is with policy $\vec{\Omega}(\tilde{S}_i)$ elaborated in the last section.
                 
-                While $C(t)$ denotes the cost collected in the last broadcast interval, we have the expression as:
+                While $C_t$ denotes the cost collected in the last broadcast interval, we have the expression as:
                 \begin{align}
-                    C(t) = \sum_{t'\in[1,T^{br}]} \sum_{s'} P_{S_{t-1},s'}^{t'}(\vec{\beta}_{\Delta{t}}) \times |s'|
+                    C_t = \sum_{t'\in[1,T^{br}]} \sum_{s'} P_{S_{t-1},s'}^{t'}(\vec{\beta}_{\Delta{t}}) \times |s'|
                 \end{align}
                 where,
                 \begin{align}
@@ -349,7 +349,7 @@
 
             \begin{subsubsection}{Bellman Equation}
                 \begin{align}
-                    V(T_t) = C(t) + \gamma \sum \Pr(T_{t+1}|T_{t}, \vec{\Omega}(T_t)) V(T_{t+1})
+                    V(T_{t}) = C_t + \gamma \sum_{T_{t+1}} \Pr\{T_{t+1}|T_{t}, \vec{\Omega}(T_t)\} \cdot V(T_{t+1})
                 \end{align}
             \end{subsubsection}
         \end{subsection}
@@ -359,7 +359,7 @@
     %============================= ALGORITHM ==============================%
     \begin{section}{ALGORITHM}
         \label{sec:algorithm}
-        (in progress)
+        As the formulated problem is with infinite states and the action space would be exponentially expanded with respect to number APs and ESs, we could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm for unacceptable complexity.
     \end{section}
 
     %============================ EVALUATION ==============================%
