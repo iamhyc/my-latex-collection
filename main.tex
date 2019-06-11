@@ -5,7 +5,7 @@
 \usepackage{algorithmic}
 \usepackage{graphicx}
 \usepackage{color, soul}
-\usepackage{svg}
+\usepackage{algorithm, algorithmic}
 \graphicspath{ {./images/} }
 
 %---------------------------------------------------------------%
@@ -292,7 +292,7 @@
                     & \vec{\beta}(S_i,\dots, S_i,S_{i-1}, \dots,S_{i-1}) \triangleq \vec{\beta}_{\Delta{t}}
                     \nonumber\\
                     = & [\vec{\alpha}^{(1)}(S_i),\dots,\vec{\alpha}^{(k-1)}(S_i),
-                        \vec{\alpha}^{(k)}(S_i),\dots,\vec{\alpha}^{(K)}(S_i)]
+                        \vec{\alpha}^{(k)}(S_{i-1}),\dots,\vec{\alpha}^{(K)}(S_{i-1})]
                 \end{align}
                 and we have the one-step transition based on this composed policy definition as:
                 \begin{align}
@@ -359,7 +359,30 @@
     %============================= ALGORITHM ==============================%
     \begin{section}{ALGORITHM}
         \label{sec:algorithm}
-        As the formulated problem is with infinite states and the action space would be exponentially expanded with respect to number APs and ESs, we could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm for unacceptable complexity.
+        As the formulated problem is with infinite states and the action space would be exponentially expanded with respect to number APs and ESs, we could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity. To alleviate curse of dimensionality, we take one baseline policy to approximate the value function as $\tilde{V}(T_t)$ and carry out one-step iteration to come up with a better value function approximation.
+
+        Firstly we name the approximated value function $\tilde{T_t}$ with job-wise fixed policy independent from states observation as:
+        \begin{align}
+            & \tilde{V}^{\pi}(T_t) %= \tilde{V}^{\pi}(S_{t}, S_{t-1})
+            \nonumber\\
+            = & E_{\pi} \{ \tilde{C}_{t} + \gamma \tilde{C}_{t+1} + \gamma^2 \tilde{C}_{t+2} + \dots |S_{t}=s \}
+            \nonumber\\
+            = & \tilde{C}_{t}(s) + \sum_{k=1}^{\infty} \gamma^{k} \sum_{s_k} \sum_{t'=1}^{T^{br}} \sum_{s'} P^{t'}_{s_k,s'}(\vec{\tilde{\beta}}) \times |s'|
+        \end{align}
+
+        Then we introduce the one-step iteration algorithm here:
+        % [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
+        \begin{algorithm}[H]
+            \caption{Distributed Algorithm for $k$-th AP}
+            \begin{algorithmic}
+                \WHILE{\TRUE}
+                    \FOR{$k \in \mathcal{K}$}
+                        \STATE fix policy $\vec{\Omega}^{(k)}(t) \forall k' \neq k$
+                        %TODO: stop here and continue
+                    \ENDFOR
+                \ENDWHILE
+            \end{algorithmic}
+        \end{algorithm}
     \end{section}
 
     %============================ EVALUATION ==============================%
