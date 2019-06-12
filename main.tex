@@ -361,14 +361,20 @@
         \label{sec:algorithm}
         As the formulated problem is with infinite states and the action space would be exponentially expanded with respect to number APs and ESs, we could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity. To alleviate curse of dimensionality, we take one baseline policy to approximate the value function as $\tilde{V}(T_t)$ and carry out one-step iteration to come up with a better value function approximation.
 
-        Firstly we name the approximated value function $\tilde{T_t}$ with job-wise fixed policy independent from states observation as:
+        Firstly we name the approximated value function $\tilde{V}(T_t)$ with job-wise fixed policy independent from states observation as:
         \begin{align}
-            & \tilde{V}^{\pi}(T_t) %= \tilde{V}^{\pi}(S_{t}, S_{t-1})
+            & \tilde{V}^{\pi}(T_t)
+            \nonumber%\\
+            = E_{\pi} \{ \tilde{C}_{t} + \gamma \tilde{C}_{t+1} + \gamma^2 \tilde{C}_{t+2} + \dots |S_{t-1}=s \}
             \nonumber\\
-            = & E_{\pi} \{ \tilde{C}_{t} + \gamma \tilde{C}_{t+1} + \gamma^2 \tilde{C}_{t+2} + \dots |S_{t}=s \}
-            \nonumber\\
-            = & \tilde{C}_{t}(s) + \sum_{k=1}^{\infty} \gamma^{k} \sum_{s_k} \sum_{t'=1}^{T^{br}} \sum_{s'} P^{t'}_{s_k,s'}(\vec{\tilde{\beta}}) \times |s'|
+            = & \sum_{k=0}^{\infty} \gamma^{k} \sum_{t'=kT^{br}+1}^{(k+1)T^{br}} \sum_{s'} P^{t'}_{s,s'}(\vec{\beta}_{\pi}) \times |s'| 
         \end{align}
+        We notice that the explosion of state space, and decide to futhermore apply  over value function approximation. There are two methods available for branch reduction:
+        \begin{enumerate}
+            \item \emph{state approximation}, for example we could apply quantization on $L_{cd}^{U}$ and $L_{cd}^{C}$ of jobs into 2 levels: un-finished or finished;
+            \item \emph{transition matrix approximation}, for example we consider that the transition matrix is with its main components after a 100-times iteration.
+        \end{enumerate}
+        In our calculation, we adapt the two methods at the same time.
 
         Then we introduce the one-step iteration algorithm here:
         % [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
