@@ -376,7 +376,6 @@
                 &= \{ \vec{I}^{(k)}_{1}, \dots, \vec{I}^{(k)}_{J} \} = \{p^{(k)}_{j,n}\}
             \end{align}
             where, $p^{(k)}_{j,n} = p_j \times \alpha^{(k)}_j(a=n)$ for all $j \in \mathcal{J}$, $J=L_C^N$.
-
             The jobs after uploading decision would come to corresponding server after deterministic delay $T^{prop}_{k,n}$. However, we assume \emph{Bernoulli distribution} in each timeslot thus the arrival process $\mathbf{I}'^{(n)}$ for $n$-th server would actually be invariant from time.
             \begin{align}
                 \mathbf{I}'^{(n)}(t) & = \{I'^{(n)}_1(t), \dots, I'^{(n)}_1(t) \}
@@ -385,15 +384,37 @@
                 \nonumber\\
                 & = \vec{I}^{(k)}_{1} \times \vecOne
             \end{align}
-            where $T^{prop}_{k,n}$ only matters in \emph{cost collection} from each AP node but not with arrival distribution.
+            where $T^{prop}_{k,n}$ only matters in \emph{cost collection} from each AP node but not with arrival distribution. And the jobs of type $j$ would upload to $n$-th server with the corresponding component of length on that server. For convenience, we denote the mapping $f: (n,j) \to L_j(n)$ which obtains the mapping from probability distribution of \emph{jobs type} to \emph{jobs length on independent servers}, i.e. after being uploaded the length of job is determinant with $L_j(n)$.
 
-            Then given the initial states $S^{(C)}_{n}(t)$ for the servers as multi-queue structure:
+            Then we give the denotation for structure of \emph{SRTF} process. As \emph{SRTF} allows preemptive when new jobs arrive, we adapt multiple queues to record the number of different jobs of remaining time from $L_C$ to $1$. The spontaneous rule between the queues is: $j$-th queue will wait until all the $i$-th queues ($i < j$) are empty, then $j$-th queue could move one job to $(j-1)$-th queue in one timeslot and repeatedly moved until $1$-st queue then moved out.
+            For given random variable $S^{(C)}_{n}(t)$, the denotation could be:
             \begin{align}
-                p^{(n)}(t) \triangleq \begin{bmatrix}
+                S^{(C)}_{n}(t) \triangleq \begin{bmatrix}
                     X_{L_C} \\ \vdots \\X_{1}
                 \end{bmatrix}
             \end{align}
-            where $X_{l}$ changes with time being follows the deterministic \emph{SRTF} rule.
+            where $X_{l}$ changes following the deterministic \emph{SRTF} rule in adjacent timeslot. And according to the rule defined, we could obtain the turn-around time to remove all the jobs for $S^{(C)}_{n}(t)$ as:
+            \begin{align}
+                \begin{cases}
+                    C(x_{1}) = \frac{x_1(x_1+1)}{2}
+                    \\
+                    C(x_{2}) = C(x_{1}) + 2 \cdot \frac{x_2(x_2+1)}{2}
+                    \\
+                    \dots
+                    \\
+                    C(x_{L_C}) = C(x_{1}) + \cdots + C(x_{L_C-1}) + L_C \cdot \frac{x_{L_C}(x_{L_C}+1)}{2}
+                \end{cases}
+            \end{align}
+            and the sum-up turn-around time for all the jobs on $n$-th server at $t$-th timeslot is:
+            \begin{align}
+                C(S^{(c)}_{n}(t)) = \sum_{i=1}^{L_C} \frac{x_i(x_i+1)}{2} \cdot i(L_C-i+1)
+            \end{align}
+            The cost defined here is not instantaneous but for the total cost brought by those current jobs. The arrival jobs in the following time slot, would only bring 
+
+            Then coupled with with probabilistic arrival we have:
+            \emph{arrival injection} $I^{(n)}$
+
+            Thus the initial state $S^{(W)}(t), S^{(U)}(t)$ would finitely affect the distribution on cost collection. However, the deterministic rule could be removed from cost collection by \emph{arrival injection}, but not from the state transition which implies that we have to keep track of state transition with respect to the rule.
 
             At last, we collect the cost according to the definition in our MDP problem but with respect to our approximate algorithm.
             \begin{align}
@@ -413,10 +434,10 @@
                 \caption{Distributed Algorithm for $k$-th AP}
                 \begin{algorithmic}
                     \WHILE{\TRUE}
-                        \FOR{$k \in \mathcal{K}$}
-                            \STATE fix policy $\vec{\Omega}^{(k)}(t) \forall k' \neq k$
-                            %TODO: stop here and continue
-                        \ENDFOR
+                        \STATE (in progress)
+                        % \FOR{$k \in \mathcal{K}$}
+                        %     \STATE fix policy $\vec{\Omega}^{(k)}(t) \forall k' \neq k$
+                        % \ENDFOR
                     \ENDWHILE
                 \end{algorithmic}
             \end{algorithm}
