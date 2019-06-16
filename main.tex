@@ -23,6 +23,7 @@
 %     \caption{}                                                %
 %     \label{fig:*}                                             %
 % \end{figure}                                                  %
+\newcommand{\vecOne}{\mathbf{1}}
 %---------------------------------------------------------------%
 
 \begin{document}
@@ -359,36 +360,68 @@
     %============================= ALGORITHM ==============================%
     \begin{section}{ALGORITHM}
         \label{sec:algorithm}
-        As the formulated problem is with infinite states and the action space would be exponentially expanded with respect to number APs and ESs, we could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity. To alleviate curse of dimensionality, we take one baseline policy to approximate the value function as $\tilde{V}(T_t)$ and carry out one-step iteration to come up with a better value function approximation.
+        As the formulated problem above is of infinite states and the action space would be exponentially expanded with respect to number APs and ESs, we could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity. To alleviate curse of dimensionality, we take one baseline policy to approximate the value function as $\tilde{V}(T_t)$ and carry out one-step iteration to come up with a better value function approximation.
 
-        Firstly we name the approximated value function $\tilde{V}(T_t)$ with job-wise fixed policy independent from states observation as:
-        \begin{align}
-            & \tilde{V}^{\pi}(T_t)
-            \nonumber%\\
-            = E_{\pi} \{ \tilde{C}_{t} + \gamma \tilde{C}_{t+1} + \gamma^2 \tilde{C}_{t+2} + \dots |S_{t-1}=s \}
-            \nonumber\\
-            = & \sum_{k=0}^{\infty} \gamma^{k} \sum_{t'=kT^{br}+1}^{(k+1)T^{br}} \sum_{s'} P^{t'}_{s,s'}(\vec{\beta}_{\pi}) \times |s'| 
-        \end{align}
-        We notice that the explosion of state space, and decide to futhermore apply  over value function approximation. There are two methods available for branch reduction:
-        \begin{enumerate}
-            \item \emph{state approximation}, for example we could apply quantization on $L_{cd}^{U}$ and $L_{cd}^{C}$ of jobs into 2 levels: un-finished or finished;
-            \item \emph{transition matrix approximation}, for example we consider that the transition matrix is with its main components after a 100-times iteration.
-        \end{enumerate}
-        In our calculation, we adapt the two methods at the same time.
+        \begin{subsection}{Stochastic Process for Baseline Policy}
+            The arrival process for jobs is assumed memory-less, i.e. invariant from time. According to \emph{Poisson Limit Theorem}, we adapt Bernoulli distribution for each timeslot with presence probability as $p_I$; the arrival distribution over the job set is:
+            \begin{align*}
+                \vec{p} = \{ p_0, p_1,\dots,p_J \}
+            \end{align*}
+            where $p_0=1-p_I$, and $p_0+\sum_{j=1}^{J}=1$.
 
-        Then we introduce the one-step iteration algorithm here:
-        % [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
-        \begin{algorithm}[H]
-            \caption{Distributed Algorithm for $k$-th AP}
-            \begin{algorithmic}
-                \WHILE{\TRUE}
-                    \FOR{$k \in \mathcal{K}$}
-                        \STATE fix policy $\vec{\Omega}^{(k)}(t) \forall k' \neq k$
-                        %TODO: stop here and continue
-                    \ENDFOR
-                \ENDWHILE
-            \end{algorithmic}
-        \end{algorithm}
+            Firstly, we give the denotation of the jobs arrival distribution after a fixed action distribution $\alpha^{(k)}$ (not respect to states) for $k$-th AP as:
+            \begin{align}
+                \mathbf{I}^{(k)} &\triangleq \vec{\alpha}^{(k)} \circ A^{(k)}
+                \nonumber\\
+                &= \{ \vec{I}^{(k)}_{1}, \dots, \vec{I}^{(k)}_{J} \} = \{p^{(k)}_{j,n}\}
+            \end{align}
+            where, $p^{(k)}_{j,n} = p_j \times \alpha^{(k)}_j(a=n)$ for all $j \in \mathcal{J}$, $J=L_C^N$.
+
+            The jobs after uploading decision would come to corresponding server after deterministic delay $T^{prop}_{k,n}$. However, we assume \emph{Bernoulli distribution} in each timeslot thus the arrival process $\mathbf{I}'^{(n)}$ for $n$-th server would actually be invariant from time.
+            \begin{align}
+                \mathbf{I}'^{(n)}(t) & = \{I'^{(n)}_1(t), \dots, I'^{(n)}_1(t) \}
+                \\
+                \vec{I}'^{(n)}_j(t) & = \sum_{k \in \mathcal{K}} p^{(k)}_{j,n}(t - T^{prop}_{k,n})
+                \nonumber\\
+                & = \vec{I}^{(k)}_{1} \times \vecOne
+            \end{align}
+            where $T^{prop}_{k,n}$ only matters in \emph{cost collection} from each AP node but not with arrival distribution.
+
+            Then given the initial states $S^{(C)}_{n}(t)$ for the servers as multi-queue structure:
+            \begin{align}
+                p^{(n)}(t) \triangleq \begin{bmatrix}
+                    X_{L_C} \\ \vdots \\X_{1}
+                \end{bmatrix}
+            \end{align}
+            where $X_{l}$ changes with time being follows the deterministic \emph{SRTF} rule.
+
+            At last, we collect the cost according to the definition in our MDP problem but with respect to our approximate algorithm.
+            \begin{align}
+                & \tilde{V}^{\pi}(T_t)
+                \nonumber%\\
+                = E_{\pi} \{ \tilde{C}_{t} + \gamma \tilde{C}_{t+1} + \gamma^2 \tilde{C}_{t+2} + \dots |S_{t-1}=s \}
+                % \nonumber\\
+                % = & \sum_{k=0}^{\infty} \gamma^{k} \sum_{t'=kT^{br}+1}^{(k+1)T^{br}} \sum_{s'} \tilde{P}^{t'}_{s,s'} \times |s'|
+            \end{align}
+            where $\tilde{P}_{s,s'}$ is fixed under the given policy $\vec{\beta}_{\pi}$.
+        \end{subsection}
+
+        \begin{subsection}{The Distributed Algorithm}
+            Then we introduce the one-step iteration algorithm in this section:
+            % [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
+            \begin{algorithm}[H]
+                \caption{Distributed Algorithm for $k$-th AP}
+                \begin{algorithmic}
+                    \WHILE{\TRUE}
+                        \FOR{$k \in \mathcal{K}$}
+                            \STATE fix policy $\vec{\Omega}^{(k)}(t) \forall k' \neq k$
+                            %TODO: stop here and continue
+                        \ENDFOR
+                    \ENDWHILE
+                \end{algorithmic}
+            \end{algorithm}
+        \end{subsection}
+        
     \end{section}
 
     %============================ EVALUATION ==============================%
