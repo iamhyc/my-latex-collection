@@ -15,6 +15,7 @@
 \newtheorem{problem}{Problem}
 \newtheorem{lemma}{Lemma}
 \newtheorem{corollary}{Corollary}
+\newtheorem{example}{Example}
 \newcommand{\vecOne}{\mathbf{1}}
 %---------------------------------------------------------------%
 
@@ -83,7 +84,17 @@
         The details about the communication model and computation model for jobs will be elaborated in the following subsection. Moreover, to facilitate the cooperation among multiple APs, the well-designed broadcast is also elaborated in this section to help APs come to consensus on global states.
 
         \begin{subsection}{Network Model}
-            The communication model in our system ignores the underlaid physical property and MAC design. We focus on the communication process of uploading of jobs.
+            We consider an MEC system topology illustrated in Fig. \ref{fig:system}.
+
+            \begin{itemize}
+                \item ME (Mobile Equipment) releases jobs to the corresponded AP (Access Point), and the MEs distribute within the coverage from all the APs considered in our system;
+                \item AP has no computation power, and dispatches those jobs to ES (Edge Server);
+                \item The uploading process is assumed parallel and with deterministic delay domained by propagation delay.
+                \item The total uploading process could be divided into Fig. \ref{fig:trans} between the adjacent timeslots, using some \emph{indicator functions};
+                \item for \emph{Parallel Uploading}: because the uploading time is finite and arrival frequency is at most 1 per timeslot, there actually needs finite channel capacity to serve the uploading process;
+            \end{itemize}
+
+            The communication model in our system ignores the underlaid physical property and association design.
             The assumed uploading time is deterministic and known in advance when the job is released to AP. The uploading time for one job may variance with respect to different ESs from the arrived AP, and the distribution of variance is not known in advance but is guaranteed with an expectation.
             Moreover, we assume the uploading process could be parallel among jobs which implies almost infinite capacity, and the end-to-end time is domain by the propagation time and processing time rather than communication time due to bandwidth. We identify this feature as the intrinsic property different from cloud computing scenario.
             \begin{figure}[ht]
@@ -95,6 +106,10 @@
                 
             When the dispatching action is going to applied from AP agent's view, all the AP and ES nodes need to broadcast their local jobs' information for cooperation. The broadcast delay is considered deterministic and asynchronous at their own pace.
             The details of broadcast design about interval and contents will be elaborated in the following \textit{Broadcast Model} subsection.
+
+            \begin{example}
+                Task released; Action applied; Uploading; FCFS/SJF computation.
+            \end{example}
         \end{subsection}
 
         \begin{subsection}{Computation Model}
@@ -129,6 +144,10 @@
     %============================ FORMULATION =============================%
     \begin{section}{FORMULATION}
         \label{sec:formulation}
+        \begin{itemize}
+            \item We adapt \emph{timeslot} to characterize the minimum time slice in edge computing system, where the job release behavior from users is considered time-invariant in each time slot. And we use \emph{Bernoulli process} to characterize the memory-less behavior and there could be at most one job arrives in one timeslot. 
+        \end{itemize}
+
         In this section we will firstly give out our optimization utility under a reasonable definition of edge computing system. As we are also considering cooperation among AP agents via a delicate broadcast design, we furthermore express the control policy decentralized on each AP agent.
         By leveraging a delicate broadcast design, all the AP agents could receive the local features about jobs at the broadcast point and the experienced local cost (number of jobs) during the broadcast interval.
         We formulate the local MDP optimization processes with the same target as the global optimization utility, but all with delayed cost to collect and delayed actions to apply based on the obsolete observation via broadcast. However, due to the different broadcast delay for each agents, the agents come to the consensus global states at different timeslot and thus compose the states transition, which is different from the situation with updated global information on each agents. We will discuss the difference and optimality gap at the end of this section.
