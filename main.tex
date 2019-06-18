@@ -1,28 +1,20 @@
 \documentclass[10pt, conference, letterpaper]{IEEEtran}
 \usepackage{cite}
 \usepackage{xcolor,soul,framed}
-\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
 \usepackage{algorithmic}
 \usepackage{graphicx}
 \usepackage{color, soul}
 \usepackage{algorithm, algorithmic}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
 \graphicspath{ {./images/} }
 
 %---------------------------------------------------------------%
-%-Include Graphics Macro:---------------------------------------%
-% \begin{figure}[h]                                             %
-%     \centering                                                %
-%     \includegraphics[width=0.45\textwidth]{*}                 %
-%     \caption{}                                                %
-%     \label{fig:*}                                             %
-% \end{figure}                                                  %
-%-Include PDF Figures Macro:------------------------------------%
-% \begin{figure}[h]                                             %
-%     \centering                                                %
-%     \includegraphics[width=0.45\textwidth, trim={0.5cm 0.5cm 0.5cm 0.5cm}, clip]{*.pdf}
-%     \caption{}                                                %
-%     \label{fig:*}                                             %
-% \end{figure}                                                  %
+\newtheorem{definition}{Denifition}
+\newtheorem{problem}{Problem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
 \newcommand{\vecOne}{\mathbf{1}}
 %---------------------------------------------------------------%
 
@@ -30,7 +22,7 @@
 
     %=============================== TITLE ===============================%
     \title{
-        Meet-in-Future: Optimized Job Dispatching Policy with Obsolete Information MDP in Edge Computing System
+        Meet-in-Future: Distributed Online Job Dispatching with Obsolete Information in Edge Computing System
     }
     \author{
         \IEEEauthorblockN{Yuncong Hong}
@@ -44,11 +36,11 @@
     %============================== ABSTRACT ==============================%
     \begin{abstract}
         \label{sec:abstract}
-        We formulate the problem with job dispatching in distributed Edge Computing system, and identify the difficulty exists in cooperation between APs (Access Points) and ESs (Edge Servers) with delayed information. In this work, we design the broadcast information in the system and formulate the corresponding problem into two-time-scale MDP problem.
+        We formulate the problem with job dispatching in distributed Edge Computing system, and identify the difficulty exists in cooperation between APs (Access Points) and ESs (Edge Servers) with delayed information. In this work, we design the broadcast information in the system and formulate the corresponding problem into a MDP problem.
     \end{abstract}
 
     \begin{IEEEkeywords}
-        Edge Computing, Distributed Scheduling, Delayed Information, Collective Observability, Distributed Multi-agent MDP
+        Edge Computing, Job Dispatch, Delayed Information, Collective Observability, Distributed Multi-agent MDP
     \end{IEEEkeywords}
 
     %============================ INTRODUCTION ============================%
@@ -58,19 +50,28 @@
 
         Some traits to mention compared to related works:
         \begin{itemize}
-            \item we don't accept communication cost in broadcast, because the global information to share requires both collective information and delayed information; the waiting time for scheduling should be avoided.
+            \item we consider arrival process on ES may be affected by uploading process;
+            \item we consider decentralized cooperation among APs without help from a centralized agent;
+            \item we identify the delayed received broadcast information is un-acceptable, and it's hard to establish cooperation among APs because of obsolete information;
+            \item we consider online job dispatching immediately without waiting for collective information and avoid the waiting time for decision.
         \end{itemize}
     \end{section}
 
     %========================= LITERATURE REVIEW ==========================%
     \begin{section}{LITERATURE REVIEW}
         \label{sec:review}
+        Related work from \emph{Conference}:
         \begin{itemize}
             \item We use MDP definition in \cite{sutton1998introduction}
             \item The earliest related works we find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing \emph{information}. The agent considers communication as extra action to synchronize the states and thus incurs extra cost. \\
             However, the communication is without delay, and converted into POMDP problem.
             \item The other work \cite{ref-02} considers continuous state observation with constant or stochastic delay with single agent. \\
             However, 
+        \end{itemize}
+
+        Realted work from \emph{Journal/Magazine}:
+        \begin{itemize}
+            \item (in progress...)
         \end{itemize}
     \end{section}
 
@@ -85,7 +86,7 @@
             The communication model in our system ignores the underlaid physical property and MAC design. We focus on the communication process of uploading of jobs.
             The assumed uploading time is deterministic and known in advance when the job is released to AP. The uploading time for one job may variance with respect to different ESs from the arrived AP, and the distribution of variance is not known in advance but is guaranteed with an expectation.
             Moreover, we assume the uploading process could be parallel among jobs which implies almost infinite capacity, and the end-to-end time is domain by the propagation time and processing time rather than communication time due to bandwidth. We identify this feature as the intrinsic property different from cloud computing scenario.
-            \begin{figure}[h]
+            \begin{figure}[ht]
                 \centering
                 \includegraphics[width=0.45\textwidth, trim={0.5cm 0.5cm 0.5cm 0.5cm}, clip]{system-model.pdf}
                 \caption{The Illustration of System Model}
@@ -111,7 +112,7 @@
             \end{itemize}
 
             The illustration figure \ref{fig:brd} for single broadcast includes several important time points which are also important in multiple synchronous broadcast: $x_{k,j}, d_{k,j}, T^{br}_{k,j}$
-            \begin{figure}[h]
+            \begin{figure}[ht]
                 \centering
                 \includegraphics[width=0.45\textwidth]{single-broadcast.png}
                 \caption{Single broadcast timing illustration}
@@ -204,7 +205,7 @@
             where $L_C$ is a constant vector of length $N$ with each denoting the computation time of that job on each server; and $L^{(U)}_{cd}(t), L^{(C)}_{cd}(t)$ are countdowns for uploading and computing time remained for that job respectively.
             
             The single step transition graph is given below:
-            \begin{figure}[h]
+            \begin{figure}[ht]
                 \centering
                 \includegraphics[width=0.45\textwidth]{single-transition.png}
                 \caption{Single-step transition function composing graph}
@@ -292,7 +293,7 @@
 
             In this consensus formulation illustrated in figure \ref{fig:br-trans}, we actually let every agents maintain the same global states with different deterministic delay. The delayed information doesn't impact on global states formulation of MDP problem, but converted into action over delayed states. For example, the agent would take actions based both on global states $S_1$ and $S_2$ in the period of $S_3$, because in the first half period it doesn't come to consensus on global states $S_2$.
 
-            \begin{figure}[h]
+            \begin{figure}[ht]
                 \centering
                 \includegraphics[width=0.45\textwidth]{broadcast-trans.png}
                 \caption{Global Consensus and Transition with Delayed Action}
@@ -350,7 +351,7 @@
     \end{section}
 
     %============================= ALGORITHM ==============================%
-    \begin{section}{ALGORITHM}
+    \begin{section}{LOW-COMPLEXITY SOLUTION}
         \label{sec:algorithm}
         As the formulated problem above is of infinite states and the action space would be exponentially expanded with respect to number APs and ESs, we could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity. To alleviate curse of dimensionality, we take one baseline policy to approximate the value function as $\tilde{V}(T_t)$ and carry out one-step iteration to come up with a better value function approximation.
 
@@ -378,7 +379,7 @@
             \end{align}
             where $T^{prop}_{k,n}$ only matters in \emph{cost collection} from each AP node but not with arrival distribution. And the jobs of type $j$ would upload to $n$-th server with the corresponding component of length on that server. For convenience, we denote the mapping $f: (n,j) \to L_j(n)$ which obtains the mapping from probability distribution of \emph{jobs type} to \emph{jobs length on independent servers}, i.e. after being uploaded the length of job is determinant with $L_j(n)$.
 
-            \begin{figure}[h]
+            \begin{figure}[ht]
                 \centering
                 \includegraphics[width=0.45\textwidth]{srtf-graph.png}
                 \caption{SRTF Job Transition between Multiple Queues}
