@@ -8,6 +8,7 @@
 \usepackage{algorithm, algorithmic}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
+\usepackage{mathtools}
 \graphicspath{ {./images/} }
 
 %---------------------------------------------------------------%
@@ -17,6 +18,15 @@
 \newtheorem{corollary}{Corollary}
 \newtheorem{example}{Example}
 \newcommand{\vecOne}{\mathbf{1}}
+\newcommand{\ind}{\mathbf{I}}
+\DeclarePairedDelimiter\set\{\}
+%---------------------------------------------------------------%
+\newcommand{\apSet}{\mathcal{K}}
+\newcommand{\esSet}{\mathcal{M}}
+\newcommand{\wSet}{\mathcal{W}}
+\newcommand{\uSet}{\mathcal{U}}
+\newcommand{\cSet}{\mathcal{C}}
+\newcommand{\Stat}{\mathbf{S}}
 %---------------------------------------------------------------%
 
 \begin{document}
@@ -78,16 +88,16 @@
 
     %============================ SYSTEM MODEL ============================%
     \begin{section}{SYSTEM MODEL}
-        In a Mobile Edge Computing (MEC) system, the mobile users would offload their computation jobs to the selected APs (Access Points) to the Edge Computing network. The APs would make decisions on each jobs to determine which ES (Edge Server) could better serve it and then dispatch jobs to the corresponding ES with a certain delayed time.
-            
-        In our problem, we consider the process of jobs from release until be fully processed. We identify the \emph{response time} of this process is mainly composed of: waiting time on AP to make decision, uploading time from AP to ES, and total computation-and-waiting time on ES.
-        The details about the communication model and computation model for jobs will be elaborated in the following subsection. Moreover, to facilitate the cooperation among multiple APs, the well-designed broadcast is also elaborated in this section to help APs come to consensus on global states.
+        \label{sec:model}
+        mobile users (ME) offload jobs to access points (AP);
+        APs makes decision to wait or upload to edge servers (ES);
+        well-designed broadcast to help APs come to consensus on global states;
+        In our problem, we consider \emph{response time} of jobs;
 
         \begin{subsection}{Network Model}
             We consider an MEC system topology illustrated in Fig. \ref{fig:system}.
-
             \begin{itemize}
-                \item ME (Mobile Equipment) releases jobs to the corresponded AP (Access Point), and the MEs distribute within the coverage from all the APs considered in our system;
+                \item ME (Mobile Equipment) releases jobs to the corresponded AP (Access Point), and the MEs distribute within the coverage from all the APs considered in our system; (fully connected)
                 \item AP has no computation power, and dispatches those jobs to ES (Edge Server);
                 \item The uploading process is assumed parallel and with deterministic delay domained by propagation delay.
                 \item The total uploading process could be divided into Fig. \ref{fig:trans} between the adjacent timeslots, using some \emph{indicator functions};
@@ -119,7 +129,7 @@
 
         \begin{subsection}{Broadcast Model}
             \begin{itemize}
-                \item global aligned broadcast; interval is far larger than the maximum delay from one nodes to the other AP nodes;
+                \item global aligned broadcast, and interval is far larger than the maximum delay from one nodes to the other AP nodes, i.e. $T \gg d$;
                 \item consensus delay for $k$-th AP:
                     \begin{align}
                         \hat{d}_k = \max_{i\in(\mathcal{K} \cup \mathcal{N})}(d_{k,i})
@@ -145,7 +155,13 @@
     \begin{section}{FORMULATION}
         \label{sec:formulation}
         \begin{itemize}
-            \item We adapt \emph{timeslot} to characterize the minimum time slice in edge computing system, where the job release behavior from users is considered time-invariant in each time slot. And we use \emph{Bernoulli process} to characterize the memory-less behavior and there could be at most one job arrives in one timeslot. 
+            \item We adapt \emph{timeslot} to characterize the minimum time slice in edge computing system, where the job release behavior from users is considered time-invariant in each time slot. And we use \emph{Bernoulli process} to characterize the memory-less behavior and there could be at most one job arrives in one timeslot.
+            
+            \item Let $\mathcal{K} \triangleq \set{1,\dots,K}$ to denote the AP nodes, $\mathcal{M} \triangleq \set{1,\dots,M}$ to denote ES nodes;
+            
+            \item \emph{Waiting Job Set} on $k$-th AP node in $t$-th timeslot as: $\wSet_{k}(t)$, $\forall k \in \apSet$;
+            
+            \item \emph{Uploading Job Set} from $k$-th AP to $m$-th ES in $t$-th timeslot as:
         \end{itemize}
 
         In this section we will firstly give out our optimization utility under a reasonable definition of edge computing system. As we are also considering cooperation among AP agents via a delicate broadcast design, we furthermore express the control policy decentralized on each AP agent.
@@ -158,14 +174,21 @@
             The computation time $L_C$ is bounded by $T_C$, i.e. $L_C \in [1,T_C]$.
                 
             For one job $j$, it will wait until the uploading decision is made for it. Then it takes a general $T^{prop}_{k,n}$ time to be uploaded to $n$-th server from $k$-th access point; after being uploaded to $n$-th server, it will wait for its turn for computing until all the $L_C(n)$ components are processed and leave the system.
+
+            \begin{definition}
+                (Scheduling Policy). 
+            \end{definition}
                 
             Our optimization target is to minimize the average waiting time and computation time for each job, which is called the jobs' average response time. According to \emph{Little’s Law}, to minimize average response time, is equal to minimize the average number of jobs in a system, which is:
-            \begin{gather}
-                \min_{\Omega} \lim_{T \to \infty} E[\frac{1}{T} \sum_{t=0}^{T} N(t)]
-                \\
-                N(t) = \sum_{k \in K} (A^{(k)}(t) + N_k(t))
-                        + \sum_{n \in N} N_n(t)
-            \end{gather}
+            \begin{problem}
+                (Distributed Cooperative Job Dispatching)
+                \begin{gather}
+                    \min_{\Omega} \lim_{T \to \infty} E[\frac{1}{T} \sum_{t=0}^{T} N(t)]
+                    \nonumber\\
+                    N(t) = \sum_{k \in K} (A^{(k)}(t) + N_k(t))
+                            + \sum_{n \in N} N_n(t)
+                \end{gather}
+            \end{problem}
             where $N_k(t)$ denotes the number of jobs on $k$-th AP, and $N_n(t)$ denotes the number of jobs on $n$-th ES.
             The goal to minimize the cost caused by ESs could be simply achieved with heuristic algorithm \emph{SJF} (shortest-job first), because it is the fastest way to reduce number of jobs on the edge server. So, in the next MDP problems we will focus on the policy applied on AP side, and leave ES with fixed heuristic algorithm.
         \end{subsection}
@@ -372,9 +395,12 @@
     %============================= ALGORITHM ==============================%
     \begin{section}{LOW-COMPLEXITY SOLUTION}
         \label{sec:algorithm}
+        To alleviate the curse of dimensionality, we develope the approximate form of value function in the above illustrated problem. we adapt a heuristic baseline policy as the initial policy for the above illustrated problem.
         As the formulated problem above is of infinite states and the action space would be exponentially expanded with respect to number APs and ESs, we could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity. To alleviate curse of dimensionality, we take one baseline policy to approximate the value function as $\tilde{V}(T_t)$ and carry out one-step iteration to come up with a better value function approximation.
 
         \begin{subsection}{Stochastic Process for Baseline Policy}
+            \hl{Traditional value iteration is intractable due to the following reasons: (1) the number of active devices is not fixed and the state space grows exponentially with the increasing number of active devices; (2) the spaces of small-scale fading and path-loss are continuous.}
+
             The arrival process for jobs is assumed memory-less, i.e. invariant from time. According to \emph{Poisson Limit Theorem}, we adapt Bernoulli distribution for each timeslot with presence probability as $p_I$; the arrival distribution over the job set is:
             \begin{align*}
                 \vec{p} = \{ p_0, p_1,\dots,p_J \}
