@@ -98,10 +98,11 @@
                 \label{fig:system}
             \end{figure}
 
-            Let $\mathcal{K} \triangleq \set{1,\dots,K}$ and $\mathcal{M} \triangleq \set{1,\dots,M}$ denote the set of APs and set of ESs in the MEC system respectively. We adopt \emph{timeslot} lasting for $\tau$ seconds as the minimum time slice in the system, and the dispatching and scheduling decision on AP and ES side respectively are all applied based on this timing. Furthermore, we consider there is at most one job arrives AP in one timeslot and we characterize the job release process to AP with \emph{Bernoulli process} to characterize the memory-less behavior and there could be at most one job arrives in one timeslot.
+            Let $\mathcal{K} \triangleq \set{1,\dots,K}$ and $\mathcal{M} \triangleq \set{1,\dots,M}$ denote the set of APs and set of ESs in the MEC system respectively. We adopt \emph{timeslot} lasting for $\tau$ seconds as the minimum time slice in the system, and the dispatching and scheduling decision on AP and ES side respectively are all applied based on this timing. Furthermore, we assume the job arrival process for AP nodes is illustrated as follow:
             \begin{assumption}
                 (Job Arrival Process at AP).
-                According to \emph{Poisson Limit Theorem}, we adapt Bernoulli distribution for each timeslot with presence probability as $p_I$;
+                We assume that the job arrival process $A_k(t)$ for $k$-th AP is i.i.d over the timeslots and each with Bernoulli distribution as $A_k(t) \sim Bernoulli(p_I)$.  According to \emph{Poisson Limit Theorem}, we identify the arrival process as memory-less between timeslots and with average arrival rate as $\mathbb{A_k(t)} = p_I$.
+                This assumption implies that there will be at most one job arrives AP in one timeslot from all the UEs connected.
             \end{assumption}
 
             We identify \emph{delay} as the most unacceptable part in MEC system, so we take focus on uploading process and adopt well-designed broadcast to help APs come to consensus on global states.
