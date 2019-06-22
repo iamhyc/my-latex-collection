@@ -21,6 +21,8 @@
 \newcommand{\domZ}{\mathbb{Z}_{*}}
 \newcommand{\vecOne}{\mathbf{1}}
 \newcommand{\ind}{\mathbf{I}}
+\newcommand{\mat}{\mathbf}
+\renewcommand{\vec}{\mathbf}
 \DeclarePairedDelimiter\set\{\}
 %---------------------------------------------------------------%
 \newcommand{\apSet}{\mathcal{K}}
@@ -105,39 +107,30 @@
                 This assumption implies that there will be at most one job arrives AP in one timeslot from all the UEs connected.
             \end{assumption}
 
-            There are two main communication process with APs and ESs engaged based on the network topology elaborated above. We assume the communication delay is rather deterministic between two nodes and assign the delay time directly w.r.t transmission content for convenience.
+            There are two main communication process with APs and ESs engaged based on the network topology elaborated above. We assume the communication latency is rather deterministic between two nodes and assign the delay time directly w.r.t transmission content for convenience.
 
             The first one is \emph{uploading process} where AP dispatches jobs to corresponding ESs. The uploading time for all kinds of jobs is same for one AP-ES link, as $T^{prop}_{k,m}$ from $k$-th AP to $m$-th ES where $T^{prop}_{k,m}$ will always last for integer timeslots. \emph{Parallel uploading} is enabled on AP to alleviate the cost caused by serially uploading process; as the arrival process and uploading time is bounded, there will be at most $\lambda_k \cdot \max_m(T^{prop}_{k,m})$ jobs in transmission on $k$-th AP which results into finite bandwidth requirement.
             
             The other one is \emph{broadcast process} to facilitate cooperative dispatching decision.
-            The information sharing among distributed AP nodes is designed via broadcast to achieve global optimality. The AP nodes should broadcast their system information to the other AP nodes, and the ES nodes should broadcast their information to all the AP nodes. More specifically, all the APs and ESs start to broadcast at the same start point at the beginning of the time slot and repeat broadcasting with the same interval as $T_{br}$ timeslots, which is called \emph{aligned broadcast}. Let $d_{k,i}$ denotes the broadcast delay from $i$-th node ($\forall i \in \apSet\cup\esSet$) to $k$-th AP ($\forall k \in apSet\backslash$) w.r.t to the last broadcast point where $d_{k,k} \equiv 0$ for convenience, and the broadcast interval is always larger than broadcast delay, i.e. $T \gg d$.
-
-            We identify that the obsolete and incomplete information about global states is un-acceptable due to communication delay on receivers' side,
-            The details of  broadcast information will be elaborated in the following section \emph{Job Dispatch Model}.
-            Furthermore, we elaborate the concept called \emph{consensus delay} for AP node as:
+            The information sharing among distributed AP nodes is designed via broadcast to achieve global optimality. The AP nodes should broadcast their system information to the other AP nodes, and the ES nodes should broadcast their information to all the AP nodes. More specifically, all the APs and ESs start to broadcast at the same start point at the beginning of one time slot and repeat broadcasting with the same interval as $T_{br}$ timeslots, which is called \emph{aligned broadcast}. Let $d_{k,i}$ denotes the broadcast delay from $i$-th node ($\forall i \in \apSet\cup\esSet$) to $k$-th AP ($\forall k \in apSet\backslash$) w.r.t to the last broadcast point where $d_{k,k} \equiv 0$ for convenience, and the broadcast interval is always larger than broadcast delay, i.e. $T_br > d_{k,i}$.            
+            Furthermore, we elaborate the concept called \emph{consensus delay} for AP nodes as:
             \begin{definition}
                 (Consensus Delay).
                 \begin{align}
-                    \hat{d}_k = \max_{j\in(\apSet \cup \mathcal{N})}(d_{k,j})
+                    \hat{d}_k = \max_{j\in(\apSet\cup\esSet)}(d_{k,j})
                 \end{align}
-                where $d_{k,k} \equiv 0, \forall k \in apSet$;
-                \begin{align}
-                    x_{k} = T_{br} + hat{d}_{k,j}
-                \end{align}
-                where $j \in \apSet \cup \esSet$;
+                where $d_{k,k} \equiv 0$; the consensus delay for $k$-th AP $ \forall k \in \apSet$ is the delay after the last broadcast point where it could update the global information consensus.
             \end{definition}
-            The aligned broadcast is guaranteed by timely synchronization protocol and is not the main component in our discussion.
+            The aligned broadcast is guaranteed by timely synchronization protocol and is not the main component in our discussion. \st{The details of  broadcast information will be elaborated in the following section \emph{Job Dispatch Model}.}
         \end{subsection}
 
         \begin{subsection}{Computation Model}
-            \begin{itemize}
-                \item unrelated machine model \cite{tan-online}, job length to characterize the resource preparation;
-                \item deterministic rate and only one job at one time at servers' side;
-                \item job length bounded by $L_C$; resource available is known because shared cooperation at initialization phase;
-                \item job scheduling policy on all the server is identical, \emph{FCFS} \hl{(could be removed if we stress both dispatching and scheduling optimization)};
-            \end{itemize}
+            For computation process on edge servers, we adopt \emph{unrelated machines} assumption in \cite{tan-online}, where the job processing time on different servers are machine dependent and variant of resource or VM (virtual machine) constraints. The processing time is with upper bound as $L_C$, and the job set is denoted as $\mathcal{J} = \set{1,2,\dots, J}$ where $J=L_C^M$ for all possible length combination; the $j$-th job in $\mathcal{J}$ has the computation time as $\vec{l}_j = [l_j^1, l_j^2, \dots, l_j^M]$ on edge servers cluster $\esSet$, where $\vec{l}_j$ is the index $j$ under $L_C$-base denotation.
+            We assume the scheduling policy on all the servers are identical as following:
             \begin{assumption}
-                (Scheduling Policy)
+                (Scheduling Policy).
+                \hl{(could be removed if we stress both dispatching and scheduling optimization)}
+                All the edge servers adopt \emph{FCFS} (First-Come-First-Serve) as job scheduling policy, i.e. the job earlier arrives at the server would get served earlier. And we note that the arrival order is not only determined by job arrives at the access point, but also related with the uploading latency.
             \end{assumption}
         \end{subsection}
 
