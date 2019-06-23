@@ -18,6 +18,7 @@
 \newtheorem{lemma}{Lemma}
 \newtheorem{corollary}{Corollary}
 \newtheorem{example}{Example}
+\newcommand{\eq}{=}
 \newcommand{\domZ}{\mathbb{Z}_{*}}
 \newcommand{\vecOne}{\mathbf{1}}
 \newcommand{\ind}{\mathbf{I}}
@@ -27,6 +28,7 @@
 %---------------------------------------------------------------%
 \newcommand{\apSet}{\mathcal{K}}
 \newcommand{\esSet}{\mathcal{M}}
+\newcommand{\jSet}{\mathcal{J}}
 \newcommand{\wSet}{\mathcal{W}}
 \newcommand{\uSet}{\mathcal{U}}
 \newcommand{\cSet}{\mathcal{C}}
@@ -112,7 +114,7 @@
             The first one is \emph{uploading process} where AP dispatches jobs to corresponding ESs. The uploading time for all kinds of jobs is same for one AP-ES link, as $T^{prop}_{k,m}$ from $k$-th AP to $m$-th ES where $T^{prop}_{k,m}$ will always last for integer timeslots. \emph{Parallel uploading} is enabled on AP to alleviate the cost caused by serially uploading process; as the arrival process and uploading time is bounded, there will be at most $\lambda_k \cdot \max_m(T^{prop}_{k,m})$ jobs in transmission on $k$-th AP which results into finite bandwidth requirement.
             
             The other one is \emph{broadcast process} to facilitate cooperative dispatching decision.
-            The information sharing among distributed AP nodes is designed via broadcast to achieve global optimality. The AP nodes should broadcast their system information to the other AP nodes, and the ES nodes should broadcast their information to all the AP nodes. More specifically, all the APs and ESs start to broadcast at the same start point at the beginning of one time slot and repeat broadcasting with the same interval as $T_{br}$ timeslots, which is called \emph{aligned broadcast}. Let $d_{k,i}$ denotes the broadcast delay from $i$-th node ($\forall i \in \apSet\cup\esSet$) to $k$-th AP ($\forall k \in apSet\backslash$) w.r.t to the last broadcast point where $d_{k,k} \equiv 0$ for convenience, and the broadcast interval is always larger than broadcast delay, i.e. $T_br > d_{k,i}$.            
+            The information sharing among distributed AP nodes is designed via broadcast to achieve global optimality. The AP nodes should broadcast their system information to the other AP nodes, and the ES nodes should broadcast their information to all the AP nodes. More specifically, all the APs and ESs start to broadcast at the same start point at the beginning of one time slot and repeat broadcasting with the same interval as $T_{br}$ timeslots, which is called \emph{aligned broadcast}. Let $d_{k,i}$ denotes the broadcast delay from $i$-th node ($\forall i \in \apSet\cup\esSet$) to $k$-th AP ($\forall k \in \apSet$) w.r.t to the last broadcast point where $d_{k,k} \equiv 0$ for convenience, and the broadcast interval is always larger than broadcast delay, i.e. $T_br > d_{k,i}$.            
             Furthermore, we elaborate the concept called \emph{consensus delay} for AP nodes as:
             \begin{definition}
                 (Consensus Delay).
@@ -125,54 +127,67 @@
         \end{subsection}
 
         \begin{subsection}{Computation Model}
-            For computation process on edge servers, we adopt \emph{unrelated machines} assumption in \cite{tan-online}, where the job processing time on different servers are machine dependent and variant of resource or VM (virtual machine) constraints. The processing time is with upper bound as $L_C$, and the job set is denoted as $\mathcal{J} = \set{1,2,\dots, J}$ where $J=L_C^M$ for all possible length combination; the $j$-th job in $\mathcal{J}$ has the computation time as $\vec{l}_j = [l_j^1, l_j^2, \dots, l_j^M]$ on edge servers cluster $\esSet$, where $\vec{l}_j$ is the index $j$ under $L_C$-base denotation.
+            For computation process on edge servers, we adopt \emph{unrelated machines} assumption in \cite{tan-online}, where the job processing time on different servers are machine dependent and variant of resource or VM (virtual machine) constraints. The processing time is with upper bound as $L_C$, and the job set is denoted as $\mathcal{J} = \set{0,2,\dots, J}$ where $J=L_C^M-1$ for all possible length combination; the $j$-th job in $\jSet$ has the computation time as $\vec{l}_j = ([l_j^1, l_j^2, \dots, l_j^M] + \vecOne^M)$ on edge servers cluster $\esSet$, where $\vec{l}_j$ is the index $j$ under $L_C$-base denotation. Additionally, we denote PDF of the release distribution over $\jSet$ as $\Pr(\jSet)$.
             We assume the scheduling policy on all the servers are identical as following:
             \begin{assumption}
                 (Scheduling Policy).
-                \hl{(could be removed if we stress both dispatching and scheduling optimization)}
+                \hl{(could be removed if we stress both dispatching and scheduling optimization, i.e. SJF job scheduling)}
                 All the edge servers adopt \emph{FCFS} (First-Come-First-Serve) as job scheduling policy, i.e. the job earlier arrives at the server would get served earlier. And we note that the arrival order is not only determined by job arrives at the access point, but also related with the uploading latency.
             \end{assumption}
         \end{subsection}
 
-        \begin{subsection}{Job Dispatch Model}
-            The system features at one timeslot is composed of the jobs on all the APs and ESs in the MEC system. Specifically, we have waiting jobs set, uploading job set, and computing job set for the description.
-            Let $\wSet_{k}(t) = \set{w_1, w_2, \dots, w_{N^w_k(t)}}, \forall k \in \apSet$ denotes the job set on $k$-th AP which comprises the jobs waiting for dispatch decision at $t$-th timeslot, where $w_i \in \domZ^M$ denotes the computing length on all $M$ unrelated edge servers. Then we have 
-            \begin{itemize}
-                \item \emph{Waiting Job Set} on $k$-th AP node in $t$-th timeslot as: ; .
-                \item \emph{Uploading Job Set} from $k$-th AP to $m$-th ES in $t$-th timeslot as: $\uSet_{k,m}(t) = \set{u_1, u_2, \dots, u_{N^u_{k,m}(t)}}, \forall k \in \apSet, m \in \esSet$; where $u_i \in (L_C), L_{cd}^{(U)}(t)$.
-                \item \emph{Computing Job Set} on $m$-th ES in $t$-th timeslot as: $\cSet_{m}(t) \triangleq \set{L_{cd}^{(C)}(t)}$;
-            \end{itemize}
+        \begin{subsection}{Job Dispatching Model}
+            The lifetime of jobs dispatching is composed of three stages: waiting on APs for uploading, in uploading to servers, and waiting for service on servers queue. The three stages results into jobs set accumulation on APs and ESs which is illustrated in Fig. \ref{fig:trans}, and the Markovian transition relationship between the adjacent timeslot.
+            Let $\wSet_{k}(t)$ denotes the job set on $k$-th AP $\forall k \in \apSet$, which comprises the jobs waiting for dispatching decision at $t$-th timeslot; $w \triangleq (\vec{l}_i) \in \wSet_{k}(t)$, where $w$ denotes the tuple containing one element $\vec{l}_w \in \domZ^M$ as the computing length on all $M$ unrelated edge servers.
+            Let $\uSet_{k,m}(t)$ denotes the jobs in uploading from $k$-th AP to $m$-th ES in $t$-th timeslot $\forall k \in \apSet, m \in \esSet$; $u \triangleq (l_u, T_{u,cd}(t)) \in \uSet_{k,m}(t)$, $l_u$ denotes the computing length on $m$-th server and $T_{u,cd}(t)$ records the remaining time for uploading completed.
+            Let $\cSet_{m}(t)$ denotes the jobs waiting for computing on $m$-th ES in $t$-th timeslot; $c \triangleq (T_{c,cd}(t)) \in \cSet_{m}(t)$, $T_{c,cd}(t)$ for this job records the remaining time for computing completed.
 
-            While the jobs processing is carried out following a descriptive procedure in the model section, we need some denotations to characterize the intrinsic of the transition. Firstly We come up with denotations for transition job sets expressed in figure \ref{fig:trans} as:
+            Then we have the denotation of system observation in $t$-th timeslots on left-hand side in the figure as:
             \begin{align}
-                I^{(W \to W')}_{k}(t) & \triangleq \{ j | a^{(k)}(j)=0, \forall j \in S^{'(W)}_k(t)\}
-                \\
-                I^{(W \to U)}_{k,n}(t) &\triangleq \{ j | a^{(k)}(j)=n, \forall j \in S^{'(W)}_k(t)\}
-                \\
-                I^{(U \to C)}_{k,n}(t) &\triangleq \{j|(L^{(U)}_{cd})_j=1, \forall j \in S^{(U)}_{k,n}(t)\}
-                \\
-                I^{(U \to U')}_{k,n}(t) &\triangleq S^{(U)}_{k,n}(t) \backslash I^{(U \to C)}_{k,n}(t)
-                \\
-                I^{(C \to \Phi)}_{n}(t) &\triangleq \{j|\arg\min_{j} (L^{(C)}_{cd})_j \wedge (L^{(C)}_{cd})_j=1\}
-                \\
-                I^{(C \to C')}_{n}(t) &\triangleq S^{(C)}_{n}(t) \backslash I^{(C \to \Phi)}_{n}(t)
+                \mathcal{O}(t) \triangleq (\bigcup\limits_{k\in\apSet}\wSet_{k}(t), \bigcup\limits_{k\in\apSet, m\in\esSet}\uSet_{k,m}(t), \bigcup\limits_{m\in\esSet}\cSet_{m}(t))
             \end{align}
-            \begin{figure}[h]
+            and as the transition is initialized by \emph{dispatching decision} and therefore automatically been uploaded and computed, we give the definition for decision action here:
+            \begin{definition}
+                (Dispatching Action).
+                The dispatching action is applied job-wise in the waiting job set denoted as $\vec{a}: j \to \set{0,1,\dots,M}, \forall j\in\jSet$, where $a_j\eq0$ means $j$-th job should keep waiting and $a_j=m\neq0$ means $j$-th job should be uploaded to $m$-th ES. The waiting decision is transient as the jobs are always been uploaded at last.
+            \end{definition}
+
+            Then we characterize the job dispatching process by Markovian transition between adjacent timeslots.
+            We come up with denotations for transition job sets expressed in figure \ref{fig:trans} as:
+            \begin{align}
+                \wSet'_{k}(t) &\triangleq \wSet_{k}(t) \cup A_k(t)
+                \\
+                I^{(W \to W')}_{k}(t) & \triangleq \{ w | a^{(k)}(2^{\vec{l}_w})\eq0, \forall w \in \wSet'_{k}(t) \}
+                \\
+                I^{(W \to U)}_{k,m}(t) &\triangleq \{ w | a^{(k)}(2^{\vec{l}_w})=m, \forall w \in \wSet'_{k}(t) \}
+                \\
+                I^{(U \to C)}_{k,m}(t) &\triangleq \{ u | T_{u,cd}=1, \forall u \in \uSet_{k,m}(t)\}
+                \\
+                I^{(U \to U')}_{k,m}(t) &\triangleq \uSet_{k,m}(t) \backslash I^{(U \to C)}_{k,m}(t)
+                \\
+                I^{(C \to \Phi)}_{m}(t) &\triangleq \{ c | \arg\min_{c\in\cSet(t)} T_{c,cd}(t) \wedge T_{c,cd}=1\}
+                \\
+                I^{(C \to C')}_{m}(t) &\triangleq \cSet_{m}(t) \backslash I^{(C \to \Phi)}_{m}(t)
+            \end{align}
+            Then we establish the relationship between those indicator functions with $\mathcal{O}(t+1)$ as:
+            \begin{align}
+                \begin{cases}
+                    \wSet_{k}(t+1) = I^{(W \to W')}_{k}(t)
+                    \\
+                    \uSet_{k,m}(t+1) = I^{(W \to U)}_{k,m}(t) + I^{(U \to U')}_{k,m}(t)
+                    \\
+                    \cSet_{m}(t+1) = \sum\limits_{k\in\apSet} I^{(U \to C)}_{k,m}(t) + I^{(C \to C')}_{m}(t)
+                \end{cases}
+            \end{align}
+
+            \begin{figure}[ht]
                 \centering
                 \includegraphics[width=0.45\textwidth]{single-transition.png}
                 \caption{Single-step transition function composing graph}
                 \label{fig:trans}
             \end{figure}
-            Then we establish the relationship between those indicator functions with $S(t+1)$:
-            \begin{align}
-                \begin{cases}
-                    S^{(W)}_{k}(t+1) = I^{(W \to W')}_{k}(t)
-                    \\
-                    S^{(U)}_{k,n}(t+1) = I^{(W \to U)}_{k,n}(t) + I^{(U \to U')}_{k,n}(t)
-                    \\
-                    S^{(C)}_{n}(t+1) = \sum_k I^{(U \to C)}_{k,n}(t) + I^{(C \to C')}_{n}(t)
-                \end{cases}
-            \end{align}
+
+            Additionally, we have the broadcast with period $T_{br}$
         \end{subsection}
     \end{section}
 
@@ -194,6 +209,8 @@
                     \vec{\Omega}(T_t) = \vec{\Omega}(\tilde{S}_t) \equiv \vec{\Omega}_{\Delta{t}}(S_t, S_{t-1})
                 \end{align}
             \end{definition}
+
+            Accoriding to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}.
         \end{section}
 
         \begin{subsection}{The Optimization Problem}
@@ -274,7 +291,7 @@
                 \caption{Distributed Algorithm for $k$-th AP}
                 \begin{algorithmic}
                     \WHILE{\TRUE}
-                        \STATE (in progress)
+                        \STATE (in progress...)
                         % \FOR{$k \in \mathcal{K}$}
                         %     \STATE fix policy $\vec{\Omega}^{(k)}(t) \forall k' \neq k$
                         % \ENDFOR
