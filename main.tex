@@ -33,6 +33,7 @@
 \newcommand{\uSet}{\mathcal{U}}
 \newcommand{\cSet}{\mathcal{C}}
 \newcommand{\Stat}{\mathbf{S}}
+\newcommand{\Obsv}{\mathcal{O}}
 %---------------------------------------------------------------%
 
 \begin{document}
@@ -94,7 +95,7 @@
     \begin{section}{SYSTEM MODEL}
         \label{sec:model}
         \begin{subsection}{Network Model}
-            The network topology of the MEC system considered is illustrated in Fig. \ref{fig:system}, which is composed of three elements. The user equipment (UE) is connected to one and only one access point (AP) all the time. The AP provides network access to all the UEs connected and also fully connected with each other to share nodes' information. The AP itself is assumed with no computation capability, and then dispatch the jobs from UEs to backend edge servers (ES) in a distributed cooperative way. Moreover, the network topology between AP cluster and ES cluster is also assumed fully connected for the reason that they are in the same coalition.
+            The network topology of the MEC system considered is illustrated in Fig. \ref{fig:system}, which is composed of three elements. The user equipment (UE) is connected to access point (AP) and . The AP provides network access to all the UEs connected and also fully connected with each other to share nodes' information. The AP itself is assumed with no computation capability, and then dispatch the jobs from UEs to backend edge servers (ES) in a distributed cooperative way. Moreover, the network topology between AP cluster and ES cluster is also assumed fully connected for the reason that they are in the same coalition.
             \begin{figure}[ht]
                 \centering
                 \includegraphics[width=0.45\textwidth, trim={0.5cm 0.5cm 0.5cm 0.5cm}, clip]{system-model.pdf}
@@ -114,20 +115,20 @@
             The first one is \emph{uploading process} where AP dispatches jobs to corresponding ESs. The uploading time for all kinds of jobs is same for one AP-ES link, as $T^{prop}_{k,m}$ from $k$-th AP to $m$-th ES where $T^{prop}_{k,m}$ will always last for integer timeslots. \emph{Parallel uploading} is enabled on AP to alleviate the cost caused by serially uploading process; as the arrival process and uploading time is bounded, there will be at most $\lambda_k \cdot \max_m(T^{prop}_{k,m})$ jobs in transmission on $k$-th AP which results into finite bandwidth requirement.
             
             The other one is \emph{broadcast process} to facilitate cooperative dispatching decision.
-            The information sharing among distributed AP nodes is designed via broadcast to achieve global optimality. The AP nodes should broadcast their system information to the other AP nodes, and the ES nodes should broadcast their information to all the AP nodes. More specifically, all the APs and ESs start to broadcast at the same start point at the beginning of one time slot and repeat broadcasting with the same interval as $T_{br}$ timeslots, which is called \emph{aligned broadcast}. Let $d_{k,i}$ denotes the broadcast delay from $i$-th node ($\forall i \in \apSet\cup\esSet$) to $k$-th AP ($\forall k \in \apSet$) w.r.t to the last broadcast point where $d_{k,k} \equiv 0$ for convenience, and the broadcast interval is always larger than broadcast delay, i.e. $T_br > d_{k,i}$.            
+            The information sharing among distributed AP nodes is designed via broadcast to achieve global optimality. The AP nodes should broadcast their system information to the other AP nodes, and the ES nodes should broadcast their information to all the AP nodes. More specifically, all the APs and ESs start to broadcast at the same start point at the beginning of one time slot and repeat broadcasting with the same interval as $T_{br}$ timeslots, which is called \emph{aligned broadcast}. Let $d_{k,i}$ denotes the broadcast delay from $i$-th node ($i\in\apSet$ or $i\in\esSet$) to $k$-th AP w.r.t to the last broadcast point where $d_{k,k} \equiv 0$ for convenience, and the broadcast interval is always larger than the broadcast delay, i.e. $T_{br} > d_{k,i}$.
             Furthermore, we elaborate the concept called \emph{consensus delay} for AP nodes as:
             \begin{definition}
                 (Consensus Delay).
                 \begin{align}
                     \hat{d}_k = \max_{j\in(\apSet\cup\esSet)}(d_{k,j})
                 \end{align}
-                where $d_{k,k} \equiv 0$; the consensus delay for $k$-th AP $ \forall k \in \apSet$ is the delay after the last broadcast point where it could update the global information consensus.
+                where $d_{k,k} \equiv 0$; the consensus delay for $k$-th AP is the delay after the last broadcast point where it could update the global information consensus.
             \end{definition}
             The aligned broadcast is guaranteed by timely synchronization protocol and is not the main component in our discussion. \st{The details of  broadcast information will be elaborated in the following section \emph{Job Dispatch Model}.}
         \end{subsection}
 
         \begin{subsection}{Computation Model}
-            For computation process on edge servers, we adopt \emph{unrelated machines} assumption in \cite{tan-online}, where the job processing time on different servers are machine dependent and variant of resource or VM (virtual machine) constraints. The processing time is with upper bound as $L_C$, and the job set is denoted as $\mathcal{J} = \set{0,2,\dots, J}$ where $J=L_C^M-1$ for all possible length combination; the $j$-th job in $\jSet$ has the computation time as $\vec{l}_j = ([l_j^1, l_j^2, \dots, l_j^M] + \vecOne^M)$ on edge servers cluster $\esSet$, where $\vec{l}_j$ is the index $j$ under $L_C$-base denotation. Additionally, we denote PDF of the release distribution over $\jSet$ as $\Pr(\jSet)$.
+            For computation process on edge servers, we adopt \emph{unrelated machines} assumption in \cite{tan-online}, where the job processing time on different servers are machine dependent and variant of resource or VM (virtual machine) constraints. The processing time is with upper bound as $L_C$, and the job set is denoted as $\mathcal{J} = \set{0,1,\dots, J}$ where $J=L_C^M-1$ for all possible length combination; the $j$-th job in $\jSet$ has the computation time as $\vec{l}_j = ([l_j^1, l_j^2, \dots, l_j^M] + \vecOne^M)$ on edge servers cluster $\esSet$, where $\vec{l}_j$ is the index $j$ under $L_C$-base denotation. Additionally, we denote PDF of the release distribution over $\jSet$ as $\Pr(\jSet)$.
             We assume the scheduling policy on all the servers are identical as following:
             \begin{assumption}
                 (Scheduling Policy).
@@ -138,9 +139,13 @@
 
         \begin{subsection}{Job Dispatching Model}
             The lifetime of jobs dispatching is composed of three stages: waiting on APs for uploading, in uploading to servers, and waiting for service on servers queue. The three stages results into jobs set accumulation on APs and ESs which is illustrated in Fig. \ref{fig:trans}, and the Markovian transition relationship between the adjacent timeslot.
-            Let $\wSet_{k}(t)$ denotes the job set on $k$-th AP $\forall k \in \apSet$, which comprises the jobs waiting for dispatching decision at $t$-th timeslot; $w \triangleq (\vec{l}_i) \in \wSet_{k}(t)$, where $w$ denotes the tuple containing one element $\vec{l}_w \in \domZ^M$ as the computing length on all $M$ unrelated edge servers.
-            Let $\uSet_{k,m}(t)$ denotes the jobs in uploading from $k$-th AP to $m$-th ES in $t$-th timeslot $\forall k \in \apSet, m \in \esSet$; $u \triangleq (l_u, T_{cd,u}(t)) \in \uSet_{k,m}(t)$, $l_u$ denotes the computing length on $m$-th server and $T_{cd,u}(t)$ records the remaining time for uploading completed.
-            Let $\cSet_{m}(t)$ denotes the jobs waiting for computing on $m$-th ES in $t$-th timeslot; $c \triangleq (T_{cd,c}(t)) \in \cSet_{m}(t)$, $T_{cd,cc}(t)$ for this job records the remaining time for computing completed.
+
+            The local states on APs and ESs are divided into three job set:
+            \begin{itemize}
+                \item Let $\wSet_{k}(t)$ denotes the job set on $k$-th AP $\forall k \in \apSet$, which comprises the jobs waiting for dispatching decision at $t$-th timeslot; $w \triangleq (\vec{l}_i) \in \wSet_{k}(t)$, where $w$ denotes the tuple containing one element $\vec{l}_w \in \domZ^M$ as the computing length on all $M$ unrelated edge servers.
+                \item Let $\uSet_{k,m}(t)$ denotes the jobs in uploading from $k$-th AP to $m$-th ES in $t$-th timeslot $\forall k \in \apSet, m \in \esSet$; $u \triangleq (l_u, T_{u}(t)) \in \uSet_{k,m}(t)$, $l_u$ denotes the computing length on $m$-th server and $T_{u}(t)$ records the remaining time for uploading completed.
+                \item Let $\cSet_{m}(t)$ denotes the jobs waiting for computing on $m$-th ES in $t$-th timeslot; $c \triangleq (t_c, T_{c}(t)) \in \cSet_{m}(t)$; $t_c$ denotes for arriving timestamp at server, $T_{c}(t)$ denotes for the remaining time for computing completed.
+            \end{itemize}
 
             Then we have the denotation of system observation in $t$-th timeslots on left-hand side in the figure as:
             \begin{align}
@@ -153,13 +158,13 @@
             \end{definition}
 
             Then we characterize the job dispatching process by Markovian transition between adjacent timeslots.
-            We come up with denotations for transition job sets expressed in figure \ref{fig:trans} as:
+            We come up with denotations for transition job sets expressed in Fig. \ref{fig:trans} as:
             \begin{align}
                 \wSet'_{k}(t) &\triangleq \wSet_{k}(t) \cup A_k(t)
                 \\
-                I^{(W \to W')}_{k}(t) & \triangleq \{ w | a^{(k)}(2^{\vec{l}_w})\eq0, \forall w \in \wSet'_{k}(t) \}
+                I^{(W \to W')}_{k}(t) & \triangleq \{ w | a^{(k)}(L_C^{\vec{l}_w})\eq0, \forall w \in \wSet'_{k}(t) \}
                 \\
-                I^{(W \to U)}_{k,m}(t) &\triangleq \{ w | a^{(k)}(2^{\vec{l}_w})=m, \forall w \in \wSet'_{k}(t) \}
+                I^{(W \to U)}_{k,m}(t) &\triangleq \{ w | a^{(k)}(L_C^{\vec{l}_w})=m, \forall w \in \wSet'_{k}(t) \}
                 \\
                 I^{(U \to C)}_{k,m}(t) &\triangleq \{ u | T_{cd,u}=1, \forall u \in \uSet_{k,m}(t)\}
                 \\
@@ -180,7 +185,7 @@
                     \cSet_{m}(t+1) = \bigcup\limits_{k\in\apSet} I^{(U \to C)}_{k,m}(t) \cup I^{(C \to C')}_{m}(t)
                 \end{cases}
             \end{align}
-            and we notice that no matter job arrival or decision on $\wSet$ happened or not, the attributes of jobs in $\uSet$ and $\cSet$ change according to the deterministic rule about uploading and scheduling respectively, which is not stated explicitly in the above transition cases.
+            and we notice that no matter job arrival or decision on $\wSet$ happened or not, the attributes of jobs in $\uSet$ and $\cSet$ have to change according to the deterministic rule about uploading and scheduling respectively, which is not stated explicitly in the above transition cases.
 
             \begin{figure}[ht]
                 \centering
@@ -198,45 +203,67 @@
         \label{sec:formulation}
         In this section, we formulate the standard MDP problem based on the MEC system elaborated above. The optimization problem will be formulated globally on dispatching decisions on APs, but applied fully distributed on each AP with broadcast design to share information.
 
-        \begin{section}{System State and Scheduling Policy}
-            Firstly, we identify the concept called \emph{global consensus state}:
-            \begin{definition}
-                
-            \end{definition}
-
-            \begin{definition}
-                (System State).
-                $T_t = (\Stat_t, \Stat_{t-1}, C_t)$, $t=1,2,\dots$; where the transition for $(S_{t}, S_{t-1})$ is with policy $\vec{\Omega}(\tilde{S}_i)$ elaborated in the last section.
-            \end{definition}
-
-            \begin{definition}
-                (Scheduling Policy).
-                job-wise action defined over $a_k$ with PDF as:
+        \begin{subsection}{System State and Scheduling Policy}
+            Before we give the canonical definition for system states in the distributed system, we firstly clarify the broadcast information from AP nodes and ES nodes. For convenience, we denote the broadcast point as $T_\tau$ where:
+            \begin{align}
+                T_\tau = \tau \cdot T_{br}, \tau=0,1,2\dots
+            \end{align}
+            furthermore, we denote the observation at broadcast point $T_\tau$ as $\Obsv_\tau$. The broadcast information is based on $\Obsv_\tau$ as:
+            \begin{definition}(Broadcast Information).
+                The $k$-th AP would broadcast all the job set information at $T_\tau$ as $\wSet_{k}(T_\tau), \bigcup\limits_{m\in\esSet}\uSet_{k,m}(T_\tau)$, and the accumulated number of jobs in last broadcast interval as:
                 \begin{align}
-                    \vec\alpha_{k}
+                    n^{(k)}_\tau = \sum_{t=T_{\tau-1}}^{T_\tau-1} |\wSet_{k}(t)| + |\bigcup\limits_{m\in\esSet}\uSet_{k,m}(t)|,\forall k \in \apSet
                 \end{align}
-                and then composed policy for $k$-th AP during the two timeslots as:
+                \\
+                The $m$-th ES would broadcast the job set information at $T_\tau$ as $\cSet_{m}(T_\tau)$ and also the accumulated number of jobs in last broadcast interval as:
                 \begin{align}
-                    \vec{\Omega}(T_t) = \vec{\Omega}(\tilde{S}_t) \equiv \vec{\Omega}_{\Delta{t}}(S_t, S_{t-1})
+                    n^{(m)}_\tau = \sum_{t=T_{\tau-1}}^{T_\tau-1} |\cSet_{m}(t)|,\forall m \in \esSet
                 \end{align}
+                \\
+                We have the vector $\vec{n}_\tau$ to denote the accumulated number information from all the APs and ESs, and thus the composed broadcast information at $T_\tau$ is denoted as:
+                \begin{align}
+                    \tilde{\Obsv}_{\tau} = (\Obsv_\tau, \vec{n}_\tau)
+                \end{align}
+                and we have $\vec{n}_0 = \mathbf{0}$ with empty initialized system.
             \end{definition}
 
-            Accoriding to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}.
-        \end{section}
+            This broadcast information is also called \emph{global consensus} in Fig. \ref{fig:br-trans} \hl{(need to modify the state denotation)} that $k$-th AP would only obtain the broadcast information completely after the \emph{consensus delay} $\hat{d}_{k}$ w.r.t to the last broadcast point. The system state of the formulated MDP problem is on the global consensus but locally computed at each AP nodes, given as follow:
+            \begin{definition}(System State).
+                The $\tau$-th state is: $\Stat_\tau = (\Obsv_{\tau}, \Obsv_{\tau-1}, \vec{n}_\tau)$, $\tau=1,2,\dots$ for all the AP nodes. Though the $k$-th AP nodes would come up with this state after $\hat{d}_k$ timeslots, it will accept the obsolete information and adopt actions for job dispatching on it.
+            \end{definition}
+            \begin{figure}[ht]
+                \centering
+                \includegraphics[width=0.45\textwidth]{broadcast-trans.png}
+                \caption{Global Consensus and Transition with Delayed Action}
+                \label{fig:br-trans}
+            \end{figure}
+
+            The scheduling policy $\vec{\Omega}(\Stat_\tau)$ is actually composed of all AP nodes based on obsolete information $\Obsv_{\tau-1}$ and the updated information $\Obsv_{\tau}$ after the consensus delay $\hat{d}_k$ respectively. The composed policy over job-wise action space $\vec{a}$ is defined as following:
+            \begin{definition}(Scheduling Policy).
+                Firstly we give the job-wise random policy PDF denotation over action space $\vec{a}$ as:
+                \begin{align}
+                    \vec{\alpha} \triangleq [\alpha(1), \dots, \alpha(J)]
+                \end{align}
+                where $\alpha_j$ is the PDF distribution of uploading $j$-th job over $\{0,1,2,\dots,M\}$,$\forall j \in \mathcal{J}$. More specifically, the policy on $k$-th AP is denoted as $\vec{\alpha}^{(k)}$.
+
+                The composed policy $\vec{\Omega}(\Stat_\tau) \triangleq [\Omega_1(\Stat_\tau), \dots, \Omega_K(\Stat_\tau)]$, where $\Omega_k(\Stat_\tau)$ for $k$-th AP is defined as following:
+                \begin{align}
+                    \Omega_k(\Stat_\tau) = 
+                    \begin{cases}
+                        \tilde{\Omega}_k(\Obsv_{\tau-1}), & 0 \leq \Delta{t} < \hat{d}_k
+                        \\
+                        \tilde{\Omega}_k(\Obsv_{\tau}), & \hat{d}_k \leq \Delta{t} \leq T_{br}
+                    \end{cases}
+                \end{align}
+                where $\Delta{t} = t - T_{\tau-1}$, and $\tilde{\Omega}_k(\cdot)$ denotes the dispatching policy for $k$-th node on the waiting job set and arrival jobs as $\wSet'_{k}(t)=\wSet_{k}(t) \cup A_k(t)$; the PDF of this random policy is denoted as:
+                \begin{align}
+                    \Pr\{\tilde{\Omega}_k(s)|A_k(t)=I_j\} = \prod_{w\in\wSet_{k}(t)\cup\set{I_j}} \alpha^{(k)}(L_C^{\vec{l}_w})
+                \end{align}
+            \end{definition}
+        \end{subsection}
 
         \begin{subsection}{The Optimization Problem}
-            In our problem, we consider \emph{response time} of jobs;
-            While $C_t$ denotes the cost collected in the last broadcast interval, we have the expression as:
-            \begin{align}
-                C_t = \sum_{t'\in[1,T^{br}]} \sum_{s'} P_{S_{t-1},s'}^{t'}(\vec{\beta}_{\Delta{t}}) \times |s'|
-            \end{align}
-            where,
-            \begin{align}
-                P_{S_{t-1},s'}^{t'}(\vec{\beta}_{\Delta{t}})
-                = \{
-                    \prod_{\Delta{t} \in [1,t']} P_{ss'}(\vec{\beta}_{\Delta{t}})
-                \}_{S_{t-1}, s'}
-            \end{align}
+            The optimization target of our problem is to minimize the \emph{average response time} of all jobs, which is composed of waiting time on AP, uploading time, waiting time on ES and service time on ES. According to \emph{little's law}, the average time is equally as number collecting 
             
             \begin{problem}
                 (Distributed Cooperative Job Dispatching)
@@ -250,23 +277,26 @@
             where $N_k(t)$ denotes the number of jobs on $k$-th AP, and $N_n(t)$ denotes the number of jobs on $n$-th ES.
             The goal to minimize the cost caused by ESs could be simply achieved with heuristic algorithm \emph{SJF} (shortest-job first), because it is the fastest way to reduce number of jobs on the edge server. So, in the next MDP problems we will focus on the policy applied on AP side, and leave ES with fixed heuristic algorithm.
 
+            While $C_{\tau} = \|\vec{n}_{\tau}\|$ denotes the cost collected in the last broadcast interval, we have the expression as:
+            \begin{align}
+                \bar{C}_\tau & = \mathbb{E}_{\vec{\Omega},\vec{A}}[C_\tau]
+                \nonumber\\
+                & = \sum_{t'\in[1,T^{br}]} \sum_{s'} P_{S_{t-1},s'}^{t'}(\vec{\beta}_{\Delta{t}}) \times |s'|
+            \end{align}
+            where,
+            \begin{align}
+                P_{S_{t-1},s'}^{t'}(\vec{\beta}_{\Delta{t}})
+                = \{
+                    \prod_{\Delta{t} \in [1,t']} P_{ss'}(\vec{\beta}_{\Delta{t}})
+                \}_{S_{t-1}, s'}
+            \end{align}
+
+            According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}.
             The \emph{Bellman Equation}:
             \begin{align}
-                V(T_{t}) = C_t + \gamma \sum_{T_{t+1}} \Pr\{T_{t+1}|T_{t}, \vec{\Omega}(T_t)\} \cdot V(T_{t+1})
-            \end{align}
+                V(\Stat_{\tau}) = \bar{C}_\tau + \gamma \sum_{\Stat_{\tau+1}} \Pr\{\Stat_{\tau+1}|\Stat_{\tau}, \vec{\Omega}(\Stat_\tau)\} \cdot V(\Stat_{\tau+1})
+            \end{align}  
         \end{subsection}
-
-        \begin{subsection}{The Transition Elaboration}
-            \begin{definition}
-                (Single Step Transition).
-
-            \end{definition}
-
-            \begin{definition}
-                (Multi Step Transition).
-            \end{definition}
-        \end{subsection}
-        
     \end{section}
 
     %============================= ALGORITHM ==============================%
