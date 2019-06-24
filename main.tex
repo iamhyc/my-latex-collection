@@ -139,8 +139,8 @@
         \begin{subsection}{Job Dispatching Model}
             The lifetime of jobs dispatching is composed of three stages: waiting on APs for uploading, in uploading to servers, and waiting for service on servers queue. The three stages results into jobs set accumulation on APs and ESs which is illustrated in Fig. \ref{fig:trans}, and the Markovian transition relationship between the adjacent timeslot.
             Let $\wSet_{k}(t)$ denotes the job set on $k$-th AP $\forall k \in \apSet$, which comprises the jobs waiting for dispatching decision at $t$-th timeslot; $w \triangleq (\vec{l}_i) \in \wSet_{k}(t)$, where $w$ denotes the tuple containing one element $\vec{l}_w \in \domZ^M$ as the computing length on all $M$ unrelated edge servers.
-            Let $\uSet_{k,m}(t)$ denotes the jobs in uploading from $k$-th AP to $m$-th ES in $t$-th timeslot $\forall k \in \apSet, m \in \esSet$; $u \triangleq (l_u, T_{u,cd}(t)) \in \uSet_{k,m}(t)$, $l_u$ denotes the computing length on $m$-th server and $T_{u,cd}(t)$ records the remaining time for uploading completed.
-            Let $\cSet_{m}(t)$ denotes the jobs waiting for computing on $m$-th ES in $t$-th timeslot; $c \triangleq (T_{c,cd}(t)) \in \cSet_{m}(t)$, $T_{c,cd}(t)$ for this job records the remaining time for computing completed.
+            Let $\uSet_{k,m}(t)$ denotes the jobs in uploading from $k$-th AP to $m$-th ES in $t$-th timeslot $\forall k \in \apSet, m \in \esSet$; $u \triangleq (l_u, T_{cd,u}(t)) \in \uSet_{k,m}(t)$, $l_u$ denotes the computing length on $m$-th server and $T_{cd,u}(t)$ records the remaining time for uploading completed.
+            Let $\cSet_{m}(t)$ denotes the jobs waiting for computing on $m$-th ES in $t$-th timeslot; $c \triangleq (T_{cd,c}(t)) \in \cSet_{m}(t)$, $T_{cd,cc}(t)$ for this job records the remaining time for computing completed.
 
             Then we have the denotation of system observation in $t$-th timeslots on left-hand side in the figure as:
             \begin{align}
@@ -161,41 +161,48 @@
                 \\
                 I^{(W \to U)}_{k,m}(t) &\triangleq \{ w | a^{(k)}(2^{\vec{l}_w})=m, \forall w \in \wSet'_{k}(t) \}
                 \\
-                I^{(U \to C)}_{k,m}(t) &\triangleq \{ u | T_{u,cd}=1, \forall u \in \uSet_{k,m}(t)\}
+                I^{(U \to C)}_{k,m}(t) &\triangleq \{ u | T_{cd,u}=1, \forall u \in \uSet_{k,m}(t)\}
                 \\
                 I^{(U \to U')}_{k,m}(t) &\triangleq \uSet_{k,m}(t) \backslash I^{(U \to C)}_{k,m}(t)
                 \\
-                I^{(C \to \Phi)}_{m}(t) &\triangleq \{ c | \arg\min_{c\in\cSet(t)} T_{c,cd}(t) \wedge T_{c,cd}=1\}
+                I^{(C \to \Phi)}_{m}(t) &\triangleq \{ c | \arg\min_{c\in\cSet(t)} T_{cd,cc}(t) \wedge T_{cd,c}=1\}
                 \\
                 I^{(C \to C')}_{m}(t) &\triangleq \cSet_{m}(t) \backslash I^{(C \to \Phi)}_{m}(t)
             \end{align}
+            where $I^{(W \to W')}_{k}(t), I^{(U \to U')}_{k,m}(t), I^{(C \to C')}_{m}(t)$ denote the job sets not engaged in transition, $I^{(W \to U)}_{k,m}(t), I^{(U \to C)}_{k,m}(t)$ denote the jobs beginning uploading and uploaded on server respectively, and $I^{(C \to \Phi)}_{m}(t)$ denotes the job that leaves from the system on $m$-th ES in $t$-th timeslot.
             Then we establish the relationship between those indicator functions with $\mathcal{O}(t+1)$ as:
             \begin{align}
                 \begin{cases}
                     \wSet_{k}(t+1) = I^{(W \to W')}_{k}(t)
                     \\
-                    \uSet_{k,m}(t+1) = I^{(W \to U)}_{k,m}(t) + I^{(U \to U')}_{k,m}(t)
+                    \uSet_{k,m}(t+1) = I^{(W \to U)}_{k,m}(t) \cup I^{(U \to U')}_{k,m}(t)
                     \\
-                    \cSet_{m}(t+1) = \sum\limits_{k\in\apSet} I^{(U \to C)}_{k,m}(t) + I^{(C \to C')}_{m}(t)
+                    \cSet_{m}(t+1) = \bigcup\limits_{k\in\apSet} I^{(U \to C)}_{k,m}(t) \cup I^{(C \to C')}_{m}(t)
                 \end{cases}
             \end{align}
+            and we notice that no matter job arrival or decision on $\wSet$ happened or not, the attributes of jobs in $\uSet$ and $\cSet$ change according to the deterministic rule about uploading and scheduling respectively, which is not stated explicitly in the above transition cases.
 
             \begin{figure}[ht]
                 \centering
-                \includegraphics[width=0.45\textwidth]{single-transition.png}
+                \includegraphics[width=0.42\textwidth]{single-transition.png}
                 \caption{Single-step transition function composing graph}
                 \label{fig:trans}
             \end{figure}
 
-            Additionally, we have the broadcast with period $T_{br}$
+            Additionally, the broadcast design is not engaged in dispatching model for now but it will have affects on dispatching decision which will be illustrated in next section.
         \end{subsection}
     \end{section}
 
     %============================ FORMULATION =============================%
     \begin{section}{FORMULATION}
         \label{sec:formulation}
+        In this section, we formulate the standard MDP problem based on the MEC system elaborated above. The optimization problem will be formulated globally on dispatching decisions on APs, but applied fully distributed on each AP with broadcast design to share information.
+
         \begin{section}{System State and Scheduling Policy}
-            We formulate the standard MDP problem in this section; a fully distributed way.
+            Firstly, we identify the concept called \emph{global consensus state}:
+            \begin{definition}
+                
+            \end{definition}
 
             \begin{definition}
                 (System State).
@@ -204,7 +211,11 @@
 
             \begin{definition}
                 (Scheduling Policy).
-                Same as the definition in last section.
+                job-wise action defined over $a_k$ with PDF as:
+                \begin{align}
+                    \vec\alpha_{k}
+                \end{align}
+                and then composed policy for $k$-th AP during the two timeslots as:
                 \begin{align}
                     \vec{\Omega}(T_t) = \vec{\Omega}(\tilde{S}_t) \equiv \vec{\Omega}_{\Delta{t}}(S_t, S_{t-1})
                 \end{align}
@@ -267,6 +278,11 @@
         \begin{subsection}{Baseline Policy}
             \begin{problem}
                 (Fixed FCFS Optimization).
+                \begin{itemize}
+                    \item no waiting stage;
+                    \item locally greedy uploading;
+                    \item FCFS scheduling (?);
+                \end{itemize}
             \end{problem}
 
             \begin{definition}
