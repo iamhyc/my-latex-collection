@@ -120,11 +120,11 @@
             \begin{definition}
                 (Consensus Delay).
                 \begin{align}
-                    \hat{d}_k = \max_{j\in(\apSet\cup\esSet)}(d_{k,j})
+                    \hat{d}_k = \max(\set{d_{k,j}|\forall k\in\apSet}, \set{d_{k,m}|\forall m\in\esSet})
                 \end{align}
                 where $d_{k,k} \equiv 0$; the consensus delay for $k$-th AP is the delay after the last broadcast point where it could update the global information consensus.
             \end{definition}
-            The aligned broadcast is guaranteed by timely synchronization protocol and is not the main component in our discussion. \st{The details of  broadcast information will be elaborated in the following section \emph{Job Dispatch Model}.}
+            The aligned broadcast is guaranteed by timely synchronization protocol and is not the main component in our discussion.
         \end{subsection}
 
         \begin{subsection}{Computation Model}
@@ -132,7 +132,6 @@
             We assume the scheduling policy on all the servers are identical as following:
             \begin{assumption}
                 (Scheduling Policy).
-                \hl{(could be removed if we stress both dispatching and scheduling optimization, i.e. SJF job scheduling)}
                 All the edge servers adopt \emph{FCFS} (First-Come-First-Serve) as job scheduling policy, i.e. the job earlier arrives at the server would get served earlier. And we note that the arrival order is not only determined by job arrives at the access point, but also related with the uploading latency.
             \end{assumption}
         \end{subsection}
@@ -189,7 +188,7 @@
 
             \begin{figure}[ht]
                 \centering
-                \includegraphics[width=0.42\textwidth]{single-transition.png}
+                \includegraphics[width=0.40\textwidth]{single-transition.png}
                 \caption{Single-step transition function composing graph}
                 \label{fig:trans}
             \end{figure}
@@ -220,11 +219,12 @@
                     n^{(m)}_\tau = \sum_{t=T_{\tau-1}}^{T_\tau-1} |\cSet_{m}(t)|,\forall m \in \esSet
                 \end{align}
                 \\
-                We have the vector $\vec{n}_\tau$ to denote the accumulated number information from all the APs and ESs, and thus the composed broadcast information at $T_\tau$ is denoted as:
-                \begin{align}
-                    \tilde{\Obsv}_{\tau} = (\Obsv_\tau, \vec{n}_\tau)
-                \end{align}
-                and we have $\vec{n}_0 = \mathbf{0}$ with empty initialized system.
+                We have the vector $\vec{n}_\tau$ to denote the accumulated number information from all the APs and ESs, and thus the composed broadcast information at $T_\tau$ is:
+                \begin{itemize}
+                    \item System observation, $\Obsv_\tau$;
+                    \item Accumulated cost in last broadcast interval, $\vec{n}_\tau$ ($\vec{n}_0=\mathbf{0}$ for empty initialized system)
+                    \item System policy, $\mathbf{\Omega}(\Stat_{\tau-1})$
+                \end{itemize}
             \end{definition}
 
             This broadcast information is also called \emph{global consensus} in Fig. \ref{fig:br-trans} \hl{(need to modify the state denotation)} that $k$-th AP would only obtain the broadcast information completely after the \emph{consensus delay} $\hat{d}_{k}$ w.r.t to the last broadcast point. The system state of the formulated MDP problem is on the global consensus but locally computed at each AP nodes, given as follow:
@@ -268,10 +268,11 @@
             \begin{problem}
                 (Distributed Cooperative Job Dispatching)
                 \begin{gather}
-                    \min_{\Omega} \lim_{T \to \infty} E[\frac{1}{T} \sum_{t=0}^{T} N(t)]
+                    \min_{\Omega} \lim_{T \to \infty}
+                        \mathbb{E}_{\mathbf{\Omega}, \{A_k(t)|\forall k\in\apSet\}}
+                            [\frac{1}{T} \sum_{t=0}^{T} g(\Stat_\tau)
                     \nonumber\\
-                    N(t) = \sum_{k \in K} (A^{(k)}(t) + N_k(t))
-                            + \sum_{n \in N} N_n(t)
+                    g(\Stat_\tau) = \|\vec{n}_\tau\|_{1}
                 \end{gather}
             \end{problem}
             where $N_k(t)$ denotes the number of jobs on $k$-th AP, and $N_n(t)$ denotes the number of jobs on $n$-th ES.
