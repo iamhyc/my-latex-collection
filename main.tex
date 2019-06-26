@@ -34,6 +34,7 @@
 \newcommand{\cSet}{\mathcal{C}}
 \newcommand{\Stat}{\mathbf{S}}
 \newcommand{\Obsv}{\mathcal{O}}
+\newcommand{\Policy}{\mathbf{\Omega}}
 %---------------------------------------------------------------%
 
 \begin{document}
@@ -43,7 +44,7 @@
         Meet-in-Future: Distributed Online Job Dispatching with Obsolete Information in Edge Computing System
     }
     \author{
-        \IEEEauthorblockN{Yuncong Hong$^{*\dagger}$, Rui Wang$^{*}$, Haisheng Tan$^{\ddagger}$, Francis C.M. Lau$^{\dagger}$}
+        \IEEEauthorblockN{Yuncong Hong$^{*\dagger}$, Zhenhua Han$^{\ddagger}$, Rui Wang$^{*}$, Haisheng Tan$^{\ddagger}$, Francis C.M. Lau$^{\dagger}$}
         \IEEEauthorblockA{
             $*$Southern University of Science and Technology, P.R. China,
             $\dagger$The University of Hong Kong, Hong Kong,\\
@@ -153,7 +154,7 @@
             and as the transition is initialized by \emph{dispatching decision} and therefore automatically been uploaded and computed, we give the definition for decision action here:
             \begin{definition}
                 (Dispatching Action).
-                The dispatching action is applied job-wise in the waiting job set denoted as $\vec{a}: j \to \set{0,1,\dots,M}, \forall j\in\jSet$, where $a_j\eq0$ means $j$-th job should keep waiting and $a_j=m\neq0$ means $j$-th job should be uploaded to $m$-th ES. The waiting decision is transient as the jobs are always been uploaded at last.
+                The dispatching action space is applied job-wise in the waiting job set denoted as $\vec{a}: j \to \set{0,1,\dots,M}, \forall j\in\jSet$, where $a_j\eq0$ means $j$-th job should keep waiting and $a_j=m\neq0$ means $j$-th job should be uploaded to $m$-th ES. The waiting decision is transient as the jobs are always been uploaded at last.
             \end{definition}
 
             Then we characterize the job dispatching process by Markovian transition between adjacent timeslots.
@@ -223,7 +224,7 @@
                 \begin{itemize}
                     \item System observation, $\Obsv_\tau$;
                     \item Accumulated cost in last broadcast interval, $\vec{n}_\tau$ ($\vec{n}_0=\mathbf{0}$ for empty initialized system)
-                    \item System policy, $\mathbf{\Omega}(\Stat_{\tau-1})$
+                    \item System policy, $\Policy(\Stat_{\tau-1})$
                 \end{itemize}
             \end{definition}
 
@@ -240,13 +241,11 @@
 
             The scheduling policy $\vec{\Omega}(\Stat_\tau)$ is actually composed of all AP nodes based on obsolete information $\Obsv_{\tau-1}$ and the updated information $\Obsv_{\tau}$ after the consensus delay $\hat{d}_k$ respectively. The composed policy over job-wise action space $\vec{a}$ is defined as following:
             \begin{definition}(Scheduling Policy).
-                Firstly we give the job-wise random policy PDF denotation over action space $\vec{a}$ as:
+                The scheduling policy over $\Stat\tau$ is defined as $\Policy(\Stat_\tau)$ which is composed of the local policy $\Omega_k(\Stat_\tau), \forall k\in\apSet$ as:
                 \begin{align}
-                    \vec{\alpha} \triangleq [\alpha(1), \dots, \alpha(J)]
+                    \vec{\Omega}(\Stat_\tau) \triangleq [\Omega_1(\Stat_\tau), \dots, \Omega_K(\Stat_\tau)]
                 \end{align}
-                where $\alpha_j$ is the PDF distribution of uploading $j$-th job over $\{0,1,2,\dots,M\}$,$\forall j \in \mathcal{J}$. More specifically, the policy on $k$-th AP is denoted as $\vec{\alpha}^{(k)}$.
-
-                The composed policy $\vec{\Omega}(\Stat_\tau) \triangleq [\Omega_1(\Stat_\tau), \dots, \Omega_K(\Stat_\tau)]$, where $\Omega_k(\Stat_\tau)$ for $k$-th AP is defined as following:
+                More specifically, $\Omega_k(\Stat_\tau)$ is composed of two-stage policy with $\tilde{\Omega}_k(\Obsv_{\tau-1})$ and $\tilde{\Omega}_k(\Obsv_{\tau})$ as:
                 \begin{align}
                     \Omega_k(\Stat_\tau) = 
                     \begin{cases}
@@ -255,48 +254,53 @@
                         \tilde{\Omega}_k(\Obsv_{\tau}), & \hat{d}_k \leq \Delta{t} \leq T_{br}
                     \end{cases}
                 \end{align}
-                where $\Delta{t} = t - T_{\tau-1}$, and $\tilde{\Omega}_k(\cdot)$ denotes the dispatching policy for $k$-th node on the waiting job set and arrival jobs as $\wSet'_{k}(t)=\wSet_{k}(t) \cup A_k(t)$; the PDF of this random policy is denoted as:
-                \begin{align}
-                    \Pr\{\tilde{\Omega}_k(s)|A_k(t)=I_j\} = \prod_{w\in\wSet_{k}(t)\cup\set{I_j}} \alpha^{(k)}(L_C^{\vec{l}_w})
-                \end{align}
+                where $t\in[T_{\tau-1}, T_{\tau}] ,\Delta{t} = t - T_{\tau-1}$; and $\tilde{\Omega}_k(\cdot)$ denotes the dispatching policy for $k$-th node on the waiting job set and arrival jobs as $\wSet'_{k}(t)=\wSet_{k}(t) \cup A_k(t)$.
             \end{definition}
+
+            As the state transition from $\Stat_{\tau}$ to $\Stat_{\tau+1}$ is driven by the composed policy with the obsolete state $\Obsv_{\tau-1}$, and the updated state $\Obsv_{\tau}$ with delay
+            The PDF of random policy $\tilde{\Omega}_k$ is denoted as:
+            \begin{align}
+                \Pr\{\tilde{\Omega}_k(\Obsv_\tau=o)|A_k(t)=j\}
+                % = \prod_{w\in\wSet_{k}(t)\cup\set{j}} \alpha^{(k)}(L_C^{\vec{l}_w})
+            \end{align}
         \end{subsection}
 
         \begin{subsection}{The Optimization Problem}
-            The optimization target of our problem is to minimize the \emph{average response time} of all jobs, which is composed of waiting time on AP, uploading time, waiting time on ES and service time on ES. According to \emph{little's law}, the average time is equally as number collecting 
-            
+            The optimization target of our problem is to minimize the \emph{average response time} of all jobs, which is composed of waiting time on AP, uploading time, waiting time on ES and service time on ES. According to \emph{Little's Law}, the average time over all the jobs is equally as number in system accumulation in each timeslot. The cost function is:
+            \begin{align}
+                g(\Stat_\tau) = \|\vec{n}_\tau\|_{1}
+            \end{align}
+            which is actually deterministic with the $\tau$-th broadcast information.
+            Our distributed optimization problem definition is given as following:
             \begin{problem}
-                (Distributed Cooperative Job Dispatching)
+                (Distributed Cooperative Job Dispatching Problem).
                 \begin{gather}
-                    \min_{\Omega} \lim_{T \to \infty}
-                        \mathbb{E}_{\mathbf{\Omega}, \{A_k(t)|\forall k\in\apSet\}}
-                            [\frac{1}{T} \sum_{t=0}^{T} g(\Stat_\tau)
-                    \nonumber\\
-                    g(\Stat_\tau) = \|\vec{n}_\tau\|_{1}
+                    \min_{\Policy} \lim_{T \to \infty}
+                        \mathbb{E}_{\Policy, \{A_k(t)|\forall k\in\apSet\}}
+                            [\sum_{\tau=1}^{T} \gamma^{\tau-1} g(\Stat_\tau)]
                 \end{gather}
             \end{problem}
-            where $N_k(t)$ denotes the number of jobs on $k$-th AP, and $N_n(t)$ denotes the number of jobs on $n$-th ES.
-            The goal to minimize the cost caused by ESs could be simply achieved with heuristic algorithm \emph{SJF} (shortest-job first), because it is the fastest way to reduce number of jobs on the edge server. So, in the next MDP problems we will focus on the policy applied on AP side, and leave ES with fixed heuristic algorithm.
 
-            While $C_{\tau} = \|\vec{n}_{\tau}\|$ denotes the cost collected in the last broadcast interval, we have the expression as:
-            \begin{align}
-                \bar{C}_\tau & = \mathbb{E}_{\vec{\Omega},\vec{A}}[C_\tau]
-                \nonumber\\
-                & = \sum_{t'\in[1,T^{br}]} \sum_{s'} P_{S_{t-1},s'}^{t'}(\vec{\beta}_{\Delta{t}}) \times |s'|
-            \end{align}
-            where,
-            \begin{align}
-                P_{S_{t-1},s'}^{t'}(\vec{\beta}_{\Delta{t}})
-                = \{
-                    \prod_{\Delta{t} \in [1,t']} P_{ss'}(\vec{\beta}_{\Delta{t}})
-                \}_{S_{t-1}, s'}
-            \end{align}
+            With the facilitation of broadcast information,
 
-            According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}.
-            The \emph{Bellman Equation}:
+            % While $C_{\tau} = \|\vec{n}_{\tau}\|$ denotes the cost collected in the last broadcast interval, we have the expression as:
+            % \begin{align}
+            %     \bar{C}_\tau & = \mathbb{E}_{\vec{\Omega},\vec{A}}[C_\tau]
+            %     \nonumber\\
+            %     & = \sum_{t'\in[1,T^{br}]} \sum_{s'} P_{S_{t-1},s'}^{t'}(\vec{\beta}_{\Delta{t}}) \times |s'|
+            % \end{align}
+            % where,
+            % \begin{align}
+            %     P_{S_{t-1},s'}^{t'}(\vec{\beta}_{\Delta{t}})
+            %     = \{
+            %         \prod_{\Delta{t} \in [1,t']} P_{ss'}(\vec{\beta}_{\Delta{t}})
+            %     \}_{S_{t-1}, s'}
+            % \end{align}
+
+            According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
             \begin{align}
-                V(\Stat_{\tau}) = \bar{C}_\tau + \gamma \sum_{\Stat_{\tau+1}} \Pr\{\Stat_{\tau+1}|\Stat_{\tau}, \vec{\Omega}(\Stat_\tau)\} \cdot V(\Stat_{\tau+1})
-            \end{align}  
+                V(\Stat_{\tau}) = g(\Stat_\tau) + \gamma \min_{\Policy(\Stat_\tau)} \sum_{\Stat_{\tau+1}} \Pr\{\Stat_{\tau+1}|\Stat_{\tau}, \Policy(\Stat_\tau)\} V(\Stat_{\tau+1})
+            \end{align}
         \end{subsection}
     \end{section}
 
