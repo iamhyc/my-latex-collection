@@ -35,7 +35,7 @@
 \newcommand{\uSet}{\mathcal{U}}
 \newcommand{\cSet}{\mathcal{C}}
 \newcommand{\Stat}{\mathbf{S}}
-\newcommand{\Obsv}{\mathcal{O}}
+\newcommand{\Obsv}{\mathcal{X}}
 \newcommand{\Policy}{\mathbf{\Omega}}
 %---------------------------------------------------------------%
 
@@ -58,7 +58,7 @@
     %============================== ABSTRACT ==============================%
     \begin{abstract}
         \label{sec:abstract}
-        Edge computing is believed to be the solid solution for time-sensitive big data real-time calculation. The cooperation among edge servers in the same coalition usually causes ineffective task scheduling due to obsolete information sharing, which is hard to tackle even with extra centralized agent design. In this work, we formulate the problem with job dispatching in distributed Edge Computing system, and identify the difficulty exists in cooperation between APs (Access Points) and ESs (Edge Servers) with delayed information. We design the broadcast information in the system and formulate the corresponding problem into a MDP problem. The value function approximation and \st{one-step policy iteration method is adopted to obtain a sub-optimal dispatching policy whose performance can be bounded analytically}.
+        Edge computing is believed to be the solid solution for time-sensitive big data real-time calculation. The cooperation among edge servers in the same coalition usually causes ineffective task scheduling due to obsolete information sharing, which is hard to tackle even with extra centralized agent design. In this work, we formulate the problem with job dispatching in distributed Edge Computing system, and identify the difficulty exists in cooperation between AP nodes (Access Points) and ES nodes (Edge Servers) with delayed information. We design the broadcast information in the system and formulate the corresponding problem into a MDP problem. The value function approximation and \st{one-step policy iteration method is adopted to obtain a sub-optimal dispatching policy whose performance can be bounded analytically}.
     \end{abstract}
 
     % \begin{IEEEkeywords}
@@ -71,8 +71,8 @@
         Our claims:
         \begin{itemize}
             \item Related works on scheduling in edge computing, mostly with centralized agent to apply action and seldomly take delayed information impact into consideration;
-            \item Edge Server, Access Point, User Equipment; layered structure where decision is made distributedly on APs and computation is carried out on ESs; The AP-ES fully connected structure is reasonable, for example C-RAN to separate communication and computation 
-            \item We identify the delayed system information is un-acceptable for explosion \emph{delay-sensitive jobs} in edge computing, and it's hard to establish cooperation among APs because of obsolete information;
+            \item Edge Server, Access Point, User Equipment; layered structure where decision is made distributedly on AP nodes and computation is carried out on ESs; The AP-ES fully connected structure is reasonable, for example C-RAN to separate communication and computation 
+            \item We identify the delayed system information is un-acceptable for explosion \emph{delay-sensitive jobs} in edge computing, and it's hard to establish cooperation among AP nodes because of obsolete information;
             \item information sharing for cooperation is designed via (aligned) broadcast, job dispatch decision should be made immediately based on the previous collective information;
         \end{itemize}
 
@@ -98,7 +98,10 @@
     \begin{section}{SYSTEM MODEL}
         \label{sec:model}
         \begin{subsection}{Network Model}
-            The network topology of the MEC system considered is illustrated in Fig. \ref{fig:system}, which is composed of three elements. The user equipment (UE) is connected to access point (AP). The AP provides network access to all the UEs connected and also fully connected with each other to share local information. The AP itself is assumed with no computation capability, and then dispatches the jobs from UEs to backend edge servers (ES) in a distributed cooperative way. Moreover, the network topology between AP cluster and ES cluster is also assumed fully connected for the reason that they are in the same coalition.
+            The network topology of the MEC system considered is illustrated in Fig. \ref{fig:system}, which is composed of three elements. The access point (AP) provides network access to all the user equipment (UE) connected and accept the computation jobs released from UEs. The AP itself is assumed with no computation capability, and then dispatches the jobs to edge servers (ES) following the policy. The ES would complete the computation jobs in a fairness way that takes no bias on any AP nodes. The network topology between AP cluster and ES cluster is assumed fully connected so that AP could access any edge servers in this coalition with communication cost.
+
+            We adopt \emph{timeslot} lasting for $\kappa$ seconds as the minimum time slice in the system, which is indexed with $t$. The dispatching and scheduling decision on AP and ES side respectively are all applied based on this timing. Moreover, the information sharing in this coalition is designed via broadcast to achieve decentralized cooperation among AP nodes.
+            The periodic broadcast is called \emph{aligned broadcast}, where all the AP and ES nodes start to broadcast at the start of the same timeslot, and repeat broadcasting with the same interval as $T_B$ time slots. More specifically, the AP nodes should broadcast their system information at the broadcast point to the other AP nodes, and the ES nodes should also broadcast their information to all AP nodes. \hl{The precision of aligned broadcast could be guaranteed by timely synchronization protocol or with GPS device, which is not the main focus in our discussion.}
             \begin{figure}[ht]
                 \centering
                 \includegraphics[width=0.45\textwidth, trim={0.5cm 0.5cm 0.5cm 0.5cm}, clip]{system-model.pdf}
@@ -106,33 +109,41 @@
                 \label{fig:system}
             \end{figure}
 
-            Let $\mathcal{K} \triangleq \set{1,\dots,K}$ and $\mathcal{M} \triangleq \set{1,\dots,M}$ denote the set of APs and set of ESs in the MEC system respectively. We adopt \emph{timeslot} lasting for $\kappa$ seconds as the minimum time slice in the system, which is indexed with $t$. The dispatching and scheduling decision on AP and ES side respectively are all applied based on this timing. Furthermore, we assume the job arrival process for AP nodes is illustrated as follow:
+            Now we give the formal definition of the network illustration. Let $\mathcal{K} \triangleq \set{1,\dots,K}$ and $\mathcal{M} \triangleq \set{1,\dots,M}$ denote the set of AP nodes and set of ES nodes in the MEC system respectively. The jobs released from UEs connected with $k$-th AP $\forall k\in\apSet$ is denoted as the \emph{job arrival process} and follows the assumption as:
             \begin{assumption}
-                (Job Arrival Process at AP).
-                We assume that the job arrival process $A_k(t)$ for $k$-th AP is i.i.d over the $t$-th timeslot and each with Bernoulli distribution as $A_k(t) \sim Bernoulli(\lambda_k)$.  According to Poisson Limit Theorem, we identify the arrival process as memory-less exponential process and with average arrival rate as $\mathbb{E}[A_k(t)] = \lambda_k$.
+                (Job Arrival Process at $k$-th AP).
+                We assume that the job arrival process $A_k(t)$ for $k$-th AP is i.i.d over the $t$-th timeslot and with Bernoulli distribution $A_k(t) \sim Bernoulli(\lambda_k)$.  According to Poisson Limit Theorem, we identify the arrival process as memory-less exponential process and with average arrival rate $\mathbb{E}[A_k(t)] = \lambda_k$.
                 This assumption implies that there will be at most one job arrives AP in one timeslot from all the UEs connected.
             \end{assumption}
 
-            There are two main communication process with APs and ESs engaged based on the network topology elaborated above. We assume the communication latency is rather deterministic between two nodes and assign the delay time directly w.r.t transmission content for convenience.
+            There are two main communication process with AP and ES nodes engaged based on the network topology elaborated above. We assume the communication latency is rather deterministic between two nodes and assign the delay time directly w.r.t transmission content for convenience.
 
-            The first one is \emph{uploading process} where AP dispatches jobs to corresponding ESs. The uploading time is {\color{red}job-independent} and deterministic for all kinds of jobs on AP-ES link, which is denoted as $T^{prop}_{k,m}$ for from $k$-th AP to $m$-th ES, and the uploading time always lasts for integer timeslots. \emph{Parallel uploading} is enabled on AP to alleviate the cost caused by serially uploading process. As the arrival process and uploading time is bounded, there will be at most $\lambda_k \cdot \max_m(T^{prop}_{k,m})$ jobs in transmission on $k$-th AP which results into finite bandwidth requirement.
+            There are two communication process illustrated in the edge computing system which are applied on different time scale.
             
-            The other one is \emph{broadcast process} to facilitate cooperative dispatching decision.
-            The information sharing among distributed AP nodes is designed via broadcast to achieve global optimality. The AP nodes should broadcast their system information to the other AP nodes, and the ES nodes should broadcast their information to all the AP nodes. More specifically, all the APs and ESs start to broadcast at the same start point at the beginning of one time slot and repeat broadcasting with the same interval as $T_B$ timeslots, which is called \emph{aligned broadcast}.
-            Let $d^{(AP)}_{k,k'}$ denotes the broadcast delay from $k'$-th AP $\forall k'\in\apSet$ to $k$-th AP w.r.t. the last broadcast interval where $d^{(AP)}_{k,k} \equiv 0$ for convenience; and let $d^{(ES)}_{k,m}$ denotes the broadcast delay from $m$-th ES $\forall m\in\esSet$. We assume that the broadcast interval is always larger than the broadcast delay, i.e. $T_B > d_{k,i}$, and we elaborate the concept called \emph{consensus delay} for AP nodes receiving the all broadcast information as:
+            The first one is \emph{uploading process} where AP dispatches jobs to corresponding ESs and applied on each timeslot. The uploading time is {\color{red}job-independent} and deterministic for all kinds of jobs on AP-ES link, which is denoted as $T^{prop}_{k,m}$ for from $k$-th AP to $m$-th ES, and the uploading time always lasts for integer timeslots. \emph{Parallel uploading} is enabled on AP to alleviate the cost caused by serially uploading process. As the arrival process and uploading time is bounded, there will be at most $\lambda_k \cdot \max_m(T^{prop}_{k,m})$ jobs in transmission on $k$-th AP which results into finite bandwidth requirement.
+            
+            The other one is \emph{broadcast process} where AP nodes obtain the information about the global system state and applied on broadcast interval scale. We denote each broadcast time slot, called \emph{broadcast point}, as $T_\tau$ for $\tau$-th broadcast where,
+            \begin{align}
+                T_\tau = \tau \cdot T_B, \tau=0,1,2\dots
+            \end{align} 
+            Let $d^{(AP)}_{k,k'}$ denotes the broadcast delay from $k'$-th AP to $k$-th AP ($\forall k,k'\in\apSet$) w.r.t. the last broadcast point; let $d^{(ES)}_{k,m}$ denotes the broadcast delay from $m$-th ES to $k$-th AP ($\forall m\in\esSet$). It's reasonable to assume that the broadcast interval is always larger than broadcast delay, i.e. $T_B > d^{(AP)}_{k,k'}, T_B > d^{(ES)}_{k,m}$. To denote the timeslot where $k$-th AP could receive all the broadcast information thus obtain global state view, we come up with the concept called \emph{consensus delay} for AP nodes as:
             \begin{definition}
                 (Consensus Delay).
                 \begin{align}
-                    \hat{d}_k = \max(\set{d^{(AP)}_{k,j}|\forall k\in\apSet}, \set{d^{(ES)}_{k,m}|\forall m\in\esSet}),
+                    \hat{d}_k = \max(\set{d^{(AP)}_{k,k'}|\forall k,k'\in\apSet}, \set{d^{(ES)}_{k,m}|\forall k\in\apSet,m\in\esSet}),
                 \end{align}
-                where $d^{(AP)}_{k,k} \equiv 0$. The consensus delay for $k$-th AP is the delay after the last broadcast point where it could update the global information consensus.
+                where $d^{(AP)}_{k,k} \equiv 0$. \hl{The consensus delay is the time after last broadcast point where $k$-th AP could obtain the global state view and come to consensus with the complete information.}
             \end{definition}
-            The precision of aligned broadcast could be guaranteed by timely synchronization protocol or with GPS device, which is not the main focus in our discussion.
         \end{subsection}
 
         \begin{subsection}{Computation Model}
-            For computation process on edge servers, we adopt \emph{unrelated machines} assumption in \cite{tan-online}, where the job processing time on different servers are machine dependent and variant of resource or VM (virtual machine) constraints. The processing time is with upper bound as $L_C$, and the job set is denoted as $\mathcal{J}$ {\color{red}where $J=(L_C)^M-1$ for all possible length combination; the $j$-th job in $\jSet$ has the computation time as $\vec{l}_j = ([l_j^{(1)}, l_j^{(2)}, \dots, l_j^{(M)}] + \vecOne^M)$ on edge servers cluster $\esSet$, where $\vec{l}_j$ is the index $j$ under $L_C$-base denotation.} Additionally, we denote PDF of the release distribution over $\jSet$ as $p_j \define \Pr(j\in\jSet)$.
-            We assume the scheduling policy on all the servers  as following:
+            For computation process on edge servers, we adopt \emph{unrelated machines} assumption in \cite{tan-online}, where the job processing time on different servers are machine dependent and variant of resource or VM (virtual machine) constraints.
+            The maximum processing time in this system is bounded with $L_C$.
+            The job space is denoted as $\jSet$ and its cardinality is denoted as $|\jSet|=(L_C)^M$ for all possible job processing time on all $M$ ES nodes.
+            Moreover, we have the mapping function $f:\jSet \to \domZ^M$ to store process time vector for job in jobs space.
+            Additionally, the jobs arrival process on each AP node has the same distribution over job set $\jSet$ which is denoted as: $p_j \define \Pr(j\in\jSet)$.
+            
+            We assume the scheduling policy on all the servers as following:
             \begin{assumption}
                 (Scheduling Policy).
                 All the edge servers adopt \emph{FCFS} (First-Come-First-Serve) as job scheduling policy, i.e. the job earlier arrives at the server would get served earlier. And we note that the arrival order is not only determined by job arrives at the access point, but also related with the uploading latency.
@@ -140,9 +151,9 @@
         \end{subsection}
 
         \begin{subsection}{Job Dispatching Model}
-            The job dispatching process is composed of three stages: waiting on APs for uploading, in uploading to servers, and waiting for service in servers queue. The three stages results into jobs set accumulation on APs and ESs which is illustrated and the Markovian transition relationship between the adjacent timeslot in Fig. \ref{fig:trans}.
+            The job dispatching process is composed of three stages: waiting on AP nodes for uploading, in uploading to servers, and waiting for service in servers queue. The three stages results into jobs set accumulation on AP and ES nodes which is illustrated and the Markovian transition relationship between the adjacent timeslot in Fig.
 
-            The local states on APs and ESs are divided into three job set:
+            The local states on AP and ES nodes are divided into three job set:
             \begin{itemize}
                 \item Let $\wSet_{k}(t)$ denotes the job set on $k$-th AP $\forall k \in \apSet$, which comprises the jobs waiting for dispatching decision at $t$-th timeslot; $w \in \wSet_{k}(t)$ and $w \triangleq (\vec{l}_w)$, where $w$ denotes the tuple containing one element $\vec{l}_w \in \domZ^M$ as the computing length on all $M$ unrelated edge servers.
                 \item Let $\uSet_{k,m}(t)$ denotes the jobs in uploading from $k$-th AP to $m$-th ES in $t$-th timeslot $\forall k \in \apSet, m \in \esSet$; $u \triangleq (l_u, T_{u}(t)) \in \uSet_{k,m}(t)$, $l_u$ denotes the computing length on $m$-th server and $T_{u}(t)$ records the remaining time for uploading completed.
@@ -171,13 +182,10 @@
     %============================ FORMULATION =============================%
     \begin{section}{FORMULATION}
         \label{sec:formulation}
-        In this section, we formulate the standard MDP problem based on the MEC system elaborated above. The optimization problem will be formulated globally on dispatching decisions on APs, but applied fully distributed on each AP with broadcast design to share information.
+        In this section, we formulate the standard MDP problem based on the MEC system elaborated above. The optimization problem will be formulated globally on dispatching decisions on AP nodes, but applied fully distributed on each AP with broadcast design to share information.
 
         \begin{subsection}{System State and Scheduling Policy}
-            Before we give the canonical definition for system states in the distributed system, we firstly clarify the broadcast information from AP nodes and ES nodes. For convenience, we denote the broadcast point as $T_\tau$ where:
-            \begin{align}
-                T_\tau = \tau \cdot T_B, \tau=0,1,2\dots
-            \end{align}
+            we firstly clarify the broadcast information from AP nodes and ES nodes.
             The observation at $\tau$-th broadcast, $\Obsv(T_\tau)$ is denoted as $\Obsv_\tau$ for short. The broadcast information is based on $\Obsv_\tau$ as:
             \begin{definition}(Broadcast Information).
                 The $k$-th AP would broadcast all the job set information at $T_\tau$ as $\wSet_{k}(T_\tau), \bigcup\limits_{m\in\esSet}\uSet_{k,m}(T_\tau)$.
@@ -253,7 +261,7 @@
     %============================= ALGORITHM ==============================%
     \begin{section}{LOW-COMPLEXITY SOLUTION}
         \label{sec:algorithm}
-        As the formulated problem above is of infinite states and the action space would be exponentially expanded with respect to number APs and ESs, we could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity. To alleviate curse of dimensionality, we take one baseline policy to approximate the value function as $\tilde{V}(T_t)$ and carry out one-step iteration to come up with a better value function approximation.
+        As the formulated problem above is of infinite states and the action space would be exponentially expanded with respect to number AP and ES nodes, we could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity. To alleviate curse of dimensionality, we take one baseline policy to approximate the value function as $\tilde{V}(T_t)$ and carry out one-step iteration to come up with a better value function approximation.
         \hl{Traditional value iteration is intractable due to the following reasons: (1) the number of active devices is not fixed and the state space grows exponentially with the increasing number of active devices; (2) the spaces of small-scale fading and path-loss are continuous.}
 
         \begin{subsection}{Baseline Policy}
