@@ -26,7 +26,8 @@
 \newcommand{\define}{\triangleq}
 \renewcommand{\vec}{\mathbf}
 \DeclarePairedDelimiter\set\{\}
-% \DeclarePairedDelimiter\set\bigg(\bigg)
+\DeclarePairedDelimiter{\Inorm}{\|}{\|_1}
+% \DeclarePairedDelimiter{\set}{\bigg(}{\bigg)}
 %---------------------------------------------------------------%
 \newcommand{\apSet}{\mathcal{K}}
 \newcommand{\esSet}{\mathcal{M}}
@@ -171,7 +172,7 @@
 
             Then we have the denotation of system observation on $i$-th broadcast point as:
             \begin{align}
-                \Obsv(t) \define \{ \set{u_{k,m}(t)|\forall k\in\apSet,m\in\esSet}, \set{Q_m(t)|\forall m\in\esSet} \}
+                \Obsv_i \define \{ \set{u_{k,m}(i)|\forall k\in\apSet,m\in\esSet}, \set{Q_m(i)|\forall m\in\esSet} \}
             \end{align}
         \end{subsection}
     \end{section}
@@ -179,23 +180,22 @@
     %============================ FORMULATION =============================%
     \begin{section}{FORMULATION}
         \label{sec:formulation}
-        In this section, we formulate the standard MDP problem based on the MEC system elaborated above. The optimization problem will be formulated globally on dispatching decisions on AP nodes, but applied fully distributed on each AP with broadcast design to share information.
+        In this section, we formulate the standard MDP problem with the broadcast point level time scale. The formulated problem is based on global information shared via \emph{aligned broadcast}, and the the optimal solution is based on dispatching policy on all AP nodes. The AP nodes would obtain global states update only after \emph{consensus delay} in each broadcast interval, but they solve the same global optimization problem fully distributed.
 
         \begin{subsection}{System State and Scheduling Policy}
-            we firstly clarify the broadcast information from AP nodes and ES nodes.
-            The observation at $\tau$-th broadcast, $\Obsv(T_\tau)$ is denoted as $\Obsv_\tau$ for short. The broadcast information is based on $\Obsv_\tau$ as:
+            The AP nodes obtain the broadcast information as:
             \begin{definition}(Broadcast Information).
-                The $k$-th AP would broadcast all the job set information at $T_\tau$ as $\wSet_{k}(T_\tau), \bigcup\limits_{m\in\esSet}\uSet_{k,m}(T_\tau)$.
-                Thus the composed broadcast information at $T_\tau$ is:
-                \begin{itemize}
-                    \item System observation at $T_\tau$ timeslot, $\Obsv_\tau$;
-                \end{itemize}
+                The $k$-th AP ($\forall k\in\apSet$) would broadcast all the number of jobs in uploading to all servers at broadcast point $t_i$ as: $u_{k,1}(i), u_{k,2}(i), \dots, u_{k,M}(i)$.
+                The $m$-th ES ($\forall m\in\esSet$) would broadcast all the element information in its FIFO queue as: $Q_m(i)$.
+
+                Thus the composed broadcast information for $i$-th broadcast is $\Obsv_i$.
             \end{definition}
 
-            This broadcast information is also called \emph{global consensus} in Fig. \ref{fig:br-trans} \hl{(need to modify the state denotation in figure)} that $k$-th AP would only obtain the broadcast information completely after the \emph{consensus delay} $\hat{d}_{k}$ w.r.t to the last broadcast point. The system state of the formulated MDP problem is on the global consensus but locally computed at each AP nodes, given as following:
+            This broadcast information is also called \emph{global consensus} that $k$-th AP would only obtain the broadcast information completely after the \emph{consensus delay} $\hat{d}_{k}$ w.r.t to the last broadcast point. The relative difference between broadcast point and global consensus point is illustrated in Fig. \ref{fig:br-trans} \hl{(need to modify the state denotation in figure)}.
+            The system state of the formulated MDP problem is on the global consensus but locally computed at each AP nodes, given as following:
             \begin{definition}(System State).
-                At the $\tau$-th broadcast on broadcast point $T_\tau$, the global state for all AP nodes is denoted as: $\Stat_\tau = (\Obsv_{\tau}, \Obsv_{\tau-1}, \vec{n}_\tau), (\tau=1,2,\dots)$.
-                More specifically, the $k$-th AP nodes would come up with this global state consensus only after $\hat{d}_k$ timeslots, and it adopt policy based on the obsolete information.
+                The system state at $i$-th broadcast point is denoted as $Stat_i \define (\Obsv_{i}, \Obsv_{i-1}), (i=1,2,\dots)$.
+                More specifically, the $k$-th AP nodes would come up with this global state consensus only after $\hat{d}_k$ timeslots w.r.t $t_i$, and it adopt policy based on the obsolete information.
             \end{definition}
             \begin{figure}[ht]
                 \centering
@@ -204,54 +204,66 @@
                 \label{fig:br-trans}
             \end{figure}
 
-            The dispatching policy $\vec{\Omega}(\Stat_\tau)$ is actually composed of all AP nodes based on obsolete information $\Obsv_{\tau-1}$ and the updated information $\Obsv_{\tau}$ after the consensus delay $\hat{d}_k$ respectively. The composed policy over job-wise action space $\vec{a}$ is defined as following:
+            The dispatching policy $\vec{\Omega}(\Stat_i)$ is actually a compounded policy composed of dispatching policy of all AP nodes, based on two stage of broadcast with obsolete information $\Obsv_{i-1}$ and the updated information $\Obsv_{i}$. This compounded policy over action space is illustrated as following:
             \begin{definition}(Compounded Dispatching Policy).
-                The compounded dispatching policy over $\Stat\tau$ is defined as $\Policy(\Stat_\tau)$ which is composed of the local policy $\Omega_k(\Stat_\tau), \forall k\in\apSet$ as:
+                The compounded dispatching policy over $\Stat_{i}$ is defined as $\Policy(\Stat_{i})$ which is composed of the local policy $\Omega_k(\Stat_{i}), \forall k\in\apSet$ as:
                 \begin{align}
-                    \vec{\Omega}(\Stat_\tau) \triangleq [\Omega_1(\Stat_\tau), \dots, \Omega_K(\Stat_\tau)]
+                    \vec{\Omega}(\Stat_{i}) \triangleq [\Omega_1(\Stat_{i}), \dots, \Omega_K(\Stat_{i})]
                 \end{align}
-                More specifically, $\Omega_k(\Stat_\tau)$ is composed of two-stage policy with $\tilde{\Omega}_k(\Obsv_{\tau-1})$ and $\tilde{\Omega}_k(\Obsv_{\tau})$ as:
+                More specifically, $\Omega_k(\Stat_{i})$ is composed of two-stage policy with $\omega_k(\Obsv_{i-1})$ and $\omega_k(\Obsv_{i})$ as:
                 \begin{align}
-                    \Omega_k(\Stat_\tau) = 
+                    \Omega_k(\Stat_i) = 
                     \begin{cases}
-                        {\omega}_k(\Obsv_{\tau-1}), & 0 \leq \Delta{t} < \hat{d}_k
+                        {\omega}_k(\Obsv_{i-1}), & 0 \leq \Delta{t} < \hat{d}_k
                         \\
-                        {\omega}_k(\Obsv_{\tau}), & \hat{d}_k \leq \Delta{t} \leq T_B
+                        {\omega}_k(\Obsv_{i}), & \hat{d}_k \leq \Delta{t} \leq T_B
                     \end{cases}
                 \end{align}
-                where $t\in[T_{\tau-1}, T_{\tau}] ,\Delta{t} \define t - T_{\tau-1}$; ${\omega}_k(\Obsv_\tau)$ denotes the dispatching policy, which is a mapping from $\Obsv_\tau$ to a probabilistic distribution over action space $\vec{a}$ for $k$-th node.
+                where $t\in[t_{i-1}, t_{i}], \Delta{t} \define t - t_{i-1}$; ${\omega}_k(\Obsv_i)$ denotes the dispatching policy, which is a mapping from $\Obsv_i$ to a probabilistic distribution over action space $\vec{a}$ for $k$-th node.
             \end{definition}
-
-            As the state transition from $\Stat_{\tau}$ to $\Stat_{\tau+1}$ is driven by the compounded policy with the obsolete state $\Obsv_{\tau-1}$, and the updated state $\Obsv_{\tau}$ with delay.
         \end{subsection}
 
         \begin{subsection}{The Optimization Problem}
             The optimization target of our problem is to minimize the \emph{average response time} of all jobs, which is composed of waiting time on AP, uploading time, waiting time on ES and service time on ES. According to \emph{Little's Law}, the average time over all the jobs is equally as number in system accumulation in each timeslot. The cost function is:
             \begin{align}
-                g\bigg(\Stat_\tau, \Policy(\Stat_{\tau-1})\bigg) \define \sum_{k\in\apSet}\sum_{m\in\esSet} u_{k,m}(\tau) + \sum_{m\in\esSet}|Q_m(\tau)| 
+                g \bigg( \Stat_{i}, \Policy(\Stat_{i-1}) \bigg) \define \sum_{k\in\apSet}\sum_{m\in\esSet} u_{k,m}(i) + \sum_{m\in\esSet}|Q_m(i)|
             \end{align}
-            which is actually deterministic with the $\tau$-th broadcast information.
+            which is actually deterministic with the $i$-th broadcast information.
             Our distributed optimization problem definition is given as following:
             \begin{problem}
                 (Distributed Cooperative Job Dispatching Problem).
                 \begin{gather}
                     \min_{\Policy} \lim_{T \to \infty}
                         \mathbb{E}_{\Policy, \{A_k(t)|\forall k\in\apSet\}}
-                            [\sum_{\tau=1}^{T} \gamma^{\tau-1} g(\Stat_\tau, \Policy(\Stat_{\tau-1}))|\Stat_1]
+                            [\sum_{i=2}^{T} \gamma^{i-1} g(\Stat_{i}, \Policy(\Stat_{i-1}))|\Stat_1]
                 \end{gather}
             \end{problem}
 
             According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
             \begin{align}
-                V(\Stat_{\tau}) =& g(\Stat_\tau) +\gamma \min_{\Policy(\Stat_\tau)} \sum_{\Stat_{\tau+1}} \Pr\{\Stat_{\tau+1}|\Stat_{\tau}, \Policy(\Stat_\tau)\} V(\Stat_{\tau+1})
+                V(\Stat_{i}) =& g(\Stat_i) + \gamma \min_{\Policy(\Stat_{i})} \sum_{\Stat_{i+1}} \Pr\{ \Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i}) \} V(\Stat_{i+1})
                 \nonumber\\
-                =& g(\Stat_\tau) +\gamma \min_{\Policy(\Stat_\tau)} \sum_{\Stat_{\tau+1}} \Pr\{\Stat_{\tau+1}|\Stat_{\tau}, \Policy(\Stat_\tau)\}
-                \nonumber\\
-               & \cdot [\sum_{k\in\apSet} {W}^{(k)}(\tilde{S}^{(k)}_{\tau+1}) + \sum_{m\in\esSet} {W}^{(m)}(\tilde{S}^{(m)}_{\tau+1})],
+                =& g(\Stat_{i}) + \gamma \min_{\Policy(\Stat_{i})} \sum_{\Stat_{i+1}} \Pr\{ \Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i}) \}
+                    \nonumber\\
+                    & \cdot [\sum_{k\in\apSet} W^{(k)}(\vec{u}_k(i)) + \sum_{m\in\esSet} W^{(m)}(Q_m(i))],
             \end{align}
-            where $W^{(k)}=\mathbb{E}\{\}, \forall k\in\apSet$, and $W^{(m)}=\mathbb{E}\{\}, \forall m\in\esSet$
+            where the split value function over AP nodes $W^{(k)}(\cdot)$ and over ES nodes $W^{(m)}(\cdot)$ is defined as following:
+            \begin{align}
+                W^{(k)}(\vec{u}_k(i)) =& \lim_{T\to\infty} \mathbb{E}[\sum_{n=0}^{T} \gamma^{n} \Inorm{\vec{u}_k(i+n)}]
+                \nonumber\\
+                =& \lim_{T\to\infty} \sum_{n=0}^{T} \gamma^{n} \mathbb{E}[\Inorm{\vec{u}_k}]
+                \nonumber\\
+                =& \frac{1}{1-\gamma} \mathbb{E}[\Inorm{\vec{u}_k}], \forall k\in\apSet
+                \\
+                W^{(m)}(Q_m(i)) =& \lim_{T\to\infty} \mathbb{E}[\sum_{n=1}^{T} \gamma^{n-1} |Q_m(i)|]
+                % \nonumber\\ =& ,
+                \forall m\in\esSet
+            \end{align}
 
-            There are totally $(K+1)$ transition matrix in $[T_{\tau}, T_{\tau+1})$ w.r.t. $\hat{d}_k$ and denoted as $\mat{P}^{\Delta{t}_k}$ in $\Delta{t}_k$ interval for all $k\in[0,1,\dots,K]$.
+            Furthermore we could decouple the transition probability expression on AP nodes and ES nodes respectively as:
+            \begin{align}
+                \Pr\{\Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i})\} =& 
+            \end{align}
         \end{subsection}
     \end{section}
 
