@@ -122,9 +122,9 @@
             
             The first one is \emph{uploading process} where AP dispatches jobs to corresponding ESs and applied on each timeslot. The uploading time is {\color{red}job-independent} and deterministic for all kinds of jobs on AP-ES link, which is denoted as $T^{prop}_{k,m}$ for from $k$-th AP to $m$-th ES, and the uploading time always lasts for integer timeslots. \emph{Parallel uploading} is enabled on AP to alleviate the cost caused by serially uploading process. As the arrival process and uploading time is bounded, there will be at most $\lambda_k \cdot \max_m(T^{prop}_{k,m})$ jobs in transmission on $k$-th AP which results into finite bandwidth requirement.
             
-            The other one is \emph{broadcast process} where AP nodes obtain the information about the global system state and applied on broadcast interval scale. We denote each broadcast time slot, called \emph{broadcast point}, as $T_\tau$ for $\tau$-th broadcast where,
+            The other one is \emph{broadcast process} where AP nodes obtain the information about the global system state and applied on broadcast interval scale. We denote each broadcast time slot, called \emph{broadcast point}, as $t_i$ for $i$-th broadcast where,
             \begin{align}
-                T_\tau = \tau \cdot T_B, \tau=0,1,2\dots
+                t_i = i T_B, i=0,1,2\dots
             \end{align} 
             Let $d^{(AP)}_{k,k'}$ denotes the broadcast delay from $k'$-th AP to $k$-th AP ($\forall k,k'\in\apSet$) w.r.t. the last broadcast point; let $d^{(ES)}_{k,m}$ denotes the broadcast delay from $m$-th ES to $k$-th AP ($\forall m\in\esSet$). It's reasonable to assume that the broadcast interval is always larger than broadcast delay, i.e. $T_B > d^{(AP)}_{k,k'}, T_B > d^{(ES)}_{k,m}$. To denote the timeslot where $k$-th AP could receive all the broadcast information thus obtain global state view, we come up with the concept called \emph{consensus delay} for AP nodes as:
             \begin{definition}
@@ -151,31 +151,28 @@
         \end{subsection}
 
         \begin{subsection}{Job Dispatching Model}
-            The job dispatching process is composed of three stages: waiting on AP nodes for uploading, in uploading to servers, and waiting for service in servers queue. The three stages results into jobs set accumulation on AP and ES nodes which is illustrated and the Markovian transition relationship between the adjacent timeslot in Fig.
+            The job dispatching process on each job is composed of three stages: dispatching decision making, uploading, and waiting for service. According to the communication model and computing model illustrated above, there would be accumulated job set on AP and ES nodes respectively.
 
-            The local states on AP and ES nodes are divided into three job set:
-            \begin{itemize}
-                \item Let $\wSet_{k}(t)$ denotes the job set on $k$-th AP $\forall k \in \apSet$, which comprises the jobs waiting for dispatching decision at $t$-th timeslot; $w \in \wSet_{k}(t)$ and $w \triangleq (\vec{l}_w)$, where $w$ denotes the tuple containing one element $\vec{l}_w \in \domZ^M$ as the computing length on all $M$ unrelated edge servers.
-                \item Let $\uSet_{k,m}(t)$ denotes the jobs in uploading from $k$-th AP to $m$-th ES in $t$-th timeslot $\forall k \in \apSet, m \in \esSet$; $u \triangleq (l_u, T_{u}(t)) \in \uSet_{k,m}(t)$, $l_u$ denotes the computing length on $m$-th server and $T_{u}(t)$ records the remaining time for uploading completed.
-                \item Let $\cSet_{m}(t)$ denotes the jobs waiting for computing on $m$-th ES in $t$-th timeslot; $c \triangleq (t_c, T_{c}(t)) \in \cSet_{m}(t)$; $t_c$ denotes for arriving timestamp at server, $T_{c}(t)$ denotes for the remaining time for computing completed.
-            \end{itemize}
-
-            Then we have the denotation of system observation in $t$-th timeslots on left-hand side in the figure as:
-            \begin{align}
-                \mathcal{O}(t) \triangleq (\bigcup\limits_{k\in\apSet}\wSet_{k}(t), \bigcup\limits_{k\in\apSet, m\in\esSet}\uSet_{k,m}(t), \bigcup\limits_{m\in\esSet}\cSet_{m}(t))
-            \end{align}
-            and as the transition is initialized by \emph{dispatching decision} and therefore automatically been uploaded and computed, we give the definition for decision action here:
+            As the transition is initialized by \emph{dispatching decision} over arrival job in $t$-th timeslot on each AP, we give the definition for decision action space denotation here:
             \begin{definition}
-                (Dispatching Action).
-                The dispatching action space is applied job-wise in the waiting job set denoted as $a: \jSet \times \set{0,1,\dots,M}$, where $(j, 0)$ means $j$-th job should keep waiting and $(j,m\neq0)$ means $j$-th job should be uploaded to $m$-th ES. As the jobs should always been uploaded to server at last, the probability of infinite waiting decision applied on the same job should be almost zero.
+                (Dispatching Action Space).
+                The dispatching action space is applied job-wise in the waiting job set denoted as $a: \jSet \times \set{1,\dots,M}$, where $(j, m)$ denotes the action that $j$-th job should be uploaded to $m$-th ES.
             \end{definition}
 
-            Then we characterize the job dispatching process by Markovian transition between adjacent timeslots.
-            Then we establish the relationship between those indicator functions with $\mathcal{O}(t+1)$ over the three different components as:
+            \begin{itemize}
+                \item Two time scale; dispatching process is carried out on each timeslot based on dispatching decision, but the scheduling decision is carried out on each broadcast point;
+                \item Separate uploading and computing process; the uploaded jobs on ES nodes in this broadcast interval, would join computing with scheduling policy in next broadcast interval; \hl{(to alleviate curse of dimensionality in problem formulation)}
+                \item We have the denotation on $i$-th broadcast point with broadcast time scale;
+                    \begin{itemize}
+                        \item for $k$-th AP ($\forall k\in\apSet$), it has $\set{u_{k,m}(i)|\forall m\in\esSet}$ series to denote uploading process, where $u_{k,m}(i)$ denotes the number of jobs still in uploading at time $t_i$;
+                        \item for $m$-th ES ($\forall m\in\esSet$), it has $Q_m(i)$ to denote the FIFO queue and each element $e \in Q_m(i)$ denotes the remaining processing time for that job;
+                    \end{itemize}
+            \end{itemize}
 
-            and we notice that no matter job arrival or decision on $\wSet$ happened or not, the attributes of jobs in $\uSet$ and $\cSet$ have to change according to the deterministic rule about uploading and scheduling respectively.
-
-            Additionally, the broadcast design is not engaged in dispatching model for now but it will have affects on dispatching decision which will be illustrated in next section.
+            Then we have the denotation of system observation on $i$-th broadcast point as:
+            \begin{align}
+                \Obsv(t) \define \{ \set{u_{k,m}(t)|\forall k\in\apSet,m\in\esSet}, \set{Q_m(t)|\forall m\in\esSet} \}
+            \end{align}
         \end{subsection}
     \end{section}
 
