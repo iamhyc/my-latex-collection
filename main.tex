@@ -25,8 +25,8 @@
 \newcommand{\mat}{\mathbf}
 \newcommand{\define}{\triangleq}
 \renewcommand{\vec}{\mathbf}
-\DeclarePairedDelimiter\set\{\}
-\DeclarePairedDelimiter{\norm}{\|}{\|}
+\DeclarePairedDelimiter{\set}{\{}{\}}
+\DeclarePairedDelimiter{\norm}{|}{|}
 \DeclarePairedDelimiter{\Inorm}{\|}{\|_1}
 % \DeclarePairedDelimiter{\set}{\bigg(}{\bigg)}
 %---------------------------------------------------------------%
@@ -215,12 +215,12 @@
                 \begin{align}
                     \Omega_k(\Stat_i) = 
                     \begin{cases}
-                        {\omega}_k(\Obsv_{i-1}), & 0 \leq \Delta{t} < \hat{d}_k
+                        \set{\omega^{(i-1)}_{k,m}(j)|\forall m\in\esSet}, & 0 \leq \Delta{t} < \hat{d}_k
                         \\
-                        {\omega}_k(\Obsv_{i}), & \hat{d}_k \leq \Delta{t} \leq T_B
+                        \set{\omega^{(i)}_{k,m}(j)|\forall m\in\esSet}, & \hat{d}_k \leq \Delta{t} \leq T_B
                     \end{cases}
                 \end{align}
-                where $t\in[t_{i-1}, t_{i}], \Delta{t} \define t - t_{i-1}$; ${\omega}_k(\Obsv_i)$ denotes the dispatching policy, which is a mapping from $\Obsv_i$ to a probabilistic distribution over action space $\vec{a}$ for $k$-th node.
+                where $t\in[t_{i-1}, t_{i}], \Delta{t} \define t - t_{i-1}$; $\omega^{(i)}_{k,m}(j)$ denotes the dispatching policy for $k$-th node that: based on global information $\Obsv_{i}$, the stochastic policy on $j$-type job ($\forall j\in\jSet$) to $m$-th ES.
             \end{definition}
         \end{subsection}
 
@@ -248,28 +248,94 @@
                     \nonumber\\
                     & \cdot [\sum_{k\in\apSet} W^{(k)}(\vec{u}_k(i)) + \sum_{m\in\esSet} W^{(m)}(Q_m(i))],
             \end{align}
-            where the split value function over AP nodes $W^{(k)}(\cdot)$ and over ES nodes $W^{(m)}(\cdot)$ is defined as following:
+            where the  $W^{(k)}(\cdot)$ and $W^{(m)}(\cdot)$ denote the split value function over AP nodes and over ES nodes respectively.
+
+            Before diving in analysis on transition function decoupling, we firstly come up with some probability denotation with respect to policy based on different global information:
             \begin{align}
-                W^{(k)}(\vec{u}_k(i)) =& \lim_{T\to\infty} \mathbb{E}[\sum_{n=0}^{T} \gamma^{n} \Inorm{\vec{u}_k(i+n)}]
+                p^{(i)}_{k,m} \define& \Pr\{\text{one job from $k$-AP to $m$-ES under policy $\omega^{(i)}$}\}
+                \nonumber\\
+                =& \lambda_k \sum_{j\in\jSet} p(j) \Pr\{\omega^{(i)}_{k,m}(j)\}
+            \end{align}
+            And $p_{k,m}$ denotes the same event with policy $\omega_{k,m}$ that not with respect to system state.
+            As we consider the uploading process as \emph{black box} that the job type information is neglected in uploading until the time the job joins the computation queue at the end of the stage. The job distribution on $m$-th ES under policy $\omega^{i}_k$ from $k$-th AP is denoted as:
+            \begin{align}
+                p^{(i)}_{k,m}(j) \define p(j) \Pr\{\omega^{(i)}_{k,m}(j)\},
+            \end{align}
+            and we have $p_{k,m}(j)$ denotes the process under policy $\omega_k (\forall k\in\apSet)$ not with respect to system states.
+
+            Then we try to decouple the transition probability expression on AP nodes and ES nodes respectively as:
+            \begin{align}
+                & \Pr\{\Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i})\} 
+                \nonumber\\
+                =& \prod_{k\in\apSet} \Pr\{\vec{u}_k(i+1)|\Policy(\Stat_{i})\} \times
+                \nonumber\\
+                & \prod_{m\in\esSet} \Pr\{Q_m(i+1)|Q_m(i), \vec{u}_k(i), \Policy(\Stat_{i})\},
+            \end{align}
+            where the first production part denotes the state transition for AP nodes, and the probability follows a binomial distribution with the revised Bernoulli process in each timeslot under dispatching policy:
+            \begin{align}
+                &\Pr\{\vec{u}_k=\vec{u}|\Policy(\Stat_i)\}
+                \nonumber\\
+                =& \prod_{m\in\esSet}
+                    \begin{pmatrix}
+                        T^{prop}_{k,m}-1 \\ u^{(m)}
+                    \end{pmatrix}
+                    (p^{(i)}_{k,m})^{u^{(m)}}
+                    (1-p^{(i)}_{k,m})^{T^{(prop)}_{k,m}-u^{(m)}-1}
+            \end{align}
+            The second part denotes the state transition for ES nodes. As the jobs to computing in this broadcast interval only contains the jobs in queue in last interval, the expression of $Q_m(i+1)$ could be:
+            \begin{align}
+                Q_m(i+1) = [\tilde{Q}_m(i), Y_0, Y_1, Y_2],
+            \end{align}
+            where:
+            \begin{itemize}
+                \item $\tilde{Q}_m(i)$ denotes the remaining part of $Q_m(i)$ after $T_B$ computing;
+                \item $Y_0$ denotes the enqueued jobs from last interval with $\set{u_{k,m}(i)|\forall k\in\apSet}$ that $n_0 \define |Y_0|=sum_{k\in\apSet} u_{k,m}(i)$;
+                \item $Y_1$ and $Y_2$ respectively denotes the enqueued jobs uploaded by all AP nodes under policy $\omega_{k,m}^{i-1}$ and $\omega_{k,m}^{i}$; $|Y_1|\define\sum_{k\in\apSet}N^{(k)}_1, |Y_2|\define\sum_{k\in\apSet}N^{(k)}_2$.
+            \end{itemize}
+            The transition probability is given as:
+            \begin{align}
+                &\Pr\{Q_m(i+1)|Q_m(i), \set{\vec{u}_k(i)|\forall k\in\apSet}, \Policy(\Stat_i)\}
+                \nonumber\\
+                =& \Pr\{\tilde{Q}_m(i+1)|Q_m(i)\} \cdot \Pr\{Y_1, Y_2|\set{\vec{u}_k(i)|\forall k\in\apSet}, \Policy(\Stat_i)\}
+                \nonumber\\
+                =& \sum_{n_0+n_1+n_2} \prod_{k\in\apSet}
+                \nonumber\\
+                &[
+                    (p^{(i-1)}_{k,m}(j))^{n^{(k)}_0 + N^{(k)}_1}
+                    \begin{pmatrix}
+                        \hat{d}_k \\ N^{(k)}_1
+                    \end{pmatrix}
+                    (p^{(i-1)}_{k,m})^{N^{(k)}_1}
+                    (1-p^{(i-1)}_{k,m})^{\hat{d}_k-N^{(k)}_1}
+                ]&&
+                \nonumber\\
+                &[
+                    (p^{i}_{k,m}(j))^{N^{(k)}_2}
+                    \begin{pmatrix}
+                        T_B-\hat{d}_k-T^{prop}_{k,m} \\ N^{(k)}_2
+                    \end{pmatrix}
+                    (p^{(i)}_{k,m})^{N^{(k)}_2}
+                    (1-p^{(i)}_{k,m})^{\tilde{N}^{(k)}_2}
+                ]
+            \end{align}
+
+            Furthermore, the cost function for AP and ES nodes are rather fixed under under baseline policy $\omega_{k,m}(j)$ (not with respect to ) in the following form:
+            \begin{align}
+                \tilde{W}^{(k)}(\vec{u}_k(i)) =& \lim_{T\to\infty} \mathbb{E}[\sum_{n=0}^{T} \gamma^{n} \Inorm{\vec{u}_k(i+n)}]
                 \nonumber\\
                 =& \lim_{T\to\infty} \sum_{n=0}^{T} \gamma^{n} \mathbb{E}[\Inorm{\vec{u}_k}|\omega_k(i+n)]
                 \nonumber\\
-                =& \frac{1}{1-\gamma} \mathbb{E}[\Inorm{\vec{u}_k}], \forall k\in\apSet
+                =& \frac{1}{1-\gamma} \mathbb{E}[\Inorm{\vec{u}_k}|\omega], \forall k\in\apSet
                 \\
-                W^{(m)}(Q_m(i)) =& \lim_{T\to\infty} \mathbb{E}[\sum_{n=0}^{T} \gamma^{n} \|Q_m(i+n)\|]
+                \tilde{W}^{(m)}(Q_m(i)) =& \lim_{T\to\infty} \mathbb{E}[\sum_{n=0}^{T} \gamma^{n} \|Q_m(i+n)\|]
                 \nonumber\\
                 =& \lim_{T\to\infty} \sum_{n=0}^{T} \gamma^{n} \vec{u}'_i (\mat{P}_m)^{n} \vec{g}_q
                 \nonumber\\
                 =& \vec{u}'_i [\lim_{T\to\infty} \sum_{n=0}^{T} (\gamma \mat{P}_m)^{n}] \vec{g}_q
                 \nonumber\\
-                =& \vec{u}'_i (\mat{I} - \gamma \mat{M})^{-1} \vec{g}_q, \forall m\in\esSet,
+                =& \vec{u}'_i (\mat{I} - \gamma \mat{P}_m)^{-1} \vec{g}_q, \forall m\in\esSet,
             \end{align}
-            where $\vec{u}'_i$ denotes the transpose of $\vec{u}_i$, and $\vec{u}_i = [0,\dots,0,1,0,\dots,0]$ with only $i$-th element as $1$.
-
-            Furthermore we could decouple the transition probability expression on AP nodes and ES nodes respectively as:
-            \begin{align}
-                \Pr\{\Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i})\} =& 
-            \end{align}
+            where $\vec{u}'_i$ denotes the transpose of $\vec{u}_i$, and $\vec{u}_i = [0,\dots,0,1,\dots]$ with only $i$-th element as $1$.
         \end{subsection}
     \end{section}
 
