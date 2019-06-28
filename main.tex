@@ -26,6 +26,7 @@
 \newcommand{\define}{\triangleq}
 \renewcommand{\vec}{\mathbf}
 \DeclarePairedDelimiter\set\{\}
+\DeclarePairedDelimiter{\norm}{\|}{\|}
 \DeclarePairedDelimiter{\Inorm}{\|}{\|_1}
 % \DeclarePairedDelimiter{\set}{\bigg(}{\bigg)}
 %---------------------------------------------------------------%
@@ -226,9 +227,9 @@
         \begin{subsection}{The Optimization Problem}
             The optimization target of our problem is to minimize the \emph{average response time} of all jobs, which is composed of waiting time on AP, uploading time, waiting time on ES and service time on ES. According to \emph{Little's Law}, the average time over all the jobs is equally as number in system accumulation in each timeslot. The cost function is:
             \begin{align}
-                g \bigg( \Stat_{i}, \Policy(\Stat_{i-1}) \bigg) \define \sum_{k\in\apSet}\sum_{m\in\esSet} u_{k,m}(i) + \sum_{m\in\esSet}|Q_m(i)|
+                g \bigg( \Stat_{i}, \Policy(\Stat_{i-1}) \bigg) \define \sum_{k\in\apSet} \Inorm{\vec{u}_{k}(i)} + \sum_{m\in\esSet} \norm{Q_m(i)},
             \end{align}
-            which is actually deterministic with the $i$-th broadcast information.
+            where $\norm{Q_m(i)}$ denotes the number of jobs in queue $Q_m(i)$.
             Our distributed optimization problem definition is given as following:
             \begin{problem}
                 (Distributed Cooperative Job Dispatching Problem).
@@ -251,14 +252,19 @@
             \begin{align}
                 W^{(k)}(\vec{u}_k(i)) =& \lim_{T\to\infty} \mathbb{E}[\sum_{n=0}^{T} \gamma^{n} \Inorm{\vec{u}_k(i+n)}]
                 \nonumber\\
-                =& \lim_{T\to\infty} \sum_{n=0}^{T} \gamma^{n} \mathbb{E}[\Inorm{\vec{u}_k}]
+                =& \lim_{T\to\infty} \sum_{n=0}^{T} \gamma^{n} \mathbb{E}[\Inorm{\vec{u}_k}|\omega_k(i+n)]
                 \nonumber\\
                 =& \frac{1}{1-\gamma} \mathbb{E}[\Inorm{\vec{u}_k}], \forall k\in\apSet
                 \\
-                W^{(m)}(Q_m(i)) =& \lim_{T\to\infty} \mathbb{E}[\sum_{n=1}^{T} \gamma^{n-1} |Q_m(i)|]
-                % \nonumber\\ =& ,
-                \forall m\in\esSet
+                W^{(m)}(Q_m(i)) =& \lim_{T\to\infty} \mathbb{E}[\sum_{n=0}^{T} \gamma^{n} \|Q_m(i+n)\|]
+                \nonumber\\
+                =& \lim_{T\to\infty} \sum_{n=0}^{T} \gamma^{n} \vec{u}'_i (\mat{P}_m)^{n} \vec{g}_q
+                \nonumber\\
+                =& \vec{u}'_i [\lim_{T\to\infty} \sum_{n=0}^{T} (\gamma \mat{P}_m)^{n}] \vec{g}_q
+                \nonumber\\
+                =& \vec{u}'_i (\mat{I} - \gamma \mat{M})^{-1} \vec{g}_q, \forall m\in\esSet,
             \end{align}
+            where $\vec{u}'_i$ denotes the transpose of $\vec{u}_i$, and $\vec{u}_i = [0,\dots,0,1,0,\dots,0]$ with only $i$-th element as $1$.
 
             Furthermore we could decouple the transition probability expression on AP nodes and ES nodes respectively as:
             \begin{align}
@@ -276,26 +282,7 @@
         \begin{subsection}{Baseline Policy}
             \begin{problem}
                 (Fixed FCFS Optimization).
-                \begin{itemize}
-                    \item no waiting stage;
-                    \item locally greedy uploading;
-                    \item FCFS scheduling (?);
-                \end{itemize}
             \end{problem}
-
-            \begin{definition}
-                (Job Arrival Process at $n$-th ES).
-            \end{definition}
-
-            At last, we collect the cost according to the definition in our MDP problem but with respect to our approximate algorithm.
-            \begin{align}
-                & \tilde{V}^{\pi}(T_t)
-                \nonumber%\\
-                = E_{\pi} \{ \tilde{C}_{t} + \gamma \tilde{C}_{t+1} + \gamma^2 \tilde{C}_{t+2} + \dots |S_{t-1}=s \}
-                % \nonumber\\
-                % = & \sum_{k=0}^{\infty} \gamma^{k} \sum_{t'=kT^{br}+1}^{(k+1)T^{br}} \sum_{s'} \tilde{P}^{t'}_{s,s'} \times |s'|
-            \end{align}
-            % where $\tilde{P}_{s,s'}$ is fixed under the given policy $\vec{\beta}_{\pi}$.
         \end{subsection}
 
         \begin{subsection}{The Distributed Algorithm}
@@ -327,6 +314,7 @@
         \label{sec:conclusion}
         The future work to mention:
         \begin{itemize}
+            \item joint scheduling optimization
             \item non-aligned broadcast
             \item broadcast failure
             \item randomized broadcast delay
