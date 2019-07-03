@@ -119,7 +119,7 @@
             The network topology of the MEC (mobile edge computing) system in this article is composed of three components as illustrated in Fig. \ref{fig:system}.
             The user equipment (UE) is connected to access point (AP) and offloads computation jobs to access point. The AP itself is assumed with no computation capability, and thus it need to further dispatch those jobs to the edge servers (ES) in the same coalition. There are more than one AP nodes in the MEC system, which determines that the ES should complete the jobs computation \textcolor{red}{in a fairness way}. The network topology between AP cluster and ES cluster is fully accessible so that AP could dispatch jobs to any ES nodes in this coalition.
 
-            In this MEC system, we adopt the same timing mechanism at both AP and ES side with a minimum \emph{timeslot} lasting for $\kappa$ seconds, which is indexed with symbol $t$. The timing precision among all the nodes is promised with a timing protocol (e.g. GPS Timing) and is beyond the discussion of this article. The dispatching and scheduling decision on AP and ES side respectively are all applied based on this timing. Moreover, the information sharing in this coalition is designed via broadcast design which will be elaborated in next section.
+            In this MEC system, we adopt the same timing mechanism at both AP and ES side with a minimum \emph{timeslot} lasting for $\kappa$ seconds, which is indexed with symbol $t$. The timing precision among all the nodes is promised with a timing protocol (e.g. GPS Timing) and is beyond the discussion of this article. The dispatching and scheduling decision on AP and ES side respectively are all applied based on this timing. Moreover, the information sharing in this coalition is designed via broadcast design which will be elaborated in \emph{Information-Sharing Broadcast Model} section.
 
             Now we give the formal definition of the network illustration. Let $\apSet \define \set{1,\dots,K}$ and $\mathcal{M} \define \set{1,\dots,M}$ denote the set of AP nodes and set of ES nodes in the MEC system respectively. The computation jobs offloaded from UEs connected with $k$-th AP ($\forall k\in\apSet$) is denoted as \emph{job arrival process} which follows the assumption as:
             \begin{assumption}
@@ -138,44 +138,11 @@
             The \emph{parallel uploading} is enabled on AP nodes to alleviate the extra waiting cost caused by serially uploading. As the arrival process and uploading time is bounded, there will be at most $\lambda_k \cdot \max_m(t^{(u)}_{k,m})$ jobs in transmission on $k$-th AP which results into finite bandwidth allocation.
         \end{subsection}
 
-        \begin{subsection}{Information-Sharing Broadcast Model}
-            (Aligned Broadcast and Denotation)
-            The information sharing design is another communication process independent from the job dispatching process illustrated above. The sharing is designed with \emph{aligned broadcast} to achieve decentralized cooperation among AP nodes.
-            The periodic broadcast is called \emph{aligned broadcast}, where all the AP and ES nodes start to broadcast at the start of the same timeslot, and repeat broadcasting with the same interval as $t_B$ time slots. More specifically, the AP nodes should broadcast their system information at the broadcast point to the other AP nodes, and the ES nodes should also broadcast their information to all AP nodes.
-            The AP nodes obtain the information about the global system state and applied on broadcast interval scale in the broadcast process. We denote each broadcast time slot, called \emph{broadcast point}, as $t_i$ for $i$-th broadcast where,
-            \begin{align}
-                t_i = i \cdot t_B, i=0,1,2\dots
-            \end{align} 
-            Let $d^{(AP)}_{k,k'}$ denotes the broadcast delay from $k'$-th AP to $k$-th AP ($\forall k,k'\in\apSet$) w.r.t. the last broadcast point; let $d^{(ES)}_{k,m}$ denotes the broadcast delay from $m$-th ES to $k$-th AP ($\forall k\in\apSet,\forall m\in\esSet$). It's reasonable to assume that the broadcast interval is always larger than broadcast delay, i.e. $t_B > d^{(AP)}_{k,k'}, t_B > d^{(ES)}_{k,m}$. To denote the timeslot where $k$-th AP could receive all the broadcast information thus obtain global state view, we come up with the concept called \emph{consensus delay} for AP nodes as:
-            \begin{definition}
-                (Consensus Delay).
-                \begin{align}
-                    t^{(d)}_k = \max(\set{d^{(AP)}_{k,k'}|\forall k,k'\in\apSet}, \set{d^{(ES)}_{k,m}|\forall k\in\apSet,m\in\esSet}),
-                \end{align}
-                where $d^{(AP)}_{k,k} \equiv 0$. \hl{The consensus delay is the time after last broadcast point where $k$-th AP could obtain the global state view and come to consensus with the complete information.}
-            \end{definition}
-
-            (Two-time scale Action and Observation)
-            The broadcast process introduces a \emph{Two-time scale} structure in the MEC system. The dispatching and scheduling policy are applied over timeslot scale, the uploading and computation process are over broadcast interval \hl{(need a timeline graph)}.
-            
-            (Dispatching Denotation under Broadcast Design)
-            The job dispatching process on each job is composed of three stages: dispatching decision making, in uploading, and waiting for service on server. According to the communication model and computing model illustrated above, there would be accumulated job set on AP and ES nodes respectively.
-            We have the denotation on $i$-th broadcast point with broadcast time scale:
-            \begin{itemize}
-                \item for $k$-th AP ($\forall k\in\apSet$), it has $\vec{u}_k(i) \define \set{u_{k,m}(i)|\forall m\in\esSet}$ series to denote uploading process, where $u_{k,m}(i)$ denotes the number of jobs still in uploading at time $t_i$;
-                \item for $m$-th ES ($\forall m\in\esSet$), it has $Q_m(i)$ to denote the FIFO queue and each element $e \in Q_m(i)$ denotes the remaining processing time for that job;
-            \end{itemize}
-            Then we have the denotation of system observation on $i$-th broadcast point as:
-            \begin{align}
-                \Obsv_i \define \{ \set{u_{k,m}(i)|\forall k\in\apSet,m\in\esSet}, \set{Q_m(i)|\forall m\in\esSet} \}
-            \end{align}
-        \end{subsection}
-
         \begin{subsection}{Computation Model}
             For computation process on edge servers, we adopt \emph{unrelated machines} assumption in \cite{tan-online}, where the job processing time on different servers are machine dependent and variant of resource or VM (virtual machine) constraints.
             The maximum processing time in this system is bounded with $L_C$.
             The job space is denoted as $\jSpace$ and its cardinality is denoted as $|\jSpace|=(L_C)^M$ for all possible job processing time on all $M$ ES nodes.
-            Moreover, we have the mapping function $f:\jSpace \to \domZ^M$ to store process time vector for job in jobs space.
+            Moreover, we have the mapping function $f:\jSpace \to \domZ^M$ to store processing time vector for job in jobs space.
             Additionally, the jobs arrival process on each AP node has the same distribution over job set $\jSpace$ which is denoted as: $p_j \define \Pr(j\in\jSpace)$.
             
             We assume the scheduling policy on all the servers as following:
@@ -183,7 +150,37 @@
                 (Scheduling Policy).
                 All the edge servers adopt \emph{FCFS} (First-Come-First-Serve) as job scheduling policy, i.e. the job earlier arrives at the server would get served earlier. And we note that the arrival order is not only determined by job arrives at the access point, but also related with the uploading latency.
             \end{assumption}
-            Furthermore, the scheduling policy is only applied in one broadcast interval with separated uploading and computing process. This implies that: the uploaded jobs on ES nodes in current broadcast interval, would join computing in the next broadcast interval. Additionally, we assume that $t^{(d)}_k + t^{(u)}_{k,m} < t_B, \forall k\in\apSet,m\in\esSet$, which is reasonable that broadcast interval $t_B$ is large enough that the last job uploaded to $m$-th server could not under the policy based on previous information.
+            Furthermore, the scheduling policy is applied for computation queue in one broadcast interval, which will be elaborated in the following section, with separated uploading and computing process.
+        \end{subsection}
+
+        \begin{subsection}{Information-Sharing Broadcast Model}
+            The information sharing is designed with \emph{aligned broadcast} to achieve decentralized cooperation among AP nodes. The \emph{aligned broadcast} is a periodic broadcast mechanism where all the AP and ES nodes start to broadcast at the start of same timeslot, and then repeat broadcasting with the same interval as $t_B$ timeslots. We call each aligned broadcast timeslot as \emph{broadcast point}, which is indexed with $t_i$ for $i$-th broadcast where,
+            \begin{align}
+                t_i = i \cdot t_B, i=0,1,2\dots
+            \end{align}
+
+            After the broadcast point $t_i$, different AP nodes will receive the broadcast information from AP nodes or ES nodes with different deterministic delay.
+            Let $d^{(AP)}_{k,k'}$ denotes the broadcast delay from $k'$-th AP to $k$-th AP ($\forall k,k'\in\apSet$) w.r.t. the last broadcast point; let $d^{(ES)}_{k,m}$ denotes the broadcast delay from $m$-th ES to $k$-th AP ($\forall k\in\apSet,\forall m\in\esSet$). We furthermore call the delay when the AP node could receive all the broadcast information happened at $t_i$ as \emph{consensus delay}, which is defined as following:
+            \begin{definition}
+                (Consensus Delay).
+                \begin{align}
+                    t^{(d)}_k = \max(\set{d^{(AP)}_{k,k'}|\forall k,k'\in\apSet}, \set{d^{(ES)}_{k,m}|\forall k\in\apSet,m\in\esSet}),
+                \end{align}
+                where $d^{(AP)}_{k,k} \equiv 0$ for convenience. The consensus delay is the time after last broadcast point where $k$-th AP could obtain the global state view and come to consensus with the complete information.
+            \end{definition}
+                        
+            The broadcast design introduces a \emph{Two-time scale} structure in the MEC system. The job dispatching on AP nodes and scheduling on ES nodes are still carried out based on timeslot scale. However, based on the broadcast period, the uploading process and computing process is separated into consideration.
+            More specifically, the uploaded jobs in current broadcast interval will keep waiting on edge servers; at the end of this broadcast interval (just before next broadcast point), the uploading jobs will join the FIFO queue on servers for scheduling. This separated process assumption will alleviate the curse of dimensionality in problem formulation, which considers the uploading process not entangled with computation process.
+            Moreover, it's reasonable to assume that the broadcast interval is always larger than any broadcast delay plus the uploading delay for any AP nodes, i.e. $t_B > t^{(d)}_{k} + t^{(u)}_{k,m}$ $(\forall k\in\apSet, \forall m\in\esSet)$. \hl{(need a timeline graph)}.
+            
+            At the broadcast point, the AP nodes should broadcast their system information at the broadcast point to the other AP nodes, and the ES nodes should also broadcast their information to all AP nodes. According to the communication model and computation model illustrated above, there would be accumulated jobs which composes the system information on AP and ES nodes respectively.
+            More specifically, the information of $i$-th broadcast for $k$-th AP ($\forall k\in\apSet$) contains $\vec{u}_k(i) \define \set{u_{k,m}(i)|\forall m\in\esSet}$, where $u_{k,m}(i)$ denotes the number of unfinished uploading jobs at time $t_i$, i.e. the number of jobs will arrive onto servers in next broadcast interval; the information for $m$-th ES ($\forall m\in\esSet$) contains $Q_m(i)$ to denote the FIFO queue, where each element $e \in Q_m(i)$ denotes the remaining processing time for that job.
+            
+            The AP nodes would obtain the same global system information after the corresponding consensus delay times w.r.t the broadcast point $t_i$. The global system information is composed of all the broadcast information, i.e. the global system states at $t_i$ which is denoted as:
+            \begin{align}
+                \Obsv_i \define \{ \set{u_{k,m}(i)|\forall k\in\apSet,m\in\esSet}, \set{Q_m(i)|\forall m\in\esSet} \},
+            \end{align}
+            where $\Obsv_i$ is a set of global information of $i$-th aligned broadcast.
         \end{subsection}
     \end{section}
 
@@ -265,9 +262,9 @@
             \end{align}
             where $W^{(AP)}(\cdot)$ and $W^{(ES)}(\cdot)$ denote the split value function over AP nodes and ES nodes respectively, which are denoted as:
             \begin{gather}
-                W^{(AP)}(\set{\vec{u}_k(i)|k\in\apSet}) \define \lim_{T\to\infty} \mathbb{E}_{\Policy}[\sum_{n=0}^{T} \gamma^{n} \sum_{k\in\apSet}\Inorm{\vec{u}_k(i+n)}]
+                W^{(AP)}(\set{\vec{u}_k(i)|k\in\apSet}) \define \mathbb{E}_{\Policy}[\sum_{n=0}^{\infty} \gamma^{n} \sum_{k\in\apSet}\Inorm{\vec{u}_k(i+n)}]
                 \\
-                W^{(ES)}(\Obsv(i)) \define \lim_{T\to\infty} \mathbb{E}_{\Policy}[\sum_{n=0}^{T} \gamma^{n} \sum_{m\in\esSet}|Q_m(i+n)|],
+                W^{(ES)}(\Obsv(i)) \define \mathbb{E}_{\Policy}[\sum_{n=0}^{\infty} \gamma^{n} \sum_{m\in\esSet}|Q_m(i+n)|],
             \end{gather}
             where $\Inorm{\vec{u}_k(i)}$ denotes l1-norm of the vector, i.e. the sum-up of absolute value of each entry of vector; and $|Q_m(i)|$ denotes the cardinality of the set.
 
