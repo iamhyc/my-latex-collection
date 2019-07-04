@@ -120,7 +120,7 @@
     \begin{section}{SYSTEM MODEL}
         \label{sec:model}
         \begin{subsection}{Network Model}
-            The network topology of the MEC (mobile edge computing) system in this article is composed of three components as illustrated in Fig. \ref{fig:system}.
+            The network topology of the MEC (mobile edge computing) system in this article is composed of three components as depicted in Fig. \ref{fig:system}.
             The user equipment (UE) is connected to access point (AP) and offloads computation jobs to access point. The AP itself is assumed with no computation capability, and thus it need to further dispatch those jobs to the edge servers (ES) in the same coalition. There are more than one AP nodes in the MEC system, which determines that the ES should complete the jobs computation \textcolor{red}{in a fairness way}. The network topology between AP cluster and ES cluster is fully accessible so that AP could dispatch jobs to any ES nodes in this coalition.
 
             In this MEC system, we adopt the same timing mechanism at both AP and ES side with a minimum \emph{timeslot} lasting for $\kappa$ seconds, which is indexed with symbol $t$. The timing precision among all the nodes is promised with a timing synchronization protocol (e.g. GPS Timing) and is beyond the discussion of this article. The dispatching and scheduling decision on AP and ES side respectively are all applied based on this timing. Moreover, the information sharing in this coalition is designed via broadcast design which will be elaborated in \emph{Information-Sharing Broadcast Model} section.
@@ -181,7 +181,6 @@
             \begin{assumption}[Scheduling Policy]
                 All the edge servers adopt \emph{FCFS} (First-Come-First-Serve) as job scheduling policy, i.e. the job earlier arrives at the server would get served earlier. And we note that the arrival order is not only determined by job arrives at the access point, but also related with the uploading latency.
             \end{assumption}
-            Furthermore, the scheduling policy is applied for computation queue in one broadcast interval, which will be elaborated in the following section, with separated uploading and computing process.
         \end{subsection}
     \end{section}
 
@@ -192,7 +191,7 @@
 
         \begin{subsection}{System State and Dispatching Policy}
             The system states is selected based on the nature that $k$-th AP comes to the \emph{global consensus} only after the corresponding \emph{consensus delay} in the broadcast interval.
-            The relative difference between broadcast point and global consensus point is illustrated in Fig. \ref{fig:br-trans} \hl{(need to modify the state denotation in figure)}. It has to represent the state for AP nodes before and after the consensus point.
+            The relative difference between broadcast point and global consensus point is depicted in Fig. \ref{fig:br-trans} \hl{(need to modify the state denotation in figure)}. It has to represent the state for AP nodes before and after the consensus point.
 
             Thus, the system state of the distributed MDP problem based on the global consensus information is given as following:
             \begin{definition}[System State]
@@ -221,7 +220,7 @@
                         \set{\omega^{(i)}_{k,m}(j)|\forall m\in\esSet}, & t^{(d)}_k \leq \Delta{t} \leq t_B
                     \end{cases}
                 \end{align}
-                where $t\in[t_{i-1}, t_{i}], \Delta{t} \define t - t_{i-1}$; $\omega^{(i)}_{k,m}$ denotes the dispatching policy that: based on global information $\Obsv_{i}$, the stochastic action on $k$-th AP upload $j$-type job ($\forall j\in\jSpace$) to $m$-th ES.
+                where $t\in[t_{i-1}, t_{i}], \Delta{t} \define t - t_{i-1}$; $\omega^{(i)}_{k,m}(j)$ denotes the dispatching policy that: based on global information $\Obsv_{i}$, the stochastic action on $k$-th AP upload $j$-type job ($\forall j\in\jSpace$) to $m$-th ES, $\sum_{m\in\esSet}\sum_{j\in\jSpace} \Pr\{\omega^{(i)}_{k,m}(j)\}=1$.
             \end{definition}
         \end{subsection}
 
@@ -248,53 +247,60 @@
                 \nonumber\\
                 =& g(\Stat_{i}) + \gamma \min_{\Policy(\Stat_{i})} \sum_{\Stat_{i+1}} \Pr\{ \Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i}) \}
                     \nonumber\\
-                    & \cdot \Bracket{ W^{(p)}\Paren{\vec{u}_k(i+1)} + W^{(s)}\Paren{\Obsv(i+1)} },
+                    & \cdot \Bracket{ W^{(p)}\Paren{\Obsv^{(p)}(i+1)} + W^{(s)}\Paren{\Obsv(i+1)} },
             \end{align}
-            where $W^{(p)}(\cdot)$ and $W^{(s)}(\cdot)$ denote the split value function over AP nodes and ES nodes respectively.
-            Let $\Stat^{(Obsv)}(i) \define \set{\vec{u}_k(i)|\forall k\in\apSet}$ and $\Obsv^{(s)}(i) \define \set{Q_m(i)|\forall m\in\esSet}$ respectively denote the AP states collection and ES states collection for $\Obsv_i$, and the split value function is in the following form:
-            \begin{gather}
-                W^{(p)}\Paren{\Obsv^{(p)}(i)} \define \sum_{k\in\apSet}
+            where $W^{(p)}(\cdot)$ and $W^{(s)}(\cdot)$ denote the split value function over AP nodes and ES nodes respectively; $\Obsv^{(p)}(i) \define \set{\vec{u}_k(i)|\forall k\in\apSet}$ and $\Obsv^{(s)}(i) \define \set{Q_m(i)|\forall m\in\esSet}$ respectively denote the AP states collection and ES states collection for $\Obsv(i) = \set{\Obsv^{(p)}(i), \Obsv^{(s)}(i)}$, and the split value function is in the following form:
+            \begin{align}
+                W^{(p)}&\Paren{\Obsv^{(p)}(i)} \define \sum_{k\in\apSet}
                     \mathbb{E}_{\Policy}\Bracket{\sum_{n=0}^{\infty} \gamma^{n} \Inorm{\vec{u}_k(i+n)}}
                 \\
-                W^{(s)}\Paren{\Obsv(i)} \define \sum_{m\in\esSet}
+                W^{(s)}&\Paren{\Obsv(i)} \define \sum_{m\in\esSet}
                     \mathbb{E}_{\Policy}\Bracket{\sum_{n=0}^{\infty} \gamma^{n} |Q_m(i+n)|}
-            \end{gather}
+            \end{align}
 
             \begin{lemma}[Value Function Decoupling]
-                According to cost function, the value function could be divided linearly into two section as $ W^{(p)}\Paren{\Obsv^{(p)}(i)}$ and $W^{(s)}\Paren{\Obsv(i)}$.
+                According to cost function, the value function could be divided linearly into two section as $ W^{(p)}(\Obsv^{(p)}(i))$ and $W^{(s)}(\Obsv(i))$.
             \end{lemma}
             \begin{proof}
                 Please refer to appendix \ref{value-decouple}.
             \end{proof}
 
-            Before diving into analysis on the transition function expression, we come up with some probability denotations. As we separate the uploading process and computation process in the broadcast interval, we take the uploading process as \emph{black box} with only number information contained in state $\vec{u}_k$ ($\forall k\in\apSet$) for all AP nodes. The job arrival processes for AP nodes under dispatching policy compose the job arrival process for ES nodes, which could be expressed as compounded of \emph{arrival numbers distribution} and \emph{arrival job-types distribution}.
+            Before diving into analysis on the transition function expression, we firstly come up with some probability denotations.
+            % As we separate the uploading process and computation process in the broadcast interval, we take the uploading process as \emph{black box} with only number information contained in state $\vec{u}_k$ ($\forall k\in\apSet$) for all AP nodes.
+            The job arrival processes for AP nodes under dispatching policy compose the job arrival process for ES nodes, which could be expressed as compounded of \emph{arrival numbers distribution} and \emph{arrival job-types distribution}.
             \begin{itemize}
                 \item
-                    The \emph{arrival numbers distribution} from $k$-th AP to $m$-th ES is composed of i.i.d Bernoulli distribution in each timeslot. The PMF (probability mass function) of the depicted Bernoulli distribution under policy $\omega^{(i)}_{k,m}$ is denoted as:
+                    The \emph{arrival numbers distribution} on $m$-th ES is composed of i.i.d Bernoulli distribution in each timeslot from $k$-th AP ($\forall k\in\apSet$). The PMF (probability mass function) of the Bernoulli distribution under policy $\omega^{(i)}_{k,m}$ is denoted as:
                     \begin{align}
-                        p^{(\lambda,i)}_{k,m} \define \lambda_k \sum_{j\in\jSpace} p(j) \Pr\{\omega^{(i)}_{k,m}(j)\},
+                        p^{(\lambda,i)}_{k,m} \define \lambda_k \sum_{j\in\jSpace} p(j)
+                            \frac{
+                                \Pr\{\omega^{(i)}_{k,m}(j)\}
+                            }{
+                                \sum_{k\in\apSet} \Pr\{\omega^{(i)}_{k,m}(j)\}
+                            },
                         % \nonumber\\
                         % \Pr\{\text{one job from $k$-AP to $m$-ES under policy $\omega^{(i)}$}\}
                     \end{align}
-                    and $p^{(\lambda,\Pi_k)}_{k,m}$ denotes the distribution under time-invariant policy $\Pi_{k}$ for $k$-th AP.
+                    and we have $p^{(\lambda,\Pi_k)}_{k,m}$ denotes the distribution under time-invariant policy $\Pi_{k}$ for $k$-th AP.
                 \item
-                    The \emph{arrival job-types distribution} on from $k$-th AP to $m$-th ES under policy $\omega^{i}_{k,m}$ is denoted as:
+                    The \emph{arrival job-types distribution} on $m$-th ES from $k$-th AP under policy $\omega^{i}_{k,m}$ is denoted as:
                     \begin{align}
-                        p^{(\theta, i)}_{k,m}(j) \define p(j) \Pr\{\omega^{(i)}_{k,m}(j)\}\;(\forall j\in\jSpace),
+                        p^{(\theta, i)}_{k,m}(j) \define p(j)
+                            \frac{
+                                \Pr\{\omega^{(i)}_{k,m}(j)\}
+                            }{
+                                \sum_{k\in\apSet} \Pr\{\omega^{(i)}_{k,m}(j)\}
+                            }\;(\forall j\in\jSpace),
                     \end{align}
-                    where $\sum_{j\in\jSpace}\sum_{k\in\apSet}\sum_{m\in\esSet} p^{(\theta, i)}_{k,m}(j)=1, p^{(\theta, i)}_{k,m}(j) \geq 0$; and we have $p^{(\theta,\Pi_k)}_{k,m}(j)$ denotes the probability under time-invariant policy $\Pi_k$ for $k$-th AP nodes.
+                    where $p^{(\theta, i)}_{k,m}(j) \geq 0, \sum_{j\in\jSpace}\sum_{m\in\esSet} p^{(\theta, i)}_{k,m}(j)=1$; and we have $p^{(\theta,\Pi_k)}_{k,m}(j)$ denotes the probability under time-invariant policy $\Pi_k$ for $k$-th AP nodes.
             \end{itemize}
             
-            \begin{lemma}[Transition function decoupling]
+            \begin{lemma}[Transition Function Decoupling]
                 The transition function in Bellman's equation could be decoupled to facilitate the final approximated value function expression. The transition function could be decoupled as:
                 \begin{align}
                     & \Pr\{\Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i})\} 
                     \nonumber\\
-                    % =& \Pr\{\set{\vec{u}_k(i+1)|\forall k\in\apSet}, \set{Q_m(i+1)|\forall m\in\esSet}
-                    %     \nonumber\\
-                    %     &|\set{\vec{u}_k(i)|\forall k\in\apSet}, \set{Q_m(i)|\forall m\in\esSet}, \Policy(\Stat_{i})\}
-                    % \nonumber\\
-                    =& \prod_{k\in\apSet} \Pr\{\vec{u}_k(i+1)|\Policy(\Stat_{i})\} \times
+                    =& \prod_{k\in\apSet} \Pr\Brace{\vec{u}_k(i+1)|\Policy(\Stat_{i})} \times
                         \nonumber\\
                         & \prod_{m\in\esSet}
                             \Pr \Brace{Q_m(i+1)|Q_m(i), \set{\vec{u}_k(i)|\forall k\in\apSet}, \Policy(\Stat_{i})},
@@ -348,7 +354,7 @@
                     & \times \sum_{m\in\esSet}
                         \mathbb{E}_{\Obsv^{(p)}(i+1)|\Policy(\Stat_i)}\Bracket{\tilde{W}^{(s)}_m\Paren{\Obsv(i+1)}}
             \end{align}
-            Let $\tilde{V}^{\Policy(\Stat_i)}(Q_m(i+1)) \define \mathbb{E}_{\Obsv^{(p)}(t+1)|\Policy(\Stat_t)} [\tilde{W}^{(s)}_m(\Obsv(i+1))]$ denotes the averaged value function for $m$-th ES nodes, which implies that the state $\Obsv^{(p)}(i)$ is substitute with its expectation under policy $\Policy(\Stat_i)$ in this value function.
+            Let $\tilde{V}^{\Policy(\Stat_i)}(Q_m(i+1)) \define \mathbb{E}_{\Obsv^{(p)}(t+1)|\Policy(\Stat_t)} [\tilde{W}^{(s)}_m(\Obsv(i+1))]$ denotes the averaged value function for $m$-th ES node, which implies that the state $\Obsv^{(p)}(i)$ is substitute with its expectation under policy $\Policy(\Stat_i)$ in this value function.
 
             Furthermore, the approximated value function could be rewrite with reduced states for stationary FCFS process as $\tilde{V}^{\Policy(\Stat_i)}(\tilde{Q}_m(i+1))$, where $\tilde{Q}_m(i+1) \define [N_m(i+1), r_m(i+1)]$, $N_m(i+1)$ denotes the number of jobs in $m$-th queue and $r_m(i+1)$ denotes the remaining time of last unfinished job. Thus the approximated value function for $m$-th ES node is denoted as:
             \begin{align}
@@ -395,13 +401,13 @@
                     & \underbrace{\sum_{\Obsv^{(p)}(i+1)} \Pr\{\Obsv^{(p)}(i+1)|\Policy(\Stat_i)\}}_{\text{Expectation of Binomial}|\Policy(\Stat_i)}
                     \cdot \underbrace{\tilde{W}^{(p)}\bigg(\Obsv^{(p)}(i+1)\bigg)}_{\text{constant}} \bigg]
             \end{align}
-            Then we introduce the one-step iteration algorithm in this section:
+            Then we introduce the one-step iteration algorithm:
             % [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
             \begin{algorithm}[H]
                 \caption{Distributed Algorithm for $k$-th AP}
                 \begin{algorithmic}
                     \WHILE{\TRUE}
-                        \STATE (in progress...)
+                        \STATE (in progress ...)
                         % \FOR{$k \in \mathcal{K}$}
                         %     \STATE fix policy $\vec{\Omega}^{(k)}(t) \forall k' \neq k$
                         % \ENDFOR
@@ -415,19 +421,13 @@
     %============================ EVALUATION ==============================%
     \begin{section}{EVALUATION}
         \label{sec:evaluation}
-        (in progress...)
+        (in progress ...)
     \end{section}
 
     %============================= CONCLUSION =============================%
     \begin{section}{CONCLUTION}
         \label{sec:conclusion}
-        The future work to mention:
-        \begin{itemize}
-            \item joint scheduling optimization
-            \item non-aligned broadcast
-            \item broadcast failure
-            \item randomized broadcast delay
-        \end{itemize}
+        (in progress ...)
     \end{section}
     
     %============================== APPENDIX ==============================%
