@@ -92,7 +92,7 @@
         \begin{itemize}
             \item identify that the uploading process affect the performance of heuristic greedy algorithm; identify that the delay-information sharing in decision making;
             \item propose a instantaneous job dispatching scheme in a fully-distributed cooperative way;
-            \item propose global consensus state method to formulate the multi-agent MDP problem;
+            \item propose global state formulation to characterize the multi-agent MDP problem;
             \item adopt value function approximation to reduce the traditional algorithm complexity, and come up with distributed online learning algorithm;
         \end{itemize}
 
@@ -181,18 +181,18 @@
             
             For $i$-th \emph{broadcast point}, the composed broadcast information from all the AP and ES nodes, and the corresponding information is listed as following:
             \begin{itemize}
-                \item The $k$-th AP ($\forall k\in\apSet$) contains $\vec{r}_k(i) \define \set{r_{k,m}(i)|\forall m\in\esSet}$, where $r_{k,m}(i)$ denotes the remaining number of jobs in uploading at time $t_i$, i.e. the number of jobs will arrive onto servers in next broadcast interval;
-                \item The $m$-th ES ($\forall m\in\esSet$) contains information $\vec{Q}_m(i) \define \set{Q_{m,j}(i)|\forall j\in\jSpace}$ to denote the computation queues for different job types, where each element in $Q_{m,j}(i)$ denotes the remaining processing time for that job.
+                \item The $k$-th AP ($\forall k\in\apSet$) contains $\mat{R}_k(i) \define [r^{(k)}_{m,j}(i)], \forall m\in\esSet, \forall j\in\jSpace$, where $r^{(k)}_{m,j}(i)$ denotes the remaining number of $j$-type jobs in uploading to $m$-th ES at time $t_i$; and we have $\vec{r}^{(k)}_{m}$ to denote the rows in $\vec{R}_k(i)$ and $\vec{\hat{r}}^{(k)}_{j}$ to denote the columns;
+                \item The $m$-th ES ($\forall m\in\esSet$) contains information $\vec{Q}_m(i) \define \set{Q_{m,j}(i)|\forall j\in\jSpace}$ to denote the computation queues for different job types, where $Q_{m,j}(i)$ is composed of pair $(n_{m,j}(i), \delta_{m,j}(i))$ to characterize the FIFO queue; $n_{m,j}(i)$ denotes the number of $j$-type job queueing on $m$-th ES, and $\delta_{m,j}(i)$ denotes the remaining processing time for last job.
             \end{itemize}
             Thus the composed broadcasting information is denoted as:
             \begin{align}
                 \Obsv_i \define
                         \Brace{
-                            \set{\vec{r}_{k}(i)|\forall k\in\apSet},
+                            \set{\mat{R}_{k}(i)|\forall k\in\apSet},
                             \set{\vec{Q}_m(i)|\forall m\in\esSet}
                         },
             \end{align}
-            where $\Obsv_i$ is a set of global information of $i$-th aligned broadcast. And it's actually the global system states at $t_i$.
+            where $\Obsv_i$ is a set of global information of $i$-th broadcast. And it's actually the global system states at $t_i$.
 
             After the broadcast point $t_i$, different AP nodes will receive the broadcast information from AP nodes or ES nodes with different deterministic delay.
             Let $d^{(p)}_{k,k'}$ denotes the broadcast delay from $k'$-th AP to $k$-th AP ($\forall k,k'\in\apSet$) w.r.t. the last broadcast point; let $d^{(s)}_{k,m}$ denotes the broadcast delay from $m$-th ES to $k$-th AP ($\forall k\in\apSet,\forall m\in\esSet$). We furthermore call the delay when the AP node could receive all the broadcast information happened at $t_i$ as \emph{maximum broadcast delay}, which is defined as following:
@@ -212,17 +212,17 @@
     %============================ FORMULATION =============================%
     \begin{section}{PROBLEM FORMULATION}
         \label{sec:formulation}
-        In this section, we formulate the standard MDP problem with respect to the broadcast-point time scale. The formulated problem is based on global information shared via \emph{aligned broadcast}, and the the optimal solution is composed of dispatching policies on all AP nodes. The AP nodes would obtain global states update only after \emph{consensus delay} in each broadcast interval, but they solve the same global optimization problem fully distributed.
+        In this section, we formulate the standard MDP problem with respect to the broadcast-point time scale. The formulated problem is based on global information shared via synchronized broadcast, and the the optimal solution is achieved via compounded dispatching policies on all AP nodes.
+        Given the fact that AP nodes would obtain global states update only after \emph{maximum broadcast delay} in each broadcast interval, the formulated MDP problem is composed of two adjacent broadcast interval with obsolete information and updated information.
+        Then we show that the solution for all AP nodes suffers from curse of dimensionality and a low-complexity solution is needed.
 
         \begin{subsection}{System State and Dispatching Policy}
-            The system states is selected based on the nature that $k$-th AP comes to the \emph{global consensus} only after the corresponding \emph{consensus delay} in the broadcast interval.
-            The relative difference between broadcast point and global consensus point is depicted in Fig. \ref{fig:br-trans} \hl{(need to modify the state denotation in figure)}. It has to represent the state for AP nodes before and after the consensus point.
-
-            Thus, the system state of the distributed MDP problem based on the global consensus information is given as following:
+            The system states is selected based on the nature that $k$-th AP comes up with complete broadcast information only after its corresponding \emph{maximum broadcast delay} in the broadcast interval.
+            The relative difference between broadcast point and the maximum delay point is depicted in Fig. \ref{fig:br-trans} \hl{(need to modify the state denotation in figure)}.
             \begin{definition}[System State]
-                The system state at $i$-th broadcast point is denoted as $\Stat_i \define (\Obsv_{i}, \Obsv_{i-1}), (i=1,2,\dots)$.
-                The $k$-th AP nodes would come up with this global state only after $\hat{d}_k$ timeslots delay w.r.t $t_i$.
+                The system state at $i$-th broadcast point is denoted as $\Stat_i \define (\Obsv_{i}, \Obsv_{i-1}), (i=1,2,\dots)$, where $\Obsv_{i-1}$ represents the obsolete information before the broadcast received, and $\Obsv_{i}$ represents the updated information after the corresponding $\hat{d}_k$ delay for $k$-th AP node.
             \end{definition}
+
             \begin{figure}[ht]
                 \centering
                 \includegraphics[width=0.45\textwidth]{broadcast-trans.png}
@@ -230,31 +230,30 @@
                 \label{fig:br-trans}
             \end{figure}
 
-            The \emph{dispatching policy} is applied over arrival jobs in each timeslot on each AP, and the \emph{dispatching action space} is defined as $\vec{a}: (j, m) \in \jSpace \times \esSet$, where $(j, m)$ denotes the action that $j$-type job should be uploaded to $m$-th ES. Based on the two stages of global consensus with obsolete information $\Obsv_{i-1}$ and the updated information $\Obsv_{i}$ in system state, the compounded global-wise policy of all AP nodes is defined as following:
+            The \emph{dispatching policy} is applied over arrival jobs in each timeslot on each AP, and the \emph{dispatching action space} is defined as $\vec{a}: (j, m) \in \jSpace \times \esSet$, where $(j, m)$ denotes the action that $j$-type job should be uploaded to $m$-th ES. Based on the two stages of global system information $\Obsv_{i-1}$ and $\Obsv_{i}$ in system state, the compounded global-wise policy of all AP nodes is defined as following:
             \begin{definition}[Compounded Dispatching Policy]
                 The compounded dispatching policy over $\Stat_{i}$ is defined as $\Policy(\Stat_{i})$ which is composed of all the local policies $\Omega_k(\Stat_{i})$ ($\forall k\in\apSet$) as:
                 \begin{align}
                     \vec{\Omega}(\Stat_{i}) \define \Bracket{\Omega_1(\Stat_{i}), \dots, \Omega_K(\Stat_{i})}
                 \end{align}
-                More specifically, $\Omega_k(\Stat_{i})$ is composed of two-stage policy with $\omega_k(\Obsv_{i-1})$ and $\omega_k(\Obsv_{i})$ as:
+                More specifically, $\Omega_k(\Stat_{i})$ is composed of two-stage policy as:
                 \begin{align}
-                    \Omega_k(\Stat_i) = 
-                    \begin{cases}
-                        \set{\omega^{(i-1)}_{k,m}(j)|\forall m\in\esSet}, & 0 \leq \Delta{t} < \hat{d}_k
-                        \\
-                        \set{\omega^{(i)}_{k,m}(j)|\forall m\in\esSet}, & \hat{d}_k \leq \Delta{t} \leq t_B
-                    \end{cases}
+                    \Omega_k(\Stat_i) = [\tilde{\Omega}_k(\Obsv_{i-1}), \tilde{\Omega}_k(\Obsv_{i})],
+                    % $t\in[t_{i-1}, t_{i}], \Delta{t} \define t - t_{i-1}$
                 \end{align}
-                where $t\in[t_{i-1}, t_{i}], \Delta{t} \define t - t_{i-1}$; $\omega^{(i)}_{k,m}(j)$ denotes the dispatching policy that: based on global information $\Obsv_{i}$, the stochastic action on $k$-th AP upload $j$-type job ($\forall j\in\jSpace$) to $m$-th ES, $\sum_{m\in\esSet}\sum_{j\in\jSpace} \Pr\{\omega^{(i)}_{k,m}(j)\}=1$.
+                where $\tilde{\Omega}_k(\Obsv_{i}) \define \set{\omega^{(i)}_{k,m}(j)|\forall j\in\jSpace, \forall m\in\esSet}$ and $\omega^{(i)}_{k,m}(j)$ denotes the dispatching policy that: based on global information $\Obsv_{i}$, the stochastic action on $k$-th AP upload $j$-type job to $m$-th ES ($\sum_{j\in\jSpace} \Pr\{\omega^{(i)}_{k,m}(j)\}=1$).
             \end{definition}
+            More specifically, the two phase of the policy on single AP is separated by the \emph{maximum broadcast delay} $\hat{d}_k$ to $k$-th AP, i.e. the time point when it receives the latest global information. For example, in the broadcast interval $[t_{i}, t_{i+1}]$, $k$-th AP will apply policy $\tilde{\Omega}_k(\Obsv_{i})$ based on obsolete information before maximum delay $\hat{d}_k$ and apply $\tilde{\Omega}_k(\Obsv_{i+1})$ immediately after the delay.
         \end{subsection}
 
         \begin{subsection}{The Optimization Problem}
-            The optimization target of our problem is to minimize the \emph{average response time} of all jobs, which is composed of uploading time from AP to ES, and waiting time and service time on ES. According to \emph{Little's Law}, the average response time of all the jobs is equally as average number of jobs in system. Therefore, based on the system state definition, we have cost function as:
+            The optimization target of our problem is to minimize the \emph{average response time} of all jobs, which is composed of uploading time from AP to ES, and queueing-and-service time on ES nodes. According to \emph{Little's Law}, the average response time of all the jobs is equally as average number of jobs in system. Therefore, based on the system state definition, we have cost function as:
             \begin{align}
-                g \bigg( \Stat_{i}, \Policy(\Stat_{i-1}) \bigg) \define \sum_{k\in\apSet} \Inorm{\vec{u}_{k}(i)} + \sum_{m\in\esSet}\sum_{j\in\jSpace} \norm{Q_{m,j}(i)},
+                g \bigg( \Stat_{i}, \Policy(\Stat_{i-1}) \bigg) \define
+                        \sum_{k\in\apSet}\sum_{m\in\esSet} \Inorm{\vec{r}^{(k)}_{m}} +
+                        \sum_{m\in\esSet}\sum_{j\in\jSpace} n_{m,j}(i),
             \end{align}
-            where $\Inorm{\vec{u}_{k}(i)}$ denotes the l1-norm of vector $\vec{u}_{k}(i)$, i.e. the sum up of absolute value of each entry; $\norm{Q_{m,j}(i)}$ denotes the number of jobs in queue $Q_{m,j}(i)$. The cost function defined is a sampling of interval $t_B$ over the whole process, because the global consensus information for AP nodes only contains the information at the broadcast points.
+            where $\Inorm{\vec{r}^{(k)}_{m}}$ denotes the l1-norm of vector $\vec{r}^{(k)}_{m}$, i.e. the sum up of absolute value of each entry. The cost function defined is a sampling of interval $t_B$ over the whole process, because the global information for AP nodes only contains the information at the broadcast points.
 
             Our distributed optimization problem definition is given as following:
             \begin{problem}[Distributed Cooperative Job Dispatching Problem]
@@ -272,37 +271,31 @@
             \end{align}
             where the original definition for value function defined in \cite{sutton1998introduction} is as following:
             \begin{align}
-                V(\Stat_{i}) \define \mathbb{E}_{\Policy}[\sum_{n=0}^{\infty} \gamma^n g\Paren{\Stat_{i+n}, \Policy(\Stat_{i+n-1})}]
+                V(\Stat_{i}) \define \lim_{T\to\infty}
+                    \mathbb{E}_{\Policy}\Bracket{
+                        \sum_{l=0}^{T} \gamma^l g\Paren{\Stat_{i+l}, \Policy(\Stat_{i+l-1})}
+                    }
             \end{align}
 
             Before diving into the analysis on the transition function expression, we firstly come up with some probability denotations.
-            % As we separate the uploading process and computation process in the broadcast interval, we take the uploading process as \emph{black box} with only number information contained in state $\vec{u}_k$ ($\forall k\in\apSet$) for all AP nodes.
-            The job arrival processes for AP nodes under dispatching policy compose the job arrival process for ES nodes, which could be expressed as compounded of \emph{arrival numbers distribution} and \emph{arrival job-types distribution}.
+            The job arrival processes for AP nodes under dispatching policy compose the job arrival process for ES nodes, which could be expressed as compounded of \emph{numbers arrival distribution} and \emph{length arrival distribution} for $j$-type job ($\forall j\in\jSpace$).
             \begin{itemize}
-                \item
-                    The \emph{arrival numbers distribution} on $m$-th ES is composed of i.i.d Bernoulli distribution in each timeslot from $k$-th AP ($\forall k\in\apSet$). The PMF (probability mass function) of the Bernoulli distribution under policy $\omega^{(i)}_{k,m}$ is denoted as:
-                    \begin{align}
-                        p^{(\lambda,i)}_{k,m} \define \lambda_k \sum_{j\in\jSpace} p(j)
-                            \frac{
-                                \Pr\{\omega^{(i)}_{k,m}(j)\}
+                \item The \emph{numbers arrival distribution} on $m$-th ES is composed of i.i.d Bernoulli distribution in each timeslot from independent AP nodes. The PMF (probability mass function) of the Bernoulli distribution from $k$-th AP under policy $\Omega_k(i)$ is denoted as:
+                \begin{align}
+                    p_{k,m}^{(\lambda,i)}(j) \define& \lambda_k
+                        \frac{
+                                p(j) \cdot \Pr\{\omega_{k,m}^{(i)}(j)\}
                             }{
-                                \sum_{k\in\apSet} \Pr\{\omega^{(i)}_{k,m}(j)\}
-                            },
-                        % \nonumber\\
-                        % \Pr\{\text{one job from $k$-AP to $m$-ES under policy $\omega^{(i)}$}\}
-                    \end{align}
-                    and we have $p^{(\lambda,\Pi_k)}_{k,m}$ denotes the distribution under time-invariant policy $\Pi_{k}$ for $k$-th AP.
-                \item
-                    The \emph{arrival job-types distribution} on $m$-th ES from $k$-th AP under policy $\omega^{i}_{k,m}$ is denoted as:
-                    \begin{align}
-                        p^{(\theta, i)}_{k,m}(j) \define p(j)
-                            \frac{
-                                \Pr\{\omega^{(i)}_{k,m}(j)\}
-                            }{
-                                \sum_{k\in\apSet} \Pr\{\omega^{(i)}_{k,m}(j)\}
-                            }\;(\forall j\in\jSpace),
-                    \end{align}
-                    where $p^{(\theta, i)}_{k,m}(j) \geq 0, \sum_{j\in\jSpace}\sum_{m\in\esSet} p^{(\theta, i)}_{k,m}(j)=1$; and we have $p^{(\theta,\Pi_k)}_{k,m}(j)$ denotes the probability under time-invariant policy $\Pi_k$ for $k$-th AP nodes.
+                                |\jSpace|
+                            }
+                %     \\
+                %     p_{k,m}^{(\lambda,i)} \define& \sum_{j\in\jSpace} p_{k,m}^{(\lambda,i)}(j),
+                \end{align}
+                where $|\jSpace|$ denotes the cardinality of job space to function as normalization factor; and we have $p_{k,m}^{(\lambda, \Pi_k)}$ denotes the distribution under time-invariant policy $\Pi_k$ for $k$-th AP;
+                \item The \emph{length arrival distribution} on $m$-th ES from $k$-th AP under policy $\Omega_k(i)$ is denoted as:
+                \begin{align}
+                    p_{k,m}^{\theta,i}(j) = p(j) \cdot \Pr\{\omega_{k,m}^{(i)}(j)\} \cdot 
+                \end{align}
             \end{itemize}
             
             \begin{lemma}[Transition Function Decoupling]
@@ -310,10 +303,10 @@
                 \begin{align}
                     & \Pr\{\Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i})\} 
                     \nonumber\\
-                    =& \prod_{k\in\apSet} \Pr\Brace{\vec{u}_k(i+1)|\Policy(\Stat_{i})} \times
+                    =& \prod_{k\in\apSet} \Pr\Brace{\vec{n}_k(i+1)|\Policy(\Stat_{i})} \times
                         \nonumber\\
                         & \prod_{m\in\esSet}
-                            \Pr \Brace{Q_m(i+1)|Q_m(i), \set{\vec{u}_k(i)|\forall k\in\apSet}, \Policy(\Stat_{i})},
+                            \Pr \Brace{Q_m(i+1)|Q_m(i), \set{\vec{n}_k(i)|\forall k\in\apSet}, \Policy(\Stat_{i})},
                 \end{align}
                 where first production part denotes the unfinished uploading state transition for AP nodes whose distribution, and the second part denotes the queueing state transition for ES nodes.
             \end{lemma}
@@ -336,31 +329,31 @@
             \begin{align}
                 \vec{\Pi} \define \Bracket{\Pi_1, \Pi_2, \dots, \Pi_K},
             \end{align}
-            where $\Pi_k = \set{\omega_{k,m}|\forall m\in\esSet}$, $\forall k\in\apSet$.
+            where $\Pi_k \define \set{\omega_{k,m}(j)|\forall m\in\esSet,\forall j\in\jSpace}$, $\forall k\in\apSet$.
 
-            According to the linear property of cost function, the value function could be divided linearly into two section as $ W^{(p)}(\Obsv^{(p)}(i))$ and $W^{(s)}(\Obsv(i))$ as:
+            According to the linear property of cost function, the value function could be divided linearly into two section as $\tilde{W}^{(p)}(\Obsv^{(p)}(i))$ and $\tilde{W}^{(s)}(\Obsv(i))$ under baseline policy:
             \begin{align}
                 V(\Stat_{i}) =& 
                     g(\Stat_{i}) + \gamma \min_{\Policy(\Stat_{i})} \sum_{\Stat_{i+1}} \Pr\{ \Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i}) \}
                     \nonumber\\
-                    & \cdot \Bracket{ W^{(p)}\Paren{\Obsv^{(p)}(i+1)} + W^{(s)}\Paren{\Obsv(i+1)} },
+                    & \cdot \Bracket{ \tilde{W}^{(p)}\Paren{\Obsv^{(p)}(i+1)} + \tilde{W}^{(s)}\Paren{\Obsv(i+1)} },
             \end{align}
-            where $W^{(p)}(\cdot)$ and $W^{(s)}(\cdot)$ denote the split value function over AP nodes and ES nodes respectively; $\Obsv^{(p)}(i) \define \set{\vec{u}_k(i)|\forall k\in\apSet}$ and $\Obsv^{(s)}(i) \define \set{Q_m(i)|\forall m\in\esSet}$ respectively denote the AP states collection and ES states collection for $\Obsv(i) = \set{\Obsv^{(p)}(i), \Obsv^{(s)}(i)}$, and the split value function is in the following form:
+            where $\tilde{W}^{(p)}(\cdot)$ and $\tilde{W}^{(s)}(\cdot)$ denote the split value function over AP nodes and ES nodes respectively; $\Obsv^{(p)}(i) \define \set{\vec{n}_k(i)|\forall k\in\apSet}$ and $\Obsv^{(s)}(i) \define \set{\vec{Q}_m(i)|\forall m\in\esSet}$ respectively denote the AP states collection and ES states collection for $\Obsv(i) = \Obsv^{(p)}(i) \cap \Obsv^{(s)}(i)$, and the split value function is in the following form:
             \begin{align}
-                W^{(p)}&\Paren{\Obsv^{(p)}(i)} \define \sum_{k\in\apSet}
-                    \mathbb{E}_{\Policy}\Bracket{\sum_{n=0}^{\infty} \gamma^{n} \Inorm{\vec{u}_k(i+n)}}
+                &\tilde{W}^{(p)}\Paren{\Obsv^{(p)}(i)} \define \sum_{k\in\apSet}
+                    \mathbb{E}_{\Pi}\Bracket{\sum_{l=0}^{\infty} \gamma^{l} \Inorm{\vec{n}_k(i+l)}}
                 \\
-                W^{(s)}&\Paren{\Obsv(i)} \define \sum_{m\in\esSet}
-                    \mathbb{E}_{\Policy}\Bracket{\sum_{n=0}^{\infty} \gamma^{n} |Q_m(i+n)|}
+                &\tilde{W}^{(s)}\Paren{\Obsv(i)} \define \sum_{m\in\esSet} \sum_{j\in\jSpace}
+                    \mathbb{E}_{\Pi}\Bracket{\sum_{l=0}^{\infty} \gamma^{l} |Q_{m,j}(i+l)|}
             \end{align}
             The decoupled value functions for AP and ES nodes is obtained with an approximated form under the baseline policy.
 
             The approximated value function $\tilde{W}^{(p)}(\Obsv^{(p)}(i+1))$ for AP nodes is obtained as:
             \begin{align}
                 \tilde{W}^{(p)}(\Obsv^{(p)}(i+1))
-                = \frac{1}{1-\gamma} \sum_{k\in\apSet} \mathbb{E}_{\Pi_k}[\Inorm{\vec{u}_k}],
+                = \frac{1}{1-\gamma} \sum_{k\in\apSet} \mathbb{E}_{\Pi_k}[\Inorm{\vec{n}_k}],
             \end{align}
-            where the expectation of $\Inorm{\vec{u}_k}$ under the policy $\Pi_k$ is actually a constant as expectation of a Binomial distribution as $\mathbb{E}_{\Pi_k}[\Inorm{\vec{u}_k}] = t^{(u)}_{k,m} p^{(\lambda, \Pi_k)}_{k,m}$.
+            where the expectation of $\Inorm{\vec{n}_k}$ under the policy $\Pi_k$ is actually a constant as expectation of Binomial distribution $\mathbb{E}_{\Pi_k}[\Inorm{\vec{n}_k}] = u_{k,m} p^{(\lambda, \Pi_k)}_{k,m}$.
             
             The approximated value function $\tilde{W}^{(s)}(\Obsv(i))$ for ES nodes is affected with both arrival process under dispatching policy and last queue state, and we reduce the states expression by averaging the uploading process together with the transition function expression.
             % For convenience, we have $\Obsv^{(p)}(i) \define \set{\vec{u}_k(i)|\forall k\in\apSet}$ and $\Obsv^{(s)}(i) \define \set{Q_m(i)|\forall m\in\esSet}$.
@@ -376,19 +369,19 @@
                 \leadto \min_{\Policy(\Stat_i)}& \sum_{\Obsv^{(s)}(i)}
                     \Pr\Brace{\Obsv^{(s)}(i+1)|\Obsv^{(s)}(i), \Obsv^{(p)}(i), \Policy(\Stat_i)}
                     \nonumber\\
-                    & \times \sum_{m\in\esSet}
-                        \mathbb{E}_{\Obsv^{(p)}(i+1)|\Policy(\Stat_i)}\Bracket{\tilde{W}^{(s)}_m\Paren{\Obsv(i+1)}}
+                    \times& \sum_{m\in\esSet} \sum_{j\in\jSpace}
+                        \mathbb{E}_{\Obsv^{(p)}(i+1)|\Policy(\Stat_i)}\Bracket{\tilde{W}^{(s)}_{m,j}\Paren{\Obsv(i+1)}}
             \end{align}
-            Let $\tilde{V}^{\Policy(\Stat_i)}(Q_m(i+1)) \define \mathbb{E}_{\Obsv^{(p)}(t+1)|\Policy(\Stat_t)} [\tilde{W}^{(s)}_m(\Obsv(i+1))]$ denotes the averaged value function for $m$-th ES node, which implies that the state $\Obsv^{(p)}(i)$ is substitute with its expectation under policy $\Policy(\Stat_i)$ in this value function.
+            Let $\tilde{V}^{\Policy(\Stat_i)}(Q_{m,j}(i+1)) \define \mathbb{E}_{\Obsv^{(p)}(t+1)|\Policy(\Stat_t)} [\tilde{W}^{(s)}_{m,j}(\Obsv(i+1))]$ denotes the averaged value function for $m$-th ES node, which implies that the state $\Obsv^{(p)}(i)$ is substitute with its expectation under policy $\Policy(\Stat_i)$ in this value function.
 
-            Furthermore, the approximated value function could be rewrite with reduced states for stationary FCFS process as $\tilde{V}^{\Policy(\Stat_i)}(\tilde{Q}_m(i+1))$, where $\tilde{Q}_m(i+1) \define [N_m(i+1), r_m(i+1)]$, $N_m(i+1)$ denotes the number of jobs in $m$-th queue and $r_m(i+1)$ denotes the remaining time of last unfinished job. Thus the approximated value function for $m$-th ES node is denoted as:
+            Furthermore, the approximated value function could be rewrite with reduced states for stationary FCFS process as $\tilde{V}^{\Policy(\Stat_i)}(\tilde{Q}_{m,j}(i+1))$, where $\tilde{Q}_m(i+1) \define [N_{m,j}(i+1), r_{m,j}(i+1)]$, $N_{m,j}(i+1)$ denotes the number of $j$-type jobs queue on $m$-th ES and $r_{m,j}(i+1)$ denotes the remaining time of last unfinished $j$-type job. Thus the approximated value function for $m$-th ES node is denoted as:
             \begin{align}
-                \tilde{V}\bigg(\tilde{Q}_m(i+1)\bigg) \define& \lim_{T\to\infty}
-                    \mathbb{E}_{\vec{\Pi}} \Bracket{\sum_{n=0}^{T} \gamma^{n} N_m(i+1)}
+                \tilde{V}\bigg(\tilde{Q}_{m,j}(i+1)\bigg) \define& \lim_{T\to\infty}
+                    \mathbb{E}_{\vec{\Pi}} \Bracket{\sum_{l=0}^{T} \gamma^{l} N_{m,j}(i+l+1)}
                 \nonumber\\
                 % =& \vec{u}'_i [\lim_{T\to\infty} \sum_{n=0}^{T} (\gamma \mat{P}_m)^{n}] \vec{g}_q
                 % \nonumber\\
-                =& \vec{u}'_i \Paren{\mat{I} - \gamma \mat{P}_m}^{-1} \vec{g}_q,
+                =& \vec{\mu}'_i \Paren{\mat{I} - \gamma \mat{P}_m}^{-1} \vec{g}_q,
             \end{align}
             where $\vec{\mu}'_i$ denotes the transpose of $\vec{\mu}_i$, and $\vec{\mu}_i = [0,\dots,0,1,\dots]$ with only $i$-th element as $1$; the $i$-th element of $\vec{g}_q$ denotes the cost of server as $N_m(i)$ for $i$-th stage; $\mat{P}_m$ denotes the transition matrix under the policy $\vec{\Pi}$ which is composed of the following transition function ($\forall \tilde{Q}_m(i),\tilde{Q}_m(i+1)$) as:
             \begin{align}
