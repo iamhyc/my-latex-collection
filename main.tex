@@ -12,7 +12,7 @@
 \graphicspath{ {./images/} }
 
 %---------------------------------------------------------------%
-\newtheorem{definition}{Denifition}
+\newtheorem{definition}{Definition}
 \newtheorem{assumption}{Assumption}
 \newtheorem{problem}{Problem}
 \newtheorem{lemma}{Lemma}
@@ -47,7 +47,6 @@
 %---------------------------------------------------------------%
 
 \begin{document}
-
     %=============================== TITLE ===============================%
     \title{
         Meet-in-Future: Obsolete Information-based Distributed Online Job Dispatching in Edge Computing System
@@ -111,7 +110,7 @@
             \item \text{[IEEE Access, baseline]} \cite{Fan2017} considers cooperations of multiple MEC-BSs of computation offloading which minimizes total cost of time and energy consumptions.
             \item \text{[delay-sensitive, ToC]} \cite{Lyu2018} identify that task admission is critical to delay-sensitive applications in mobile edge computing, and proposes an (1-$\epsilon$)-approximation algorithm
             \item \text{[foggy, fully distributed online]} \cite{Lyu2018a} is a work fully distributed online optimization to minimize the time-average cost and achieve asymptotic optimality over infinite time;
-            \item \text{[online learning, multi-agent MDP, reduced state]} \cite{Zheng2019} is a work considering maximizing the long-term utility in MEC offloading policy, and formulating the problem with MDP solved with Q-learning (however the baseline policy compared is too naive);
+            \item \text{[online learning, multi-agent MDP, reduced state]} \cite{Zheng2019} is a work considering maximizing the long-term utility in MEC offloading policy, and formulating the problem with MDP solved with Q-learning;
             \item \text{[MDP, IEEE ToN]} \cite{Wang2015} considers service migration with MDP with approximate states;
             
             \item \text{[system work, ToMC]} \cite{Yu2018} is a work presents a framework to minimize remote execution overhead, and carry out real system experiments using large-scale data from cellular network provider.
@@ -296,7 +295,7 @@
                 %     p_{k,m}^{(i)} \define& \sum_{j\in\jSpace} p_{k,m}^{(i)}(j),
                 \end{align}
                 and we have $\rho_{k,m}^{(\Pi_k)}$ denotes the distribution under time-invariant policy $\Pi_k$ for $k$-th AP;
-                \item The \emph{processing time distribution} is job-independent, thus the processing time on different edge servers keeps its original processing distribution and is determined when the time it's being processed.
+                \item The \emph{processing time distribution} is job-independent, thus the processing time on different edge servers keeps its original distribution and is determined when the time it joins the processing queue.
             \end{itemize}
             
             \begin{lemma}[Transition Function Decoupling]
@@ -304,10 +303,9 @@
                 \begin{align}
                     & \Pr\{\Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i})\} 
                     \nonumber\\
-                    =& \prod_{k\in\apSet} \Pr\Brace{\vec{R}_k(i+1)|\Policy(\Stat_{i})} \times
+                    =& \prod_{k\in\apSet} \Pr\Brace{\vec{R}_k(i+1)|\Policy(\Stat_{i})} \times \prod_{m\in\esSet}\prod_{j\in\jSpace}
                         \nonumber\\
-                        & \prod_{m\in\esSet}
-                            \Pr \Brace{\vec{Q}_m(i+1)|\vec{Q}_m(i), \set{\vec{R}_k(i)|\forall k\in\apSet}, \Policy(\Stat_{i})},
+                        & \Pr \Brace{\vec{Q}_{m,j}(i+1)|\vec{Q}_{m,j}(i), \set{\vec{R}_k(i)|\forall k\in\apSet}, \Policy(\Stat_{i})},
                 \end{align}
                 where first production part denotes the unfinished uploading state transition for AP nodes whose distribution, and the second part denotes the queueing state transition for ES nodes.
             \end{lemma}
