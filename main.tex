@@ -253,7 +253,7 @@
         \begin{subsection}{The Optimization Problem}
             The optimization target of our problem is to minimize the \emph{average response time} of all jobs, which is composed of uploading time from AP to ES, and queueing-and-service time on ES nodes. According to \emph{Little's Law}, the average response time of all the jobs is equally as average number of jobs in system. Therefore, based on the system state definition, we have cost function as:
             \begin{align}
-                g \bigg( \Stat_{i}, \Policy(\Stat_{i-1}) \bigg) \define
+                g\Paren{\Stat_{i}, \Policy(\Stat_{i-1})} \define
                         \sum_{k\in\apSet}\sum_{m\in\esSet} \Inorm{\vec{r}^{(k)}_{m}(i)} +
                         \sum_{m\in\esSet}\sum_{j\in\jSpace} n_{m,j}(i),
             \end{align}
@@ -380,7 +380,7 @@
             where $\tilde{W}^{(s)}_{m,j}(\Obsv(i+1)) \define \mathbb{E}_{\Pi}[\sum_{l=0}^{\infty} \gamma^{l} n_{m,j}(i+l+1)]$, which implies that the state $\Obsv^{(p)}(i)$ is substitute with its expectation under policy $\Policy(\Stat_i)$ in this value function.
             Thus the approximated value function for $m$-th ES node is denoted as:
             \begin{align}
-                J\bigg(Q_{m,j}(i+1)\bigg) \define& \lim_{T\to\infty}
+                J\Paren{Q_{m,j}(i+1)} \define& \lim_{T\to\infty}
                     \mathbb{E}_{\vec{\Pi}} \Bracket{\sum_{l=0}^{T} \gamma^{l} n_{m,j}(i+l+1)}
                 \nonumber\\
                 % =& \vec{u}'_i [\lim_{T\to\infty} \sum_{n=0}^{T} (\gamma \mat{P}_m)^{n}] \vec{g}_q
@@ -415,11 +415,11 @@
                 \min_{\Policy(\Stat_i)}& \sum_{\Obsv^{(s)}(i+1)} \Pr\{\Obsv^{(s)}(i+1)|\Obsv^{(s)}(i), \Obsv^{(p)}(i), \Policy(\Stat_i)\}
                 \nonumber\\
                 \times \Bracket{
-                    & \sum_{m\in\esSet}\sum_{j\in\jSpace} J\bigg(Q_{m,j}(i+1)\bigg)
+                    & \sum_{m\in\esSet}\sum_{j\in\jSpace} J\Paren{Q_{m,j}(i+1)}
                 } +
                 \nonumber\\
                 & \underbrace{\sum_{\Obsv^{(p)}(i+1)} \Pr\{\Obsv^{(p)}(i+1)|\Policy(\Stat_i)\}}_{\text{=1}}
-                \cdot \underbrace{\tilde{W}^{(p)}\bigg(\Obsv^{(p)}(i+1)\bigg)}_{\text{constant}}
+                \cdot \underbrace{\tilde{W}^{(p)} \Paren{\Obsv^{(p)}(i+1)}}_{\text{constant}}
             \end{align}
             Then we introduce the one-step iteration algorithm:
             % [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
