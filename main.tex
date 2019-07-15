@@ -414,10 +414,12 @@
                 % \nonumber\\
                 \min_{\Policy(\Stat_i)}& \sum_{\Obsv^{(s)}(i+1)} \Pr\{\Obsv^{(s)}(i+1)|\Obsv^{(s)}(i), \Obsv^{(p)}(i), \Policy(\Stat_i)\}
                 \nonumber\\
-                \times \bigg[& \sum_{m\in\esSet}\sum_{j\in\jSpace} J\bigg(Q_{m,j}(i+1)\bigg) +
-                    \nonumber\\
-                    & \underbrace{\sum_{\Obsv^{(p)}(i+1)} \Pr\{\Obsv^{(p)}(i+1)|\Policy(\Stat_i)\}}_{\text{Expectation of Binomial}|\Policy(\Stat_i)}
-                    \cdot \underbrace{\tilde{W}^{(p)}\bigg(\Obsv^{(p)}(i+1)\bigg)}_{\text{constant}} \bigg]
+                \times \Bracket{
+                    & \sum_{m\in\esSet}\sum_{j\in\jSpace} J\bigg(Q_{m,j}(i+1)\bigg)
+                } +
+                \nonumber\\
+                & \underbrace{\sum_{\Obsv^{(p)}(i+1)} \Pr\{\Obsv^{(p)}(i+1)|\Policy(\Stat_i)\}}_{\text{=1}}
+                \cdot \underbrace{\tilde{W}^{(p)}\bigg(\Obsv^{(p)}(i+1)\bigg)}_{\text{constant}}
             \end{align}
             Then we introduce the one-step iteration algorithm:
             % [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
@@ -458,9 +460,9 @@
         \begin{align*}
             &\Pr\{\vec{R}_k(i+1)|\Policy(\Stat_i)\} = \prod_{m\in\esSet}\prod_{j\in\jSpace} r^{(k)}_{m,j}(i+1)
             \\
-            &r^{(k)}_{m,j}(i+1) \sim B\Paren{t^{(u)}_{k,m},p^{(i)}_{k,m}(j)},
+            &r^{(k)}_{m,j}(i+1) \sim B\Paren{u_{k,m},p^{(i)}_{k,m}(j)},
         \end{align*}
-        where $Bin(n,p)$ denotes a Binomial distribution.
+        where $B(n,p)$ denotes a Binomial distribution.
             
         The second part transition function is rather complex and composed of three independent distribution as depicted in Fig. \hl{(need a timeline graph)}. We denote the state $n_{m,j}(i+1)$ in $Q_{m,j}(i+1)$ over the three stages as:
         \begin{align*}
