@@ -170,18 +170,19 @@
 
             After arrival on edge servers, the jobs will join computation with the supported VM (Virtual Machine).
             For jobs computation on edge servers, we adopt \emph{unrelated machines} assumption in \cite{tan-online}, where the job processing time on different servers are machine dependent and variant of resource or VM (virtual machine) constraints.
-            Moreover, we have $L_{m,j}$ to denote the processing time for $j$-type job on $m$-th edge serer following some distribution, whose largest processing time is bounded by $L$.
+            Moreover, we have $L_{m,j}$ to denote the processing time for $j$-type job on $m$-th edge serer following some distribution, whose largest processing time is bounded by $L_C$.
             For convenience, we assign type of jobs on edge servers which have no VM resource available with \emph{infinity} processing time, and this kind of dispatching possibility will be rejected at the AP side.
+
             Each VM is considered running paralleled without resource contention, and the job scheduling for each VM follows \emph{FCFS} (First-Come-First-Serve).
+            {\color{red}The maximum queue length is set to discourage too many jobs pending on edge servers and is denoted as $L_Q$. The job submission over the limit will be rejected and announce the AP where the job from.}
         \end{subsection}
 
         \begin{subsection}{Information-Sharing Broadcast Model}
-            As there is no centralized agent design to distribute the dispatching decision to each AP nodes, all the AP nodes have to collect the global information from other nodes. Therefore, a information sharing scheme is needed to facilitate efficient cooperation among standalone AP nodes with dispatching decision.
+            As there is no centralized agent design to distribute the dispatching decisions to each AP node, all the AP nodes have to collect the global information from other nodes. Therefore, a information sharing scheme is needed to facilitate efficient cooperation among standalone AP nodes.
             In this article, the sharing is designed via periodic broadcasting, where all the AP and ES nodes in the system should broadcast their system related information with a same period interval as $t_B$. More specifically, the broadcasting is applied in a synchronized way that all the nodes start to broadcast at the start of same timeslot and repeat broadcasting after the same periodic interval $t_B$. We call each periodic point of broadcasting as \emph{broadcast point} and denote the $i$-th broadcast with $t_i$ where,
             \begin{align}
                 t_i = i \cdot t_B, i=0,1,2,\dots
             \end{align}
-            
             For $i$-th \emph{broadcast point}, the composed broadcast information from all the AP and ES nodes, and the corresponding information is listed as following:
             \begin{itemize}
                 \item The $k$-th AP ($\forall k\in\apSet$) contains information $\mat{R}_k(i) \define (r^{(k)}_{m,j}(i))_{\set{m\in\esSet,j\in\jSpace}}$, where $r^{(k)}_{m,j}(i)$ denotes the remaining number of $j$-type jobs in uploading to $m$-th ES at time $t_i$; and we have $\vec{r}^{(k)}_{m} \define (r^{(k)}_{m,j}(i))_{j\in\jSpace}$ to denote the rows in $\vec{R}_k(i)$; % and $\vec{\hat{r}}^{(k)}_{j}$ to denote the columns;
@@ -197,18 +198,33 @@
             \end{align}
             where $\Obsv_i$ is a set of global information of $i$-th broadcast. And it's actually the global system states at $t_i$.
 
-            After the broadcast point $t_i$, different AP nodes will receive the broadcast information from AP nodes or ES nodes with different deterministic delay.
-            Let $d^{(p)}_{k,k'}$ denotes the broadcast delay from $k'$-th AP to $k$-th AP ($\forall k,k'\in\apSet$) w.r.t. the last broadcast point; let $d^{(s)}_{k,m}$ denotes the broadcast delay from $m$-th ES to $k$-th AP ($\forall k\in\apSet,\forall m\in\esSet$). We furthermore call the delay when the AP node could receive all the broadcast information happened at $t_i$ as \emph{maximum broadcast delay}, which is defined as following:
-            \begin{definition}[Maximum Broadcast Delay]
+            {\color{red}Due to the unpredictable property of broadcast delay with the underlaid network topology, different AP nodes will receive the broadcast information from AP nodes or ES nodes with different stochastic delay.}
+            Let $d^{(p)}_{k,k'}$ denotes the broadcast delay between two AP nodes from $k'$-th AP to $k$-th AP ($\forall k,k'\in\apSet$); let $d^{(s)}_{k,m}$ denotes the broadcast delay between AP and ES node from $m$-th ES to $k$-th AP ($\forall k\in\apSet,\forall m\in\esSet$).
+            
+            The AP will update its dispatching policy when it receives the information from edge servers, and the time it receives all the information. We call the policy update time in the broadcast interval as \emph{update points}, which is defined as following:
+            \begin{definition}[Update Points]
+                Without loss of generality, we sort the index of $\esSet$ for $k$-th AP ($\forall k\in\apSet$) with respect to $d^{(s)}_{k,m}$ from smallest to biggest and formulate $\esSet_{k}$. We denote the delay as $\hat{d}_{k,1}, \dots,\hat{d}_{k,m}$.
+                Futhermore we denote the maximum time point where $k$-th AP receives global information as:
                 \begin{align}
-                    \hat{d}_k = \max \Paren{\set{d^{(p)}_{k,k'}|\forall k,k'\in\apSet}, \set{d^{(s)}_{k,m}|\forall k\in\apSet,m\in\esSet}},
+                    \hat{d}_{k,0} = \max\Paren{
+                        \set{d^{(p)}_{k,k'}|\forall k \neq k' \in\apSet},
+                        \set{d^{(s)}_{k,m}|\forall k\in\apSet,\forall m\in\esSet}
+                    }
                 \end{align}
-                where $d^{(p)}_{k,k} \equiv 0$ for convenience. The AP nodes will receive the complete broadcast information about the system only after its corresponding maximum broadcast delay with respect to last broadcast point.
+                The update points for $k$-th AP in interval $[t_{i}, t_{i+1}]$ are listed as following:
+                \begin{align}
+                    (t_i+\hat{d}_{k,1}),
+                    \dots,
+                    (t_i+\hat{d}_{k,M})
+                \end{align}
             \end{definition}
 
-            The broadcast design introduces a \emph{Two-time scale} structure in the MEC system. The job dispatching on AP nodes and scheduling on ES nodes are still carried out based on timeslot scale. However, based on the broadcast period, the uploading process and computing process is separated into consideration.
-            More specifically, the uploaded jobs in current broadcast interval will keep waiting on edge servers; at the end of this broadcast interval (just before next broadcast point), the uploading jobs will join the queue on servers for scheduling. This separated process assumption will alleviate the curse of dimensionality in problem formulation, which considers the uploading process not entangled with computation process.
-            \textcolor{red}{Moreover, it's reasonable to assume that the broadcast interval is always larger than any broadcast delay plus the uploading delay for any AP nodes, i.e. $t_B > \hat{d}_{k} + u_{k,m}$ $(\forall k\in\apSet, \forall m\in\esSet)$.}
+            As the update points for each AP is key knowledge for optimal policy generation in our proposed scheme in next section, we furthermore design another broadcast phase where the AP nodes should broadcast the exact \emph{update points} list to other nodes
+
+            The broadcast design introduces a \emph{Two-time scale} structure in the MEC system.
+            The job dispatching and scheduling decisions on AP and ES side respectively are still carried out based on timeslot scale, while jobs' status transition from uploaded to computation is based on broadcast interval.
+            More specifically, we consider the uploaded jobs in current broadcast interval will keep waiting on edge servers, and join the computation queue for scheduling at the beginning of next broadcast interval.
+            {\color{red}To discourage the meaningless waiting on edge servers, the servers will announce all the AP nodes with \emph{empty-queue penalty} in next broadcast. Moreover, we implement the broadcast in a low-frequency way that the broadcast period is always larger than the maximum broadcast delay plus the maximum uploading delay, i.e. $t_B > \hat{d}_{k} + u_{k,m}(j)$ $(\forall k\in\apSet, \forall m\in\esSet)$.}
         \end{subsection}
     \end{section}
 
@@ -246,7 +262,7 @@
                     \Omega_k(\Stat_i) = [\tilde{\Omega}_k(\Obsv_{i-1}), \tilde{\Omega}_k(\Obsv_{i})],
                     % $t\in[t_{i-1}, t_{i}], \Delta{t} \define t - t_{i-1}$
                 \end{align}
-                where $\tilde{\Omega}_k(\Obsv_{i}) \define \set{\omega^{(i)}_{k,m}(j)|\forall j\in\jSpace, \forall m\in\esSet}$ and $\omega^{(i)}_{k,m}(j)$ denotes the dispatching policy that: based on global information $\Obsv_{i}$, the stochastic action on $k$-th AP upload $j$-type job to $m$-th ES ($\sum_{j\in\jSpace} \Pr\{\omega^{(i)}_{k,m}(j)\}=1$).
+                where $\tilde{\Omega}_k(\Obsv_{i}) \define \set{\omega^{(i)}_{k,m}(j)|\forall j\in\jSpace, \forall m\in\esSet}$ and $\omega^{(i)}_{k,m}(j)$ denotes the dispatching policy that: based on global information $\Obsv_{i}$, the probabilistic action on $k$-th AP upload $j$-type job to $m$-th ES ($\sum_{j\in\jSpace} \Pr\{\omega^{(i)}_{k,m}(j)\}=1$).
             \end{definition}
             More specifically, the two phase of the policy on single AP is separated by the \emph{maximum broadcast delay} $\hat{d}_k$ to $k$-th AP, i.e. the time point when it receives the latest global information. For example, in the broadcast interval $[t_{i}, t_{i+1}]$, $k$-th AP will apply policy $\tilde{\Omega}_k(\Obsv_{i})$ based on obsolete information before maximum delay $\hat{d}_k$ and apply $\tilde{\Omega}_k(\Obsv_{i+1})$ immediately after the delay.
         \end{subsection}
