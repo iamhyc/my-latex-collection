@@ -82,9 +82,9 @@
         \label{sec:introduction}
         Our claims:
         \begin{itemize}
-            \item Related works on job dispatching on scheduling in edge computing, mostly with centralized agent to apply action and seldomly take delayed information impact into consideration;
-            \item Edge Server, Access Point, User Equipment; layered structure where decision is made distributedly on AP nodes and computation is carried out on ESs; The AP-ES fully separated structure is reasonable, for example C-RAN to separate communication and computation resource assembling;
-            \item We identify the delayed system information is un-acceptable for explosion \emph{delay-sensitive jobs} in edge computing, and it's hard to establish cooperation among AP nodes because of obsolete information;
+            \item Related works on job dispatching on scheduling in edge computing, mostly with centralized agent to apply action and seldom take delayed information impact into consideration;
+            \item Edge Server, Access Point, User Equipment; layered structure where decision is made distributed on AP nodes and computation is carried out on ES nodes; The AP-ES fully separated structure is reasonable, for example C-RAN to separate communication and computation resource assembling;
+            \item We identify the delayed system information is unacceptable for explosion \emph{delay-sensitive jobs} in edge computing, and it's hard to establish cooperation among AP nodes because of obsolete information;
             \item information sharing for cooperation is designed via (aligned) broadcast, job dispatch decision should be made immediately based on the previous collective information;
         \end{itemize}
 
@@ -107,10 +107,10 @@
         \begin{itemize}
             \item \text{[IoT, out-of-date information]} \cite{Lyu2017} is work considering \emph{out-of-date knowledge} optimization in IoT computing scenario, with Lyapunov optimization;
             \item \text{[out-of-date information]} \cite{Lyu2018b} 
-            \item \text{[IEEE Access, baseline]} \cite{Fan2017} considers cooperations of multiple MEC-BSs of computation offloading which minimizes total cost of time and energy consumptions.
+            \item \text{[IEEE Access, baseline]} \cite{Fan2017} considers cooperation of multiple MEC-BSs of computation offloading which minimizes total cost of time and energy consumption.
             \item \text{[delay-sensitive, ToC]} \cite{Lyu2018} identify that task admission is critical to delay-sensitive applications in mobile edge computing, and proposes an (1-$\epsilon$)-approximation algorithm
             \item \text{[foggy, fully distributed online]} \cite{Lyu2018a} is a work fully distributed online optimization to minimize the time-average cost and achieve asymptotic optimality over infinite time;
-            \item \text{[online learning, multi-agent MDP, reduced state]} \cite{Zheng2019} is a work considering maximizing the long-term utility in MEC offloading policy, and formulating the problem with MDP solved with Q-learning;
+            \item \text{[centralized, offloading, reduced state MDP]} \cite{Zheng2019} is a work considering maximizing the long-term utility in MEC offloading policy, and formulating the problem with MDP solved with Q-learning (the solution would take long time to converge and take effects, and less performed than our one-step iteration policy);
             \item \text{[MDP, IEEE ToN]} \cite{Wang2015} considers service migration with MDP with approximate states;
             
             \item \text{[system work, ToMC]} \cite{Yu2018} is a work presents a framework to minimize remote execution overhead, and carry out real system experiments using large-scale data from cellular network provider.
@@ -170,7 +170,7 @@
             % The maximum job processing time is bounded with $L_C$ in this system, and the job space is denoted as $\jSpace$.
             Moreover, we have $L_{m,j}$ to denote the processing time for $j$-type job on $m$-th edge serer following some distribution \textcolor{red}{(need describe the distribution)}.
             For convenience, we assign type of jobs on edge servers which have no VM resource available with infinity processing time, and this kind of dispatching possibility will be rejected at the AP side.
-            Each VM is considered running parallelled without resource contention, and the job scheduling for each VM follows \emph{FCFS} (First-Come-First-Serve).
+            Each VM is considered running paralleled without resource contention, and the job scheduling for each VM follows \emph{FCFS} (First-Come-First-Serve).
         \end{subsection}
 
         \begin{subsection}{Information-Sharing Broadcast Model}
@@ -321,7 +321,7 @@
     \begin{section}{LOW-COMPLEXITY SOLUTION}
         \label{sec:algorithm}
         In this section, we introduce a heuristic dispatching algorithm as the baseline policy, whose value function could be derived analytically. Then the joint expression with transition function as the optimization problem on right-hand side, we could further reduce the state complexity with averaged queueing dynamics on ES nodes.
-        \hl{The proposed low-complexity suboptimal policy can be obtained via the above approximated value function and one-step policy iteration. The derived value function becomes the cost upper bound of the proposed policy.}
+        \hl{The proposed low-complexity sub-optimal policy can be obtained via the above approximated value function and one-step policy iteration. The derived value function becomes the cost upper bound of the proposed policy.}
 
         \begin{subsection}{Baseline Dispatching Policy}
             The baseline dispatching policy is adopted to obtain an approximation of value function. The policy on each AP nodes is randomized and time-invariant which is denoted as:
@@ -470,8 +470,8 @@
         \end{align*}
         where $[\cdot]_+$ is equal as $\max(\cdot, 0)$ and:
         \begin{itemize}
-            \item $n_0$ denotes the enqueued jobs from in-uploading jobs in last interval from all $r^{(k)}_{m,j}$, let $n^{(k)}_0$ denotes the number of jobs from $k$-th AP, $n_0 = \sum_{k\in\apSet} n^{(k)}_0$;
-            \item $n_1$ and $n_2$ respectively denotes the enqueued number of jobs under policy $\tilde{\Omega}_k(i-1)$ and $\tilde{\Omega}_k(i)$; let $n^{(k)}_1, n^{(k)}_2$ denotes the jobs from $k$-th AP which follow two different Binomial distribution as:
+            \item $n_0$ denotes the en-queued jobs from in-uploading jobs in last interval from all $r^{(k)}_{m,j}$, let $n^{(k)}_0$ denotes the number of jobs from $k$-th AP, $n_0 = \sum_{k\in\apSet} n^{(k)}_0$;
+            \item $n_1$ and $n_2$ respectively denotes the en-queued number of jobs under policy $\tilde{\Omega}_k(i-1)$ and $\tilde{\Omega}_k(i)$; let $n^{(k)}_1, n^{(k)}_2$ denotes the jobs from $k$-th AP which follow two different Binomial distribution as:
             \begin{align*}
                 n^{(k)}_1 &\sim B\Paren{\hat{d}_k, p^{(i-1)}_{k,m}(j)}
                 \\
@@ -490,5 +490,5 @@
     
     %============================== REFERENCE =============================%
     \bibliographystyle{IEEEtran}
-    \bibliography{main.bib,journal-ref.bib}
+    \bibliography{references.bib}
 \end{document}
