@@ -94,50 +94,53 @@
             \item propose a instantaneous job dispatching scheme in a fully-distributed cooperative way;
             \item propose global state formulation to characterize the multi-agent MDP problem;
             \item adopt value function approximation to reduce the traditional algorithm complexity, and come up with distributed online learning algorithm;
+            \item To our best knowledge, we are the first work to propose a MDP framework to characterize the obsolete information distributed decision and with performance bound;
         \end{itemize}
 
-        Related works:
+        Bulky Reference List:
         \begin{itemize}
-            \item The earliest related works we find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing \emph{information}. The agent considers communication as extra action to synchronize the states and thus incurs extra cost. \\
-            However, the communication is without delay, and converted into POMDP problem.
-            \item The other work \cite{ref-02} considers continuous state observation with constant or stochastic delay with single agent.
-        \end{itemize}
-
-        Bulky Reference List for Journals:
-        \begin{itemize}
-            \item \text{[IoT, out-of-date information]} \cite{Lyu2017} is work considering \emph{out-of-date knowledge} optimization in IoT computing scenario, with Lyapunov optimization;
-            \item \text{[out-of-date information]} \cite{Lyu2018b} 
-            \item \text{[IEEE Access, baseline]} \cite{Fan2017} considers cooperation of multiple MEC-BSs of computation offloading which minimizes total cost of time and energy consumption.
-            \item \text{[delay-sensitive, ToC]} \cite{Lyu2018} identify that task admission is critical to delay-sensitive applications in mobile edge computing, and proposes an (1-$\epsilon$)-approximation algorithm
-            \item \text{[foggy, fully distributed online]} \cite{Lyu2018a} is a work fully distributed online optimization to minimize the time-average cost and achieve asymptotic optimality over infinite time;
-            \item \text{[centralized, offloading, reduced state MDP]} \cite{Zheng2019} is a work considering maximizing the long-term utility in MEC offloading policy, and formulating the problem with MDP solved with Q-learning (the solution would take long time to converge and take effects, and less performed than our one-step iteration policy);
-            \item \text{[MDP, IEEE ToN]} \cite{Wang2015} considers service migration with MDP with approximate states;
-            
-            \item \text{[system work, ToMC]} \cite{Yu2018} is a work presents a framework to minimize remote execution overhead, and carry out real system experiments using large-scale data from cellular network provider.
-            \item \text{[system work, MDP, IEEE Access]} \cite{Wang2018} considers the mobility of mobile users in limited coverage solved with service migration and handover, and propose a framework;
-            
-            \item \text{[offloading and resource allocation]}
-                \cite{Yang2016} is a work considering services placement and requests dispatching on edge servers, and leverage users' pattern to predict "service cache" for online decision making;
-                \cite{Du2018} is a work considering computation offloading and computation resource allocation to satisfy min-max fairness guarantee, under minimum tolerant delay;
-                \cite{Chen2018} is a work with SDN on task offloading and battery life saving, and solve the NLP problem with two sub-problems;
-                \cite{Alameddine2019} is a work considering task offloading, scheduling and resource allocation joint optimization with Benders Decomposition;
-
-            \item \text{[Survey]}
-                \cite{Naha2018} is a survey about fog computing in latency-aware computing in IoT, and investigate numerous proposed computing architecture.
-            
-            \item \text{[misc]}
-                \cite{Chen2016} is a work considering multi-user computation offloading with multi-channel contention, and adopt game theory approach to achieve Nash equilibrium with upper bound of convergence time;
-                \cite{Josilo2019} considers selfish offloading to achieve Nash equilibrium;
-                \cite{Rodrigues2017} is a work on minimizing service delay in mobile edge computing;
-                \cite{Wang2017} is a work considering service placement with graph theory;
-                \cite{Masip-Bruin2016} is a work with layered structure with foggy and cloud computation;
-                \cite{Zhang2018} considers multi-user offloading under transmit power decision and user association decision;
-                \cite{Chen2018a} proposes joint optimization of task caching placement and offloading decision to achieve the lowest delay of task processing;
-                \cite{Dinh2018} considers distributed multi-user offloading in wireless channel with selfish EPG (exact potential game);
-                \cite{Guo2018} considers jointly offloading decision making and power allocation for UEs in SCNs (small-cell networks);
-                \cite{yang2018} and \cite{Josilo2019a} considers distributed computation offloading game;
-                \cite{ElHaber2019} is a work considers energy consumption for offloading in multi-tier edge clouds;
-                \cite{Liu2018} is a work considering minimize users' power consumption with Lyapunov optimization and matching theory;
+            \item Survey: \cite{Naha2018} is a survey about fog computing in latency-aware computing in IoT, and investigate numerous proposed computing architecture.
+            \item Out-of-Date Information:
+                \begin{itemize}
+                    \item The earliest related works we find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing limited information. The agent considers communication as extra action to synchronize the states and thus incurs extra cost; \hl{(However, the communication is without delay, thus converted into POMDP problem)}
+                    \item The other work \cite{ref-02} considers continuous state observation with constant or stochastic delay with single agent;
+                    \item \cite{Lyu2017} is work considering \emph{out-of-date knowledge} optimization in IoT computing scenario, with Lyapunov optimization;
+                    \item \text{[delay-sensitive, ToC]} \cite{Lyu2018} identify that task admission is critical to delay-sensitive applications in mobile edge computing, and proposes an (1-$\epsilon$)-approximation algorithm
+                    \item \text{[foggy, fully distributed online]} \cite{Lyu2018a} is a work fully distributed online optimization to minimize the time-average cost and achieve asymptotic optimality over infinite time;
+                    \item \cite{Lyu2018b} try to establish cooperation among selfish devices in fog computing, and out-of-date information is blamed for optimality gap but proved to asymptotically diminish with the proposed algorithm; \hl{(escape from the information but no use)}
+                \end{itemize}
+            \item Task Offloading Scenario:
+                \begin{itemize}
+                    \item \text{[centralized, offloading, reduced state MDP]} \cite{Zheng2019} is a work considering maximizing the long-term utility in MEC offloading policy, and formulating the problem with MDP solved with Q-learning; \hl{(need long time online to converge to optimality, less performed than our proposed algorithm)}
+                    \item \cite{Du2018} propose an offline algorithm with MINLP problem formulation, considering min-max fairness guarantee in computation offloading and computation resource allocation in fog/edge computing scenario; \hl{with only one edge and one cloud node considered, so trivial}
+                    \item \cite{Alameddine2019} is a work considering task offloading, scheduling and resource allocation joint optimization with Benders Decomposition;
+                    \item \cite{Fan2017} considers cooperation of multiple MEC-BSs of computation offloading which minimizes total cost of time and energy consumption.
+                \end{itemize}
+            % \item Service Placement Scenario:
+            %     \begin{itemize}
+            %         \item \cite{Yang2016} is a work considering services placement and requests dispatching on edge servers, and leverage users' pattern to predict "service cache" for online decision making;
+            %         \item \cite{Chen2018} is a work with SDN on task offloading and battery life saving, and solve the NLP problem with two sub-problems;
+            %     \end{itemize}
+            % \item With Game Theory:
+            % \begin{itemize}
+            %     \item \cite{yang2018} and \cite{Josilo2019a} considers distributed computation offloading game;
+            %     \item \cite{Liu2018} is a work considering minimize users' power consumption with Lyapunov optimization and matching theory;
+            %     \item \cite{Dinh2018} considers distributed multi-user offloading in wireless channel with selfish EPG (exact potential game);
+            %     \item \cite{Josilo2019} considers selfish offloading to achieve Nash equilibrium;
+            %     \item \cite{Chen2016} is a work considering multi-user computation offloading with multi-channel contention, and adopt game theory approach to achieve Nash equilibrium with upper bound of convergence time;
+            % \end{itemize}  
+            \item Misc:
+                \begin{itemize}
+                    \item \text{[MDP, IEEE ToN]} \cite{Wang2015} considers service migration with MDP with approximate states;
+                    \item \cite{Rodrigues2017} is a work on minimizing service delay in mobile edge computing;
+                    \item \cite{Zhang2018} considers multi-user offloading under transmit power decision and user association decision;
+                    \item \cite{Chen2018a} proposes joint optimization of task caching placement and offloading decision to achieve the lowest delay of task processing;
+                    \item \cite{ElHaber2019} is a work considers energy consumption for offloading in multi-tier edge clouds;
+                    % \item \cite{Masip-Bruin2016} is a work with layered structure with foggy and cloud computation;
+                    % \item  \cite{Guo2018} considers jointly offloading decision making and power allocation for UEs in SCNs (small-cell networks);
+                    % \item \cite{Yu2018} is a system work published in ToMC, presents a framework to minimize remote execution overhead, and carry out real system experiments using large-scale data from cellular network provider.
+                    % \item \cite{Wang2018} is a system work published in IEEE Access, considers the mobility of mobile users in limited coverage solved with service migration and handover, and propose a framework;
+                \end{itemize}
         \end{itemize}
 
     \end{section}
@@ -155,21 +158,20 @@
                 \label{fig:system}
             \end{figure}
 
-            The user equipment (UE) is connected to AP and offloads computation jobs to access point. Thus the job arrival process on $k$-th AP ($\forall k\in\apSet$) is compounded of job-arrival distribution and job-type distribution from all the UEs connected, which follows the assumption as:
+            The user equipment (UE) is connected to AP and offloads computation jobs to access point. Thus the job arrival process on $k$-th AP ($\forall k\in\apSet$) is compounded of the distributions from all UEs connected, which follows the assumption as:
             \begin{assumption}[Job Arrival Process for AP]
                 The job arrival distribution for $k$-th AP is denoted as $A_k$, which is independent and identically distributed (i.i.d) over each timeslot as $A_k \sim Bernoulli(\lambda_k)$, $\lambda_k\in[0,1]$. This implies that there will be at most one job arrives on $k$-th AP in one timeslot. According to \emph{Poisson Limit Theorem}, the arrival process is a memory-less exponential process with average arrival rate $\mathbb{E}[A_k]=\lambda_k$.
-                The jobs type distribution on each AP node follows the same distribution over job set $\jSpace$ which is denoted as $p_j \define \Pr\{\text{"j-type arrival"}\}$, where $\sum_{j\in\jSpace} p_j=1$.
+                The jobs type distribution on each AP node follows the same distribution over job set $\jSpace$ which is obtained by statistics and denoted as $p_j \define \Pr\{\text{"j-type arrival"}\}$, where $\sum_{j\in\jSpace} p_j=1$.
             \end{assumption}
 
             The AP itself is assumed with no computation capability, and thus it need to further dispatch those jobs to the edge servers.
-            The offloaded jobs on AP will be immediately dispatched to edge servers in each timeslot. The corresponding uploading delay of one job is deterministic and job-type independent for one AP-ES link, which is denoted as $u_{k,m}$ from $k$-th AP to $m$-th ES ($\forall k\in\apSet, \forall m\in\esSet$).
+            The offloaded jobs on AP will be immediately dispatched to edge servers in each timeslot. The corresponding uploading delay of one job is {\color{red}deterministic and job-type dependent} over one AP-ES link, which is denoted as $u_{k,m}(j)$ from $k$-th AP to $m$-th ES ($\forall k\in\apSet, \forall m\in\esSet$).
             The network topology between AP cluster and ES cluster is fully accessible so that AP could dispatch jobs to any ES nodes in this system.
 
             After arrival on edge servers, the jobs will join computation with the supported VM (Virtual Machine).
             For jobs computation on edge servers, we adopt \emph{unrelated machines} assumption in \cite{tan-online}, where the job processing time on different servers are machine dependent and variant of resource or VM (virtual machine) constraints.
-            % The maximum job processing time is bounded with $L_C$ in this system, and the job space is denoted as $\jSpace$.
-            Moreover, we have $L_{m,j}$ to denote the processing time for $j$-type job on $m$-th edge serer following some distribution \textcolor{red}{(need describe the distribution)}.
-            For convenience, we assign type of jobs on edge servers which have no VM resource available with infinity processing time, and this kind of dispatching possibility will be rejected at the AP side.
+            Moreover, we have $L_{m,j}$ to denote the processing time for $j$-type job on $m$-th edge serer following some distribution, whose largest processing time is bounded by $L$.
+            For convenience, we assign type of jobs on edge servers which have no VM resource available with \emph{infinity} processing time, and this kind of dispatching possibility will be rejected at the AP side.
             Each VM is considered running paralleled without resource contention, and the job scheduling for each VM follows \emph{FCFS} (First-Come-First-Serve).
         \end{subsection}
 
