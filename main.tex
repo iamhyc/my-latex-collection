@@ -154,7 +154,7 @@
     \begin{section}{SYSTEM MODEL}
         \label{sec:model}
         \begin{subsection}{Network Model}
-            We have access points (AP) and edge servers (ES) denoted as $\apSet \define \set{1,\dots,K}$ and $\mathcal{M} \define \set{1,\dots,M}$ respectively in our MEC (mobile edge computing) system depicted in Fig. \ref{fig:system}. In this system, we adopt the same timing mechanism at both AP and ES side with a minimum \emph{timeslot} lasting for $\tau$ seconds.
+            We have Access Points (AP) and Edge Servers (ES) denoted as $\apSet \define \set{1,\dots,K}$ and $\mathcal{M} \define \set{1,\dots,M}$ respectively in our MEC (mobile edge computing) system depicted in Fig. \ref{fig:system}. In this system, we adopt the same timing mechanism at both AP and ES side with a minimum \emph{timeslot} lasting for $\tau$ seconds.
 
             \begin{figure}[ht]
                 \centering
@@ -163,23 +163,23 @@
                 \label{fig:system}
             \end{figure}
 
-            The user equipment (UE) is connected to AP and offloads computation jobs to access point. Thus the job arrival process on $k$-th AP ($\forall k\in\apSet$) is compounded of the distributions from all UEs connected, which follows the assumption as:
+            The User Equipment (UE) would offload the computation jobs on demand to the AP it connect.Thus the job arrival process on $k$-th AP ($\forall k\in\apSet$) is compounded of the distributions from all UEs connected, which follows the assumption as:
             \begin{assumption}[Job Arrival Process for AP]
                 The job arrival distribution for $k$-th AP is denoted as $A_k$, which is independent and identically distributed (i.i.d) over each timeslot as $A_k \sim Bernoulli(\lambda_k)$, $\lambda_k\in[0,1]$. This implies that there will be at most one job arrives on $k$-th AP in one timeslot. According to \emph{Poisson Limit Theorem}, the arrival process is a memory-less exponential process with average arrival rate $\mathbb{E}[A_k]=\lambda_k$.
                 The jobs type distribution on each AP node follows the same distribution over job set $\jSpace$ which is obtained by statistics and denoted as $p_j \define \Pr\{\text{"j-type arrival"}\}$, where $\sum_{j\in\jSpace} p_j=1$.
             \end{assumption}
 
             The AP itself is assumed with no computation capability, and thus it need to further dispatch those jobs to the edge servers.
-            The offloaded jobs on AP will be immediately dispatched to edge servers in each timeslot. The corresponding uploading delay of one job is {\color{red}deterministic and job-type dependent} over one AP-ES link, which is denoted as $u_{k,m}(j)$ from $k$-th AP to $m$-th ES ($\forall k\in\apSet, \forall m\in\esSet$).
-            The network topology between AP cluster and ES cluster is fully accessible so that AP could dispatch jobs to any ES nodes in this system.
+            The jobs arrival in each timeslot on AP will be immediately dispatched to edge servers.
+            The corresponding uploading delay of one job is {\color{red}deterministic and job-type dependent over one AP-ES link}, which is denoted as $u_{k,m}(j)$ from $k$-th AP to $m$-th ES ($\forall k\in\apSet, \forall m\in\esSet, \forall j\in\jSpace$).
 
-            After arrival on edge servers, the jobs will join computation with the supported VM (Virtual Machine).
-            For jobs computation on edge servers, we adopt \emph{unrelated machines} assumption in \cite{tan-online}, where the job processing time on different servers are machine dependent and variant of resource or VM (virtual machine) constraints.
+            After arrival on edge servers, the jobs will join computation queue with the supported VM (Virtual Machine).
+            Each VM is considered running parallel without resource contention, and the jobs scheduling for each VM is with a single queue following \emph{FCFS} (First-Come-First-Serve).
+            {\color{red}The maximum queue length is set to discourage too many jobs pending on edge servers and is denoted as $L_Q$. The job submission over the limit will be rejected and announce the AP where the job is from.}
+
+            For jobs processing on edge servers, we adopt \emph{unrelated machines} assumption in \cite{tan-online}, where the job processing time on different servers are machine dependent and variant of resource or VM (virtual machine) constraints.
             Moreover, we have $L_{m,j}$ to denote the processing time for $j$-type job on $m$-th edge serer following some distribution, whose largest processing time is bounded by $L_C$.
             For convenience, we assign type of jobs on edge servers which have no VM resource available with \emph{infinity} processing time, and this kind of dispatching possibility will be rejected at the AP side.
-
-            Each VM is considered running paralleled without resource contention, and the job scheduling for each VM follows \emph{FCFS} (First-Come-First-Serve).
-            {\color{red}The maximum queue length is set to discourage too many jobs pending on edge servers and is denoted as $L_Q$. The job submission over the limit will be rejected and announce the AP where the job is from.}
         \end{subsection}
 
         \begin{subsection}{Information-Sharing Broadcast Model}
