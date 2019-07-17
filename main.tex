@@ -135,8 +135,7 @@
         In this article, we considers User Equipment offloaded jobs dispatching from Access Points to Edge Servers. The Access Points function as router with decision on minimize the long-term average job response time.
         The dispatching decision is applied on Access Points distributively but in a synchronize way with some prior stochastic knowledge.
         Information sharing for cooperation is designed via (aligned) broadcast, job dispatch decision should be made immediately based on the previous collective information;
-
-        Our contributions:
+        Our contributions are summarized as follows.
         \begin{itemize}
             \item To our best knowledge, we are the first work to propose a MDP framework to characterize the obsolete information distributed decision and with performance bound;
             \item propose a instantaneous job dispatching scheme in a distributed cooperative way, with synchronized/asymptotical stochastic information;
@@ -144,7 +143,7 @@
             \item adopt value function approximation to reduce the traditional algorithm complexity, and come up with performance guarantee;
         \end{itemize}
 
-        \hl{The remainder of this paper is organized as following.}
+        \hl{The remainder of this paper is organized as follows.}
         In Sec.II, system model.
         In Sec.III, problem formulation.
         In Sec.IV, we introduce low-complexity MDP algorithm.
@@ -190,7 +189,7 @@
             \begin{align}
                 t_i = i \cdot t_B, i=0,1,2,\dots
             \end{align}
-            For $i$-th \emph{broadcast point}, the composed broadcast information from all the AP and ES nodes, and the corresponding information is listed as following:
+            For $i$-th \emph{broadcast point}, the composed broadcast information from all the AP and ES nodes, and the corresponding information is listed as follows.
             \begin{itemize}
                 \item The $k$-th AP ($\forall k\in\apSet$) contains information $\mat{R}_k(i) \define (r^{(k)}_{m,j}(i))_{\set{m\in\esSet,j\in\jSpace}}$, where $r^{(k)}_{m,j}(i)$ denotes the remaining number of $j$-type jobs in uploading to $m$-th ES at time $t_i$; and we have $\vec{r}^{(k)}_{m} \define (r^{(k)}_{m,j}(i))_{j\in\jSpace}$ to denote the rows in $\vec{R}_k(i)$; % and $\vec{\hat{r}}^{(k)}_{j}$ to denote the columns;
                 \item The $m$-th ES ($\forall m\in\esSet$) contains information $\vec{Q}_m(i) \define \set{Q_{m,j}(i)|\forall j\in\jSpace}$ to denote the computation queues for different job types, where $Q_{m,j}(i) \define (n_{m,j}(i), \delta_{m,j}(i))$ to characterize the $j$-type FIFO queue on $m$-th ES; $n_{m,j}(i)$ denotes the number of $j$-type job queueing on $m$-th ES, and $\delta_{m,j}(i)$ denotes the remaining processing time for last job.
@@ -208,7 +207,7 @@
             {\color{red}Due to the unpredictable property of broadcast delay with the underlaid network topology, different AP nodes will receive the broadcast information from AP nodes or ES nodes with different stochastic delay. However, we still assume the broadcast delay is upper bounded and with a statistical distribution in this interval.}
             Let $d^{(p)}_{k,k'}$ denotes the broadcast delay between two AP nodes from $k'$-th AP to $k$-th AP ($\forall k,k'\in\apSet$); let $d^{(s)}_{k,m}$ denotes the broadcast delay between AP and ES node from $m$-th ES to $k$-th AP ($\forall k\in\apSet,\forall m\in\esSet$).
             
-            The AP will update its dispatching policy when it receives the information from edge servers, and the time it receives all the information. We call the policy update time in the broadcast interval as \emph{update points}, which is defined as following:
+            The AP will update its dispatching policy when it receives the information from edge servers, and the time it receives all the information. We call the policy update time in the broadcast interval as \emph{update points}, which is defined as follows.
             \begin{definition}[Hehehehehehehehehe]
                 MAXIMUM BROADCAST DELAY Hah!
             \end{definition}
@@ -245,7 +244,7 @@
 
             The \emph{dispatching policy} is applied over arrival jobs in each timeslot on each AP
             , and the \emph{dispatching action space} is defined as $\mathbf{A}: (j, m) \in \jSpace \times \esSet$, where $(j, m)$ denotes the action that $j$-type job should be uploaded to $m$-th ES.
-            Based on the two stages of global system information $\Obsv_{i-1}$ and $\Obsv_{i}$ in system state, the compounded global-wise policy of all AP nodes is defined as following:
+            Based on the two stages of global system information $\Obsv_{i-1}$ and $\Obsv_{i}$ in system state, the compounded global-wise policy of all AP nodes is defined as follows.
             \begin{definition}[Compounded Dispatching Policy]
                 The compounded dispatching policy over $\Stat_{i}$ is defined as $\Policy(\Stat_{i})$ which is composed of all the local policies $\Omega_k(\Stat_{i})$ ($\forall k\in\apSet$) as:
                 \begin{align}
@@ -270,7 +269,7 @@
             \end{align}
             where $\Inorm{\vec{r}^{(k)}_{m}}$ denotes the $L^1$-norm of vector $\vec{r}^{(k)}_{m}$, i.e. the sum up of absolute value of each entry. The cost function defined is a sampling of interval $t_B$ over the whole process, because the global information for AP nodes only contains the information at the broadcast points.
 
-            Our distributed optimization problem definition is given as following:
+            Our distributed optimization problem definition is given as follows.
             \begin{problem}[Distributed Cooperative Job Dispatching Problem]
                 \begin{gather}
                     \min_{\Policy} \lim_{T \to \infty}
@@ -286,7 +285,7 @@
                 \nonumber\\
                 &+ \gamma \min_{\Policy(\Stat_{i})} \sum_{\Stat_{i+1}} \sum_{\hat{d}_k} \Pr\{ \Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i}) \} V(\Stat_{i+1}),
             \end{align}
-            where the original definition for value function defined in \cite{sutton1998introduction} is as following:
+            where the original definition for value function defined in \cite{sutton1998introduction} is as follows.
             \begin{align}
                 V(\Stat_{i}) \define \lim_{T\to\infty}
                     \mathbb{E}_{\Policy}\Bracket{
