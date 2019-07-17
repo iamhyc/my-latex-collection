@@ -44,12 +44,13 @@
 \newcommand{\Stat}{\mathbf{S}}
 \newcommand{\Obsv}{\mathcal{Y}}
 \newcommand{\Policy}{\mathbf{\Omega}}
+\newcommand{\ASpace}{\mathbf{A}}
 %---------------------------------------------------------------%
 
 \begin{document}
     %=============================== TITLE ===============================%
     \title{
-        Meet-in-Future: Obsolete Information-based Distributed Online Job Dispatching in Edge Computing System
+        Obsolete Information-based Distributed Online Job Dispatching in Edge Computing System
     }
     \author{
         \IEEEauthorblockN{
@@ -80,45 +81,34 @@
     %============================ INTRODUCTION ============================%
     \begin{section}{INTRODUCTION}
         \label{sec:introduction}
-        Our claims:
-        \begin{itemize}
-            \item Related works on job dispatching on scheduling in edge computing, mostly with centralized agent to apply action and seldom take delayed information impact into consideration;
-            \item Edge Server, Access Point, User Equipment; layered structure where decision is made distributed on AP nodes and computation is carried out on ES nodes; The AP-ES fully separated structure is reasonable, for example C-RAN to separate communication and computation resource assembling;
-            \item We identify the delayed system information is unacceptable for explosion \emph{delay-sensitive jobs} in edge computing, and it's hard to establish cooperation among AP nodes because of obsolete information;
-            \item information sharing for cooperation is designed via (aligned) broadcast, job dispatch decision should be made immediately based on the previous collective information;
-        \end{itemize}
+        Edge computing is promising.
+        \cite{Naha2018} is a survey about fog computing in latency-aware computing in IoT, and investigate numerous proposed computing architecture.
+        In IoT (Internet of Things)/MAN (Metropolitan Area Network) scenario,
 
-        Our contributions:
+        Related works on job dispatching on scheduling in edge computing, mostly with centralized agent to apply action and seldom take delayed information impact into consideration.
+        \hl{In the previous researches, there are many works investigated job dispatching strategies in the scenario of MEC.} Task Offloading Scenario:
         \begin{itemize}
-            \item identify that the uploading process affect the performance of heuristic greedy algorithm; identify that the delay-information sharing in decision making;
-            \item propose a instantaneous job dispatching scheme in a fully-distributed cooperative way;
-            \item propose global state formulation to characterize the multi-agent MDP problem;
-            \item adopt value function approximation to reduce the traditional algorithm complexity, and come up with distributed online learning algorithm;
-            \item To our best knowledge, we are the first work to propose a MDP framework to characterize the obsolete information distributed decision and with performance bound;
+            \item \text{[centralized, offloading, reduced state MDP]} \cite{Zheng2019} is a work considering maximizing the long-term utility in MEC offloading policy, and formulating the problem with MDP solved with Q-learning; \hl{(need long time online to converge to optimality, less performed than our proposed algorithm)}
+            \item \cite{Du2018} propose an offline algorithm with MINLP problem formulation, considering min-max fairness guarantee in computation offloading and computation resource allocation in fog/edge computing scenario; \hl{with only one edge and one cloud node considered, so trivial}
+            \item \cite{Alameddine2019} is a work considering task offloading, scheduling and resource allocation joint optimization with Benders Decomposition;
+            \item \cite{Fan2017} considers cooperation of multiple MEC-BSs of computation offloading which minimizes total cost of time and energy consumption.
+            \item \cite{ElHaber2019} is a work considers energy consumption for offloading in multi-tier edge clouds;
+            \item \cite{Chen2018a} proposes joint optimization of task caching placement and offloading decision to achieve the lowest delay of task processing;
         \end{itemize}
-
-        Bulky Reference List:
+        \hl{Different from previous work, we focus on out-of-dated information on decision making in multi-agent cooperation system. To our best knowledge, there are very limited discussions on this topic.}
         \begin{itemize}
-            \item Survey: \cite{Naha2018} is a survey about fog computing in latency-aware computing in IoT, and investigate numerous proposed computing architecture.
-            \item Out-of-Date Information:
-                \begin{itemize}
-                    \item The earliest related works we find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing limited information. The agent considers communication as extra action to synchronize the states and thus incurs extra cost; \hl{(However, the communication is without delay, thus converted into POMDP problem)}
-                    \item The other work \cite{ref-02} considers continuous state observation with constant or stochastic delay with single agent;
-                    \item \cite{Lyu2017} is work considering \emph{out-of-date knowledge} optimization in IoT computing scenario, with Lyapunov optimization;
-                    \item \text{[delay-sensitive, ToC]} \cite{Lyu2018} identify that task admission is critical to delay-sensitive applications in mobile edge computing, and proposes an (1-$\epsilon$)-approximation algorithm
-                    \item \text{[foggy, fully distributed online]} \cite{Lyu2018a} is a work fully distributed online optimization to minimize the time-average cost and achieve asymptotic optimality over infinite time;
-                    \item \cite{Lyu2018b} try to establish cooperation among selfish devices in fog computing, and out-of-date information is blamed for optimality gap but proved to asymptotically diminish with the proposed algorithm; \hl{(escape from the information but no use)}
-                \end{itemize}
-            \item Task Offloading Scenario:
-                \begin{itemize}
-                    \item \text{[centralized, offloading, reduced state MDP]} \cite{Zheng2019} is a work considering maximizing the long-term utility in MEC offloading policy, and formulating the problem with MDP solved with Q-learning; \hl{(need long time online to converge to optimality, less performed than our proposed algorithm)}
-                    \item \cite{Du2018} propose an offline algorithm with MINLP problem formulation, considering min-max fairness guarantee in computation offloading and computation resource allocation in fog/edge computing scenario; \hl{with only one edge and one cloud node considered, so trivial}
-                    \item \cite{Alameddine2019} is a work considering task offloading, scheduling and resource allocation joint optimization with Benders Decomposition;
-                    \item \cite{Fan2017} considers cooperation of multiple MEC-BSs of computation offloading which minimizes total cost of time and energy consumption.
-                \end{itemize}
-            % \item Service Placement Scenario:
+            \item The earliest works on out-of-dated information we find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing limited information. The agent considers communication as extra action to synchronize the states and thus incurs extra cost; \hl{(However, the communication is without delay, thus converted into POMDP problem)}
+            \item The other work \cite{ref-02} considers continuous state observation with constant or stochastic delay with single agent;
+            \item One researcher published a series of paper on this topic.
+                \cite{Lyu2017} is work considering \emph{out-of-date knowledge} optimization in IoT computing scenario, with Lyapunov optimization;
+                \text{[delay-sensitive, ToC]} \cite{Lyu2018} identify that task admission is critical to delay-sensitive applications in mobile edge computing, and proposes an (1-$\epsilon$)-approximation algorithm
+                \text{[foggy, fully distributed online]} \cite{Lyu2018a} is a work fully distributed online optimization to minimize the time-average cost and achieve asymptotic optimality over infinite time;
+                \cite{Lyu2018b} try to establish cooperation among selfish devices in fog computing, and out-of-date information is blamed for optimality gap but proved to asymptotically diminish with the proposed algorithm; \hl{(escape from the information but no use)}
+        \end{itemize}
+        % \item Service Placement Scenario:
             %     \begin{itemize}
-            %         \item \cite{Yang2016} is a work considering services placement and requests dispatching on edge servers, and leverage users' pattern to predict "service cache" for online decision making;
+                    % \item \cite{Rodrigues2017} is a work on minimizing service delay in mobile edge computing;
+                    % \item \cite{Yang2016} is a work considering services placement and requests dispatching on edge servers, and leverage users' pattern to predict "service cache" for online decision making;
             %         \item \cite{Chen2018} is a work with SDN on task offloading and battery life saving, and solve the NLP problem with two sub-problems;
             %     \end{itemize}
             % \item With Game Theory:
@@ -128,21 +118,36 @@
             %     \item \cite{Dinh2018} considers distributed multi-user offloading in wireless channel with selfish EPG (exact potential game);
             %     \item \cite{Josilo2019} considers selfish offloading to achieve Nash equilibrium;
             %     \item \cite{Chen2016} is a work considering multi-user computation offloading with multi-channel contention, and adopt game theory approach to achieve Nash equilibrium with upper bound of convergence time;
+            %     \item \cite{Zhang2018} considers multi-user offloading under transmit power decision and user association decision;
             % \end{itemize}  
-            \item Misc:
-                \begin{itemize}
-                    \item \text{[MDP, IEEE ToN]} \cite{Wang2015} considers service migration with MDP with approximate states;
-                    \item \cite{Rodrigues2017} is a work on minimizing service delay in mobile edge computing;
-                    \item \cite{Zhang2018} considers multi-user offloading under transmit power decision and user association decision;
-                    \item \cite{Chen2018a} proposes joint optimization of task caching placement and offloading decision to achieve the lowest delay of task processing;
-                    \item \cite{ElHaber2019} is a work considers energy consumption for offloading in multi-tier edge clouds;
+            % \item Misc:
+                % \begin{itemize}
                     % \item \cite{Masip-Bruin2016} is a work with layered structure with foggy and cloud computation;
                     % \item  \cite{Guo2018} considers jointly offloading decision making and power allocation for UEs in SCNs (small-cell networks);
                     % \item \cite{Yu2018} is a system work published in ToMC, presents a framework to minimize remote execution overhead, and carry out real system experiments using large-scale data from cellular network provider.
                     % \item \cite{Wang2018} is a system work published in IEEE Access, considers the mobility of mobile users in limited coverage solved with service migration and handover, and propose a framework;
-                \end{itemize}
+                % \end{itemize}
+
+        We identify the delayed system information is unacceptable for explosion \emph{delay-sensitive jobs} in edge computing, and it's hard to establish cooperation among AP nodes because of obsolete information; identify that the uploading process affect the performance of heuristic greedy algorithm; identify that the delay-information sharing in decision making.
+
+        In this article, we considers User Equipment offloaded jobs dispatching from Access Points to Edge Servers. \hl{(Why separate AP and ES)}
+        The dispatching decision is applied on Access Points distributively but in a synchronize way with some prior stochastic knowledge.
+        Information sharing for cooperation is designed via (aligned) broadcast, job dispatch decision should be made immediately based on the previous collective information;
+
+        Our contributions:
+        \begin{itemize}
+            \item To our best knowledge, we are the first work to propose a MDP framework to characterize the obsolete information distributed decision and with performance bound;
+            \item propose a instantaneous job dispatching scheme in a distributed cooperative way, with synchronized/asymptotical stochastic information;
+            \item propose a global state MDP formulation to characterize the multi-agent problem;
+            \item adopt value function approximation to reduce the traditional algorithm complexity, and come up with performance guarantee;
         \end{itemize}
 
+        \hl{The remainder of this paper is organized as following.}
+        In Sec.II, system model.
+        In Sec.III, problem formulation.
+        In Sec.IV, we introduce low-complexity MDP algorithm.
+        In Sec.V, evaluation.
+        In Sec.VI, conclusion.
     \end{section}
 
     %============================ SYSTEM MODEL ============================%
@@ -174,7 +179,7 @@
             For convenience, we assign type of jobs on edge servers which have no VM resource available with \emph{infinity} processing time, and this kind of dispatching possibility will be rejected at the AP side.
 
             Each VM is considered running paralleled without resource contention, and the job scheduling for each VM follows \emph{FCFS} (First-Come-First-Serve).
-            {\color{red}The maximum queue length is set to discourage too many jobs pending on edge servers and is denoted as $L_Q$. The job submission over the limit will be rejected and announce the AP where the job from.}
+            {\color{red}The maximum queue length is set to discourage too many jobs pending on edge servers and is denoted as $L_Q$. The job submission over the limit will be rejected and announce the AP where the job is from.}
         \end{subsection}
 
         \begin{subsection}{Information-Sharing Broadcast Model}
@@ -198,25 +203,12 @@
             \end{align}
             where $\Obsv_i$ is a set of global information of $i$-th broadcast. And it's actually the global system states at $t_i$.
 
-            {\color{red}Due to the unpredictable property of broadcast delay with the underlaid network topology, different AP nodes will receive the broadcast information from AP nodes or ES nodes with different stochastic delay.}
+            {\color{red}Due to the unpredictable property of broadcast delay with the underlaid network topology, different AP nodes will receive the broadcast information from AP nodes or ES nodes with different stochastic delay. However, we still assume the broadcast delay is upper bounded and with a statistical distribution in this interval.}
             Let $d^{(p)}_{k,k'}$ denotes the broadcast delay between two AP nodes from $k'$-th AP to $k$-th AP ($\forall k,k'\in\apSet$); let $d^{(s)}_{k,m}$ denotes the broadcast delay between AP and ES node from $m$-th ES to $k$-th AP ($\forall k\in\apSet,\forall m\in\esSet$).
             
             The AP will update its dispatching policy when it receives the information from edge servers, and the time it receives all the information. We call the policy update time in the broadcast interval as \emph{update points}, which is defined as following:
-            \begin{definition}[Update Points]
-                Without loss of generality, we sort the index of $\esSet$ for $k$-th AP ($\forall k\in\apSet$) with respect to $d^{(s)}_{k,m}$ from smallest to biggest and formulate $\esSet_{k}$. We denote the delay as $\hat{d}_{k,1}, \dots,\hat{d}_{k,m}$.
-                Futhermore we denote the maximum time point where $k$-th AP receives global information as:
-                \begin{align}
-                    \hat{d}_{k,0} = \max\Paren{
-                        \set{d^{(p)}_{k,k'}|\forall k \neq k' \in\apSet},
-                        \set{d^{(s)}_{k,m}|\forall k\in\apSet,\forall m\in\esSet}
-                    }
-                \end{align}
-                The update points for $k$-th AP in interval $[t_{i}, t_{i+1}]$ are listed as following:
-                \begin{align}
-                    (t_i+\hat{d}_{k,1}),
-                    \dots,
-                    (t_i+\hat{d}_{k,M})
-                \end{align}
+            \begin{definition}[Hehehehehehehehehe]
+                MAXIMUM BROADCAST DELAY Hah!
             \end{definition}
 
             As the update points for each AP is key knowledge for optimal policy generation in our proposed scheme in next section, we furthermore design another broadcast phase where the AP nodes should broadcast the exact \emph{update points} list to other nodes
@@ -224,7 +216,7 @@
             The broadcast design introduces a \emph{Two-time scale} structure in the MEC system.
             The job dispatching and scheduling decisions on AP and ES side respectively are still carried out based on timeslot scale, while jobs' status transition from uploaded to computation is based on broadcast interval.
             More specifically, we consider the uploaded jobs in current broadcast interval will keep waiting on edge servers, and join the computation queue for scheduling at the beginning of next broadcast interval.
-            {\color{red}To discourage the meaningless waiting on edge servers, the servers will announce all the AP nodes with \emph{empty-queue penalty} in next broadcast. Moreover, we implement the broadcast in a low-frequency way that the broadcast period is always larger than the maximum broadcast delay plus the maximum uploading delay, i.e. $t_B > \hat{d}_{k} + u_{k,m}(j)$ $(\forall k\in\apSet, \forall m\in\esSet)$.}
+            {\color{red}To discourage the meaningless waiting on edge servers, the servers will announce all the AP nodes with \emph{empty-queue-penalty} in next broadcast. Moreover, we implement the broadcast in a low-frequency way that the broadcast period is always larger than the maximum broadcast delay plus the maximum uploading delay, i.e. $t_B > \hat{d}_{k} + u_{k,m}(j)$ $(\forall k\in\apSet, \forall m\in\esSet)$.}
         \end{subsection}
     \end{section}
 
@@ -250,7 +242,7 @@
             \end{figure}
 
             The \emph{dispatching policy} is applied over arrival jobs in each timeslot on each AP
-            , and the \emph{dispatching action space} is defined as $\vec{A}: (j, m) \in \jSpace \times \esSet$, where $(j, m)$ denotes the action that $j$-type job should be uploaded to $m$-th ES.
+            , and the \emph{dispatching action space} is defined as $\mathbf{A}: (j, m) \in \jSpace \times \esSet$, where $(j, m)$ denotes the action that $j$-type job should be uploaded to $m$-th ES.
             Based on the two stages of global system information $\Obsv_{i-1}$ and $\Obsv_{i}$ in system state, the compounded global-wise policy of all AP nodes is defined as following:
             \begin{definition}[Compounded Dispatching Policy]
                 The compounded dispatching policy over $\Stat_{i}$ is defined as $\Policy(\Stat_{i})$ which is composed of all the local policies $\Omega_k(\Stat_{i})$ ($\forall k\in\apSet$) as:
@@ -280,7 +272,7 @@
             \begin{problem}[Distributed Cooperative Job Dispatching Problem]
                 \begin{gather}
                     \min_{\Policy} \lim_{T \to \infty}
-                        \mathbb{E}_{\Policy}
+                        \mathbb{E}_{\Policy, \set{\hat{d}_k|\forall k\in\apSet}}
                             \Bracket{\sum_{i=2}^{T} \gamma^{i-1} g(\Stat_{i}, \Policy(\Stat_{i-1}))|\Stat_1},
                 \end{gather}
                 where the cost is collected with a discount factor $\gamma$.
@@ -288,7 +280,9 @@
 
             According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
             \begin{align}
-                V(\Stat_{i}) =& g(\Stat_i) + \gamma \min_{\Policy(\Stat_{i})} \sum_{\Stat_{i+1}} \Pr\{ \Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i}) \} V(\Stat_{i+1}),
+                V(\Stat_{i}) =& g(\Stat_i)
+                \nonumber\\
+                &+ \gamma \min_{\Policy(\Stat_{i})} \sum_{\Stat_{i+1}} \sum_{\hat{d}_k} \Pr\{ \Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i}) \} V(\Stat_{i+1}),
             \end{align}
             where the original definition for value function defined in \cite{sutton1998introduction} is as following:
             \begin{align}
@@ -407,20 +401,21 @@
             \begin{align}
                 &\Pr \Brace{Q_{m,j}(i+1)|Q_{m,j}(i),\vec{\Pi}}
                 \nonumber\\
-                &=\begin{cases}
-                    I[\tilde{n}_{m,j}(i)L_{m,j}+\delta_{m,j}(i) \leq T_B], &\\
-                        \;\;\;\;\;\;\;\;\text{if } Q_{m,j}(i+1)=0,\delta_{m,j}(i+1)=0 \\
-                    I[\tilde{n}_{m,j}(i)L_{m,j}+\delta_{m,j}(i) > T_B] \times I[\delta_{m,j}(i+1)=\delta'_{m,j}(i)] 
-                    \nonumber\\
-                    \times I[\tilde{n}_{m,j}(i) - n'_{m,j}(i) = n_{m,j}(i+1)], &\\
-                        \;\;\;\;\;\;\;\;\text{otherwise}
-                \end{cases},
+                &=,
+                % \begin{cases}
+                %     I[\tilde{n}_{m,j}(i)L_{m,j}+\delta_{m,j}(i) \leq T_B], &\\
+                %         \;\;\;\;\;\;\;\;\text{if } Q_{m,j}(i+1)=0,\delta_{m,j}(i+1)=0 \\
+                %     I[\tilde{n}_{m,j}(i)L_{m,j}+\delta_{m,j}(i) > T_B] \times I[\delta_{m,j}(i+1)=\delta'_{m,j}(i)] 
+                %     \nonumber\\
+                %     \times I[\tilde{n}_{m,j}(i) - n'_{m,j}(i) = n_{m,j}(i+1)], &\\
+                %         \;\;\;\;\;\;\;\;\text{otherwise}
+                % \end{cases},
             \end{align}
             where:
-            \begin{itemize}
-                \item $\tilde{n}_{m,j}(i) = \sum_{k\in\apSet} [\tilde{n}^{(k)}_{0,j} + \tilde{n}^{'(k)}_{m,j}] + n_{m,j}(i)$, where $\tilde{n}^{(k)}_{0,j} = u_{k,m}p^{(i)}_{k,m}(j)$ is the averaged $\Obsv^{(AP)}$ state under policy $\Policy(\Stat_i)$, $\tilde{n}^{'(k)}_{m,j} \sim B(t_B-u_{k,m}, p^{(\Pi_k)}_{k,m}(j))$, $(\forall k\in\apSet)$;
-                \item $T_B+\delta_{m,j}(i)= n'_{m,j}(i) L_{m,j} + \delta'_{m,j}(i)$; if both $\delta_{m,j}(i+1)=0$ and $n_{m,j}(i+1)$, .
-            \end{itemize}
+            % \begin{itemize}
+            %     \item $\tilde{n}_{m,j}(i) = \sum_{k\in\apSet} [\tilde{n}^{(k)}_{0,j} + \tilde{n}^{'(k)}_{m,j}] + n_{m,j}(i)$, where $\tilde{n}^{(k)}_{0,j} = u_{k,m}p^{(i)}_{k,m}(j)$ is the averaged $\Obsv^{(AP)}$ state under policy $\Policy(\Stat_i)$, $\tilde{n}^{'(k)}_{m,j} \sim B(t_B-u_{k,m}, p^{(\Pi_k)}_{k,m}(j))$, $(\forall k\in\apSet)$;
+            %     \item $T_B+\delta_{m,j}(i)= n'_{m,j}(i) L_{m,j} + \delta'_{m,j}(i)$; if both $\delta_{m,j}(i+1)=0$ and $n_{m,j}(i+1)$, .
+            % \end{itemize}
         \end{subsection}
 
         \begin{subsection}{The Distributed Algorithm}
@@ -455,15 +450,16 @@
     \end{section}
 
     %============================ EVALUATION ==============================%
-    \begin{section}{EVALUATION}
+    \begin{section}{PERFORMANCE EVALUATION}
         \label{sec:evaluation}
         (in progress ...)
     \end{section}
 
     %============================= CONCLUSION =============================%
-    \begin{section}{CONCLUTION}
+    \begin{section}{CONCLUSION}
         \label{sec:conclusion}
-        (in progress ...)
+        In this paper,
+        The future work,
     \end{section}
     
     %============================== APPENDIX ==============================%
@@ -480,24 +476,25 @@
         \end{align*}
         where $B(n,p)$ denotes a Binomial distribution.
             
-        The second part transition function is rather complex and composed of three independent distribution as depicted in Fig. \hl{(need a timeline graph)}. We denote the state $n_{m,j}(i+1)$ in $Q_{m,j}(i+1)$ over the three stages as:
-        \begin{align*}
-            n_{m,j}(i+1) &= [n_{m,j}(i) + n_0 + n_1 + n_2 -n']_+
-            \\
-            \delta_{m,j}(i+1) &= [\delta']_+,
-        \end{align*}
-        where $[\cdot]_+$ is equal as $\max(\cdot, 0)$ and:
-        \begin{itemize}
-            \item $n_0$ denotes the en-queued jobs from in-uploading jobs in last interval from all $r^{(k)}_{m,j}$, let $n^{(k)}_0$ denotes the number of jobs from $k$-th AP, $n_0 = \sum_{k\in\apSet} n^{(k)}_0$;
-            \item $n_1$ and $n_2$ respectively denotes the en-queued number of jobs under policy $\tilde{\Omega}_k(i-1)$ and $\tilde{\Omega}_k(i)$; let $n^{(k)}_1, n^{(k)}_2$ denotes the jobs from $k$-th AP which follow two different Binomial distribution as:
-            \begin{align*}
-                n^{(k)}_1 &\sim B\Paren{\hat{d}_k, p^{(i-1)}_{k,m}(j)}
-                \\
-                n^{(k)}_2 &\sim B\Paren{t_B - \hat{d}_k - u_{k,m}, p^{(i)}_{k,m}(j)},
-            \end{align*}
-            and $n_1 = \sum_{k\in\apSet}n^{(k)}_1, n_2=\sum_{k\in\apSet}n^{(k)}_2$;
-            \item $n' = \lfloor\frac{T_B+\delta_{m,j}(i)}{L_{m,j}}\rfloor$ denotes the finished jobs number in this interval, $\delta'$ denotes the remaining processing time of current unfinished job; specifically, if all the jobs finished before the end of interval, both $n_{m,j}(i+1)$ and $\delta_{m,j}(i+1)$ are zero.
-        \end{itemize}
+        The second part transition function is rather complex and composed of three independent distribution as depicted in Fig. \hl{(need a timeline graph)}.
+        We denote the state $n_{m,j}(i+1)$ in $Q_{m,j}(i+1)$ over the three stages as:
+        % \begin{align*}
+        %     n_{m,j}(i+1) &= [n_{m,j}(i) + n_0 + n_1 + n_2 -n']_+
+        %     \\
+        %     \delta_{m,j}(i+1) &= [\delta']_+,
+        % \end{align*}
+        % where $[\cdot]_+$ is equal as $\max(\cdot, 0)$ and:
+        % \begin{itemize}
+        %     \item $n_0$ denotes the en-queued jobs from in-uploading jobs in last interval from all $r^{(k)}_{m,j}$, let $n^{(k)}_0$ denotes the number of jobs from $k$-th AP, $n_0 = \sum_{k\in\apSet} n^{(k)}_0$;
+        %     \item $n_1$ and $n_2$ respectively denotes the en-queued number of jobs under policy $\tilde{\Omega}_k(i-1)$ and $\tilde{\Omega}_k(i)$; let $n^{(k)}_1, n^{(k)}_2$ denotes the jobs from $k$-th AP which follow two different Binomial distribution as:
+        %     \begin{align*}
+        %         n^{(k)}_1 &\sim B\Paren{\hat{d}_k, p^{(i-1)}_{k,m}(j)}
+        %         \\
+        %         n^{(k)}_2 &\sim B\Paren{t_B - \hat{d}_k - u_{k,m}, p^{(i)}_{k,m}(j)},
+        %     \end{align*}
+        %     and $n_1 = \sum_{k\in\apSet}n^{(k)}_1, n_2=\sum_{k\in\apSet}n^{(k)}_2$;
+        %     \item $n' = \lfloor\frac{T_B+\delta_{m,j}(i)}{L_{m,j}}\rfloor$ denotes the finished jobs number in this interval, $\delta'$ denotes the remaining processing time of current unfinished job; specifically, if all the jobs finished before the end of interval, both $n_{m,j}(i+1)$ and $\delta_{m,j}(i+1)$ are zero.
+        % \end{itemize}
         Then we have the transition function for $m$-th ES node given as:
         \begin{align*}
             & \Pr\Brace{Q_{m,j}(i+1)|Q_{m,j}(i), \set{\mat{R}_{k}|\forall k\in\apSet}, \Policy(\Stat_i)}
