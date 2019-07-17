@@ -292,16 +292,17 @@
                         \mathbb{E}_{\Policy, \vecG{\eta}}
                             \Bracket{\sum_{i=2}^{T} \gamma^{i-1} g(\Stat_{i}, \Policy(\Stat_{i-1}))|\Stat_1},
                 \end{gather}
-                where the cost is collected with a discount factor $\gamma$.
+                where the cost is collected with a discount factor $\gamma$, and $\Policy$ denotes the global compounded policy of all AP nodes.
             \end{problem}
 
             According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
             \begin{align}
-                V(\Stat_{i}) =  g(\Stat_i) + 
-                    \gamma \min_{\Policy(\Stat_{i})}
-                    \sum_{\Stat_{i+1}} \Pr\{ \Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i}) \} V(\Stat_{i+1}),
+                V(\Stat_{i}) =&  g(\Stat_i) +
+                \nonumber\\
+                &\gamma \min_{\Policy(\Stat_{i})} \sum_{\Stat_{i+1}}
+                    \Pr\{ \Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i}) \} V(\Stat_{i+1}),
             \end{align}
-            where the original definition for value function defined in \cite{sutton1998introduction} is as follows.
+            where $\bar{\Policy}(\Stat_{i}) \define$. The definition for value function is defined as description in \cite{sutton1998introduction} as follows.
             \begin{align}
                 V(\Stat_{i}) \define \lim_{T\to\infty}
                     \mathbb{E}_{\Policy,\vecG{\eta}} \Bracket{
@@ -328,7 +329,7 @@
             \end{itemize}
             
             \begin{lemma}[Transition Function Decoupling]
-                The transition function in Bellman's equation could be decoupled to facilitate the final approximated value function expression. The transition function could be decoupled as:
+                The transition function in Bellman's equation could be decoupled on AP nodes states and ES nodes states, which will facilitate the approximated value function expression in the following section. The decoupled transition function is in the form as follows.
                 \begin{align}
                     & \Pr\{\Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i})\} 
                     \nonumber\\
