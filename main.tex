@@ -95,16 +95,16 @@
             \item \cite{Fan2017} considers cooperation of multiple MEC-BSs of computation offloading to other MEC-BSs (However, it doesn't consider the offloading utility impact on other MEC-BSs, i.e. only optimize for one BSs in the cluster).
         \end{itemize}
         
-        Different from the previous referred works only considering optimization for one agent in system or using centralized agent for decision making, we focus on the impact of out-of-dated information on decision making in multiple agents distributed cooperation.
-        Due to frequent jobs release from UEs and uncertainty of jobs uploading time, the information sharing delay would cause server misestimate for dispatching decision making.
-        Thus, the obsolete information is inevitable in a purely distributed system and it will be hard to guarantee the cooperation among agents.
+        Different from the previous referred works, which only consider optimization for one agent in system or using centralized agent for decision making, we focus on the impact of out-of-dated information on decision making in multiple agents distributed cooperation.
+        Due to frequent jobs releasing from users and uncertainty of jobs uploading time to servers, the obsolete information is inevitable in a purely distributed system.
+        This information sharing delay would cause severe misestimate for job dispatching decision making, and thus it will be hard to guarantee the cooperation among individual agents.
         Moreover, the information sharing delay is often un-deterministic due to shared underlaid network topology, and offensively sharing strategy would cause network congestion to other normal functions.
 
-        To our best knowledge, there are very limited discussions on this topic:
+        As what we have learned for now, there are very limited discussions on this topic:
         \begin{itemize}
             \item The earliest works entangling with out-of-dated information we could find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing limited information. The agent considers communication as extra action to synchronize the states and thus incurs extra cost; \hl{(However, the communication is without delay, thus converted into POMDP problem)}
             \item The other work \cite{ref-02} considers continuous state observation with constant or stochastic delay with single agent;
-            \item One researcher published a series of paper on this topic.
+            \item One researcher published a series of paper on this topic \cite{Lyu2017,Lyu2018,Lyu2018a,Lyu2018b}.
                 \cite{Lyu2017} is work considering \emph{out-of-date knowledge} optimization in IoT computing scenario, with Lyapunov optimization;
                 \text{[delay-sensitive, ToC]} \cite{Lyu2018} identify that task admission is critical to delay-sensitive applications in mobile edge computing, and proposes an (1-$\epsilon$)-approximation algorithm
                 \text{[foggy, fully distributed online]} \cite{Lyu2018a} is a work fully distributed online optimization to minimize the time-average cost and achieve asymptotic optimality over infinite time;
@@ -132,15 +132,14 @@
         %     \item \cite{Wang2018} is a system work published in IEEE Access, considers the mobility of mobile users in limited coverage solved with service migration and handover, and propose a framework;
         % \end{itemize}
 
-        In this article, we considers User Equipment offloaded jobs dispatching from Access Points to Edge Servers. The Access Points function as router with decision on minimize the long-term average job response time.
-        The dispatching decision is applied on Access Points distributively but in a synchronize way with some prior stochastic knowledge.
-        Information sharing for cooperation is designed via (aligned) broadcast, job dispatch decision should be made immediately based on the previous collective information;
+        In this article, we consider there are Access Points (AP) in this network to connect the User Equipment (UE) and the Edge Servers (ES).
+        The computation jobs would be released from UEs and the dispatching decisions are determined distributed on each APs as depicted in Fig.\ref{fig:system}.
+        The information sharing scheme is proposed in this article with synchronized broadcast design. With the help of this scheme, we could immediately apply the job dispatching decision based on obsolete information, with some prior stochastic knowledge of global system.
         Our contributions are summarized as follows.
         \begin{itemize}
-            \item To our best knowledge, we are the first work to propose a MDP framework to characterize the obsolete information distributed decision and with performance bound;
-            \item propose a instantaneous job dispatching scheme in a distributed cooperative way, with synchronized/asymptotical stochastic information;
-            \item propose a global state MDP formulation to characterize the multi-agent problem, i.e. single agent would consider multi-agent decision optimality to achieve cooperation;
-            \item adopt value function approximation to reduce the traditional algorithm complexity, and come up with performance guarantee;
+            \item To our best knowledge, we are the first work to propose the MDP framework making use of obsolete information in edge computing system. With shared prior stochastic knowledge, the distributed agent could come to consensus on optimal oplicy adopting globally;
+            \item We propose a global state MDP formulation to characterize the multi-agent problem, i.e. single agent would consider multi-agent decision optimality to achieve cooperation.
+            We with adopt value function approximation to reduce the traditional algorithm complexity, and come up with performance guarantee performance bound.
         \end{itemize}
 
         \hl{The remainder of this paper is organized as follows.}
