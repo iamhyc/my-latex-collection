@@ -55,6 +55,7 @@
     \author{
         \IEEEauthorblockN{
             Yuncong Hong\IEEEauthorrefmark{1}\IEEEauthorrefmark{2},
+            % Zhenhua Han\IEEEauthorrefmark{2}
             % Rui Wang\IEEEauthorrefmark{1},
             % Haisheng Tan\IEEEauthorrefmark{3},
             % Francis C.M. Lau\IEEEauthorrefmark{2}
@@ -81,23 +82,27 @@
     %============================ INTRODUCTION ============================%
     \begin{section}{INTRODUCTION}
         \label{sec:introduction}
-        Edge computing is promising.
+        Edge Computation is believed to be a promising technology for solving increasingly communication congestion in backbone network.
+        (Rich-media tasks are delay-sensitive).
         \cite{Naha2018} is a survey about fog computing in latency-aware computing in IoT, and investigate numerous proposed computing architecture.
-        In IoT (Internet of Things)/MAN (Metropolitan Area Network) scenario,
 
         Related works on job dispatching on scheduling in edge computing, mostly with centralized agent to apply action and seldom take delayed information impact into consideration.
-        \hl{In the previous researches, there are many works investigated job dispatching strategies in the scenario of MEC.} Task Offloading Scenario:
+        There are some previous works on jobs scheduling strategies under the scenario of edge computation, together with joint optimization job dispatching and resource allocation:
         \begin{itemize}
-            \item \text{[centralized, offloading, reduced state MDP]} \cite{Zheng2019} is a work considering maximizing the long-term utility in MEC offloading policy, and formulating the problem with MDP solved with Q-learning; \hl{(need long time online to converge to optimality, less performed than our proposed algorithm)}
-            \item \cite{Du2018} propose an offline algorithm with MINLP problem formulation, considering min-max fairness guarantee in computation offloading and computation resource allocation in fog/edge computing scenario; \hl{with only one edge and one cloud node considered, so trivial}
-            \item \cite{Alameddine2019} is a work considering task offloading, scheduling and resource allocation joint optimization with Benders Decomposition;
-            \item \cite{Fan2017} considers cooperation of multiple MEC-BSs of computation offloading which minimizes total cost of time and energy consumption.
-            \item \cite{ElHaber2019} is a work considers energy consumption for offloading in multi-tier edge clouds;
-            \item \cite{Chen2018a} proposes joint optimization of task caching placement and offloading decision to achieve the lowest delay of task processing;
+            \item \cite{Zheng2019} is a work considering maximizing the long-term utility in MEC offloading policy, and formulating the problem with MDP solved with Q-learning (However, it's applied with a centralized controller which would suffer from communication overhead, and the proposed reduced states is naive);
+            \item \cite{Du2018} propose an offline algorithm with MINLP (Mixed-Integer Nonlinear Programming) problem formulation, considering min-max fairness guarantee in computation offloading and computation resource allocation in fog/edge computing scenario (However, with only one edge and one cloud node considered);
+            \item \cite{Alameddine2019} is a work considering task offloading, scheduling and resource allocation joint optimization with Benders Decomposition (However, delay information is previous defined);
+            \item \cite{Fan2017} considers cooperation of multiple MEC-BSs of computation offloading to other MEC-BSs (However, it doesn't consider the offloading utility impact on other MEC-BSs, i.e. only optimize for one BSs in the cluster).
         \end{itemize}
-        \hl{Different from previous work, we focus on out-of-dated information on decision making in multi-agent cooperation system. To our best knowledge, there are very limited discussions on this topic.}
+        
+        Different from the previous referred works only considering optimization for one agent in system or using centralized agent for decision making, we focus on the impact of out-of-dated information on decision making in multiple agents distributed cooperation.
+        Due to frequent jobs release from UEs and uncertainty of jobs uploading time, the information sharing delay would cause server misestimate for dispatching decision making.
+        Thus, the obsolete information is inevitable in a purely distributed system and it will be hard to guarantee the cooperation among agents.
+        Moreover, the information sharing delay is often un-deterministic due to shared underlaid network topology, and offensively sharing strategy would cause network congestion to other normal functions.
+
+        To our best knowledge, there are very limited discussions on this topic:
         \begin{itemize}
-            \item The earliest works on out-of-dated information we find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing limited information. The agent considers communication as extra action to synchronize the states and thus incurs extra cost; \hl{(However, the communication is without delay, thus converted into POMDP problem)}
+            \item The earliest works entangling with out-of-dated information we could find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing limited information. The agent considers communication as extra action to synchronize the states and thus incurs extra cost; \hl{(However, the communication is without delay, thus converted into POMDP problem)}
             \item The other work \cite{ref-02} considers continuous state observation with constant or stochastic delay with single agent;
             \item One researcher published a series of paper on this topic.
                 \cite{Lyu2017} is work considering \emph{out-of-date knowledge} optimization in IoT computing scenario, with Lyapunov optimization;
@@ -105,32 +110,29 @@
                 \text{[foggy, fully distributed online]} \cite{Lyu2018a} is a work fully distributed online optimization to minimize the time-average cost and achieve asymptotic optimality over infinite time;
                 \cite{Lyu2018b} try to establish cooperation among selfish devices in fog computing, and out-of-date information is blamed for optimality gap but proved to asymptotically diminish with the proposed algorithm; \hl{(escape from the information but no use)}
         \end{itemize}
-        % \item Service Placement Scenario:
-            %     \begin{itemize}
-                    % \item \cite{Rodrigues2017} is a work on minimizing service delay in mobile edge computing;
-                    % \item \cite{Yang2016} is a work considering services placement and requests dispatching on edge servers, and leverage users' pattern to predict "service cache" for online decision making;
-            %         \item \cite{Chen2018} is a work with SDN on task offloading and battery life saving, and solve the NLP problem with two sub-problems;
-            %     \end{itemize}
-            % \item With Game Theory:
-            % \begin{itemize}
-            %     \item \cite{yang2018} and \cite{Josilo2019a} considers distributed computation offloading game;
-            %     \item \cite{Liu2018} is a work considering minimize users' power consumption with Lyapunov optimization and matching theory;
-            %     \item \cite{Dinh2018} considers distributed multi-user offloading in wireless channel with selfish EPG (exact potential game);
-            %     \item \cite{Josilo2019} considers selfish offloading to achieve Nash equilibrium;
-            %     \item \cite{Chen2016} is a work considering multi-user computation offloading with multi-channel contention, and adopt game theory approach to achieve Nash equilibrium with upper bound of convergence time;
-            %     \item \cite{Zhang2018} considers multi-user offloading under transmit power decision and user association decision;
-            % \end{itemize}  
-            % \item Misc:
-                % \begin{itemize}
-                    % \item \cite{Masip-Bruin2016} is a work with layered structure with foggy and cloud computation;
-                    % \item  \cite{Guo2018} considers jointly offloading decision making and power allocation for UEs in SCNs (small-cell networks);
-                    % \item \cite{Yu2018} is a system work published in ToMC, presents a framework to minimize remote execution overhead, and carry out real system experiments using large-scale data from cellular network provider.
-                    % \item \cite{Wang2018} is a system work published in IEEE Access, considers the mobility of mobile users in limited coverage solved with service migration and handover, and propose a framework;
-                % \end{itemize}
 
-        We identify the delayed system information is unacceptable for explosion \emph{delay-sensitive jobs} in edge computing, and it's hard to establish cooperation among AP nodes because of obsolete information; identify that the uploading process affect the performance of heuristic greedy algorithm; identify that the delay-information sharing in decision making.
+        % Service Placement Scenario:
+        % \begin{itemize}
+        %     \item \cite{Rodrigues2017} is a work on minimizing service delay in mobile edge computing;
+        %     \item \cite{Yang2016} is a work considering services placement and requests dispatching on edge servers, and leverage users' pattern to predict "service cache" for online decision making;
+        %     \item \cite{Chen2018} is a work with SDN on task offloading and battery life saving, and solve the NLP problem with two sub-problems;
+        % \end{itemize}
+        % Using Game Theory:
+        % \begin{itemize}
+        %     \item \cite{yang2018} and \cite{Josilo2019a} considers distributed computation offloading game;
+        %     \item \cite{Liu2018} is a work considering minimize users' power consumption with Lyapunov optimization and matching theory;
+        %     \item \cite{Dinh2018} considers distributed multi-user offloading in wireless channel with selfish EPG (exact potential game);
+        %     \item \cite{Josilo2019} considers selfish offloading to achieve Nash equilibrium;
+        %     \item \cite{Chen2016} is a work considering multi-user computation offloading with multi-channel contention, and adopt game theory approach to achieve Nash equilibrium with upper bound of convergence time;
+        %     \item \cite{Zhang2018} considers multi-user offloading under transmit power decision and user association decision;
+        % \end{itemize}
+        % System Work:
+        % \begin{itemize}
+        %     \item \cite{Yu2018} is a system work published in ToMC, presents a framework to minimize remote execution overhead, and carry out real system experiments using large-scale data from cellular network provider;
+        %     \item \cite{Wang2018} is a system work published in IEEE Access, considers the mobility of mobile users in limited coverage solved with service migration and handover, and propose a framework;
+        % \end{itemize}
 
-        In this article, we considers User Equipment offloaded jobs dispatching from Access Points to Edge Servers. \hl{(Why separate AP and ES)}
+        In this article, we considers User Equipment offloaded jobs dispatching from Access Points to Edge Servers. The Access Points function as router with decision on minimize the long-term average job response time.
         The dispatching decision is applied on Access Points distributively but in a synchronize way with some prior stochastic knowledge.
         Information sharing for cooperation is designed via (aligned) broadcast, job dispatch decision should be made immediately based on the previous collective information;
 
@@ -138,7 +140,7 @@
         \begin{itemize}
             \item To our best knowledge, we are the first work to propose a MDP framework to characterize the obsolete information distributed decision and with performance bound;
             \item propose a instantaneous job dispatching scheme in a distributed cooperative way, with synchronized/asymptotical stochastic information;
-            \item propose a global state MDP formulation to characterize the multi-agent problem;
+            \item propose a global state MDP formulation to characterize the multi-agent problem, i.e. single agent would consider multi-agent decision optimality to achieve cooperation;
             \item adopt value function approximation to reduce the traditional algorithm complexity, and come up with performance guarantee;
         \end{itemize}
 
@@ -342,7 +344,7 @@
             \end{align}
             where $\Pi_k \define \set{\omega_{k,m}(j)|\forall m\in\esSet,\forall j\in\jSpace}$, $\forall k\in\apSet$.
 
-            According to the linear property of cost function, the value function could be divided linearly into two section as $\tilde{W}^{(p)}(\Obsv^{(p)}(i))$ and $\tilde{W}^{(s)}(\Obsv(i))$ under baseline policy:
+            According to the additive structure of cost function, the value function could be divided linearly into two section as $\tilde{W}^{(p)}(\Obsv^{(p)}(i))$ and $\tilde{W}^{(s)}(\Obsv(i))$ under baseline policy:
             \begin{align}
                 V(\Stat_{i}) =& 
                     g(\Stat_{i}) + \gamma \min_{\Policy(\Stat_{i})} \sum_{\Stat_{i+1}} \Pr\{ \Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i}) \}
