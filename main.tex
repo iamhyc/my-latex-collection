@@ -183,8 +183,8 @@
         \end{subsection}
 
         \begin{subsection}{Information-Sharing Broadcast Model}
-            As there is no centralized agent design to distribute the dispatching decisions to each AP node, all the AP nodes have to collect the global information from other nodes. Therefore, a information sharing scheme is needed to facilitate efficient cooperation among standalone AP nodes.
-            In this article, the sharing is designed via periodic broadcasting, where all the AP and ES nodes in the system should broadcast their system related information with a same period interval as $t_B$. More specifically, the broadcasting is applied in a synchronized way that all the nodes start to broadcast at the start of same timeslot and repeat broadcasting after the same periodic interval $t_B$. We call each periodic point of broadcasting as \emph{broadcast point} and denote the $i$-th broadcast with $t_i$ where,
+            As there is no centralized agent to distribute dispatching decisions to each AP node, an efficient information sharing scheme is needed to help collect global information and establish cooperation among standalone nodes.
+            In this paper, the proposed sharing scheme is designed via periodic broadcasting, where all the AP and ES nodes in the system should broadcast their system related information with a same period interval as $t_B$. More specifically, the broadcasting is applied in a synchronized way that all the nodes start to broadcast at the start of same timeslot and repeat broadcasting after the same periodic interval $t_B$. We call each periodic point of broadcasting as \emph{broadcast point} and denote the $i$-th broadcast with $t_i$ where,
             \begin{align}
                 t_i = i \cdot t_B, i=0,1,2,\dots
             \end{align}
@@ -203,20 +203,25 @@
             \end{align}
             where $\Obsv_i$ is a set of global information of $i$-th broadcast. And it's actually the global system states at $t_i$.
 
-            {\color{red}Due to the unpredictable property of broadcast delay with the underlaid network topology, different AP nodes will receive the broadcast information from AP nodes or ES nodes with different stochastic delay. However, we still assume the broadcast delay is upper bounded and with a statistical distribution in this interval.}
-            Let $d^{(p)}_{k,k'}$ denotes the broadcast delay between two AP nodes from $k'$-th AP to $k$-th AP ($\forall k,k'\in\apSet$); let $d^{(s)}_{k,m}$ denotes the broadcast delay between AP and ES node from $m$-th ES to $k$-th AP ($\forall k\in\apSet,\forall m\in\esSet$).
-            
-            The AP will update its dispatching policy when it receives the information from edge servers, and the time it receives all the information. We call the policy update time in the broadcast interval as \emph{update points}, which is defined as follows.
-            \begin{definition}[Hehehehehehehehehe]
-                MAXIMUM BROADCAST DELAY Hah!
+            {\color{red}Due to the shared underlaid network with other network functions, the broadcast latency is \emph{un-predictable} in a distributed system and each AP will have different delay when receiving all the broadcast information from all the ES nodes and other AP nodes.}
+            Let $D^{(p)}_{k,k'}$ denotes the broadcast delay between two AP nodes from $k'$-th AP to $k$-th AP ($\forall k,k'\in\apSet$); let $D^{(s)}_{k,m}$ denotes the broadcast delay between AP and ES node from $m$-th ES to $k$-th AP ($\forall k\in\apSet,\forall m\in\esSet$).
+            Furthermore, we denote the latency time where $k$-th AP receives all the last broadcast information as \emph{Update Point}, which is defined as follows.
+            \begin{definition}[Update Point]
+                \begin{align}
+                    D_k \define \max\Paren{
+                        \set{D^{(p)}_{k,k'}|\forall k,k'\in\apSet},
+                        \set{D^{(s)}_{k,m}|\forall k\in\apSet,m\in\esSet}
+                    },
+                \end{align}
+                where $D^{(p)}_{k,k'} \equiv 0$ for convenience. {\color{red}We assume that $D_k$ is bounded with $[0, \hat{D}_k]$ and follows some distribution in this interval summarized from statistical data, which is denotes as $\eta_k(d) \define \Pr\{D_k=d\}$.}
             \end{definition}
 
-            As the update points for each AP is key knowledge for optimal policy generation in our proposed scheme in next section, we furthermore design another broadcast phase where the AP nodes should broadcast the exact \emph{update points} list to other nodes
-
             The broadcast design introduces a \emph{Two-time scale} structure in the MEC system.
-            The job dispatching and scheduling decisions on AP and ES side respectively are still carried out based on timeslot scale, while jobs' status transition from uploaded to computation is based on broadcast interval.
-            More specifically, we consider the uploaded jobs in current broadcast interval will keep waiting on edge servers, and join the computation queue for scheduling at the beginning of next broadcast interval.
-            {\color{red}To discourage the meaningless waiting on edge servers, the servers will announce all the AP nodes with \emph{empty-queue-penalty} in next broadcast. Moreover, we implement the broadcast in a low-frequency way that the broadcast period is always larger than the maximum broadcast delay plus the maximum uploading delay, i.e. $t_B > \hat{d}_{k} + u_{k,m}(j)$ $(\forall k\in\apSet, \forall m\in\esSet)$.}
+            The job dispatching and scheduling decisions on AP and ES side respectively are still carried out based on timeslot scale, while the policy update is based on broadcast interval with the information update.
+            More specifically, the AP would only update its policy when it receives all the broadcast information which implies it comes to consensus on the obsolete global information with other AP nodes.
+
+            Due to the broadcast latency, the information received with delay will affect the policy update point for each AP, which impact on the transition distribution of next policy and global states.
+            {\color{red}In the next section, we will show that with the prior statistic knowledge about broadcast latency $\set{\eta_k|\forall k\in\apSet}$, we could establish exact cooperation among AP nodes under MDP frame work with analytical performance bound.}
         \end{subsection}
     \end{section}
 
@@ -260,7 +265,11 @@
         \end{subsection}
 
         \begin{subsection}{The Optimization Problem}
-            The optimization target of our problem is to minimize the \emph{average response time} of all jobs, which is composed of uploading time from AP to ES, and queueing-and-service time on ES nodes. According to \emph{Little's Law}, the average response time of all the jobs is equally as average number of jobs in system. Therefore, based on the system state definition, we have cost function as:
+            The optimization target of our problem is to minimize the \emph{average response time} of all jobs, which is composed of uploading time from AP to ES, and queueing-and-service time on ES nodes. According to \emph{Little's Law}, the average response time of all the jobs is equally as average number of jobs in system.
+
+            {\color{red} We consider the uploaded jobs in current broadcast interval will keep waiting on edge servers, and join the computation queue for scheduling at the beginning of next broadcast interval. To discourage the meaningless waiting on edge servers, the servers will announce all the AP nodes with \emph{empty-queue-penalty} in next broadcast. Moreover, we implement the broadcast in a low-frequency way that the broadcast period is always larger than the maximum broadcast delay plus the maximum uploading delay, i.e. $t_B > \hat{d}_{k} + u_{k,m}(j)$ $(\forall k\in\apSet, \forall m\in\esSet)$.}
+
+            Therefore, based on the system state definition, we have cost function as:
             \begin{align}
                 g\Paren{\Stat_{i}, \Policy(\Stat_{i-1})} \define
                         \sum_{k\in\apSet}\sum_{m\in\esSet} \Inorm{\vec{r}^{(k)}_{m}(i)} +
