@@ -45,6 +45,7 @@
 \newcommand{\Stat}{\mathbf{S}}
 \newcommand{\Obsv}{\mathcal{Y}}
 \newcommand{\Policy}{\boldsymbol{\Omega}}
+\newcommand{\BPolicy}{\bar{\Policy}}
 \newcommand{\ASpace}{\mathbf{A}}
 %---------------------------------------------------------------%
 
@@ -290,7 +291,8 @@
                             \alpha I[n_{m,j}(i)=0] + \beta I[n_{m,j}(i)=L_Q]
                         },
             \end{align}
-            where $\Inorm{\vec{r}^{(k)}_{m}}$ denotes the $L^1$-norm of vector $\vec{r}^{(k)}_{m}$, i.e. the sum up of absolute value of each entry. The cost function defined is a sampling of interval $t_B$ over the whole process, because the global information for AP nodes only contains the information at the broadcast points.
+            where $\Inorm{\vec{r}^{(k)}_{m}}$ denotes the $L^1$-norm of vector $\vec{r}^{(k)}_{m}$, i.e. the sum up of absolute value of each entry; $\alpha$ and $\beta$ are weight factor for empty-queue penalty and full-queue penalty respectively.
+            {\color{red}The cost function defined is a sampling of interval $t_B$ over the whole job response process, because the global information for AP nodes only contains the information at the broadcast points.}
 
             Our distributed optimization problem definition is given as follows.
             \begin{problem}[Distributed Cooperative Job Dispatching Problem]
@@ -309,10 +311,10 @@
                     \nonumber\\
                     &\Pr\{ \Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i}) \} V(\Stat_{i+1})
                 \nonumber\\
-                =& g(\Stat_i) + \gamma \min_{\bar{\Policy}(\Stat_{i})} \sum_{\Stat_{i+1}}
-                \Pr\{ \Stat_{i+1}|\Stat_{i}, \bar{\Policy}(\Stat_{i}) \} V(\Stat_{i+1}),
+                =& g(\Stat_i) + \gamma \min_{\BPolicy(\Stat_{i})} \sum_{\Stat_{i+1}}
+                \Pr\{ \Stat_{i+1}|\Stat_{i}, \BPolicy(\Stat_{i}) \} V(\Stat_{i+1}),
             \end{align}
-            {\color{red}where $\bar{\Policy}(\Stat_{i}) \define [\bar{\Omega}_1(\Stat_{i}), \dots, \bar{\Omega}_K(\Stat_{i})]$; each $\bar{\Omega}_k(\Stat_{i})$ on $k$-th AP denotes the policy phase is separated by $\bar{d}_k$.}
+            {\color{red}where $\BPolicy(\Stat_{i}) \define [\bar{\Omega}_1(\Stat_{i}), \dots, \bar{\Omega}_K(\Stat_{i})]$; each $\bar{\Omega}_k(\Stat_{i})$ on $k$-th AP denotes the policy phase is separated by $\bar{d}_k$.}
             The definition for value function is defined according to the form in \cite{sutton1998introduction} as follows.
             \begin{align}
                 V(\Stat_{i}) \define \lim_{T\to\infty}
@@ -342,11 +344,11 @@
             \begin{lemma}[Transition Function Decoupling]
                 The transition function in Bellman's equation could be decoupled on AP nodes states and ES nodes states, which will facilitate the approximated value function expression in the following section. The decoupled transition function is in the form as follows.
                 \begin{align}
-                    & \Pr\{\Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i})\} 
+                    & \Pr\{\Stat_{i+1}|\Stat_{i}, \BPolicy(\Stat_{i})\}
                     \nonumber\\
-                    =& \prod_{k\in\apSet} \Pr\Brace{\vec{R}_k(i+1)|\Policy(\Stat_{i})} \times \prod_{m\in\esSet}\prod_{j\in\jSpace}
+                    =& \prod_{k\in\apSet} \Pr\Brace{\vec{R}_k(i+1)|\BPolicy(\Stat_{i})} \times \prod_{m\in\esSet}\prod_{j\in\jSpace}
                         \nonumber\\
-                        & \Pr \Brace{\vec{Q}_{m,j}(i+1)|\vec{Q}_{m,j}(i), \set{\vec{R}_k(i)|\forall k\in\apSet}, \Policy(\Stat_{i})},
+                        & \Pr \Brace{\vec{Q}_{m,j}(i+1)|\vec{Q}_{m,j}(i), \set{\vec{R}_k(i)|\forall k\in\apSet}, \BPolicy(\Stat_{i})},
                 \end{align}
                 where first production part denotes the unfinished uploading state transition for AP nodes whose distribution, and the second part denotes the queueing state transition for ES nodes.
             \end{lemma}
@@ -374,7 +376,7 @@
             According to the additive structure of cost function, the value function could be divided linearly into two section as $\tilde{W}^{(p)}(\Obsv^{(p)}(i))$ and $\tilde{W}^{(s)}(\Obsv(i))$ under baseline policy:
             \begin{align}
                 V(\Stat_{i}) =& 
-                    g(\Stat_{i}) + \gamma \min_{\Policy(\Stat_{i})} \sum_{\Stat_{i+1}} \Pr\{ \Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i}) \}
+                    g(\Stat_{i}) + \gamma \min_{\BPolicy(\Stat_{i})} \sum_{\Stat_{i+1}} \Pr\{ \Stat_{i+1}|\Stat_{i}, \BPolicy(\Stat_{i}) \}
                     \nonumber\\
                     & \cdot \Bracket{ \tilde{W}^{(p)}\Paren{\Obsv^{(p)}(i+1)} + \tilde{W}^{(s)}\Paren{\Obsv(i+1)} },
             \end{align}
@@ -393,30 +395,26 @@
                 \tilde{W}^{(p)}(\Obsv^{(p)}(i+1)) = \frac{1}{1-\gamma}
                     \sum_{k\in\apSet}\sum_{m\in\esSet} \mathbb{E}_{\Pi}[\Inorm{\vec{r}^{(k)}_{m}}],
             \end{align}
-            where the expectation of $\Inorm{\vec{r}^{(k)}_{m}}$ under the policy $\Pi_k$ is actually a constant as expectation of Binomial distribution $\mathbb{E}_{\Pi_k}[\Inorm{\vec{r}^{(k)}_{m}}] = \sum_{j\in\jSpace} u_{k,m} \rho^{(\Pi_k)}_{k,m}(j)$.
+            where the expectation of $\Inorm{\vec{r}^{(k)}_{m}}$ under the policy $\Pi_k$ is actually a constant as expectation of Binomial distribution $\mathbb{E}_{\Pi_k}[\Inorm{\vec{r}^{(k)}_{m}}] = \sum_{j\in\jSpace} u_{k,m}(j) \rho^{(\Pi_k)}_{k,m}(j)$.
             
             The approximated value function $\tilde{W}^{(s)}(\Obsv(i))$ for ES nodes is affected with both arrival process under dispatching policy and last queue state, and we reduce the states expression by averaging the uploading process together with the transition function expression.
             % For convenience, we have $\Obsv^{(p)}(i) \define \set{\vec{u}_k(i)|\forall k\in\apSet}$ and $\Obsv^{(s)}(i) \define \set{Q_m(i)|\forall m\in\esSet}$.
             The partial value function optimization for ES in Bellman's Equation right-hand side is given as:
             \begin{align}
-                \min_{\Policy(\Stat_i)}& \sum_{\Stat_{i+1}}
-                    \Pr\Brace{\Stat_{i+1}|\Stat_{i}, \Policy(\Stat_i)} \cdot \tilde{W}^{(s)}\Paren{\Obsv(i+1)}
+                \min_{\BPolicy(\Stat_i)}& \sum_{\Stat_{i+1}}
+                    \Pr\Brace{\Stat_{i+1}|\Stat_{i}, \BPolicy(\Stat_i)} \cdot \tilde{W}^{(s)}\Paren{\Obsv(i+1)}
                 \nonumber\\
-                % \leadto \min_{\Policy(\Stat_i)}& \sum_{\Obsv^{(s)}(i)} \Pr\{\Obsv^{(s)}(i+1)|\Obsv^{(s)}(i),\Obsv^{(p)}(i), \Policy(\Stat_i)\}
-                %     \nonumber\\
-                %     & \times \sum_{\Obsv^{(p)}(i)} \Pr\{\Obsv^{(p)}(i+1)|\Policy(\Stat_i)\} \cdot \tilde{W}^{(s)}(\Obsv(i+1))
-                % \nonumber\\
-                = \min_{\Policy(\Stat_i)}& \sum_{\Obsv^{(s)}(i+1)}
-                    \Pr\Brace{\Obsv^{(s)}(i+1)|\Obsv^{(s)}(i), \Obsv^{(p)}(i), \Policy(\Stat_i)}
+                = \min_{\BPolicy(\Stat_i)}& \sum_{\Obsv^{(s)}(i+1)}
+                    \Pr\Brace{\Obsv^{(s)}(i+1)|\Obsv^{(s)}(i), \Obsv^{(p)}(i), \BPolicy(\Stat_i)}
                     \nonumber\\
                     \times& \sum_{m\in\esSet} \sum_{j\in\jSpace}
                         \underbrace{
-                            \mathbb{E}_{\set{\Obsv^{(p)}(i+1)|\Policy(\Stat_i)}} \Bracket{\tilde{W}^{(s)}_{m,j}\Paren{\Obsv(i+1)}}
+                            \mathbb{E}_{\set{\Obsv^{(p)}(i+1)|\BPolicy(\Stat_i)}} \Bracket{\tilde{W}^{(s)}_{m,j}\Paren{\Obsv(i+1)}}
                         }_{
                             J\Paren{Q_{m,j}(i+1)}
                         },
             \end{align}
-            where $\tilde{W}^{(s)}_{m,j}(\Obsv(i+1)) \define \mathbb{E}_{\Pi}[\sum_{l=0}^{\infty} \gamma^{l} n_{m,j}(i+l+1)]$, which implies that the state $\Obsv^{(p)}(i)$ is substitute with its expectation under policy $\Policy(\Stat_i)$ in this value function.
+            where $\tilde{W}^{(s)}_{m,j}(\Obsv(i+1)) \define \mathbb{E}_{\Pi}[\sum_{l=0}^{\infty} \gamma^{l} n_{m,j}(i+l+1)]$, which implies that the state $\Obsv^{(p)}(i)$ is substitute with its expectation under policy $\BPolicy(\Stat_i)$ in this value function.
             Thus the approximated value function for $m$-th ES node is denoted as:
             \begin{align}
                 J\Paren{Q_{m,j}(i+1)} \define& \lim_{T\to\infty}
@@ -452,13 +450,13 @@
             \begin{align}
                 % V(\Stat_i) = &g(\Stat_i) +
                 % \nonumber\\
-                \min_{\Policy(\Stat_i)}& \sum_{\Obsv^{(s)}(i+1)} \Pr\{\Obsv^{(s)}(i+1)|\Obsv^{(s)}(i), \Obsv^{(p)}(i), \Policy(\Stat_i)\}
+                \min_{\BPolicy(\Stat_i)}& \sum_{\Obsv^{(s)}(i+1)} \Pr\{\Obsv^{(s)}(i+1)|\Obsv^{(s)}(i), \Obsv^{(p)}(i), \BPolicy(\Stat_i)\}
                 \nonumber\\
                 \times \Bracket{
                     & \sum_{m\in\esSet}\sum_{j\in\jSpace} J\Paren{Q_{m,j}(i+1)}
                 } +
                 \nonumber\\
-                & \underbrace{\sum_{\Obsv^{(p)}(i+1)} \Pr\{\Obsv^{(p)}(i+1)|\Policy(\Stat_i)\}}_{\text{=1}}
+                & \underbrace{\sum_{\Obsv^{(p)}(i+1)} \Pr\{\Obsv^{(p)}(i+1)|\BPolicy(\Stat_i)\}}_{\text{=1}}
                 \cdot \underbrace{\tilde{W}^{(p)} \Paren{\Obsv^{(p)}(i+1)}}_{\text{constant}}
             \end{align}
             Then we introduce the one-step iteration algorithm:
@@ -499,7 +497,7 @@
 
         The first production part is given as:
         \begin{align*}
-            &\Pr\{\vec{R}_k(i+1)|\Policy(\Stat_i)\} = \prod_{m\in\esSet}\prod_{j\in\jSpace} r^{(k)}_{m,j}(i+1)
+            &\Pr\{\vec{R}_k(i+1)|\BPolicy(\Stat_i)\} = \prod_{m\in\esSet}\prod_{j\in\jSpace} r^{(k)}_{m,j}(i+1)
             \\
             &r^{(k)}_{m,j}(i+1) \sim B\Paren{u_{k,m},p^{(i)}_{k,m}(j)},
         \end{align*}
@@ -526,7 +524,7 @@
         % \end{itemize}
         Then we have the transition function for $m$-th ES node given as:
         \begin{align*}
-            & \Pr\Brace{Q_{m,j}(i+1)|Q_{m,j}(i), \set{\mat{R}_{k}|\forall k\in\apSet}, \Policy(\Stat_i)}
+            & \Pr\Brace{Q_{m,j}(i+1)|Q_{m,j}(i), \set{\mat{R}_{k}|\forall k\in\apSet}, \BPolicy(\Stat_i)}
             % \nonumber\\
             % =& \prod_{k\in\apSet} \Pr\{n^{(k)}_1, n^{(k)}_2\} \times I[]
         \end{align*}
