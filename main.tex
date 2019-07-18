@@ -44,7 +44,7 @@
 \newcommand{\cSet}{\mathcal{C}}
 \newcommand{\Stat}{\mathbf{S}}
 \newcommand{\Obsv}{\mathcal{Y}}
-\newcommand{\Policy}{\mathbf{\Omega}}
+\newcommand{\Policy}{\boldsymbol{\Omega}}
 \newcommand{\ASpace}{\mathbf{A}}
 %---------------------------------------------------------------%
 
@@ -214,13 +214,14 @@
                         \set{D^{(s)}_{k,m}|\forall k\in\apSet,m\in\esSet}
                     },
                 \end{align}
-                where $D^{(p)}_{k,k'} \equiv 0$ for convenience. {\color{red}We assume that $D_k$ is bounded with $[0, \hat{D}_k]$ and follows some distribution in this interval summarized from statistical data, which is denotes as $\eta_k(d) \define \Pr\{D_k=d\}$. And we have $\vecG{\eta} \define \set{\eta_k|\forall k\in\apSet}$ to denote the latency distribution set for all AP nodes.}
+                where $D^{(p)}_{k,k'} \equiv 0$ for convenience. {\color{red}We assume that $D_k$ is bounded with $[0, \hat{D}_k]$ and follows some distribution in this interval summarized from statistical data, which is denotes as $\eta_k(d) \define \Pr\{D_k=d\}$, with mean denoted as $\bar{d}_k$.
+                And we have $\vecG{\eta} \define \set{\eta_k|\forall k\in\apSet}$ to denote the latency distribution set for all AP nodes.}
             \end{definition}
 
             The broadcast design introduces a \emph{Two-time scale} structure in the MEC system.
             The job dispatching and scheduling decisions on AP and ES side respectively are still carried out based on timeslot scale, while the policy update is based on broadcast interval with the information update.
             More specifically, the AP would only update its policy when it receives all the broadcast information which implies it comes to consensus on the obsolete global information with other AP nodes.
-            {\color{red}Moreover, we implement the broadcast in a low-frequency way that the broadcast period is always larger than the maximum broadcast latency plus the maximum uploading delay, i.e. $t_B > \hat{D}_{k} + u_{k,m}(j)$ $(\forall k\in\apSet, \forall m\in\esSet)$.}
+            {\color{red}Moreover, we implement the broadcast in a low-frequency way that the broadcast period is always larger than the maximum broadcast latency plus the maximum uploading delay, i.e. $t_B > \hat{D}_{k} + u_{k,m}(j)$ $(\forall k\in\apSet, \forall m\in\esSet, \forall j\in\jSpace)$.}
 
             Due to the broadcast latency, the information received with delay will affect the policy update point for each AP, which impact on the transition distribution of next policy and global states.
             {\color{red}In the next section, we will show that with the prior statistic knowledge about broadcast latency $\vecG{\eta}$, we could establish exact cooperation among AP nodes under MDP frame work with analytical performance bound.}
@@ -253,16 +254,22 @@
             \begin{definition}[Compounded Dispatching Policy]
                 The compounded dispatching policy over $\Stat_{i}$ is defined as $\Policy(\Stat_{i})$ which is composed of all the local policies $\Omega_k(\Stat_{i})$ ($\forall k\in\apSet$) as:
                 \begin{align}
-                    \vec{\Omega}(\Stat_{i}) \define \Bracket{\Omega_1(\Stat_{i}), \dots, \Omega_K(\Stat_{i})}.
+                    \vecG{\Omega}(\Stat_{i}) \define 
+                    \Bracket{
+                        \Omega_{1}(\Stat_i),
+                        \dots,
+                        \Omega_{K}(\Stat_i)
+                    }.
                 \end{align}
-                More specifically, $\Omega_k(\Stat_{i})$ is composed of two-stage policy as:
+                More specifically, $\Omega_k(\Stat_{i})$ is composed of two-stage policy:
                 \begin{align}
                     \Omega_k(\Stat_i) = [\tilde{\Omega}_k(\Obsv_{i-1}), \tilde{\Omega}_k(\Obsv_{i})],
                     % $t\in[t_{i-1}, t_{i}], \Delta{t} \define t - t_{i-1}$
                 \end{align}
                 where $\tilde{\Omega}_k(\Obsv_{i}) \define \set{\omega^{(i)}_{k,m}(j)|\forall j\in\jSpace, \forall m\in\esSet}$ and $\omega^{(i)}_{k,m}(j)$ denotes the dispatching policy that: based on global information $\Obsv_{i}$, the probabilistic action on $k$-th AP upload $j$-type job to $m$-th ES and $\sum_{j\in\jSpace} \Pr\{\omega^{(i)}_{k,m}(j)\}=1$.
             \end{definition}
-            More specifically, the two phase of the policy on single AP is separated by the \emph{Update Latency} $D_k$ for $k$-th AP, i.e. the time point when it receives the latest global information. For example, in the broadcast interval $[t_{i}, t_{i+1}]$, $k$-th AP will apply policy $\tilde{\Omega}_k(\Obsv_{i})$ based on obsolete information before $t_i+D_k$ and apply the updated policy $\tilde{\Omega}_k(\Obsv_{i+1})$ immediately by solving the optimization problem.
+            More specifically, the two phase of the policy on single AP is separated by the \emph{Update Latency} $D_k$ for $k$-th AP, i.e. the exact time point when it receives the latest global information.
+            For example, in the broadcast interval $[t_{i}, t_{i+1}]$, $k$-th AP has the exact update latency as $d_k$, then it will apply policy $\tilde{\Omega}_k(\Obsv_{i})$ based on obsolete information before $(t_i+d_k)$ and apply the updated policy $\tilde{\Omega}_k(\Obsv_{i+1})$ immediately by solving the optimization problem with prior statistical knowledge $\vecG{\eta}$.
         \end{subsection}
 
         \begin{subsection}{The Optimization Problem}
@@ -297,12 +304,16 @@
 
             According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
             \begin{align}
-                V(\Stat_{i}) =&  g(\Stat_i) +
+                V(\Stat_i) =& g(\Stat_i) +
+                    \gamma \min_{\Policy(\Stat_{i})} \sum_{\Stat_{i+1}} \sum_{k\in\apSet}\sum_{d_k} \eta_k(d_k) \cdot
+                    \nonumber\\
+                    &\Pr\{ \Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i}) \} V(\Stat_{i+1})
                 \nonumber\\
-                &\gamma \min_{\Policy(\Stat_{i})} \sum_{\Stat_{i+1}}
-                    \Pr\{ \Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i}) \} V(\Stat_{i+1}),
+                =& g(\Stat_i) + \gamma \min_{\bar{\Policy}(\Stat_{i})} \sum_{\Stat_{i+1}}
+                \Pr\{ \Stat_{i+1}|\Stat_{i}, \bar{\Policy}(\Stat_{i}) \} V(\Stat_{i+1}),
             \end{align}
-            where $\bar{\Policy}(\Stat_{i}) \define$. The definition for value function is defined as description in \cite{sutton1998introduction} as follows.
+            {\color{red}where $\bar{\Policy}(\Stat_{i}) \define [\bar{\Omega}_1(\Stat_{i}), \dots, \bar{\Omega}_K(\Stat_{i})]$; each $\bar{\Omega}_k(\Stat_{i})$ on $k$-th AP denotes the policy phase is separated by $\bar{d}_k$.}
+            The definition for value function is defined according to the form in \cite{sutton1998introduction} as follows.
             \begin{align}
                 V(\Stat_{i}) \define \lim_{T\to\infty}
                     \mathbb{E}_{\Policy,\vecG{\eta}} \Bracket{
