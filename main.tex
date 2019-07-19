@@ -25,6 +25,7 @@
 \newcommand{\vecOne}{\mathbf{1}}
 \newcommand{\ind}{\mathbf{I}}
 \newcommand{\mat}{\mathbf}
+\newcommand{\Mult}{\text{Mult}}
 \newcommand{\define}{\triangleq}
 \newcommand{\leadto}{\Rightarrow}
 \newcommand{\vecG}{\boldsymbol}
@@ -165,17 +166,20 @@
                 \label{fig:system}
             \end{figure}
 
-            The User Equipment (UE) would offload the computation jobs on demand to the AP it connect.Thus the job arrival process on $k$-th AP ($\forall k\in\apSet$) is compounded of the distributions from all UEs connected, which follows the assumption as:
+            The User Equipment (UE) would offload the computation jobs on demand to the AP it connect.
+            We consider some types of jobs are supported on edge servers with Virtual Machine (VM) resources. The job space is denoted as $\jSpace \define \set{1,\dots, J}$, and jobs type distribution on each AP node follows the same distribution over $\jSpace$.
+            % which is obtained by statistics and denoted as $p_j \define \Pr\{\text{"j-type arrival"}\}$, where $\sum_{j\in\jSpace} p_j=1$.
+            Thus the job arrival process on $k$-th AP ($\forall k\in\apSet$) is compounded of the job arrivals from all UEs connected, which follows the assumption as:
             \begin{assumption}[Job Arrival Process for AP]
-                The job arrival distribution for $k$-th AP is denoted as $A_k$, which is independent and identically distributed (i.i.d) over each timeslot as $A_k \sim Bernoulli(\lambda_k)$, $\lambda_k\in[0,1]$. This implies that there will be at most one job arrives on $k$-th AP in one timeslot. According to \emph{Poisson Limit Theorem}, the arrival process is a memory-less exponential process with average arrival rate $\mathbb{E}[A_k]=\lambda_k$.
-                The jobs type distribution on each AP node follows the same distribution over job set $\jSpace$ which is obtained by statistics and denoted as $p_j \define \Pr\{\text{"j-type arrival"}\}$, where $\sum_{j\in\jSpace} p_j=1$.
+                The $j$-type job arrival distribution for $k$-th AP is denoted as $A_{k,j}$, which is independent and identically distributed (i.i.d) over each timeslot as $A_{k,j} \sim Bernoulli(\lambda_{k,j})$, $\lambda_{k,j}\in[0,1]$. This implies that there will be at most one job arrives on $k$-th AP in one timeslot. According to \emph{Poisson Limit Theorem}, the arrival process is a memory-less exponential process with average arrival rate $\mathbb{E}[A_{k,j}]=\lambda_{k,j}$.
             \end{assumption}
 
             The AP itself is assumed with no computation capability, and thus it need to further dispatch those jobs to the edge servers.
             The jobs arrival in each timeslot on AP will be immediately dispatched to edge servers.
-            {\color{red}The corresponding uploading delay of one job is deterministic and job-type dependent over one AP-ES link, which is denoted as $u_{k,m}(j)$ from $k$-th AP to $m$-th ES ($\forall k\in\apSet, \forall m\in\esSet, \forall j\in\jSpace$).}
+            {\color{red}The corresponding uploading delay of one job is stochastic and job-type independent over one AP-ES link, which is denoted as $U_{k,m}$ from $k$-th AP to $m$-th ES ($\forall k\in\apSet, \forall m\in\esSet$) and upper bounded by $\hat{U}_{k,m}$.
+            And we have $\vec{U} \define \set{U_{k,m}|\forall k\in\apSet,m\in\esSet}$ to denote the set of distribution information about uploading delay. The expectation of link uploading time is denoted as $\bar{u}_{k,m}$.}
 
-            After arrival on edge servers, the jobs will join computation queue with the supported VM (Virtual Machine).
+            After arrival on edge servers, the jobs will join computation queue with the supported VM.
             Each VM is considered running parallel without resource contention, and the jobs scheduling for each VM is with a single queue following \emph{FCFS} (First-Come-First-Serve).
             {\color{red}The maximum queue length is set to discourage too many jobs pending on edge servers and is denoted as $L_Q$. The job submission over the limit will be rejected and announce the AP where the job is from.}
 
@@ -208,22 +212,20 @@
 
             {\color{red}Due to the shared underlaid network with other network functions, the broadcast latency is \emph{un-predictable} in a distributed system and each AP will have different delay when receiving all the broadcast information from all the ES nodes and other AP nodes.}
             Let $D^{(p)}_{k,k'}$ denotes the broadcast delay between two AP nodes from $k'$-th AP to $k$-th AP ($\forall k,k'\in\apSet$); let $D^{(s)}_{k,m}$ denotes the broadcast delay between AP and ES node from $m$-th ES to $k$-th AP ($\forall k\in\apSet,\forall m\in\esSet$).
-            Furthermore, we denote the latency time where $k$-th AP receives all the last broadcast information as \emph{Update Latency}, which is defined as follows.
-            \begin{definition}[Update Latency]
+            Furthermore, we denote the latency for $k$-th AP receives broadcast information from other nodes (including all ES nodes and other AP nodes) as \emph{Update Latency}. There are total $(K+M-1)$ latency time for one AP, and without loss of generality we give the definition for update latency list in the order from smallest to largest as follows.
+            \begin{definition}[Update Latency List]
                 \begin{align}
-                    D_k \define \max\Paren{
-                        \set{D^{(p)}_{k,k'}|\forall k,k'\in\apSet},
-                        \set{D^{(s)}_{k,m}|\forall k\in\apSet,m\in\esSet}
-                    },
+                    [D_{k,1}, \dots D_{k,(K+M-1)}].
                 \end{align}
-                where $D^{(p)}_{k,k'} \equiv 0$ for convenience. {\color{red}We assume that $D_k$ is bounded with $[0, \hat{D}_k]$ and follows some distribution in this interval summarized from statistical data, which is denotes as $\eta_k(d) \define \Pr\{D_k=d\}$, with mean denoted as $\bar{d}_k$.
-                And we have $\vecG{\eta} \define \set{\eta_k|\forall k\in\apSet}$ to denote the latency distribution set for all AP nodes.}
+                Due to the un-predictable of broadcast delay, there is no clear mapping between the second sub-script with index of $\apSet$ or $\esSet$.
             \end{definition}
+            {\color{red}Furthermore, We assume that $D_{k,i}$ is bounded with $[0, \hat{D}_{k,i}]$ and follows some distribution in this interval summarized from statistical data, which is denotes as $\eta_{k,i}(d) \define \Pr\{D_{k,i}=d\}$ with mean as $\bar{d}_{k,i}$ ($\forall i\in 1,\dots,(K+M-1)$).
+            And we have $\vecG{\eta} \define \set{\eta_{k,i}|\forall k\in\apSet,i\in 1,\dots,(K+M-1)}$ to denote the latency distribution set for all AP nodes.}
 
             The broadcast design introduces a \emph{Two-time scale} structure in the MEC system.
             The job dispatching and scheduling decisions on AP and ES side respectively are still carried out based on timeslot scale, while the policy update is based on broadcast interval with the information update.
             More specifically, the AP would only update its policy when it receives all the broadcast information which implies it comes to consensus on the obsolete global information with other AP nodes.
-            {\color{red}Moreover, we implement the broadcast in a low-frequency way that the broadcast period is always larger than the maximum broadcast latency plus the maximum uploading delay, i.e. $t_B > \hat{D}_{k} + u_{k,m}(j)$ $(\forall k\in\apSet, \forall m\in\esSet, \forall j\in\jSpace)$.}
+            {\color{red}Moreover, we implement the broadcast in a low-frequency way that the broadcast period is always larger than the maximum broadcast latency plus the maximum uploading delay, i.e. $t_B > \hat{D}_{k} + \hat{U}_{k,m}$ $(\forall k\in\apSet, \forall m\in\esSet)$.}
 
             Due to the broadcast latency, the information received with delay will affect the policy update point for each AP, which impact on the transition distribution of next policy and global states.
             {\color{red}In the next section, we will show that with the prior statistic knowledge about broadcast latency $\vecG{\eta}$, we could establish exact cooperation among AP nodes under MDP frame work with analytical performance bound.}
@@ -285,12 +287,11 @@
             \begin{align}
                 &g\Paren{\Stat_{i}, \Policy(\Stat_{i-1})}
                 \nonumber\\
-                \define& \sum_{k\in\apSet}\sum_{m\in\esSet} \Inorm{\vec{r}^{(k)}_{m}(i)} +
-                        \sum_{m\in\esSet}\sum_{j\in\jSpace} n_{m,j}(i)
-                        \nonumber\\
-                        &+\sum_{m\in\esSet}\sum_{j\in\jSpace} \Brace{
-                            \alpha I[n_{m,j}(i)=0] + \beta I[n_{m,j}(i)=L_Q]
-                        },
+                \define& \sum_{m\in\esSet}\sum_{j\in\jSpace} \Brace{
+                        \alpha I[n_{m,j}(i)=0] + \beta I[n_{m,j}(i)=L_Q]
+                    }
+                    \nonumber\\
+                    &+\sum_{k\in\apSet}\sum_{m\in\esSet} \Inorm{\vec{r}^{(k)}_{m}(i)} + \sum_{m\in\esSet}\sum_{j\in\jSpace} n_{m,j}(i),
             \end{align}
             where $\Inorm{\vec{r}^{(k)}_{m}}$ denotes the $L^1$-norm of vector $\vec{r}^{(k)}_{m}$, i.e. the sum up of absolute value of each entry; $\alpha$ and $\beta$ are weight factor for empty-queue penalty and full-queue penalty respectively.
             {\color{red}The cost function defined is a sampling of interval $t_B$ over the whole job response process, because the global information for AP nodes only contains the information at the broadcast points.}
@@ -299,7 +300,7 @@
             \begin{problem}[Distributed Cooperative Job Dispatching Problem]
                 \begin{gather}
                     \min_{\Policy} \lim_{T \to \infty}
-                        \mathbb{E}_{\Policy, \vecG{\eta}}
+                        \mathbb{E}_{\Policy, \vecG{\eta}, \vec{U}}
                             \Bracket{\sum_{i=2}^{T} \gamma^{i-1} g(\Stat_{i}, \Policy(\Stat_{i-1}))|\Stat_1},
                 \end{gather}
                 where the cost is collected with a discount factor $\gamma$, and $\Policy$ denotes the global compounded policy of all AP nodes.
@@ -308,7 +309,7 @@
             According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
             \begin{align}
                 V(\Stat_i) =& g(\Stat_i) +
-                    \gamma \min_{\Policy(\Stat_{i})} \sum_{\Stat_{i+1}} \sum_{k\in\apSet}\sum_{d_k} \eta_k(d_k) \cdot
+                    \gamma \min_{\Policy(\Stat_{i})} \sum_{\Stat_{i+1}} \sum_{k\in\apSet}\sum_{d_k\in[0,\hat{D}_k]} \eta_k(d_k) \cdot
                     \nonumber\\
                     &\Pr\{ \Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i}) \} V(\Stat_{i+1})
                 \nonumber\\
@@ -324,23 +325,23 @@
                     }.
             \end{align}
 
-            Before diving into the analysis on the transition function expression, we firstly come up with some probability denotations for arrival process on edge servers.
-            The job arrival processes for AP nodes under dispatching policy compose the job arrival process for ES nodes, which could be expressed as compounded of \emph{numbers arrival distribution} and \emph{processing time distribution} for $j$-type job ($\forall j\in\jSpace$).
-            \begin{itemize}
-                \item The \emph{numbers arrival distribution} on $m$-th ES is composed of i.i.d Bernoulli distribution in each timeslot from independent AP nodes. The PMF (probability mass function) of the Bernoulli distribution from $k$-th AP under policy $\Omega_k(i)$ is denoted as:
-                \begin{align}
-                    p_{k,m}^{(i)}(j) \define& \lambda_k p_j \cdot
-                        \frac{
-                                \Pr\{\omega_{k,m}^{(i)}(j)\}
-                            }{
-                                \sum_{j\in\jSpace} \Pr\{\omega_{k,m}^{(i)}(j)\}
-                            },
-                %     \\
-                %     p_{k,m}^{(i)} \define& \sum_{j\in\jSpace} p_{k,m}^{(i)}(j),
-                \end{align}
-                and we have $\rho_{k,m}^{(\Pi_k)}$ denotes the distribution under time-invariant policy $\Pi_k$ for $k$-th AP;
-                \item The \emph{processing time distribution} is job-independent, thus the processing time on different edge servers keeps its original distribution and is determined when the time it joins the processing queue.
-            \end{itemize}
+            % Before diving into the analysis on the transition function expression, we firstly come up with some probability denotations for arrival process on edge servers.
+            % The job arrival processes for AP nodes under dispatching policy compose the job arrival process for ES nodes, which could be expressed as compounded of \emph{numbers arrival distribution} and \emph{processing time distribution} for $j$-type job ($\forall j\in\jSpace$).
+            % \begin{itemize}
+            %     \item The \emph{numbers arrival distribution} on $m$-th ES is composed of i.i.d Bernoulli distribution in each timeslot from independent AP nodes. The PMF (probability mass function) of the Bernoulli distribution from $k$-th AP under policy $\Omega_k(i)$ is denoted as:
+            %     \begin{align}
+            %         p_{k,m}^{(i)}(j) \define& \lambda_k p_j \cdot
+            %             \frac{
+            %                     \Pr\{\omega_{k,m}^{(i)}(j)\}
+            %                 }{
+            %                     \sum_{j\in\jSpace} \Pr\{\omega_{k,m}^{(i)}(j)\}
+            %                 },
+            %     %     \\
+            %     %     p_{k,m}^{(i)} \define& \sum_{j\in\jSpace} p_{k,m}^{(i)}(j),
+            %     \end{align}
+            %     and we have $\rho_{k,m}^{(\Pi_k)}$ denotes the distribution under time-invariant policy $\Pi_k$ for $k$-th AP;
+            %     \item The \emph{processing time distribution} is job-independent, thus the processing time on different edge servers keeps its original distribution and is determined when the time it joins the processing queue.
+            % \end{itemize}
             
             \begin{lemma}[Transition Function Decoupling]
                 The transition function in Bellman's equation could be decoupled on AP nodes states and ES nodes states, which will facilitate the approximated value function expression in the following section. The decoupled transition function is in the form as follows.
@@ -349,7 +350,7 @@
                     \nonumber\\
                     =& \prod_{k\in\apSet} \Pr\Brace{\vec{R}_k(i+1)|\BPolicy(\Stat_{i})} \times \prod_{m\in\esSet}\prod_{j\in\jSpace}
                         \nonumber\\
-                        & \Pr \Brace{\vec{Q}_{m,j}(i+1)|\vec{Q}_{m,j}(i), \set{\vec{R}_k(i)|\forall k\in\apSet}, \BPolicy(\Stat_{i})},
+                        & \Pr \Brace{Q_{m,j}(i+1)|Q_{m,j}(i), \set{\vec{R}_k(i)|\forall k\in\apSet}, \BPolicy(\Stat_{i})},
                 \end{align}
                 where first production part denotes the unfinished uploading state transition for AP nodes whose distribution, and the second part denotes the queueing state transition for ES nodes.
             \end{lemma}
@@ -396,7 +397,7 @@
                 \tilde{W}^{(p)}(\Obsv^{(p)}(i+1)) = \frac{1}{1-\gamma}
                     \sum_{k\in\apSet}\sum_{m\in\esSet} \mathbb{E}_{\Pi}[\Inorm{\vec{r}^{(k)}_{m}}],
             \end{align}
-            where the expectation of $\Inorm{\vec{r}^{(k)}_{m}}$ under the policy $\Pi_k$ is actually a constant as expectation of Binomial distribution $\mathbb{E}_{\Pi_k}[\Inorm{\vec{r}^{(k)}_{m}}] = \sum_{j\in\jSpace} u_{k,m}(j) \rho^{(\Pi_k)}_{k,m}(j)$.
+            where the expectation of $\Inorm{\vec{r}^{(k)}_{m}}$ under the policy $\Pi_k$ is actually a constant as expectation of Binomial distribution $\mathbb{E}_{\Pi_k}[\Inorm{\vec{r}^{(k)}_{m}}] = \sum_{j\in\jSpace} u_{k,m} \rho^{(\Pi_k)}_{k,m}(j)$.
             
             The approximated value function $\tilde{W}^{(s)}(\Obsv(i))$ for ES nodes is affected with both arrival process under dispatching policy and last queue state, and we reduce the states expression by averaging the uploading process together with the transition function expression.
             % For convenience, we have $\Obsv^{(p)}(i) \define \set{\vec{u}_k(i)|\forall k\in\apSet}$ and $\Obsv^{(s)}(i) \define \set{Q_m(i)|\forall m\in\esSet}$.
@@ -423,9 +424,9 @@
                 \nonumber\\
                 % =& \vec{u}'_i [\lim_{T\to\infty} \sum_{n=0}^{T} (\gamma \mat{P}_m)^{n}] \vec{g}_q
                 % \nonumber\\
-                =& \vec{\mu}'_i \Paren{ \mat{I}-\gamma\mat{P}_{m,j} }^{-1} \vec{g},
+                =& \vec{\mu}'_{i+1} \Paren{ \mat{I}-\gamma\mat{P}_{m,j} }^{-1} \vec{g},
             \end{align}
-            where $\vec{\mu}'_i$ denotes the transpose of $\vec{\mu}_i$, and $\vec{\mu}_i = [\dots,0,1,0,\dots]$ with only $i$-th element as $1$; the $i$-th element of $\vec{g}$ denotes the cost of server as $n_{m,j}(i)$ for $i$-th stage; $\mat{P}_{m,j}$ denotes the transition matrix for $j$-type FIFO queue on $m$-th ES under the policy $\vec{\Pi}$, which is composed of the following transition function ($\forall Q_m(i),Q_m(i+1)$) as:
+            where $\vec{\mu}'_{i+1}$ denotes the transpose of $\vec{\mu}_{i+1}$, and $\vec{\mu}_{i+1} = [\dots,0,1,0,\dots]$ with only $(i+1)$-th element as $1$; the $i$-th element of $\vec{g}$ denotes the cost of server as $n_{m,j}(i)$ for $i$-th stage; $\mat{P}_{m,j}$ denotes the transition matrix for $j$-type FIFO queue on $m$-th ES under the policy $\vec{\Pi}$, which is composed of the following transition function ($\forall Q_m(i),Q_m(i+1)$) as:
             \begin{align}
                 &\Pr \Brace{Q_{m,j}(i+1)|Q_{m,j}(i),\vec{\Pi}}
                 \nonumber\\
@@ -455,10 +456,11 @@
                 \nonumber\\
                 \times \Bracket{
                     & \sum_{m\in\esSet}\sum_{j\in\jSpace} J\Paren{Q_{m,j}(i+1)}
-                } +
-                \nonumber\\
-                & \underbrace{\sum_{\Obsv^{(p)}(i+1)} \Pr\{\Obsv^{(p)}(i+1)|\BPolicy(\Stat_i)\}}_{\text{=1}}
-                \cdot \underbrace{\tilde{W}^{(p)} \Paren{\Obsv^{(p)}(i+1)}}_{\text{constant}}
+                    +
+                    \nonumber\\
+                    & \underbrace{\sum_{\Obsv^{(p)}(i+1)} \Pr\{\Obsv^{(p)}(i+1)|\BPolicy(\Stat_i)\}}_{\text{=1}}
+                    \cdot \underbrace{\tilde{W}^{(p)} \Paren{\Obsv^{(p)}(i+1)}}_{\text{constant}}
+                } 
             \end{align}
             Then we introduce the one-step iteration algorithm:
             % [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
@@ -488,6 +490,11 @@
         \label{sec:conclusion}
         In this paper,
         The future work,
+        \begin{itemize}
+            \item partial broadcast information-based decision update, and staleness-aware decision making;
+            \item learning parameter setting via broadcasting;
+            \item we could find a much better baseline policy to provide better performance bound at first time;
+        \end{itemize}
     \end{section}
     
     %============================== APPENDIX ==============================%
@@ -498,11 +505,11 @@
 
         The first production part is given as:
         \begin{align*}
-            &\Pr\{\vec{R}_k(i+1)|\BPolicy(\Stat_i)\} = \prod_{m\in\esSet}\prod_{j\in\jSpace} r^{(k)}_{m,j}(i+1)
+            &\Pr\{\vec{R}_k(i+1)|\BPolicy(\Stat_i)\} = \prod_{m\in\esSet}\prod_{j\in\jSpace} \vec{r}^{(k)}_{j}(i+1)
             \\
-            &r^{(k)}_{m,j}(i+1) \sim B\Paren{u_{k,m},p^{(i)}_{k,m}(j)},
+            &\vec{r}^{(k)}_{j}(i+1) \sim \Mult\Paren{u_{k,m},p^{(i)}_{k,m}(j)},
         \end{align*}
-        where $B(n,p)$ denotes a Binomial distribution.
+        where $\Mult(n, \vec{p})$ denotes a Multinomial distribution.
             
         The second part transition function is rather complex and composed of three independent distribution as depicted in Fig. \hl{(need a timeline graph)}.
         We denote the state $n_{m,j}(i+1)$ in $Q_{m,j}(i+1)$ over the three stages as:
