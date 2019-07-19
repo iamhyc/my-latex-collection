@@ -53,22 +53,22 @@
 \begin{document}
     %=============================== TITLE ===============================%
     \title{
-        Obsolete Information-based Distributed Online Job Dispatching in Edge Computing System
+        Obsolete Partial Information-based Distributed Online Job Dispatching in Edge Computing System
     }
-    \author{
-        \IEEEauthorblockN{
-            Yuncong Hong\IEEEauthorrefmark{1}\IEEEauthorrefmark{2},
-            % Zhenhua Han\IEEEauthorrefmark{2}
-            % Rui Wang\IEEEauthorrefmark{1},
-            % Haisheng Tan\IEEEauthorrefmark{3},
-            % Francis C.M. Lau\IEEEauthorrefmark{2}
-        }
-        \IEEEauthorblockA{
-            \IEEEauthorrefmark{1}Southern University of Science and Technology, P.R. China,
-            \IEEEauthorrefmark{2}The University of Hong Kong, Hong Kong,\\
-            \IEEEauthorrefmark{3}University of Science and Technology of China, P.R. China
-        }
-    }
+    % \author{
+    %     \IEEEauthorblockN{
+    %         Yuncong Hong\IEEEauthorrefmark{1}\IEEEauthorrefmark{2},
+    %         Zhenhua Han\IEEEauthorrefmark{2}
+    %         Rui Wang\IEEEauthorrefmark{1},
+    %         Haisheng Tan\IEEEauthorrefmark{3},
+    %         Francis C.M. Lau\IEEEauthorrefmark{2}
+    %     }
+    %     \IEEEauthorblockA{
+    %         \IEEEauthorrefmark{1}Southern University of Science and Technology, P.R. China,
+    %         \IEEEauthorrefmark{2}The University of Hong Kong, Hong Kong,\\
+    %         \IEEEauthorrefmark{3}University of Science and Technology of China, P.R. China
+    %     }
+    % }
     \maketitle
 
     %============================== ABSTRACT ==============================%
@@ -214,10 +214,12 @@
             Let $D^{(p)}_{k,k'}$ denotes the broadcast delay between two AP nodes from $k'$-th AP to $k$-th AP ($\forall k,k'\in\apSet$); let $D^{(s)}_{k,m}$ denotes the broadcast delay between AP and ES node from $m$-th ES to $k$-th AP ($\forall k\in\apSet,\forall m\in\esSet$).
             Furthermore, we denote the latency for $k$-th AP receives broadcast information from other nodes (including all ES nodes and other AP nodes) as \emph{Update Latency}. There are total $(K+M-1)$ latency time for one AP, and without loss of generality we give the definition for update latency list in the order from smallest to largest as follows.
             \begin{definition}[Update Latency List]
+                For $k$-th AP ($\forall k\in\apSet$), the latency time for receiving other nodes' broadcast with respect to latest broadcast point is listed as:
                 \begin{align}
-                    [D_{k,1}, \dots D_{k,(K+M-1)}].
+                    D_{k,1}, \dots D_{k,(K+M-1)}.
                 \end{align}
-                Due to the un-predictable of broadcast delay, there is no clear mapping between the second sub-script with index of $\apSet$ or $\esSet$.
+                Due to the un-predictable of broadcast delay, there is no explicit mapping between the second sub-script with index of $\apSet$ or $\esSet$.
+                And we could not explicitly denote the information update at each time point for $k$-th AP.
             \end{definition}
             {\color{red}Furthermore, We assume that $D_{k,i}$ is bounded with $[0, \hat{D}_{k,i}]$ and follows some distribution in this interval summarized from statistical data, which is denotes as $\eta_{k,i}(d) \define \Pr\{D_{k,i}=d\}$ with mean as $\bar{d}_{k,i}$ ($\forall i\in 1,\dots,(K+M-1)$).
             And we have $\vecG{\eta} \define \set{\eta_{k,i}|\forall k\in\apSet,i\in 1,\dots,(K+M-1)}$ to denote the latency distribution set for all AP nodes.}
