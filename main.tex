@@ -140,7 +140,7 @@
         The information sharing scheme is proposed in this article with synchronized broadcast design. With the help of this scheme, we could immediately apply the job dispatching decision based on obsolete information, with some prior stochastic knowledge of global system.
         Our contributions are summarized as follows.
         \begin{itemize}
-            \item To our best knowledge, we are the first work to propose the MDP framework making use of obsolete information in edge computing system. With shared prior stochastic knowledge, the distributed agent could come to consensus on optimal oplicy adopting globally;
+            \item To our best knowledge, we are the first work to propose the MDP framework making use of obsolete information in edge computing system. With shared prior stochastic knowledge about broadcast latency and uploading delay, the distributed agent could come to consensus on optimal policy adopting globally;
             \item We propose a global state MDP formulation to characterize the multi-agent problem, i.e. single agent would consider multi-agent decision optimality to achieve cooperation.
             We with adopt value function approximation to reduce the traditional algorithm complexity, and come up with performance guarantee performance bound.
         \end{itemize}
@@ -285,7 +285,6 @@
 
         \begin{subsection}{The Optimization Problem}
             The optimization target of our problem is to minimize the \emph{average response time} of all jobs, which is composed of uploading time from AP to ES, and queueing-and-service time on ES nodes. According to \emph{Little's Law}, the average response time of all the jobs is equally as average number of jobs in system.
-
             Besides the cost counted for job response time, we furthermore add penalty on full-queue and empty-queue.
             The full-queue penalty is for the jobs submission would be rejected.
             {\color{red}The empty-queue penalty is given for the reason that the uploaded jobs in current broadcast interval will keep waiting on edge servers and to discourage the meaningless waiting time on edge servers, the edge servers will announce all the AP nodes the \emph{empty-queue-penalty} attached in next broadcast information.}
@@ -316,18 +315,19 @@
             According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
             \begin{align}
                 V(\Stat_i) =& g(\Stat_i) +
-                    \gamma \min_{\Policy(\Stat_{i})} \sum_{\Stat_{i+1}} \sum_{k\in\apSet}\sum_{d_k\in[0,\hat{D}_k]} \eta_k(d_k) \cdot
+                    \gamma \min_{\Policy(\Stat_{i})} \sum_{\Stat_{i+1}} \sum_{k\in\apSet}\sum_{n=1}^{N'}\sum_{d_{k,n}} \eta_{k,n}(d_{k,n}) \cdot
                     \nonumber\\
-                    &\Pr\{ \Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i}) \} V(\Stat_{i+1})
+                    &\mathbb{E}_{\vec{U}}\Bracket{
+                            \Pr\{ \Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i}), \vec{U} \}
+                        } V(\Stat_{i+1})
                 \nonumber\\
-                =& g(\Stat_i) + \gamma \min_{\BPolicy(\Stat_{i})} \sum_{\Stat_{i+1}}
-                \Pr\{ \Stat_{i+1}|\Stat_{i}, \BPolicy(\Stat_{i}) \} V(\Stat_{i+1}),
+                \approx& g(\Stat_i) + \gamma \min_{\BPolicy(\Stat_{i})} \sum_{\Stat_{i+1}} \Pr\{ \Stat_{i+1}|\Stat_{i}, \BPolicy(\Stat_{i}) \} V(\Stat_{i+1}),
             \end{align}
-            {\color{red}where $\BPolicy(\Stat_{i}) \define [\bar{\Omega}_1(\Stat_{i}), \dots, \bar{\Omega}_K(\Stat_{i})]$; each $\bar{\Omega}_k(\Stat_{i})$ on $k$-th AP denotes the policy phase separated by $\bar{d}_k$.}
+            {\color{red}where $\BPolicy(\Stat_{i}) \define [\bar{\Omega}_1(\Stat_{i}), \dots, \bar{\Omega}_K(\Stat_{i})]$; each $\bar{\Omega}_k(\Stat_{i})$ on $k$-th AP denotes the policy phase separated by $t_i, (t_i+\bar{d}_{k,1}), \dots, (t_i+\bar{d}_{k,N'})$. The approximation is established because we take the expectation of $\vecG{\eta}$ and $\vec{U}$ to approximate contributions to probability transition.}
             The definition for value function is defined according to the form in \cite{sutton1998introduction} as follows.
             \begin{align}
                 V(\Stat_{i}) \define \lim_{T\to\infty}
-                    \mathbb{E}_{\Policy,\vecG{\eta}} \Bracket{
+                    \mathbb{E}_{\Policy,\vecG{\eta},\vec{U}} \Bracket{
                         \sum_{l=0}^{T} \gamma^l g\Paren{\Stat_{i+l}, \Policy(\Stat_{i+l-1})}
                     }.
             \end{align}
