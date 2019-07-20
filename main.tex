@@ -171,7 +171,7 @@
             % which is obtained by statistics and denoted as $p_j \define \Pr\{\text{"j-type arrival"}\}$, where $\sum_{j\in\jSpace} p_j=1$.
             Thus the job arrival process on $k$-th AP ($\forall k\in\apSet$) is compounded of the job arrivals from all UEs connected, which follows the assumption as:
             \begin{assumption}[Job Arrival Process for AP]
-                The $j$-type job arrival distribution for $k$-th AP is denoted as $A_{k,j}$, which is independent and identically distributed (i.i.d) over each timeslot as $A_{k,j} \sim Bernoulli(\lambda_{k,j})$, $\lambda_{k,j}\in[0,1]$. This implies that there will be at most one job arrives on $k$-th AP in one timeslot. According to \emph{Poisson Limit Theorem}, the arrival process is a memory-less exponential process with average arrival rate $\mathbb{E}[A_{k,j}]=\lambda_{k,j}$.
+                The $j$-type job arrival distribution for $k$-th AP is denoted as $A_{k,j}$, which is independent and identically distributed (i.i.d) over each timeslot as $A_{k,j} \sim Bernoulli(\lambda_{k,j})$, $\lambda_{k,j}\in[0,1]$. This implies that there will be at most one $j$-type job arrives on $k$-th AP in one timeslot. According to \emph{Poisson Limit Theorem}, the arrival process is a memory-less exponential process with average arrival rate $\mathbb{E}[A_{k,j}]=\lambda_{k,j}$.
             \end{assumption}
 
             The AP itself is assumed with no computation capability, and thus it need to further dispatch those jobs to the edge servers.
@@ -212,24 +212,23 @@
 
             {\color{red}Due to the shared underlaid network with other network functions, the broadcast latency is \emph{un-predictable} in a distributed system and each AP will have different delay when receiving all the broadcast information from all the ES nodes and other AP nodes.}
             Let $D^{(p)}_{k,k'}$ denotes the broadcast delay between two AP nodes from $k'$-th AP to $k$-th AP ($\forall k,k'\in\apSet$); let $D^{(s)}_{k,m}$ denotes the broadcast delay between AP and ES node from $m$-th ES to $k$-th AP ($\forall k\in\apSet,\forall m\in\esSet$).
-            Furthermore, we denote the latency for $k$-th AP receives broadcast information from other nodes (including all ES nodes and other AP nodes) as \emph{Update Latency}. There are total $(K+M-1)$ latency time for one AP, and without loss of generality we give the definition for update latency list in the order from smallest to largest as follows.
-            \begin{definition}[Update Latency List]
-                For $k$-th AP ($\forall k\in\apSet$), the latency time for receiving other nodes' broadcast with respect to latest broadcast point is listed as:
+            Furthermore, we denote the latency for $k$-th AP receives broadcast information from other nodes (including all ES nodes and other AP nodes) as \emph{Update Latency}. There are total $(K+M)$ latency time points for one AP and especially, the latency time from itself to itself is always zero. Without loss of generality we give the definition for update latency listed in the order from smallest to largest as follows.
+            \begin{definition}[Update Latency]
+                For $k$-th AP ($\forall k\in\apSet$), every latency time points for receiving other nodes' broadcast with respect to latest broadcast point are listed as follows.
                 \begin{align}
-                    D_{k,1}, \dots D_{k,(K+M-1)}.
+                    D_{k,0}, D_{k,1}, \dots D_{k,N'},
                 \end{align}
-                Due to the un-predictable of broadcast delay, there is no explicit mapping between the second sub-script with index of $\apSet$ or $\esSet$.
-                And we could not explicitly denote the information update at each time point for $k$-th AP.
+                where $N'\define(K+M-1)$, and $D_{k,0}\equiv0$ to denote the broadcast information latency generated on itself. Due to the unpredictable property of broadcast latency, there is no explicit mapping between the second sub-script with indexes of $\apSet$ or $\esSet$ (except for $0$). And we could not explicitly denote the information update at each time point for $k$-th AP.
             \end{definition}
-            {\color{red}Furthermore, We assume that $D_{k,i}$ is bounded with $[0, \hat{D}_{k,i}]$ and follows some distribution in this interval summarized from statistical data, which is denotes as $\eta_{k,i}(d) \define \Pr\{D_{k,i}=d\}$ with mean as $\bar{d}_{k,i}$ ($\forall i\in 1,\dots,(K+M-1)$).
-            And we have $\vecG{\eta} \define \set{\eta_{k,i}|\forall k\in\apSet,i\in 1,\dots,(K+M-1)}$ to denote the latency distribution set for all AP nodes.}
+            {\color{red}Furthermore, We assume that broadcast latency $D_{k,n}$ is bounded with $[0, \hat{D}_{k,n}]$ and follows some distribution in this interval summarized from statistical data, which is denoted as $\eta_{k,n}(d) \define \Pr\{D_{k,n}=d\}$ with mean as $\bar{d}_{k,n}$ ($\forall k\in\apSet,\forall n\in\set{1,\dots,N'}$).
+            And we have $\vecG{\eta} \define \set{\eta_{k,n}|\forall k\in\apSet,n\in\set{1,\dots,N'}}$ to denote the latency distribution set for all AP nodes.}
 
             The broadcast design introduces a \emph{Two-time scale} structure in the MEC system.
             The job dispatching and scheduling decisions on AP and ES side respectively are still carried out based on timeslot scale, while the policy update is based on broadcast interval with the information update.
-            More specifically, the AP would only update its policy when it receives all the broadcast information which implies it comes to consensus on the obsolete global information with other AP nodes.
-            {\color{red}Moreover, we implement the broadcast in a low-frequency way that the broadcast period is always larger than the maximum broadcast latency plus the maximum uploading delay, i.e. $t_B > \hat{D}_{k} + \hat{U}_{k,m}$ $(\forall k\in\apSet, \forall m\in\esSet)$.}
+            More specifically, the AP would change its policy when receives partial information and update its policy when it receives all the broadcast information which implies that it comes to consensus on the obsolete global information with other AP nodes.
+            {\color{red}The multi-stage policy promises that the AP agent is aware of  Moreover, we implement the broadcast in a low-frequency way that the broadcast period is always larger than the maximum broadcast latency pulsing the maximum uploading delay, i.e. $t_B > \hat{D}_{k} + \hat{U}_{k,m}$ $(\forall k\in\apSet, \forall m\in\esSet)$.}
 
-            Due to the broadcast latency, the information received with delay will affect the policy update point for each AP, which impact on the transition distribution of next policy and global states.
+            Due to the broadcast latency, the information received with delay will affect the policy update point for each AP, which impact on the transition distribution of next-stage policy and global states.
             {\color{red}In the next section, we will show that with the prior statistic knowledge about broadcast latency $\vecG{\eta}$, we could establish exact cooperation among AP nodes under MDP frame work with analytical performance bound.}
         \end{subsection}
     \end{section}
@@ -269,13 +268,19 @@
                 \end{align}
                 More specifically, $\Omega_k(\Stat_{i})$ is composed of two-stage policy:
                 \begin{align}
-                    \Omega_k(\Stat_i) = [\tilde{\Omega}_k(\Obsv_{i-1}), \tilde{\Omega}_k(\Obsv_{i})],
-                    % $t\in[t_{i-1}, t_{i}], \Delta{t} \define t - t_{i-1}$
+                    \Omega_k(\Stat_i) \define
+                    \begin{bmatrix}
+                        \tilde{\Omega}^{(0)}_k(\Obsv_{i-1}), \dots, \tilde{\Omega}^{(N')}_k(\Obsv_{i-1}),
+                        \nonumber\\
+                        \tilde{\Omega}^{(0)}_k(\Obsv_{i}), \dots, \tilde{\Omega}^{(N')}_k(\Obsv_{i})
+                    \end{bmatrix},
                 \end{align}
-                where $\tilde{\Omega}_k(\Obsv_{i}) \define \set{\omega^{(i)}_{k,m}(j)|\forall j\in\jSpace, \forall m\in\esSet}$ and $\omega^{(i)}_{k,m}(j)$ denotes the dispatching policy that: based on global information $\Obsv_{i}$, the probabilistic action on $k$-th AP upload $j$-type job to $m$-th ES and $\sum_{j\in\jSpace} \Pr\{\omega^{(i)}_{k,m}(j)\}=1$.
+                where $\tilde{\Omega}^{(n)}_k(\Obsv_{i}) \define \set{\omega^{(i,n)}_{k,m}(j)|\forall j\in\jSpace, \forall m\in\esSet}$ ($\forall n\in\set{0,\dots,N'}$) and $\omega^{(i,n)}_{k,m}(j)$ denotes the stochastic dispatching policy that: after $k$-th AP receiving $n$-th broadcast information component of $\Obsv_{i}$, the probabilistic action that upload $j$-type job to $m$-th ES ($\sum_{j\in\jSpace} \Pr\{\omega^{(i,n)}_{k,m}(j)\}=1$).
             \end{definition}
-            More specifically, the two phase of the policy on single AP is separated by the \emph{Update Latency} $D_k$ for $k$-th AP, i.e. the exact time point when it receives the latest global information.
-            For example, in the broadcast interval $[t_{i}, t_{i+1}]$, $k$-th AP has the exact update latency as $d_k$, then it will apply policy $\tilde{\Omega}_k(\Obsv_{i})$ based on obsolete information before $(t_i+d_k)$ and apply the updated policy $\tilde{\Omega}_k(\Obsv_{i+1})$ immediately by solving the optimization problem with prior statistical knowledge $\vecG{\eta}$.
+            More specifically, the multiple phases of the policy $\Omega_k(\Stat_i)$ are separated by \emph{Update Latency} $D_{k,n}$ for $k$-th AP ($\forall n\in\set{0,\dots,N'}, k\in\apSet$). One vivid example of policy adaption phase is given as follows.
+            \begin{example}[Policy Phase Adaption]
+                In the time interval $[t_{i}, t_{i+1}]$, $k$-th AP would adopt $\tilde{\Omega}^{(0)}_k(\Obsv_{i-1})$ before $t_i$ and adopt $\tilde{\Omega}^{(1)}_k(\Obsv_{i-1})$ immediately at $t_i$ with its own information; then it will adopt $\tilde{\Omega}^{(n+1)}_k(\Obsv_{i-1})$ after receiving $n$-th broadcast information and adopt $\tilde{\Omega}^{(0)}_k(\Obsv_{i})$ immediately after receiving $N'$-th broadcast, i.e. the time when receiving all components of $\Obsv_{i}$.
+            \end{example}
         \end{subsection}
 
         \begin{subsection}{The Optimization Problem}
@@ -318,7 +323,7 @@
                 =& g(\Stat_i) + \gamma \min_{\BPolicy(\Stat_{i})} \sum_{\Stat_{i+1}}
                 \Pr\{ \Stat_{i+1}|\Stat_{i}, \BPolicy(\Stat_{i}) \} V(\Stat_{i+1}),
             \end{align}
-            {\color{red}where $\BPolicy(\Stat_{i}) \define [\bar{\Omega}_1(\Stat_{i}), \dots, \bar{\Omega}_K(\Stat_{i})]$; each $\bar{\Omega}_k(\Stat_{i})$ on $k$-th AP denotes the policy phase is separated by $\bar{d}_k$.}
+            {\color{red}where $\BPolicy(\Stat_{i}) \define [\bar{\Omega}_1(\Stat_{i}), \dots, \bar{\Omega}_K(\Stat_{i})]$; each $\bar{\Omega}_k(\Stat_{i})$ on $k$-th AP denotes the policy phase separated by $\bar{d}_k$.}
             The definition for value function is defined according to the form in \cite{sutton1998introduction} as follows.
             \begin{align}
                 V(\Stat_{i}) \define \lim_{T\to\infty}
