@@ -171,13 +171,13 @@
             % which is obtained by statistics and denoted as $p_j \define \Pr\{\text{"j-type arrival"}\}$, where $\sum_{j\in\jSpace} p_j=1$.
             Thus the job arrival process on $k$-th AP ($\forall k\in\apSet$) is compounded of the job arrivals from all UEs connected, which follows the assumption as:
             \begin{assumption}[Job Arrival Process for AP]
-                The $j$-type job arrival distribution for $k$-th AP is denoted as $A_{k,j}$, which is independent and identically distributed (i.i.d) over each timeslot as $A_{k,j} \sim Bernoulli(\lambda_{k,j})$, $\lambda_{k,j}\in[0,1]$. This implies that there will be at most one $j$-type job arrives on $k$-th AP in one timeslot. According to \emph{Poisson Limit Theorem}, the arrival process is a memory-less exponential process with average arrival rate $\mathbb{E}[A_{k,j}]=\lambda_{k,j}$.
+                The $j$-type job arrival distribution for $k$-th AP is denoted as $A_{k,j}$, which is independent and identically distributed (i.i.d) over each timeslot as $A_{k,j}$ following Poisson Point Process with intensity $\lambda_{k,j}$ ($\lambda_{k,j}\in[0,1]$). Thus average arrival rate of $j$-type jobs on $k$-th AP is $\mathbb{E}[A_{k,j}]=\lambda_{k,j}$, which implies that the occurrence average number of jobs in each timeslot would be $\lambda_{k,j}\tau$, .
             \end{assumption}
 
             The AP itself is assumed with no computation capability, and thus it need to further dispatch those jobs to the edge servers.
             The jobs arrival in each timeslot on AP will be immediately dispatched to edge servers.
-            {\color{red}The corresponding uploading delay of one job is stochastic and job-type independent over one AP-ES link, which is denoted as $U_{k,m}$ from $k$-th AP to $m$-th ES ($\forall k\in\apSet, \forall m\in\esSet$) and upper bounded by $\hat{U}_{k,m}$.
-            And we have $\vec{U} \define \set{U_{k,m}|\forall k\in\apSet,m\in\esSet}$ to denote the set of distribution information about uploading delay. The expectation of link uploading time is denoted as $\bar{u}_{k,m}$.}
+            {\color{red}The corresponding uploading delay of one job is \emph{stochastic and job-type dependent} over one AP-ES link, which is denoted as $U_{k,m}(j)$ from $k$-th AP to $m$-th ES ($\forall k\in\apSet, \forall m\in\esSet$) and upper bounded by $\hat{U}_{k,m}$.
+            And we have $\vec{U} \define \set{U_{k,m}(j)|\forall k\in\apSet,m\in\esSet,j\in\jSpace}$ to denote the set of distribution information about uploading delay. The expectation of link uploading time is denoted as $\bar{u}_{k,m}(j)$.}
 
             After arrival on edge servers, the jobs will join computation queue with the supported VM.
             Each VM is considered running parallel without resource contention, and the jobs scheduling for each VM is with a single queue following \emph{FCFS} (First-Come-First-Serve).
@@ -197,7 +197,7 @@
             \end{align}
             For $i$-th \emph{broadcast point}, the composed broadcast information from all the AP and ES nodes, and the corresponding information is listed as follows.
             \begin{itemize}
-                \item The $k$-th AP ($\forall k\in\apSet$) contains information $\mat{R}_k(i) \define (r^{(k)}_{m,j}(i))_{\set{m\in\esSet,j\in\jSpace}}$, where $r^{(k)}_{m,j}(i)$ denotes the remaining number of $j$-type jobs in uploading to $m$-th ES at time $t_i$; and we have $\vec{r}^{(k)}_{j} \define (r^{(k)}_{m,j}(i))_{m\in\esSet}$ to denote the columns in $\vec{R}_k(i)$;
+                \item The $k$-th AP ($\forall k\in\apSet$) contains information $\mat{R}_k(i) \define (r^{(k)}_{m,j}(i))_{\set{m\in\esSet,j\in\jSpace}}$, where $r^{(k)}_{m,j}(i)$ denotes the remaining number of $j$-type jobs in uploading to $m$-th ES at time $t_i$; and we have $\vec{r}^{(k)}_{m} \define (r^{(k)}_{m,j}(i))_{j\in\jSpace}$ to denote the rows in $\vec{R}_k(i)$;
                 \item The $m$-th ES ($\forall m\in\esSet$) contains information $\vec{Q}_m(i) \define \set{Q_{m,j}(i)|\forall j\in\jSpace}$ to denote the computation queues for different job types, where $Q_{m,j}(i) \define (n_{m,j}(i), \delta_{m,j}(i))$ to characterize the $j$-type FIFO queue on $m$-th ES; $n_{m,j}(i)$ denotes the number of $j$-type job queueing on $m$-th ES, and $\delta_{m,j}(i)$ denotes the remaining processing time for last job.
             \end{itemize}
             Thus the composed broadcasting information is denoted as:
@@ -275,7 +275,9 @@
                         \tilde{\Omega}^{(0)}_k(\Obsv_{i}), \dots, \tilde{\Omega}^{(N')}_k(\Obsv_{i})
                     \end{bmatrix},
                 \end{align}
-                where $\tilde{\Omega}^{(n)}_k(\Obsv_{i}) \define \set{\omega^{(i,n)}_{k,m}(j)|\forall j\in\jSpace, \forall m\in\esSet}$ ($\forall n\in\set{0,\dots,N'}$) and $\omega^{(i,n)}_{k,m}(j)$ denotes the stochastic dispatching policy that: after $k$-th AP receiving $n$-th broadcast information component of $\Obsv_{i}$, the probabilistic action that upload $j$-type job to $m$-th ES ($\sum_{j\in\jSpace} \Pr\{\omega^{(i,n)}_{k,m}(j)\}=1$).
+                where $\tilde{\Omega}^{(n)}_k(\Obsv_{i}) \define \set{\omega^{(i,n)}_{k,j}(m)|\forall j\in\jSpace, \forall m\in\esSet}$ ($\forall n\in\set{0,\dots,N'}$) and $\omega^{(i,n)}_{k,j}(m)$ denotes the stochastic dispatching policy that: after $k$-th AP receiving $n$-th broadcast information component of $\Obsv_{i}$, the probabilistic action that upload $j$-type job to $m$-th ES.
+                
+                We have $p^{(i,n)}_{k,j}(m) \define \Pr\{\omega^{(i,n)}_{k,j}(m)\}$ to denote the probability of action, where $\sum_{m\in\esSet} p^{(i,n)}_{k,j}(m) = 1$. Furthermore, we have $\rho^{(\vecG{\Pi},n)}_{k,j}(m)$ to denote the same probability but under fixed compounded policy $\vecG{\Pi}$.
             \end{definition}
             More specifically, the multiple phases of the policy $\Omega_k(\Stat_i)$ are separated by \emph{Update Latency} $D_{k,n}$ for $k$-th AP ($\forall n\in\set{0,\dots,N'}, k\in\apSet$). One vivid example of policy adaption phase is given as follows.
             \begin{example}[Policy Phase Adaption]
@@ -332,29 +334,33 @@
                     }.
             \end{align}
 
-            Before diving into the analysis on the transition function expression, we firstly come up with probability denotations for arrival process on edge servers.
-            The arrival process for $j$-th job uploaded from $k$-th AP under policy $\tilde{\Omega}^{(n)}_k(\Stat_i)$ is categorized into $(M+1)$ events as: arriving on $1$st ES, $2$nd ES, \dots, on $M$-th ES, or non-arrival; the event probability is given as follows.
-            \begin{align}
-                &\vec{p}_{k,j}^{(i,n)}
-                \nonumber\\
-                \define& \Bracket{
-                    \lambda_{k,j}\Pr\{\omega_{k,1}^{(i,n)}(j)\}, \dots, \lambda_{k,j}\Pr\{\omega_{k,M}^{(i,n)}(j)\}, 1-\lambda_{k,j}
-                },
-            \end{align}
-            and we have $\vecG{\rho}_{k,m}^{(\Pi_k)}$ denotes the Categorical distribution under time-invariant policy $\Pi_k$ for $k$-th AP.
-            The Categorical distribution in each timeslot consists of the multinomial distribution for number of jobs on AP nodes or on ES nodes in one broadcast interval.
+            %NOTE: ABANDONED
+            % Before diving into the analysis on the transition function expression, we firstly come up with probability denotations for arrival process on edge servers.
+            % The arrival process for $j$-th job uploaded from $k$-th AP under policy $\tilde{\Omega}^{(n)}_k(\Stat_i)$ is categorized into $(M+1)$ events as: arriving on $1$st ES, $2$nd ES, \dots, on $M$-th ES, or non-arrival; the event probability is given as follows.
+            % \begin{align}
+            %     &\vec{p}_{k,j}^{(i,n)}
+            %     \nonumber\\
+            %     \define& \Bracket{
+            %         \lambda_{k,j}\Pr\{\omega_{k,1}^{(i,n)}(j)\}, \dots, \lambda_{k,j}\Pr\{\omega_{k,M}^{(i,n)}(j)\}, 1-\lambda_{k,j}
+            %     },
+            % \end{align}
+            % and we have $\vecG{\rho}_{k,m}^{(\Pi_k)}$ denotes the Categorical distribution under time-invariant policy $\Pi_k$ for $k$-th AP.
+            % The Categorical distribution in each timeslot consists of the multinomial distribution for number of jobs on AP nodes or on ES nodes in one broadcast interval.
             
-            With the help of multinomial distribution arrival process, we could further decouple the expression of transition function into parts 
+            We note that after the dispatching policy, the arrival distribution $A_{k,j}$ is further split onto different Edge Servers. The split arrival processes for $k$-th AP ($\forall k\in\apSet$) under policy $\tilde{\Omega}^{(n)}_{k}(\Obsv_i)$ are still i.i.d Poisson Point Processes but with different arrival rates as $\set{\lambda_{k,j}p^{(i,n)}_{k,j}(m)|\forall m\in\esSet}$.
+            With the Poisson distribution arrival process for each queues on each Edge Servers, we could further decouple the expression of transition function engaged with each single AP nodes and ES node as follows.
             \begin{lemma}[Transition Function Decoupling]
                 The transition function in Bellman's equation could be decoupled on AP nodes states and ES nodes states, which will facilitate the approximated value function expression in the following section. The decoupled transition function is in the form as follows.
                 \begin{align}
                     & \Pr\{\Stat_{i+1}|\Stat_{i}, \BPolicy(\Stat_{i})\}
                     \nonumber\\
-                    =& \prod_{k\in\apSet} \Pr\Brace{\vec{R}_k(i+1)|\BPolicy(\Stat_{i})} \times \prod_{j\in\jSpace}
+                    =& \prod_{k\in\apSet}\prod_{m\in\esSet}\prod_{j\in\jSpace}
+                            \Pr\Brace{r^{(k)}_{m,j}(i+1)|\BPolicy(\Stat_{i})}
+                            \times \prod_{m\in\esSet}\prod_{j\in\jSpace}
                         \nonumber\\
-                        & \Pr\Brace{\vec{Q}'_{j}(i+1)|\vec{Q}'_{j}(i), \set{\vec{R}_k(i)|\forall k\in\apSet}, \BPolicy(\Stat_{i})},
+                        & \Pr\Brace{Q_{m,j}(i+1)|Q_{m,j}(i), \set{\vec{R}_k(i)|\forall k\in\apSet}, \BPolicy(\Stat_{i})},
                 \end{align}
-                where $\vec{Q}'_{j}(i)\define \set{Q_{m,j}(i)|\forall m\in\esSet}$; first production part denotes the unfinished uploading state transition for AP nodes, and the second part denotes the queueing states of same type jobs on all ES nodes.
+                where the first production part denotes the unfinished uploading state transition for AP nodes, and the second part denotes the queueing states of same type jobs on all ES nodes.
             \end{lemma}
             \begin{proof}
                 Please refer to appendix \ref{trans-decouple}.
@@ -375,7 +381,7 @@
             \begin{align}
                 \vec{\Pi} \define \Bracket{\Pi_1, \Pi_2, \dots, \Pi_K},
             \end{align}
-            where $\Pi_k \define \set{\omega_{k,m}(j)|\forall m\in\esSet,\forall j\in\jSpace}$, $\forall k\in\apSet$.
+            where $\Pi_k \define \set{\omega_{k,j}(m)|\forall m\in\esSet,\forall j\in\jSpace}$, $\forall k\in\apSet$.
 
             According to the additive structure of cost function, the value function could be divided linearly into two section as $\tilde{W}^{(p)}(\Obsv^{(p)}(i))$ and $\tilde{W}^{(s)}(\Obsv(i))$ under baseline policy:
             \begin{align}
@@ -384,25 +390,27 @@
                     \nonumber\\
                     & \cdot \Bracket{ \tilde{W}^{(p)}\Paren{\Obsv^{(p)}(i+1)} + \tilde{W}^{(s)}\Paren{\Obsv(i+1)} },
             \end{align}
-            where $\tilde{W}^{(p)}(\cdot)$ and $\tilde{W}^{(s)}(\cdot)$ denote the split value function over AP nodes and ES nodes respectively; $\Obsv^{(p)}(i) \define \set{\mat{R}_k(i)|\forall k\in\apSet}$ and $\Obsv^{(s)}(i) \define \set{\vec{Q}_m(i)|\forall m\in\esSet}$ respectively denote the AP states collection and ES states collection for $\Obsv(i) = \set{\Obsv^{(p)}(i), \Obsv^{(s)}(i)}$, and the split value function is in the following form:
+            where $\tilde{W}^{(p)}(\cdot)$ and $\tilde{W}^{(s)}(\cdot)$ denote the split value functions over AP nodes and ES nodes respectively; $\Obsv^{(p)}(i) \define \set{\mat{R}_k(i)|\forall k\in\apSet}$ and $\Obsv^{(s)}(i) \define \set{\vec{Q}_m(i)|\forall m\in\esSet}$ respectively denote the AP states collection and ES states collection of $\Obsv(i) = \set{\Obsv^{(p)}(i), \Obsv^{(s)}(i)}$. The split value function is in the following form:
             \begin{align}
-                &\tilde{W}^{(p)}\Paren{\Obsv^{(p)}(i)} \define \sum_{k\in\apSet}\sum_{m\in\esSet}
-                    \mathbb{E}_{\Pi}\Bracket{\sum_{l=0}^{\infty} \gamma^{l} \Inorm{\vec{r}^{(k)}_{m}(i+l)}}
+                \tilde{W}^{(p)}\Paren{\Obsv^{(p)}(i)} &\define \sum_{k\in\apSet}\sum_{m\in\esSet}
+                    \mathbb{E}_{\Pi, \vecG{\eta}, \vec{U}}\Bracket{
+                        \sum_{l=0}^{\infty} \gamma^{l} \Inorm{\vec{r}^{(k)}_{m}(i+l)}
+                    }
                 \\
-                &\tilde{W}^{(s)}\Paren{\Obsv(i)} \define \sum_{m\in\esSet} \sum_{j\in\jSpace}
-                    \mathbb{E}_{\Pi}\Bracket{\sum_{l=0}^{\infty} \gamma^{l} n_{m,j}(i+l)}
+                \tilde{W}^{(s)}\Paren{\Obsv(i)} &\define \sum_{m\in\esSet}\sum_{j\in\jSpace}
+                    \mathbb{E}_{\Pi, \vecG{\eta}, \vec{U}}\Bracket{
+                        \sum_{l=0}^{\infty} \gamma^{l} n_{m,j}(i+l)
+                    },
             \end{align}
             The decoupled value functions for AP and ES nodes is obtained with an approximated form under the baseline policy.
-
             The approximated value function $\tilde{W}^{(p)}(\Obsv^{(p)}(i+1))$ for AP nodes is obtained as:
             \begin{align}
                 \tilde{W}^{(p)}(\Obsv^{(p)}(i+1)) = \frac{1}{1-\gamma}
                     \sum_{k\in\apSet}\sum_{m\in\esSet} \mathbb{E}_{\Pi}[\Inorm{\vec{r}^{(k)}_{m}}],
             \end{align}
-            where the expectation of $\Inorm{\vec{r}^{(k)}_{m}}$ under the policy $\Pi_k$ is actually a constant as expectation of Binomial distribution $\mathbb{E}_{\Pi_k}[\Inorm{\vec{r}^{(k)}_{m}}] = \sum_{j\in\jSpace}\sum_{m\in\esSet} \bar{u}_{k,m} \rho^{(\Pi_k)}_{k,j}(m)$.
+            where the expectation of $\Inorm{\vec{r}^{(k)}_{m}}$ under the policy $\Pi_k$ is actually a constant as sum-up expectation of Poisson processes as $\mathbb{E}_{\Pi_k}[\Inorm{\vec{r}^{(k)}_{m}}] = \sum_{j\in\jSpace} \lambda_{k,j} \rho^{(\Pi_k,N')}_{k,j}(m) \bar{u}_{k,m}(j)$.
             
             The approximated value function $\tilde{W}^{(s)}(\Obsv(i))$ for ES nodes is affected with both arrival process under dispatching policy and last queue state, and we reduce the states expression by averaging the uploading process together with the transition function expression.
-            % For convenience, we have $\Obsv^{(p)}(i) \define \set{\vec{u}_k(i)|\forall k\in\apSet}$ and $\Obsv^{(s)}(i) \define \set{Q_m(i)|\forall m\in\esSet}$.
             The partial value function optimization for ES in Bellman's Equation right-hand side is given as:
             \begin{align}
                 \min_{\BPolicy(\Stat_i)}& \sum_{\Stat_{i+1}}
