@@ -462,6 +462,11 @@
                     \cdot \underbrace{\tilde{W}^{(p)} \Paren{\Obsv^{(p)}(i+1)}}_{\text{constant}}
                 } 
             \end{align}
+            and we have
+            \begin{align}
+                \sum_{m\in\esSet}\sum_{j\in\jSpace} 
+            \end{align}
+
             Then we introduce the one-step iteration algorithm:
             % [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
             \begin{algorithm}[H]
@@ -537,7 +542,8 @@
         where:
         \begin{itemize}
             \item $q'_0 = \sum_{k\in\apSet}r^{(k)}_{m,j}(i)$;
-            \item $q_0^{(k,n)} \sim \Poisson(\lambda_{k,j}p^{(i-1,n)}_{k,j}(m) \cdot \Delta^{(k)}_{n})$, where $\Delta^{(k)}_{n}=D_{k,n} - D_{k,n-1}$ (for $n=1,\dots,N'-1$) and $\Delta^{(k)}_{N'} = T_B-u_{k,m}(j)-D_{k,N'-1}$.
+            \item $q_0^{(k,n)} \sim \Poisson(\lambda_{k,j}p^{(i-1,n)}_{k,j}(m) \cdot \Delta^{(k)}_{n})$, where $\Delta^{(k)}_{n}=D_{k,n} - D_{k,n-1}$ (for $n=1,\dots,N'-1$) and $\Delta^{(k)}_{N'} = T_B-u_{k,m}(j)-D_{k,N'-1}$;
+            \item $\Pr\{ \sum_{k\in\apSet}\sum_{n=1}^{(N')}q_0^{(k,n)}) \} = \sum_{k\in\apSet}\sum_{n=1}^{(N')} \Pr\{q_0^{(k,n)})\}$.
         \end{itemize}
         At last we have the transition function for $j$-type queue on $m$-th ES node given as:
         \begin{align*}
