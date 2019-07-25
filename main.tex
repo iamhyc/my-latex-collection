@@ -209,34 +209,28 @@
             \end{align}
             where $\Obsv_i$ is a set of global information of $i$-th broadcast. And it's actually the global system states at $t_i$.
 
-            Due to the periodic broadcasting and broadcasting latency, we consider different AP nodes would receive partial broadcast information at different time points in one broadcast interval.
+            We consider different AP nodes would receive partial broadcast information at different time points in one broadcast interval.
             Let $d^{(p)}_{k,k'}$ denotes the broadcast delay between two AP nodes from $k'$-th AP to $k$-th AP ($\forall k,k'\in\apSet$); let $d^{(s)}_{k,m}$ denotes the broadcast delay between AP and ES node from $m$-th ES to $k$-th AP ($\forall k\in\apSet,\forall m\in\esSet$).
-            Furthermore, we denote the latency for $k$-th AP receives broadcast information from other nodes (including all ES nodes and other AP nodes) as \emph{Maximum Broadcast Latency}.
+            Then we denote the latency for $k$-th AP receives broadcast information from other nodes (including all ES nodes and other AP nodes) as \emph{Maximum Broadcast Latency}.
             \begin{definition}[Maximum Broadcast Latency]
                 The maximum broadcast latency is the time when AP receives whole broadcast information with respect to the broadcast point. For $k$-th AP ($\forall k\in\apSet$) the latency is defined as follows.
                 \begin{align}
-                    \hat{d}_{k} \define \max\Paren{ \set{d^{(p)}_{k,k'}|\forall k \neq k' \in\apSet}, \set{d^{(s)}_{k,m}|\forall k\in\apSet,m\in\esSet} }
+                    \hat{d}_{k} \define \max\Paren{ \set{d^{(p)}_{k,k'}, d^{(s)}_{k,m}|\forall k' \neq k \in\apSet, \forall m\in\esSet} }
                 \end{align}
+                Without loss of generality, we sort the index of AP set $\apSet$ according to the corresponding maximum delay that the global information is received, i.e. $\hat{d}_{1} \leq \hat{d}_{2} \leq \dots \leq \hat{d}_{K}$. We will keep this assumption in the remaining of the article.
             \end{definition}
-            Without loss of generality, we sort the index of AP set $\apSet$ according to the corresponding maximum delay that the global information is received, i.e. $\hat{d}_{1} \leq \hat{d}_{2} \leq \dots \leq \hat{d}_{K}$. We keep this assumption in the remaining of the article.
+            {\color{red}
+            Moreover, we implement the broadcast in a low-frequency way that the broadcast period is always larger than the maximum broadcast latency pulsing the maximum uploading delay, i.e. $t_B > \hat{d}_{k} + u_{k,m}(j)$ $(\forall k\in\apSet, \forall m\in\esSet, \forall j\in\jSpace)$.
+            }
 
-            \begin{definition}[Update Points]
-                For $k$-th AP ($\forall k\in\apSet$),
-                \begin{itemize}
-                    \item Partially Update Points: 
-                    \item Consensus Update Points: When reaching the ending of the broadcast interval, all the AP nodes would update the policy together;
-                    this policy iteration is evaluated with no policy changes consideration in the following time in this interval;
-                    this policy iteration is with partial information only with last interval, but not with information from this interval;
-                \end{itemize}
-            \end{definition}
-
-            The broadcast design introduces a \emph{Two-time scale} structure in the MEC system.
-            The job dispatching and scheduling decisions on AP and ES side respectively are still carried out based on timeslot scale, while the policy update is based on broadcast interval with the information update.
-            More specifically, the AP would change its policy when receives partial information and update its policy when it receives all the broadcast information which implies that it comes to consensus on the obsolete global information with other AP nodes.
-            {\color{red}The multi-stage policy promises that the AP agent is aware of  Moreover, we implement the broadcast in a low-frequency way that the broadcast period is always larger than the maximum broadcast latency pulsing the maximum uploading delay, i.e. $t_B > \hat{D}_{k} + \hat{U}_{k,m}$ $(\forall k\in\apSet, \forall m\in\esSet)$.}
-
-            Due to the broadcast latency, the information received with delay will affect the policy update points for each AP, which impact on the transition distribution of next-stage policy and global states.
-            In the next section, we will show that we could establish cooperation among AP nodes under MDP frame work with analytical performance bound.
+            {\color{red}
+            Due to the introduced periodic broadcasting design and the information receiving latency, this kind of system is inherent of the structure that decisions are always made with obsolete and partial information.
+            This implies that: if any agents change its decision with respect to newly-arrival broadcast information, it will disturb other agents' decisions from cooperation due to different information of system states.
+            Thus, it's unacceptable to update agents' policy only when the agents all come up with exactly same information.
+            So we consider \emph{partial information}-based dispatching decision making to adapt to new information as soon as possible.
+            }
+            
+            In the problem formulation section, we will show that we could leverage obsolete and partial information to improve the policy applied on different AP nodes. Furthermore, with the help of algorithm design we could prove that our improved policy is with analytical performance bound under MDP framework.
         \end{subsection}
     \end{section}
 
@@ -249,34 +243,45 @@
 
         \begin{subsection}{System State and Dispatching Policy}
             The system states is selected based on the nature that $k$-th AP comes up with complete broadcast information only after its corresponding \emph{Update Latency} in the broadcast interval.
-            The relative difference between broadcast point and the update time point is depicted in Fig. \ref{fig:br-trans} \hl{(need to modify the state denotation in figure)}.
+            The relative difference between broadcast point and the update time point is depicted in Fig. \ref{fig:br-trans}.
             \begin{definition}[System State]
-                The system state at $i$-th broadcast point is denoted as $\Stat_i \define (\Obsv_{i}, \Obsv_{i-1}), (i=1,2,\dots)$, where $\Obsv_{i-1}$ represents the obsolete information before the broadcast received, and $\Obsv_{i}$ represents the updated information after the corresponding $D_k$ delay for $k$-th AP node.
+                The system state at $i$-th broadcast point is denoted as $\Stat_i \define (\Obsv_{i-1}, \Obsv_{i-2}), (i=1,2,\dots)$, where $\Obsv_{-1} = \Obsv_{0} =\Phi$.
+                $\Obsv_{i-2}$ represents the more stale information before the consensus update points, and $\Obsv_{i-1}$ represents the stale information.
             \end{definition}
 
             \begin{figure}[ht]
                 \centering
-                \includegraphics[width=0.45\textwidth]{broadcast-trans.png}
-                \caption{Global Consensus and Transition with Delayed Action}
+                \includegraphics[width=0.45\textwidth]{brd-trans.png}
+                \caption{Global System Transition with Partial Information-based Dispatching Decision}
                 \label{fig:br-trans}
             \end{figure}
 
             The \emph{dispatching policy} is applied over arrival jobs in each timeslot on each AP, and the \emph{dispatching action space} is defined as $\mathbf{A}: (j, m) \in \jSpace \times \esSet$, where $(j, m)$ denotes the action that $j$-type job should be uploaded to $m$-th ES.
-            Based on the two stages of global system information $\Obsv_{i-1}$ and $\Obsv_{i}$ in system state, the compounded global-wise policy of all AP nodes is defined as follows.
+            \begin{definition}[Update Time Points]
+                For $k$-th AP ($\forall k\in\apSet$), partial updates firstly and then consensus update, which is defined as follows.
+                \begin{itemize}
+                    \item Partially Update Points: The AP nodes will update their own policy when the corresponding \emph{Maximum Broadcast Latency} is achieved, and awareness of the previous policy change for the AP nodes receiving information before it;
+                    \item Consensus Update Points: When reaching the ending of the broadcast interval, all the AP nodes would update the policy together;
+                    this policy iteration is evaluated with no policy changes consideration in the following time in this interval;
+                    this policy iteration is with partial information only with last interval, but not with information from this interval.
+                \end{itemize}
+            \end{definition}
+            
+            Based on the two stages of global system information $\Obsv_{i-2}$ and $\Obsv_{i-1}$ in system state, the compounded global-wise policy of all AP nodes is defined as follows.
             \begin{definition}[Compounded Dispatching Policy]
-                The compounded dispatching policy $\Policy(\Stat_{i})$ over $\Stat_{i}$ which is composed of all the local policies is defined as follows.
+                The compounded dispatching policy $\Policy(\Stat_{i})$ over $\Stat_{i}$ which is composed of all the local policies defined as follows.
                 \begin{align}
                     \Policy(\Stat_{i}) \define
                     \begin{bmatrix}
-                        \tilde{\Omega}_{0,1}(\Obsv_{i-1}), &\tilde{\Omega}_{0,2}(\Obsv_{i-1}), &\dots, &\tilde{\Omega}_{0,K}(\Obsv_{i}) \\
-                        \tilde{\Omega}_{1,1}(\Obsv_{i}), &\tilde{\Omega}_{1,1}(\Obsv_{i-1}), &\dots, &\tilde{\Omega}_{1,K}(\Obsv_{i-1}) \\
-                        \tilde{\Omega}_{2,1}(\Obsv_{i}), &\tilde{\Omega}_{2,2}(\Obsv_{i}), &\dots, &\tilde{\Omega}_{2,K}(\Obsv_{i-1}) \\
+                        \tilde{\Omega}_{0,1}(\Obsv_{i-2}), &\tilde{\Omega}_{0,2}(\Obsv_{i-2}), &\dots, &\tilde{\Omega}_{2,K}(\Obsv_{i-2}) \\
+                        \tilde{\Omega}_{1,1}(\Obsv_{i-1}), &\tilde{\Omega}_{2,2}(\Obsv_{i-2}), &\dots, &\tilde{\Omega}_{2,K}(\Obsv_{i-2}) \\
                         \dots, &\dots, &\dots, &\dots \\
-                        \tilde{\Omega}_{K,1}(\Obsv_{i}), &\tilde{\Omega}_{K,2}(\Obsv_{i}), &\dots, &\tilde{\Omega}_{K,K}(\Obsv_{i})
+                        \tilde{\Omega}_{K,1}(\Obsv_{i-1}), &\tilde{\Omega}_{K,2}(\Obsv_{i-1}), &\dots, &\tilde{\Omega}_{K,K}(\Obsv_{i-1})\\
+                        \tilde{\Omega}_{0,1}(\Obsv_{i-1}), &\tilde{\Omega}_{0,2}(\Obsv_{i-1}), &\dots, &\tilde{\Omega}_{0,K}(\Obsv_{i-1}) \\
                     \end{bmatrix},
                 \end{align}
                 where $\tilde{\Omega}_{n,k}(\Obsv_{i}) \define \set{\omega^{(i,n)}_{k,j}(m)|\forall j\in\jSpace, \forall m\in\esSet}$ ($\forall n\in\set{0,\dots,K}$) and $\omega^{(i,n)}_{k,j}(m)$ denotes the deterministic dispatching policy which describe the situation: when $k$-th AP in $n$-th broadcast interval with broadcast information $\Obsv_{i}$, it would then upload $j$-type job to $m$-th ES if and only if $\omega^{(i,n)}_{k,j}(m)=1$.
-                And we have $\vecG{\Omega}(\Stat_{i}) \define [\Omega_{0}(\Stat_i), \Omega_{1}(\Stat_i), \dots, \Omega_{K}(\Stat_i)]$ to denotes the rows in this policy matrix.
+                And we have $\vecG{\Omega}(\Stat_{i}) \define [\Omega_{0}(\Stat_{i}), \Omega_{1}(\Stat_{i}), \dots, \Omega_{K+1}(\Stat_i)]$ to denotes the rows in this policy matrix. The first policy $\Omega_{0}(\Stat_{i})$ and last policy $\Omega_{K+1}(\Stat_{i})$ is the policy updated at consensus update point, and the remains are updated iteratively with heuristic algorithm.
             \end{definition}
             More specifically,
             $\Omega_{0}(\Stat_{i})$ denotes the \emph{Consensus Update} globally policy iteration based on stale information $\Obsv_{i-1}$;
@@ -470,7 +475,10 @@
             \end{align}
             and we have
             \begin{align}
-                \sum_{m\in\esSet}\sum_{j\in\jSpace} 
+                % \set{r^{k}_{m,j}(i)|\forall k\in\apSet}
+                \sum_{m\in\esSet}\sum_{j\in\jSpace} &\Pr\{Q_{m,j}(i+1)|Q_{m,j}(i), \Obsv^{(p)}(i), \Policy(\Stat_i)\} \mu'_{i+1}
+                    \nonumber\\
+                    \Paren{ \mat{I}-\gamma\mat{P}_{m,j} }^{-1} \vec{g}
             \end{align}
 
             Then we introduce the one-step iteration algorithm:
@@ -516,9 +524,9 @@
         \begin{align}
             & \Pr\{\Stat_{i+1}|\Stat_{i}, \BPolicy(\Stat_{i})\}
             \nonumber\\
-            =& \Pr\{\Obsv^{(p)}(i+1)|\BPolicy(\Stat_{i})\} \times
+            =& \Pr\{\Obsv^{(s)}(i+1)\Obsv^{(s)}(i+1), \Obsv^{(s)}(i)|\BPolicy(\Stat_{i})\} \times
                 \nonumber\\
-                &\Pr\{\Obsv^{(s)}(i+1)\Obsv^{(s)}(i+1), \Obsv^{(s)}(i)|\BPolicy(\Stat_{i})\}
+                &\Pr\{\Obsv^{(p)}(i+1)|\BPolicy(\Stat_{i})\}
             \nonumber\\
             =& \prod_{k\in\apSet}\prod_{m\in\esSet}\prod_{j\in\jSpace}
                     \Pr\Brace{r^{(k)}_{m,j}(i+1)|\BPolicy(\Stat_{i})}
