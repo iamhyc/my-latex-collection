@@ -25,7 +25,6 @@
 \newcommand{\vecOne}{\mathbf{1}}
 \newcommand{\ind}{\mathbf{I}}
 \newcommand{\mat}{\mathbf}
-\newcommand{\Mult}{\text{Mult}}
 \newcommand{\Poisson}{\text{Poisson}}
 \newcommand{\define}{\triangleq}
 \newcommand{\leadto}{\Rightarrow}
@@ -41,9 +40,6 @@
 \newcommand{\apSet}{\mathcal{K}}
 \newcommand{\esSet}{\mathcal{M}}
 \newcommand{\jSpace}{\mathcal{J}}
-\newcommand{\wSet}{\mathcal{W}}
-\newcommand{\uSet}{\mathcal{U}}
-\newcommand{\cSet}{\mathcal{C}}
 \newcommand{\Stat}{\mathbf{S}}
 \newcommand{\Obsv}{\mathcal{Y}}
 \newcommand{\Policy}{\boldsymbol{\Omega}}
@@ -93,7 +89,7 @@
         Related works on job dispatching on scheduling in edge computing, mostly with centralized agent to apply action and seldom take delayed information impact into consideration.
         There are some previous works on jobs scheduling strategies under the scenario of edge computation, together with joint optimization job dispatching and resource allocation:
         \begin{itemize}
-            \item \cite{Zheng2019} is a work considering maximizing the long-term utility in MEC offloading policy, and formulating the problem with MDP solved with Q-learning (However, it's applied with a centralized controller which would suffer from communication overhead, and the proposed reduced states is naive);
+            \item \cite{Zheng2019} is a work considering maximizing the long-term utility in MEC offloading policy, and formulating the problem with MDP solved with Q-learning (However, it's applied with a centralized controller which would suffer from communication overhead, and without performance guarantee);
             \item \cite{Du2018} propose an offline algorithm with MINLP (Mixed-Integer Nonlinear Programming) problem formulation, considering min-max fairness guarantee in computation offloading and computation resource allocation in fog/edge computing scenario (However, with only one edge and one cloud node considered);
             \item \cite{Alameddine2019} is a work considering task offloading, scheduling and resource allocation joint optimization with Benders Decomposition (However, delay information is previous defined);
             \item \cite{Fan2017} considers cooperation of multiple MEC-BSs of computation offloading to other MEC-BSs (However, it doesn't consider the offloading utility impact on other MEC-BSs, i.e. only optimize for one BSs in the cluster).
@@ -101,15 +97,15 @@
         
         Different from the previous referred works, which only consider optimization for one agent in system or using centralized agent for decision making, we focus on the impact of out-of-dated information on decision making in multiple agents distributed cooperation.
         Due to frequent jobs releasing from users and uncertainty of jobs uploading time to servers, the obsolete information is inevitable in a purely distributed system.
-        This information sharing delay would cause severe misestimate for job dispatching decision making, and thus it will be hard to guarantee the cooperation among individual agents.
-        Moreover, the information sharing delay is often un-deterministic due to shared underlaid network topology, and offensively sharing strategy would cause network congestion to other normal functions.
+        This information sharing delay would cause severe mis-estimate for job dispatching decision making, and thus it will be hard to guarantee the cooperation among individual agents.
+        Moreover, the information sharing delay is often un-deterministic due to shared under-laid network topology, and offensively sharing strategy would cause network congestion to other normal functions.
 
         As what we have learned for now, there are very limited discussions on this topic:
         \begin{itemize}
             \item The earliest works entangling with out-of-dated information we could find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing limited information. The agent considers communication as extra action to synchronize the states and thus incurs extra cost (However, the communication is without delay, thus converted into POMDP problem; criticize with impractical);
             \item The other work \cite{ref-02} considers continuous state observation with constant or stochastic delay with single agent;
             \item One researcher published a series of paper on this topic \cite{Lyu2017,Lyu2018,Lyu2018a,Lyu2018b}.
-                \cite{Lyu2017} is work considering \emph{out-of-date knowledge} optimization in IoT computing scenario, with Lyapunov optimization;
+                \cite{Lyu2017} is work considering \emph{partial out-of-date knowledge} optimization in IoT computing scenario, with Lyapunov optimization;
                 \text{[delay-sensitive, ToC]} \cite{Lyu2018} identify that task admission is critical to delay-sensitive applications in mobile edge computing, and proposes an (1-$\epsilon$)-approximation algorithm
                 \text{[foggy, fully distributed online]} \cite{Lyu2018a} is a work fully distributed online optimization to minimize the time-average cost and achieve asymptotic optimality over infinite time;
                 \cite{Lyu2018b} try to establish cooperation among selfish devices in fog computing, and out-of-date information is blamed for optimality gap but proved to asymptotically diminish with the proposed algorithm (However, the out-dated information is considered with limited effect);
@@ -137,12 +133,12 @@
         % \end{itemize}
 
         In this article, we consider there are Access Points (AP) in this network to connect the User Equipment (UE) and the Edge Servers (ES).
-        The computation jobs would be released from UEs and the dispatching decisions are determined distributed on each APs as depicted in Fig.\ref{fig:system}.
+        The computation jobs would be released from UEs and the dispatching decisions are determined distributed on each AP nodes as depicted in Fig.\ref{fig:system}.
         The information sharing scheme is proposed in this article with synchronized broadcast design. With the help of this scheme, we could immediately apply the job dispatching decision based on obsolete information, with some prior stochastic knowledge of global system.
         Our contributions are summarized as follows.
         \begin{itemize}
             \item To our best knowledge, we are the first work to propose the MDP framework making use of obsolete information in edge computing system. With shared prior stochastic knowledge about broadcast latency and uploading delay, the distributed agent could come to consensus on optimal policy adopting globally;
-            \item We propose a global state MDP formulation to characterize the multi-agent problem, i.e. single agent would consider multi-agent decision optimality to achieve cooperation.
+            \item We propose a global state MDP formulation to characterize the multiple-agent problem, i.e. single agent would consider multiple-agent decision optimality to achieve cooperation.
             We with adopt value function approximation to reduce the traditional algorithm complexity, and come up with performance guarantee performance bound.
         \end{itemize}
 
@@ -162,7 +158,7 @@
 
             \begin{figure}[ht]
                 \centering
-                \includegraphics[width=0.45\textwidth, trim={0.5cm 0.5cm 0.5cm 0.5cm}, clip]{system-model.pdf}
+                \includegraphics[width=0.45\textwidth]{system-model.pdf}
                 \caption{The Illustration of MEC System Model}
                 \label{fig:system}
             \end{figure}
@@ -170,7 +166,7 @@
             The User Equipment (UE) would offload the computation jobs on demand to the AP it connect.
             We consider some types of jobs are supported on edge servers with Virtual Machine (VM) resources. The job space is denoted as $\jSpace \define \set{1,\dots, J}$, and jobs type distribution on each AP node follows the same distribution over $\jSpace$.
             % which is obtained by statistics and denoted as $p_j \define \Pr\{\text{"j-type arrival"}\}$, where $\sum_{j\in\jSpace} p_j=1$.
-            Thus the job arrival process on $k$-th AP ($\forall k\in\apSet$) is compounded of the job arrivals from all UEs connected, which follows the assumption as:
+            Thus the job arrival process on $k$-th AP ($\forall k\in\apSet$) is compounded of the job arrivals from all UE connected, which follows the assumption as:
             \begin{assumption}[Job Arrival Process for AP]
                 The $j$-type job arrival distribution for $k$-th AP is denoted as $A_{k,j}$, which is independent and identically distributed (i.i.d) over each timeslot as $A_{k,j}$ following Poisson Point Process with intensity $\lambda_{k,j}$ ($\lambda_{k,j} > 0$). Thus average arrival rate of $j$-type jobs on $k$-th AP is $\mathbb{E}[A_{k,j}]=\lambda_{k,j}$, which implies that the occurrence average number of jobs in one timeslot would be $\lambda_{k,j}\tau$, .
             \end{assumption}
@@ -237,137 +233,154 @@
     %============================ FORMULATION =============================%
     \begin{section}{PROBLEM FORMULATION}
         \label{sec:formulation}
-        In this section, we formulate the standard MDP problem with respect to the broadcast-point time scale. The formulated problem is based on global information shared via synchronized broadcast, and the the optimal solution is achieved via compounded dispatching policies on all AP nodes.
+        In this section, we formulate the standard MDP problem with respect to global system states and jobs dispatching policy of which is compounded of all AP nodes in this MEC system.
         Given the fact that AP nodes would obtain global states update only after \emph{Update Latency} in each broadcast interval, the formulated MDP problem is composed of two adjacent broadcast interval with obsolete information and updated information.
+        As we allow policy update over partial obsolete information, the formulated MDP problem is further split into two sub-problem leveraging same problem structure. The structure would lead to performance improvement guarantee with the proposed distributed algorithm.
         Then we show that the solution for all AP nodes suffers from curse of dimensionality and a low-complexity solution is needed.
 
         \begin{subsection}{System State and Dispatching Policy}
             The system states is selected based on the nature that $k$-th AP comes up with complete broadcast information only after its corresponding \emph{Update Latency} in the broadcast interval.
-            The relative difference between broadcast point and the update time point is depicted in Fig. \ref{fig:br-trans}.
+            The relative difference between broadcast point and the update time point is depicted in Fig. \ref{fig:brd-trans}.
             \begin{definition}[System State]
-                The system state at $i$-th broadcast point is denoted as $\Stat_i \define (\Obsv_{i-1}, \Obsv_{i-2}), (i=1,2,\dots)$, where $\Obsv_{-1} = \Obsv_{0} =\Phi$.
-                $\Obsv_{i-2}$ represents the more stale information before the consensus update points, and $\Obsv_{i-1}$ represents the stale information.
+                The system state at $i$-th broadcast point is denoted as $\Stat_i \define (\Obsv_{i-2}, \Obsv_{i-1}, \Obsv_{i}), (i=1,2,\dots)$, where $\Obsv_{-1}=\Obsv_{0} =\Phi$ denotes the empty system state.
+                $\Obsv_{i}$ denotes updated information after receiving global broadcasting information, $\Obsv_{i-1}$ denotes the partial stale information, and $\Obsv_{i-2}$ denotes the more stale information which have impact on transition function with respect to $\Obsv_{i-2}$.
             \end{definition}
 
             \begin{figure}[ht]
                 \centering
-                \includegraphics[width=0.45\textwidth]{brd-trans.png}
+                \includegraphics[width=0.45\textwidth]{brd-trans.pdf}
                 \caption{Global System Transition with Partial Information-based Dispatching Decision}
-                \label{fig:br-trans}
+                \label{fig:brd-trans}
             \end{figure}
 
-            The \emph{dispatching policy} is applied over arrival jobs in each timeslot on each AP, and the \emph{dispatching action space} is defined as $\mathbf{A}: (j, m) \in \jSpace \times \esSet$, where $(j, m)$ denotes the action that $j$-type job should be uploaded to $m$-th ES.
+            The \emph{dispatching policy} is applied over arrival jobs in each timeslot on each AP, and thus \emph{dispatching action space} is defined as $\mathbf{A}: (j, m) \in \jSpace \times \esSet$ where $(j, m)$ denotes the action that $j$-type job should be uploaded to $m$-th ES.
             \begin{definition}[Update Time Points]
                 For $k$-th AP ($\forall k\in\apSet$), partial updates firstly and then consensus update, which is defined as follows.
                 \begin{itemize}
-                    \item Partially Update Points: The AP nodes will update their own policy when the corresponding \emph{Maximum Broadcast Latency} is achieved, and awareness of the previous policy change for the AP nodes receiving information before it;
-                    \item Consensus Update Points: When reaching the ending of the broadcast interval, all the AP nodes would update the policy together;
+                    \item Partial Update Point: The AP nodes will update their own policy when the corresponding \emph{Maximum Broadcast Latency} is achieved, and awareness of the previous policy change for the AP nodes receiving information before it;
+                    \item Iterative Update Points: When reaching the ending of the broadcast interval, all the AP nodes would update the policy together;
                     this policy iteration is evaluated with no policy changes consideration in the following time in this interval;
                     this policy iteration is with partial information only with last interval, but not with information from this interval.
                 \end{itemize}
             \end{definition}
             
-            Based on the two stages of global system information $\Obsv_{i-2}$ and $\Obsv_{i-1}$ in system state, the compounded global-wise policy of all AP nodes is defined as follows.
+            Based on the three stages of global system information defined in system state, the compounded global-wise policy of all AP nodes is defined as follows.
             \begin{definition}[Compounded Dispatching Policy]
-                The compounded dispatching policy $\Policy(\Stat_{i})$ over $\Stat_{i}$ which is composed of all the local policies defined as follows.
+                The compounded dispatching policy $\Policy(\Stat_{i})$ over $\Stat_{i}$ which is defined with three-stage broadcasting information which is given as follows.
                 \begin{align}
-                    \Policy(\Stat_{i}) \define
-                    \begin{bmatrix}
-                        \tilde{\Omega}_{0,1}(\Obsv_{i-2}), &\tilde{\Omega}_{0,2}(\Obsv_{i-2}), &\dots, &\tilde{\Omega}_{2,K}(\Obsv_{i-2}) \\
-                        \tilde{\Omega}_{1,1}(\Obsv_{i-1}), &\tilde{\Omega}_{2,2}(\Obsv_{i-2}), &\dots, &\tilde{\Omega}_{2,K}(\Obsv_{i-2}) \\
-                        \dots, &\dots, &\dots, &\dots \\
-                        \tilde{\Omega}_{K,1}(\Obsv_{i-1}), &\tilde{\Omega}_{K,2}(\Obsv_{i-1}), &\dots, &\tilde{\Omega}_{K,K}(\Obsv_{i-1})\\
-                        \tilde{\Omega}_{0,1}(\Obsv_{i-1}), &\tilde{\Omega}_{0,2}(\Obsv_{i-1}), &\dots, &\tilde{\Omega}_{0,K}(\Obsv_{i-1}) \\
-                    \end{bmatrix},
+                    \Policy(\Stat_{i}) \define \Bracket{
+                        \Omega'(\Obsv_{i-2}), \Omega(\Obsv_{i-1}), \Omega'(\Obsv_{i-1}), \Omega(\Obsv_{i}),
+                    }
                 \end{align}
-                where $\tilde{\Omega}_{n,k}(\Obsv_{i}) \define \set{\omega^{(i,n)}_{k,j}(m)|\forall j\in\jSpace, \forall m\in\esSet}$ ($\forall n\in\set{0,\dots,K}$) and $\omega^{(i,n)}_{k,j}(m)$ denotes the deterministic dispatching policy which describe the situation: when $k$-th AP in $n$-th broadcast interval with broadcast information $\Obsv_{i}$, it would then upload $j$-type job to $m$-th ES if and only if $\omega^{(i,n)}_{k,j}(m)=1$.
-                And we have $\vecG{\Omega}(\Stat_{i}) \define [\Omega_{0}(\Stat_{i}), \Omega_{1}(\Stat_{i}), \dots, \Omega_{K+1}(\Stat_i)]$ to denotes the rows in this policy matrix. The first policy $\Omega_{0}(\Stat_{i})$ and last policy $\Omega_{K+1}(\Stat_{i})$ is the policy updated at consensus update point, and the remains are updated iteratively with heuristic algorithm.
+                where $\Omega'(\Obsv_i) \define [\tilde{\Omega}'_{1}(\Obsv_i), \dots, \tilde{\Omega}'_{K}(\Obsv_i)]$ denotes the policy applied at \emph{Partial Update Point} with obsolete partial information; and $\Omega(\Obsv_i) \define [\tilde{\Omega}_{1}(\Obsv_i), \dots, \tilde{\Omega}_{K}(\Obsv_i)]$ denotes the policy at \emph{Iterative Update Points} respectively, i.e. $k$-th AP ($\forall k\in\apSet$) would change its policy from $\tilde{\Omega}_{k}'(\Obsv_i)$ to $\tilde{\Omega}_{k}(\Obsv_{i+1})$ when receiving information $\Obsv_{i+1}$ while the others keep their own policy.
+                
+                Furthermore, the local policy for AP nodes is defined according to \emph{dispatching action space} as follows.
+                \begin{align}
+                    &\tilde{\Omega}_{k}(\Obsv_{i}) \define \set{\omega^{(i)}_{k,j}(m)|\forall j\in\jSpace, \forall m\in\esSet}
+                    \;(\forall k\in\apSet)
+                    \\
+                    &\tilde{\Omega}'_{k}(\Obsv_{i}) \define \set{\omega'^{(i)}_{k,j}(m)|\forall j\in\jSpace, \forall m\in\esSet}
+                    \;(\forall k\in\apSet),
+                \end{align}
+                where $\omega^{(i)}_{k,j}(m)$ denotes the deterministic dispatching policy that: when $k$-th AP with information $\Obsv_{i}$ after its iterative update point, it would then upload $j$-type job to $m$-th ES if and only if $\omega^{(i)}_{k,j}(m)=1$; $\tilde{\Omega}'_{k}(\Obsv_i)$ is for partial update point.
             \end{definition}
-            More specifically,
-            $\Omega_{0}(\Stat_{i})$ denotes the \emph{Consensus Update} globally policy iteration based on stale information $\Obsv_{i-1}$;
-            $\Omega_{k}(\Stat_{i})$ ($\forall k\in\apSet$) denotes the \emph{Partially Update} on $k$-th AP nodes when it receives the broadcast information $\Obsv_i$ and carries out its own policy iteration with $\tilde{\Omega}_{k,k}(\Obsv_i)$.
-            As the policy iteration is carried out to achieve better cooperative performance, each policy iteration whether for 
-            
-            $\Omega_{0}(\Obsv_{i-1})$ denotes the policy after \emph{Consensus Update Points} which is defined as follows, and $\Omega_{k}(\Obsv_{i})$ denotes the policy at each \emph{Partially Update Points} defined as follows.
-            We have $p^{(i,n)}_{k,j}(m) \define \Pr\{\omega^{(i,n)}_{k,j}(m)\}$ to denote the probability of action, where $\sum_{m\in\esSet} p^{(i,n)}_{k,j}(m) = 1$. Furthermore, we have $\rho^{(\vecG{\Pi},n)}_{k,j}(m)$ to denote the same probability but under fixed compounded policy $\vecG{\Pi}$.
 
-            More specifically, the multiple phases of the policy $\Omega_k(\Stat_i)$ are separated by \emph{Update Latency} $D_{k,n}$ for $k$-th AP ($\forall n\in\set{0,\dots,N'}, k\in\apSet$). One vivid example of policy adaption phase is given as follows.
+            More specifically, the multiple-phase of the policy $\tilde{\Omega}_k(\Obsv_i)$ at multiple \emph{iterative update points} are separated by \emph{Update Latency} $d_{k}$ for $k$-th AP ($k\in\apSet$). One vivid example of policy adaption phase is given as follows, the update rules of which will be elaborated in next sub-section.
             \begin{example}[Policy Phase Adaption]
-                In the time interval $[t_{i}, t_{i+1}]$, $k$-th AP would adopt $\tilde{\Omega}^{(0)}_k(\Obsv_{i-1})$ before $t_i$ and adopt $\tilde{\Omega}^{(1)}_k(\Obsv_{i-1})$ immediately at $t_i$ with its own information; then it will adopt $\tilde{\Omega}^{(n+1)}_k(\Obsv_{i-1})$ after receiving $n$-th broadcast information and adopt $\tilde{\Omega}^{(0)}_k(\Obsv_{i})$ immediately after receiving $N'$-th broadcast, i.e. the time when receiving all components of $\Obsv_{i}$.
+                In the time interval $[t_{i}, t_{i+1}]$, $k$-th AP would adopt $\tilde{\Omega}_{k}'(\Obsv_{i-1})$ immediately after $t_i$, and adopt $\tilde{\Omega}_{k}(\Obsv_{i})$ after its corresponding iterative update points; then with $\tilde{\Omega}_{k}'(\Obsv_{i})$ at $t_{i+1}$ and repeat the process.
             \end{example}
         \end{subsection}
 
         \begin{subsection}{The Optimization Problem}
-            The optimization target of our problem is to minimize the \emph{average response time} of all jobs, which is composed of uploading time from AP to ES, and queueing-and-service time on ES nodes. According to \emph{Little's Law}, the average response time of all the jobs is equally as average number of jobs in system.
-            Besides the cost counted for job response time, we furthermore add penalty on full-queue and empty-queue.
-            The full-queue penalty is for the jobs submission would be rejected.
-
-            Therefore, based on the system state definition, we have cost function as:
+            We propose the jobs dispatching optimization problem with the target to minimize \emph{average response time} of all offloaded jobs in MEC system.
+            The \emph{average response time} is composed of uploading time from $AP$ to $ES$, and queueing-and-service time on corresponding ES. According to \emph{Little's Law}, the average response time of all jobs is equally as average number of jobs in system.
+            
+            Due to the intrinsic property of periodic information broadcasting, we collect the cost for number counting at the pace of broadcasting interval which could be seems as sampling of original process based on timeslot scale.
+            Besides the cost counted for job response time, we furthermore add penalty on jobs submission over its capacity limit when the over-limited jobs will be rejected at the end of current broadcast interval.
+            Therefore, the cost function of this problem is given as follows.
             \begin{align}
-                g\Paren{\Stat_{i}, \Policy(\Stat_{i-1})} \define& \sum_{k\in\apSet}\sum_{m\in\esSet} \Inorm{\vec{r}^{(k)}_{m}(i)} + \sum_{m\in\esSet}\sum_{j\in\jSpace}
+                g\Paren{\Stat_{i}, \Policy(\Stat_{i})} \define& \sum_{k\in\apSet}\sum_{m\in\esSet} \Inorm{\vec{r}^{(k)}_{m}(i)} + \sum_{m\in\esSet}\sum_{j\in\jSpace}
                 \nonumber\\
                 &\Brace{
                     q_{m,j}(i) + \beta I[q_{m,j}(i)=L_Q]
                 },
             \end{align}
             where $\Inorm{\vec{r}^{(k)}_{m}}$ denotes the $L^1$-norm of vector $\vec{r}^{(k)}_{m}$, i.e. the sum up of absolute value of each entry; $\beta$ are weight factor for full-queue penalty.
-            {\color{red}The cost function defined is a sampling of interval $t_B$ over the whole job response process, because the global information for AP nodes only contains the information at the broadcast points.}
-
+            
             Our distributed optimization problem definition is given as follows.
-            \begin{problem}[Distributed Cooperative Job Dispatching Problem]
+            \begin{problem}[Original Cooperative Job Dispatching Problem]
                 \begin{gather}
                     \min_{\Policy} \lim_{T \to \infty}
                         \mathbb{E}_{\Policy}
-                            \Bracket{\sum_{i=2}^{T} \gamma^{i-1} g(\Stat_{i}, \Policy(\Stat_{i-1}))|\Stat_1},
+                            \Bracket{\sum_{i=2}^{T} \gamma^{i-1} g(\Stat_{i}, \Policy(\Stat_{i}))|\Stat_1},
                 \end{gather}
-                where the cost is collected with a discount factor $\gamma$, and $\Policy$ denotes the global compounded policy of all AP nodes.
+                where the cost is collected with a discount factor $\gamma$, and $\Policy$ is optimized globally always with full-state information available.
             \end{problem}
-
             According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
             \begin{align}
-                V(\Stat_i) =& g(\Stat_i) + \gamma \min_{\BPolicy(\Stat_{i})} \sum_{\Stat_{i+1}} \Pr\{ \Stat_{i+1}|\Stat_{i}, \BPolicy(\Stat_{i}) \} V(\Stat_{i+1}),
+                V(\Stat_i) =& g(\Stat_i) +
+                    \nonumber\\
+                    &\gamma \min_{\Policy(\Stat_{i})} \sum_{\Stat_{i+1}} \Pr\{ \Stat_{i+1}|\Stat_{i}, \BPolicy(\Stat_{i}) \} V(\Stat_{i+1}).
+                \label{sp0}
             \end{align}
-            % {\color{red}where $\BPolicy(\Stat_{i}) \define [\bar{\Omega}_1(\Stat_{i}), \dots, \bar{\Omega}_K(\Stat_{i})]$; each $\bar{\Omega}_k(\Stat_{i})$ on $k$-th AP denotes the policy phase separated by $t_i, (t_i+\bar{d}_{k,1}), \dots, (t_i+\bar{d}_{k,N'})$. The approximation is established because we take the expectation of $\vecG{\eta}$ and $\vec{U}$ to approximate linear contributions to probability transition.}
-            The definition for value function is given according to the form in \cite{sutton1998introduction} as follows.
-            \begin{align}
-                V(\Stat_{i}) \define \lim_{T\to\infty}
-                    \mathbb{E}_{\Policy,\vecG{\eta},\vec{U}} \Bracket{
-                        \sum_{l=0}^{T} \gamma^l g\Paren{\Stat_{i+l}, \Policy(\Stat_{i+l-1})}
-                    }.
-            \end{align}
-
-            %NOTE: ABANDONED
-            % Before diving into the analysis on the transition function expression, we firstly come up with probability denotations for arrival process on edge servers.
-            % The arrival process for $j$-th job uploaded from $k$-th AP under policy $\tilde{\Omega}^{(n)}_k(\Stat_i)$ is categorized into $(M+1)$ events as: arriving on $1$st ES, $2$nd ES, \dots, on $M$-th ES, or non-arrival; the event probability is given as follows.
-            % \begin{align}
-            %     &\vec{p}_{k,j}^{(i,n)}
-            %     \nonumber\\
-            %     \define& \Bracket{
-            %         \lambda_{k,j}\Pr\{\omega_{k,1}^{(i,n)}(j)\}, \dots, \lambda_{k,j}\Pr\{\omega_{k,M}^{(i,n)}(j)\}, 1-\lambda_{k,j}
-            %     },
-            % \end{align}
-            % and we have $\vecG{\rho}_{k,m}^{(\Pi_k)}$ denotes the Categorical distribution under time-invariant policy $\Pi_k$ for $k$-th AP.
             
-            We note that after the dispatching policy, the arrival distribution $A_{k,j}$ is further split onto different Edge Servers. The split arrival processes for $k$-th AP ($\forall k\in\apSet$) under policy $\tilde{\Omega}^{(n)}_{k}(\Obsv_i)$ are still i.i.d Poisson Point Processes but with different arrival rates as $\set{\lambda_{k,j}p^{(i,n)}_{k,j}(m)|\forall m\in\esSet}$.
-            With the Poisson distribution arrival process for each queues on each Edge Servers, we could further decouple the expression of transition function engaged with each single AP nodes and ES node as follows.
+            However, the state information is actually partial-presence as $(\Obsv_{i-1}, \Obsv_{i-2})$ at $t_i$ while $\Obsv_{i}$ would be available only after the corresponding \emph{Maximum Broadcast Latency} for each AP nodes.
+            This problem structure results into different information knowledge on \emph{Partial Update Point} and \emph{Iterative Update Points} in this interval.
+            Thus we decouple the original problem into two sub-MDP problem in a successively update style.
+            
+            The first problem solves policy update at \emph{Partial Update Point} which assumes no policy update at \emph{Iterative Update Points}. The corresponding Bellman's Equation is defined as follows.
+            \begin{align}
+                V(\Stat_i) = g(\Stat_i) + \gamma \min_{\Omega'(\Obsv_{i-1})} \Pr\{ \Obsv_{i+1}|\Obsv_{i-1}, \Policy(\Stat_i) \} V(\Stat_{i+1}),
+                \label{sp1}
+            \end{align}
+            where $\Policy(\Stat_i) = [\Omega'(\Obsv_{i-2}), \Omega(\Obsv_{i-1}), \Omega'(\Obsv_{i-1}), \Omega'(\Obsv_{i-1})]$ without policy update in $(t_i, t_{i+1}]$.
+            
+            The second problem solves policy update at \emph{Iterative Update Points} which assumes no policy update at \emph{Partial Update Points}.
+            Furthermore, the update is applied iteratively, as the name implies, with the order following length of broadcast latency (i.e. the sorted AP nodes order). The corresponding Bellman's Equation for $k$-th AP ($\forall k\in\apSet$) node is defined as follows.
+            \begin{align}
+                V(\Stat_i) = g(\Stat_i) + \gamma \min_{\Omega^{(k)}(\Obsv_{i})} \Pr\{ \Obsv_{i+1}|\Obsv_{i}, \Policy(\Stat_i) \} V(\Stat_{i+1}),
+                \label{sp2}
+            \end{align}
+            where $\Omega^{(k)}(\Obsv_{i}) = [\tilde{\Omega}_{1}(\Obsv_{i}), \dots, \tilde{\Omega}_{k}(\Obsv_{i}), \tilde{\Omega}_{k+1}(\Obsv'_{i-1}), \dots, $ $\tilde{\Omega}_{K}(\Obsv'_{i-1})]$ in $\Policy(\Stat_i)$.
+            It implies that the updated policy before $k$-th AP must be known and thus impact the transition function of $k$-th AP.
+            
+            The two sub-problem are applied successively, with policy improvement based on last policy update. The performance improvement of next policy update is guaranteed by optimal solution of Bellman's Equation with fixed policies from previous update.
+            To better analyze the optimization structure of the two sub-problem, we decouple the 
+            We note that after the dispatching policy, the arrival distribution $A_{k,j}$ is further split onto different Edge Servers. The split arrival processes for $k$-th AP ($\forall k\in\apSet$) are still i.i.d Poisson Point Processes but with different arrival rates as $\set{\lambda_{k,j}I[\omega^{(i)}_{k,j}(m)=1]|\forall m\in\esSet}$ ($I[\cdot]$ is indicator function). The decoupled expression of transition function of Eqn. \ref{sp1} and Eqn. \ref{sp2} is given as follows.
+            
             \begin{lemma}[Transition Function Decoupling]
-                The transition function in Bellman's equation could be decoupled on AP nodes states and ES nodes states, which will facilitate the approximated value function expression in the following section. The decoupled transition function is in the form as follows.
+                The transition function in Bellman's equation could be decoupled on AP nodes states and ES nodes states, which will facilitate the approximated value function expression in the following section.
+                The decoupled transition function for Eqn. \ref{sp1} is given as follows.
                 \begin{align}
-                    & \Pr\{\Stat_{i+1}|\Stat_{i}, \BPolicy(\Stat_{i})\}
+                    & \Pr\{\Obsv_{i+1}|\Obsv_{i-1}, \Policy(\Stat_{i})\}
                     \nonumber\\
                     =& \prod_{k\in\apSet}\prod_{m\in\esSet}\prod_{j\in\jSpace}
-                            \Pr\Brace{r^{(k)}_{m,j}(i+1)|\BPolicy(\Stat_{i})}
+                            \Pr\Brace{r^{(k)}_{m,j}(i+1)|\tilde{\Omega}'_k(\Obsv_{i-1})}
                             \times \prod_{m\in\esSet}\prod_{j\in\jSpace}
                         \nonumber\\
-                        & \Pr\Brace{Q_{m,j}(i+1)|Q_{m,j}(i), \set{\vec{R}_k(i)|\forall k\in\apSet}, \BPolicy(\Stat_{i})},
+                        & \Pr\Brace{Q_{m,j}(i+1)|Q_{m,j}(i-1), \set{r^{(k)}_{m,j}(i-1)|\forall k\in\apSet},
+                        \nonumber\\
+                        & \Omega'(\Obsv_{i-2}), \Omega(\Obsv_{i-1}), \Omega'(\Obsv_{i-1})}.
                 \end{align}
-                where the first production part denotes the unfinished uploading state transition for AP nodes, and the second part denotes the queueing states of same type jobs on all ES nodes.
+                And the decoupled transition function for Eqn. \ref{sp2} is given as follows.
+                \begin{align}
+                    & \Pr\{\Obsv_{i+1}|\Obsv_{i}, \Policy(\Stat_{i})\}
+                    \nonumber\\
+                    =& \prod_{k\in\apSet}\prod_{m\in\esSet}\prod_{j\in\jSpace}
+                            \Pr\Brace{ r^{(k)}_{m,j}(i+1) | \Omega^{(k)}(\Obsv_i) }
+                            \times \prod_{m\in\esSet}\prod_{j\in\jSpace}
+                        \nonumber\\
+                        & \Pr\Brace{Q_{m,j}(i+1)|Q_{m,j}(i), \set{r^{(k)}_{m,j}(i)|\forall k\in\apSet},
+                        \nonumber\\
+                        & \Omega'(\Obsv_{i-1}), \Omega^{(k)}(\Obsv_{i})}.
+                \end{align}
             \end{lemma}
             \begin{proof}
                 Please refer to appendix \ref{trans-decouple}.
             \end{proof}
 
-            As the formulated problem above is of infinite states and the action space would be exponentially expanded with respect to number AP and ES nodes, we could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity. To alleviate curse of dimensionality, we take baseline dispatching policy to approximate the value function for each AP and ES nodes, and then carry out one-step iteration to obtain a better value function approximation.
+            However, after the state decomposition, the action space would still be exponentially expanded with respect to number AP and ES nodes, we could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity.
+            So in next section, to alleviate curse of dimensionality, we introduce baseline dispatching policy to approximate the value function, and then carry out one-step iteration to obtain a better value function approximation.
         \end{subsection}
     \end{section}
 
@@ -375,23 +388,23 @@
     \begin{section}{LOW-COMPLEXITY SOLUTION}
         \label{sec:algorithm}
         In this section, we introduce a heuristic dispatching algorithm as the baseline policy, whose value function could be derived analytically. Then the joint expression with transition function as the optimization problem on right-hand side, we could further reduce the state complexity with averaged queueing dynamics on ES nodes.
-        \hl{The proposed low-complexity sub-optimal policy can be obtained via the above approximated value function and one-step policy iteration. The derived value function becomes the cost upper bound of the proposed policy.}
+        The sub-optimal policy could be obtained by evaluation of approximated value function on right-hand side of Bellman's Equation with one-step iteration. And thus the approximated value function is the upper bound of the original optimal policy.
 
         \begin{subsection}{Baseline Dispatching Policy}
-            The baseline dispatching policy is adopted to obtain an approximation of value function. The policy on each AP nodes is randomized and time-invariant which is denoted as:
+            The baseline dispatching policy is adopted to obtain an approximation of value function. The policy on each AP nodes is time-invariant, i.e. state-invariant, which is denoted as:
             \begin{align}
                 \vec{\Pi} \define \Bracket{\Pi_1, \Pi_2, \dots, \Pi_K},
             \end{align}
-            where $\Pi_k \define \set{\omega_{k,j}(m)|\forall m\in\esSet,\forall j\in\jSpace}$, $\forall k\in\apSet$.
+            where $\Pi_k \define \set{\pi_{k,j}(m)|\forall m\in\esSet,\forall j\in\jSpace}$ denotes the action set ($\forall k\in\apSet$).
 
-            According to the additive structure of cost function, the value function could be divided linearly into two section as $\tilde{W}^{(p)}(\Obsv^{(p)}(i))$ and $\tilde{W}^{(s)}(\Obsv(i))$ under baseline policy:
+            According to the additive structure of cost function, we substitute the value function in Eqn. \ref{sp0} with two linearly divided sections as $\tilde{W}^{(p)}(\Obsv^{(p)}(i))$ and $\tilde{W}^{(s)}(\Obsv(i))$ under baseline policy:
             \begin{align}
                 V(\Stat_{i}) =& 
                     g(\Stat_{i}) + \gamma \min_{\BPolicy(\Stat_{i})} \sum_{\Stat_{i+1}} \Pr\{ \Stat_{i+1}|\Stat_{i}, \BPolicy(\Stat_{i}) \}
                     \nonumber\\
                     & \cdot \Bracket{ \tilde{W}^{(p)}\Paren{\Obsv^{(p)}(i+1)} + \tilde{W}^{(s)}\Paren{\Obsv(i+1)} },
             \end{align}
-            where $\tilde{W}^{(p)}(\cdot)$ and $\tilde{W}^{(s)}(\cdot)$ denote the split value functions over AP nodes and ES nodes respectively; $\Obsv^{(p)}(i) \define \set{\mat{R}_k(i)|\forall k\in\apSet}$ and $\Obsv^{(s)}(i) \define \set{\vec{Q}_m(i)|\forall m\in\esSet}$ respectively denote the AP states collection and ES states collection of $\Obsv(i) = \set{\Obsv^{(p)}(i), \Obsv^{(s)}(i)}$. The split value function is in the following form:
+            where $\tilde{W}^{(p)}(\cdot)$ and $\tilde{W}^{(s)}(\cdot)$ denote the split value functions over AP nodes and ES nodes respectively; $\Obsv^{(p)}(i) \define \set{\mat{R}_k(i)|\forall k\in\apSet}$ and $\Obsv^{(s)}(i) \define \set{\vec{Q}_m(i)|\forall m\in\esSet}$ respectively denote the AP states collection and ES states collection of $\Obsv(i) = \set{\Obsv^{(p)}(i), \Obsv^{(s)}(i)}$. The split value function is defined as follows.
             \begin{align}
                 \tilde{W}^{(p)}\Paren{\Obsv^{(p)}(i)} &\define \sum_{k\in\apSet}\sum_{m\in\esSet}
                     \mathbb{E}_{\Pi}\Bracket{
@@ -401,20 +414,24 @@
                 \tilde{W}^{(s)}\Paren{\Obsv(i)} &\define \sum_{m\in\esSet}\sum_{j\in\jSpace}
                     \mathbb{E}_{\Pi}\Bracket{
                         \sum_{l=0}^{\infty} \gamma^{l} n_{m,j}(i+l)
-                    },
+                    }.
             \end{align}
-            The decoupled value functions for AP and ES nodes is obtained with an approximated form under the baseline policy.
-            The approximated value function $\tilde{W}^{(p)}(\Obsv^{(p)}(i+1))$ for AP nodes is obtained as:
+            
+            The decoupled value functions for AP and ES nodes is obtained with an approximated form under the baseline policy. We use the same baseline policy to evaluate both low-complexity policy performance in Eqn. \ref{sp1} and Eqn. \ref{sp2}.
+            
+            The approximated value function $\tilde{W}^{(p)}(\Obsv^{(p)}(i+1))$ for AP nodes is same for the two equation and obtained as:
             \begin{align}
                 \tilde{W}^{(p)}(\Obsv^{(p)}(i+1)) = \frac{1}{1-\gamma}
                     \sum_{k\in\apSet}\sum_{m\in\esSet} \mathbb{E}_{\Pi}[\Inorm{\vec{r}^{(k)}_{m}}],
             \end{align}
-            where the expectation of $\Inorm{\vec{r}^{(k)}_{m}}$ under the policy $\Pi_k$ is actually a constant as sum-up expectation of Poisson processes as $\mathbb{E}_{\Pi_k}[\Inorm{\vec{r}^{(k)}_{m}}] = \sum_{j\in\jSpace} \lambda_{k,j} \rho^{(\Pi_k,N')}_{k,j}(m) u_{k,m}(j)$.
+            where the expectation of $\Inorm{\vec{r}^{(k)}_{m}}$ under the policy $\Pi_k$ is a sum-up expectation of Poisson processes as $\mathbb{E}_{\Pi_k}[\Inorm{\vec{r}^{(k)}_{m}}] = \sum_{j\in\jSpace} I[\pi_{k,j}(m)=1] \lambda_{k,j} u_{k,m}(j)$ ($I[\cdot]$ is indicator function).
             
-            The approximated value function $\tilde{W}^{(s)}(\Obsv(i))$ for ES nodes is affected with both arrival process under dispatching policy and last queue state, and we reduce the states expression by averaging the uploading process together with the transition function expression.
-            The partial value function optimization for ES in Bellman's Equation right-hand side is given as:
+            The approximated value function $\tilde{W}^{(s)}(\Obsv(i))$ for ES nodes are different for two equations for different transition function expression.
+            We firstly express the approximated value function in Eqn. \ref{sp2} and then express the one in Eqn. \ref{sp1} with respect to it.
+            The ES node transition is affected with both arrival process under dispatching policy and last queue state, and we reduce the states expression by taking average over the uploading process together with the transition function expression.
+            The partial value function optimization for ES in Bellman's Equation right-hand side in Eqn. \ref{sp2} is given as follows.
             \begin{align}
-                \min_{\BPolicy(\Stat_i)}& \sum_{\Stat_{i+1}}
+                \min_{\Policy(\Stat_i)}& \sum_{\Stat_{i+1}}
                     \Pr\Brace{\Stat_{i+1}|\Stat_{i}, \BPolicy(\Stat_i)} \cdot \tilde{W}^{(s)}\Paren{\Obsv(i+1)}
                 \nonumber\\
                 = \min_{\BPolicy(\Stat_i)}& \sum_{\Obsv^{(s)}(i+1)}
@@ -427,7 +444,7 @@
                             J\Paren{Q_{m,j}(i+1)}
                         },
             \end{align}
-            where $\tilde{W}^{(s)}_{m,j}(\Obsv(i+1)) \define \mathbb{E}_{\Pi}[\sum_{l=0}^{\infty} \gamma^{l} q_{m,j}(i+l+1)]$, which implies that the state $\Obsv^{(p)}(i)$ is substitute with its expectation under policy $\BPolicy(\Stat_i)$ in this value function.
+            where $\tilde{W}^{(s)}_{m,j}(\Obsv(i+1)) \define \mathbb{E}_{\Pi}[\sum_{l=0}^{\infty} \gamma^{l} q_{m,j}(i+l+1)]$. It implies that the state $\Obsv^{(p)}(i)$ is substitute with its expectation under policy $\Policy(\Stat_i)$ in this value function.
             Thus the approximated value function for $m$-th ES node is denoted as:
             \begin{align}
                 J\Paren{Q_{m,j}(i+1)} \define& \lim_{T\to\infty}
@@ -437,25 +454,29 @@
                 % \nonumber\\
                 =& \vec{\mu}'_{i+1} \Paren{ \mat{I}-\gamma\mat{P}_{m,j} }^{-1} \vec{g},
             \end{align}
-            where $\vec{\mu}'_{i+1}$ denotes the transpose of $\vec{\mu}_{i+1}$, and $\vec{\mu}_{i+1} = [\dots,0,1,0,\dots]$ with only $(i+1)$-th element as $1$; the $i$-th element of $\vec{g}$ denotes the cost of server as $q_{m,j}(i)$ for $i$-th stage; $\mat{P}_{m,j}$ denotes the transition matrix for $j$-type FIFO queue on $m$-th ES under the policy $\vec{\Pi}$, which is composed of the following transition function ($\forall Q_m(i),Q_m(i+1)$) as:
+            where $\vec{\mu}'_{i+1}$ denotes the transpose of $\vec{\mu}_{i+1}$, and $\vec{\mu}_{i+1} = [0\dots,0,1,0,\dots,0]$ with only $(i+1)$-th element as $1$; the $i$-th element of $\vec{g}$ denotes the cost of server as $q_{m,j}(i)$ for $i$-th stage; $\mat{P}_{m,j}$ denotes the transition matrix for $j$-type FIFO queue on $m$-th ES under the policy $\vec{\Pi}$, which is composed of the following transition function ($\forall Q_m(i),Q_m(i+1)$) as:
             \begin{align}
-                &\Pr \Brace{Q_{m,j}(i+1)|Q_{m,j}(i),\vec{\Pi}}
-                \nonumber\\
-                &=,
-                % \begin{cases}
-                %     I[\tilde{n}_{m,j}(i)L_{m,j}+\delta_{m,j}(i) \leq T_B], &\\
-                %         \;\;\;\;\;\;\;\;\text{if } Q_{m,j}(i+1)=0,\delta_{m,j}(i+1)=0 \\
-                %     I[\tilde{n}_{m,j}(i)L_{m,j}+\delta_{m,j}(i) > T_B] \times I[\delta_{m,j}(i+1)=\delta'_{m,j}(i)] 
-                %     \nonumber\\
-                %     \times I[\tilde{n}_{m,j}(i) - n'_{m,j}(i) = n_{m,j}(i+1)], &\\
-                %         \;\;\;\;\;\;\;\;\text{otherwise}
-                % \end{cases},
+                \Pr \Brace{Q_{m,j}(i+1)|Q_{m,j}(i),\vec{\Pi}} = \prod_{k\in\apSet} \Pr\{q^{(k)}\},
             \end{align}
-            where:
-            % \begin{itemize}
-            %     \item $\tilde{n}_{m,j}(i) = \sum_{k\in\apSet} [\tilde{n}^{(k)}_{0,j} + \tilde{n}^{'(k)}_{m,j}] + n_{m,j}(i)$, where $\tilde{n}^{(k)}_{0,j} = u_{k,m}p^{(i)}_{k,m}(j)$ is the averaged $\Obsv^{(AP)}$ state under policy $\Policy(\Stat_i)$, $\tilde{n}^{'(k)}_{m,j} \sim B(t_B-u_{k,m}, p^{(\Pi_k)}_{k,m}(j))$, $(\forall k\in\apSet)$;
-            %     \item $T_B+\delta_{m,j}(i)= n'_{m,j}(i) L_{m,j} + \delta'_{m,j}(i)$; if both $\delta_{m,j}(i+1)=0$ and $n_{m,j}(i+1)$, .
-            % \end{itemize}
+            where $q^{(k)} \sim \Poisson{I[\pi_{k,j}(m)=1]\lambda_{k,j}(T_B-u_{k,m}(j))}$, and $Q_{m,j}(i+1), Q_{m,j}(i)$ are under the constraints listed as follows.
+            \begin{align}
+                q_{m,j}(i+1) = \max\Paren{
+                    &\min\big(q_{m,j}(i) - \lfloor{\frac{T_B-\delta_{m,j}(i)}{l_{m,j}}}\rfloor, 0\big)
+                    \nonumber\\
+                    &+\sum_{k\in\apSet} q^{(k)}, L_Q
+                }
+                \\
+                \delta_{m,j}(i+1) = \max\Paren{
+                    &\big(T_B - \delta_{m,j}(i)\big) \text{ mod } l_{m,j}, 0
+                },
+            \end{align}
+            where $q'_0 = \sum_{k\in\apSet} \lfloor{I[\omega^{(i)}_{k,j}(m)=1] \lambda_{k,j} u_{k,m}(j)}\rfloor$ denotes the expectation arrival under policy $\Omega(\Obsv_i)$ (rounded for expression in matrix entry in $\mat{P}_{m,j}$).
+            
+            Moreover, the approximated value function is easy to obtain in Eqn. \ref{sp1} as follows.
+            \begin{align}
+                J^{*}\Paren{Q_{m,j}(i+1)} \define \mu'_{i+1} \Paren{\mat{I} - \gamma (\mat{P}_{m,j})^{2}}^{-1} g,
+            \end{align},
+            where $(\mat{P}_{m,j})^{2}$ denotes the transition function $\Pr\{Q_{m,j}(i+1)|Q_{m,j}(i-1), \vec{\Pi}\}$ lasting for two stages.
         \end{subsection}
 
         \begin{subsection}{The Distributed Algorithm}
@@ -463,7 +484,7 @@
             \begin{align}
                 % V(\Stat_i) = &g(\Stat_i) +
                 % \nonumber\\
-                \min_{\BPolicy(\Stat_i)}& \sum_{\Obsv^{(s)}(i+1)} \Pr\{\Obsv^{(s)}(i+1)|\Obsv^{(s)}(i), \Obsv^{(p)}(i), \BPolicy(\Stat_i)\}
+                \min_{\Policy(\Stat_i)}& \sum_{\Obsv^{(s)}(i+1)} \Pr\{\Obsv^{(s)}(i+1)|\Obsv^{(s)}(i), \Obsv^{(p)}(i), \BPolicy(\Stat_i)\}
                 \nonumber\\
                 \times \Bracket{
                     & \sum_{m\in\esSet}\sum_{j\in\jSpace} J\Paren{Q_{m,j}(i+1)}
@@ -475,23 +496,24 @@
             \end{align}
             and we have
             \begin{align}
-                % \set{r^{k}_{m,j}(i)|\forall k\in\apSet}
                 \sum_{m\in\esSet}\sum_{j\in\jSpace} &\Pr\{Q_{m,j}(i+1)|Q_{m,j}(i), \Obsv^{(p)}(i), \Policy(\Stat_i)\} \mu'_{i+1}
                     \nonumber\\
-                    \Paren{ \mat{I}-\gamma\mat{P}_{m,j} }^{-1} \vec{g}
+                    &\Paren{ \mat{I}-\gamma\mat{P}_{m,j} }^{-1} \vec{g}
             \end{align}
 
             Then we introduce the one-step iteration algorithm:
             % [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
             \begin{algorithm}[H]
-                \caption{Distributed Algorithm for $k$-th AP}
-                \begin{algorithmic}
-                    \WHILE{\TRUE}
-                        \STATE (in progress ...)
-                        % \FOR{$k \in \mathcal{K}$}
-                        %     \STATE fix policy $\vec{\Omega}^{(k)}(t) \forall k' \neq k$
-                        % \ENDFOR
-                    \ENDWHILE
+                \caption{Distributed Algorithm for }
+                \begin{algorithmic}[1]
+                    \STATE $t = 0$
+                    \FOR{$t = 1,2,\dots$}
+                        \STATE Evaluate $\Omega_0$ in \textbf{P1} according to Eqn. \ref{sp1}
+                        \FOR{$k \in \mathcal{K}$}
+                            \STATE fix policy $\vec{\Omega}^{(k)}(t) \forall k' < k$
+                            \STATE Evaluate $k$-th AP Local Policy $\tilde{\Omega}_k$ in \textbf{Pk} according to Eqn. \ref{sp2}
+                        \ENDFOR
+                    \ENDFOR
                 \end{algorithmic}
             \end{algorithm}
         \end{subsection}
