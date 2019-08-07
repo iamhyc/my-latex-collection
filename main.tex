@@ -1,0 +1,75 @@
+\documentclass[10pt, conference]{IEEEtran}
+\usepackage{cite}
+\usepackage{xcolor,soul,framed}
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{color, soul}
+\usepackage[linesnumbered,vlined,ruled]{algorithm2e}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{mathtools}
+\graphicspath{ {./images/} }
+%---------------------------------------------------------------%
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{program}{Program}
+\newtheorem{assumption}{Assumption}
+\newtheorem{example}{Example}
+\newtheorem{Algorithm}{Algorithm}
+\newtheorem{policy}{Policy}
+\newtheorem{problem}{Problem}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+%---------------------------------------------------------------%
+\newcommand{\eq}{=}
+\newcommand{\domZ}{\mathbb{Z}_{*}}
+\newcommand{\vecOne}{\mathbf{1}}
+\newcommand{\ind}{\mathbf{I}}
+\newcommand{\mat}{\mathbf}
+\newcommand{\Poisson}{\text{Poisson}}
+\newcommand{\define}{\triangleq}
+\newcommand{\leadto}{\Rightarrow}
+\newcommand{\vecG}{\boldsymbol}
+\renewcommand{\vec}{\mathbf}
+\DeclarePairedDelimiter{\set}{\{}{\}}
+\DeclarePairedDelimiter{\norm}{|}{|}
+\DeclarePairedDelimiter{\Inorm}{\|}{\|_1}
+\DeclarePairedDelimiter{\Paren}{\bigg(}{\bigg)}
+\DeclarePairedDelimiter{\Bracket}{\bigg[}{\bigg]}
+\DeclarePairedDelimiter{\Brace}{\bigg\{}{\bigg\}}
+%---------------------------------------------------------------%
+\newcommand{\apSet}{\mathcal{K}}
+\newcommand{\esSet}{\mathcal{M}}
+\newcommand{\jSpace}{\mathcal{J}}
+\newcommand{\Stat}{\mathbf{S}}
+\newcommand{\Obsv}{\mathcal{Y}}
+\newcommand{\Policy}{\boldsymbol{\Omega}}
+\newcommand{\ASpace}{\mathbf{A}}
+%---------------------------------------------------------------%
+\begin{document}
+    \title{Stale Partial Information-based Jobs Dispatching in Edge Computing System}
+    \author{HONG Yuncong}
+    \maketitle
+
+    \input{src/00-abstract}
+
+    \input{src/01-intro}
+    \input{src/02a-background}
+    \input{src/02b-motivation}
+
+    \input{src/03a-model}
+    \input{src/03b-formulation}
+
+    \input{src/04-algorithm}
+    \input{src/05-evaluation}
+    \input{src/06-conclusion}
+
+    \clearpage
+    \bibliographystyle{IEEEtrans}
+    \bibliography{references/main.bib,references/related.bib}
+\end{document}

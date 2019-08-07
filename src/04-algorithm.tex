@@ -1,0 +1,129 @@
+\section{LOW-COMPLEXITY SOLUTION}
+In this section, we introduce a heuristic dispatching algorithm as the baseline policy, whose value function could be derived analytically. Then the joint expression with transition function as the optimization problem on right-hand side, we could further reduce the state complexity with averaged queueing dynamics on ES nodes.
+The sub-optimal policy could be obtained by evaluation of approximated value function on right-hand side of Bellman's Equation with one-step iteration. And thus the approximated value function is the upper bound of the original optimal policy.
+
+\subsection{Baseline Dispatching Policy}
+The baseline dispatching policy is adopted to obtain an approximation of value function. The policy on each AP nodes is time-invariant, i.e. state-invariant, which is denoted as:
+\begin{align}
+    \vec{\Pi} \define \Bracket{\Pi_1, \Pi_2, \dots, \Pi_K},
+\end{align}
+where $\Pi_k \define \set{\pi_{k,j}(m)|\forall m\in\esSet,\forall j\in\jSpace}$ denotes the action set ($\forall k\in\apSet$).
+
+According to the additive structure of cost function, we substitute the value function in Eqn. \ref{sp0} with two linearly divided sections as $\tilde{W}^{(p)}(\Obsv^{(p)}(i))$ and $\tilde{W}^{(s)}(\Obsv(i))$ under baseline policy:
+\begin{align}
+    V(\Stat_{i}) =& 
+        g(\Stat_{i}) + \gamma \min_{\Policy(\Stat_{i})} \sum_{\Stat_{i+1}} \Pr\{ \Stat_{i+1}|\Stat_{i}, \Policy(\Stat_{i}) \}
+        \nonumber\\
+        & \cdot \Bracket{ \tilde{W}^{(p)}\Paren{\Obsv^{(p)}(i+1)} + \tilde{W}^{(s)}\Paren{\Obsv(i+1)} },
+\end{align}
+where $\tilde{W}^{(p)}(\cdot)$ and $\tilde{W}^{(s)}(\cdot)$ denote the split value functions over AP nodes and ES nodes respectively; $\Obsv^{(p)}(i) \define \set{\mat{R}_k(i)|\forall k\in\apSet}$ and $\Obsv^{(s)}(i) \define \set{\vec{Q}_m(i)|\forall m\in\esSet}$ respectively denote the AP states collection and ES states collection of $\Obsv(i) = \set{\Obsv^{(p)}(i), \Obsv^{(s)}(i)}$. The split value function is defined as follows.
+\begin{align}
+    \tilde{W}^{(p)}\Paren{\Obsv^{(p)}(i)} &\define \sum_{k\in\apSet}\sum_{m\in\esSet}
+        \mathbb{E}_{\Pi}\Bracket{
+            \sum_{l=0}^{\infty} \gamma^{l} \Inorm{\vec{r}^{(k)}_{m}(i+l)}
+        }
+    \\
+    \tilde{W}^{(s)}\Paren{\Obsv(i)} &\define \sum_{m\in\esSet}\sum_{j\in\jSpace}
+        \mathbb{E}_{\Pi}\Bracket{
+            \sum_{l=0}^{\infty} \gamma^{l} n_{m,j}(i+l)
+        }.
+\end{align}
+        
+The decoupled value functions for AP and ES nodes is obtained with an approximated form under the baseline policy. We use the same baseline policy to evaluate both low-complexity policy performance in Eqn. \ref{sp1} and Eqn. \ref{sp2}.
+        
+The approximated value function $\tilde{W}^{(p)}(\Obsv^{(p)}(i+1))$ for AP nodes is same for the two equation and obtained as:
+\begin{align}
+    \tilde{W}^{(p)}(\Obsv^{(p)}(i+1)) = \frac{1}{1-\gamma}
+        \sum_{k\in\apSet}\sum_{m\in\esSet} \mathbb{E}_{\Pi}[\Inorm{\vec{r}^{(k)}_{m}}],
+\end{align}
+where the expectation of $\Inorm{\vec{r}^{(k)}_{m}}$ under the policy $\Pi_k$ is a sum-up expectation of Poisson processes as $\mathbb{E}_{\Pi_k}[\Inorm{\vec{r}^{(k)}_{m}}] = \sum_{j\in\jSpace} I[\pi_{k,j}(m)=1] \lambda_{k,j} u_{k,m}(j)$ ($I[\cdot]$ is indicator function).
+        
+The approximated value function $\tilde{W}^{(s)}(\Obsv(i))$ for ES nodes are different for two equations for different transition function expression.
+We firstly express the approximated value function in Eqn. \ref{sp2} and then express the one in Eqn. \ref{sp1} with respect to it.
+The ES node transition is affected with both arrival process under dispatching policy and last queue state, and we reduce the states expression by taking average over the uploading process together with the transition function expression.
+The partial value function optimization for ES in Bellman's Equation right-hand side in Eqn. \ref{sp2} is given as follows.
+\begin{align}
+    \min_{\Policy(\Stat_i)}& \sum_{\Stat_{i+1}}
+        \Pr\Brace{\Stat_{i+1}|\Stat_{i}, \Policy(\Stat_i)} \cdot \tilde{W}^{(s)}\Paren{\Obsv(i+1)}
+            \nonumber\\
+            = \min_{\Policy(\Stat_i)}& \sum_{\Obsv^{(s)}(i+1)}
+                \Pr\Brace{\Obsv^{(s)}(i+1)|\Obsv^{(s)}(i), \Obsv^{(p)}(i), \Policy(\Stat_i)}
+                \nonumber\\
+                \times& \sum_{m\in\esSet} \sum_{j\in\jSpace}
+                    \underbrace{
+                        \mathbb{E}_{\set{\Obsv^{(p)}(i+1)|\Policy(\Stat_i)}} \Bracket{\tilde{W}^{(s)}_{m,j}\Paren{\Obsv(i+1)}}
+                    }_{
+                        J\Paren{Q_{m,j}(i+1)}
+                    },
+        \end{align}
+        where $\tilde{W}^{(s)}_{m,j}(\Obsv(i+1)) \define \mathbb{E}_{\Pi}[\sum_{l=0}^{\infty} \gamma^{l} q_{m,j}(i+l+1)]$. It implies that the state $\Obsv^{(p)}(i)$ is substitute with its expectation under policy $\Policy(\Stat_i)$ in this value function.
+        Thus the approximated value function for $m$-th ES node is denoted as:
+        \begin{align}
+            J\Paren{Q_{m,j}(i+1)} \define& \lim_{T\to\infty}
+                \mathbb{E}_{\vec{\Pi}} \Bracket{\sum_{l=0}^{T} \gamma^{l} q_{m,j}(i+l+1)}
+            \nonumber\\
+            % =& \vec{u}'_i [\lim_{T\to\infty} \sum_{n=0}^{T} (\gamma \mat{P}_m)^{n}] \vec{g}_q
+            % \nonumber\\
+            =& \vec{\mu}'_{i+1} \Paren{ \mat{I}-\gamma\mat{P}_{m,j} }^{-1} \vec{g},
+        \end{align}
+        where $\vec{\mu}'_{i+1}$ denotes the transpose of $\vec{\mu}_{i+1}$, and $\vec{\mu}_{i+1} = [0\dots,0,1,0,\dots,0]$ with only $(i+1)$-th element as $1$; the $i$-th element of $\vec{g}$ denotes the cost of server as $q_{m,j}(i)$ for $i$-th stage; $\mat{P}_{m,j}$ denotes the transition matrix for $j$-type FIFO queue on $m$-th ES under the policy $\vec{\Pi}$, which is composed of the following transition function ($\forall Q_m(i),Q_m(i+1)$) as:
+        \begin{align}
+            \Pr \Brace{Q_{m,j}(i+1)|Q_{m,j}(i),\vec{\Pi}} = \prod_{k\in\apSet} \Pr\{q^{(k)}\},
+        \end{align}
+        where $q^{(k)} \sim \Poisson{I[\pi_{k,j}(m)=1]\lambda_{k,j}(T_B-u_{k,m}(j))}$, and $Q_{m,j}(i+1), Q_{m,j}(i)$ are under the constraints listed as follows.
+        \begin{align}
+            q_{m,j}(i+1) = \max\Paren{
+                &\min\big(q_{m,j}(i) - \lfloor{\frac{T_B-\delta_{m,j}(i)}{l_{m,j}}}\rfloor, 0\big)
+                \nonumber\\
+                &+\sum_{k\in\apSet} q^{(k)}, L_Q
+            }
+            \\
+            \delta_{m,j}(i+1) = \max\Paren{
+                &\big(T_B - \delta_{m,j}(i)\big) \text{ mod } l_{m,j}, 0
+            },
+        \end{align}
+        where $q'_0 = \sum_{k\in\apSet} \lfloor{I[\omega^{(i)}_{k,j}(m)=1] \lambda_{k,j} u_{k,m}(j)}\rfloor$ denotes the expectation arrival under policy $\Omega(\Obsv_i)$ (rounded for expression in matrix entry in $\mat{P}_{m,j}$).
+        
+        Moreover, the approximated value function is easy to obtain in Eqn. \ref{sp1} as follows.
+        \begin{align}
+            J^{*}\Paren{Q_{m,j}(i+1)} \define \mu'_{i+1} \Paren{\mat{I} - \gamma (\mat{P}_{m,j})^{2}}^{-1} g,
+        \end{align},
+        where $(\mat{P}_{m,j})^{2}$ denotes the transition function $\Pr\{Q_{m,j}(i+1)|Q_{m,j}(i-1), \vec{\Pi}\}$ lasting for two stages.
+%----------------------------------------------------------------------------------------%
+
+\subsection{The Distributed Algorithm}
+The approximate Bellman's equation under baseline policy is denoted as:
+\begin{align}
+    \min_{\Policy(\Stat_i)}& \sum_{\Obsv^{(s)}(i+1)} \Pr\{\Obsv^{(s)}(i+1)|\Obsv^{(s)}(i), \Obsv^{(p)}(i), \Policy(\Stat_i)\}
+    \nonumber\\
+    \times \Bracket{
+        & \sum_{m\in\esSet}\sum_{j\in\jSpace} J\Paren{Q_{m,j}(i+1)}
+        +
+        \nonumber\\
+        & \underbrace{\sum_{\Obsv^{(p)}(i+1)} \Pr\{\Obsv^{(p)}(i+1)|\Policy(\Stat_i)\}}_{\text{=1}}
+        \cdot \underbrace{\tilde{W}^{(p)} \Paren{\Obsv^{(p)}(i+1)}}_{\text{constant}}
+    },
+\end{align}
+and we have
+\begin{align}
+    \sum_{m\in\esSet}\sum_{j\in\jSpace} &\Pr\{Q_{m,j}(i+1)|Q_{m,j}(i), \Obsv^{(p)}(i), \Policy(\Stat_i)\} \mu'_{i+1}
+        \nonumber\\
+        &\Paren{ \mat{I}-\gamma\mat{P}_{m,j} }^{-1} \vec{g}
+\end{align}
+
+Then we introduce the one-step iteration algorithm:
+% [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
+% \begin{algorithm}[H]
+%     \caption{Distributed Algorithm for }
+%     \begin{algorithmic}[1]
+%         \STATE $t = 0$
+%         \FOR{$t = 1,2,\dots$}
+%             \STATE Evaluate $\Omega_0$ in \textbf{P1} according to Eqn. \ref{sp1}
+%             \FOR{$k \in \mathcal{K}$}
+%                 \STATE fix policy $\vec{\Omega}^{(k)}(t) \forall k' < k$
+%                 \STATE Evaluate $k$-th AP Local Policy $\tilde{\Omega}_k$ in \textbf{Pk} according to Eqn. \ref{sp2}
+%             \ENDFOR
+%         \ENDFOR
+%     \end{algorithmic}
+% \end{algorithm}
+%----------------------------------------------------------------------------------------%
