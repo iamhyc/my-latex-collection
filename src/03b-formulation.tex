@@ -1,16 +1,18 @@
 \section{Problem Formulation}
 %----------------------------------------------------------------------------------------%
-In this section, we formulate the standard MDP problem with respect to global system states and jobs dispatching policy of which is compounded of all AP nodes in this MEC system.
-Given the fact that AP nodes would obtain global states update only after \emph{Update Latency} in each broadcast interval, the formulated MDP problem is composed of two adjacent broadcast interval with obsolete information and updated information.
-As we allow policy update over partial obsolete information, the formulated MDP problem is further split into two sub-problem leveraging same problem structure. The structure would lead to performance improvement guarantee with the proposed distributed algorithm.
-Then we show that the solution for all AP nodes suffers from curse of dimensionality and a low-complexity solution is needed.
+In this section, we formulate the problem under standard MDP framework, which considering optimization of global dispatching policy over the global states which is compounded of all AP and ES nodes.
+Given the fact that AP nodes would only update their own global information only after \emph{Maximum Broadcast Latency} in each broadcast interval, the state and policy in formulated MDP problem are actually composed of both stale and updated information due to that latency.
+The latency-aware algorithm proposed allow each AP agent update their policy iteratively, while they all solve the same MDP problem under different control policy. This algorithm would lead to performance improvement guarantee with global optimality as upper bound.
+At the end of this section, we show that the solution for all AP nodes suffers from curse of dimensionality and a low-complexity solution is needed.
 
 \subsection{System State and Dispatching Policy}
 The system states is selected based on the nature that $k$-th AP comes up with complete broadcast information only after its corresponding \emph{Update Latency} in the broadcast interval.
 The relative difference between broadcast point and the update time point is depicted in Fig. \ref{fig:brd-trans}.
 \begin{definition}[System State]
-    The system state at $i$-th broadcast point is denoted as $\Stat_i \define (\Obsv_{i-2}, \Obsv_{i-1}, \Obsv_{i}), (i=1,2,\dots)$, where $\Obsv_{-1}=\Obsv_{0} =\Phi$ denotes the empty system state.
-    $\Obsv_{i}$ denotes updated information after receiving global broadcasting information, $\Obsv_{i-1}$ denotes the partial stale information, and $\Obsv_{i-2}$ denotes the more stale information which have impact on transition function with respect to $\Obsv_{i-2}$.
+    The system state at $i$-th broadcast point is denoted as
+    $\Stat(t_i) \define (\Obsv(t_{i-1}), \Obsv(t_{i})), (i=1,2,\dots)$,
+    where $\Obsv_{0} =\Phi$ denotes the empty initial system state.
+    $\Obsv(t_{i})$ denotes updated information after receiving global broadcasting information, $\Obsv(t_{i-1})$ denotes the stale information which have impact on policy composition in current interval.
 \end{definition}
 
 \begin{figure}[ht]

@@ -1,0 +1,11 @@
+\section{Motivation}
+%----------------------------------------------------------------------------------------%
+\begin{itemize}
+    \item Distributed Edge Scenario. We need information sharing among agents, to achieve better system performance than local greedy policy. \hl{Argue that local greedy is bad.}
+    \item However, in a distributed system, latency and synchronization is impossible to implement frequently and precisely. The latency causes stale information sharing. \hl{Lemma: fixed one agent, the one wold adopt sub-optimal policy before receiving the information. A.k.a, sub optimal plus optimal is not optimal in that interval.}
+    \item Lemma: To argue for estimation error of latency, when the length of broadcast interval/arrival intensity increases, the estimation error would be increasing with $O(N \times M \times J)$.
+    \item Lemma: To argue for sampling error, the periodic-sampled cost is already a good estimation for JCT (Job Completion Time), while the parameters of model is learnt with the minimum time scale (i.e. the time slot).
+    \item Moreover, the latency is further stochastic due to the underlaid network, which is hard to tackle. And that's why we develop stochastic latency-aware RL algorithm.
+    \item Insight: We only do \emph{latency-aware} instead of \emph{latency-adapt} policy, so what insight could we get?
+    \item Insight2: The bottleneck may exists in \emph{Barrel Theory} that one lack agent could ruin the whole cooperation. (Really?)
+\end{itemize}
