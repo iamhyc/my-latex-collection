@@ -1,1 +1,36 @@
 \section{Performance Evaluation}
+
+\subsection{Parameter Settings}
+\begin{itemize}
+    \item $K=5$ AP nodes, $M=3$ ES nodes, and $J=5$ type of jobs;
+    \item Each time slot with $\tau=0.05$ s (a.k.a $50$ ms), and broadcast interval $T=N\tau$ with $N=20$;
+    \item The maximum uploading time is $\Xi = 3 T$, and the maximum broadcast latency is shorter than $T$;
+    \item (arrival rate is random generated as $\lambda_{k,j} \ll 1/N$)
+    \item job processing time distribution generated from real data trace;
+    \item Each queue on ES with maximum 10 jobs.
+\end{itemize}
+
+We compare the proposed algorithm with other 3 heuristic algorithms.
+Compared Algorithm:
+\begin{itemize}
+    \item \textbf{Local greedy algorithm (baseline policy)}:
+            not queue-aware and always to the server with minimum average processing time; this policy is taken as the baseline policy as the start of our proposed algorithm;
+    \item \textbf{Local queue-aware greedy algorithm}:
+            however the queue state is stale;
+    \item \textbf{Heuristic queue-aware greedy algorithm}:
+            mixed algorithm with baseline policy and stale queue information considered, with weight factor $\alpha = 0.5$;
+\end{itemize}
+
+\subsection{Performance Analysis}
+Compared with different parameter settings:
+\begin{itemize}
+    \item CDF of cost (Average JCT), with different broadcast $T$ setting;
+    \item CDF of cost (Average JCT), with different broadcast latency $D$ setting;
+\end{itemize}
+
+Compared with other algorithms:
+\begin{itemize}
+    \item CDF of cost (Average JCT);
+    \item CDF of queue length;
+    \item CDF of \# of dropped jobs (over the queue limit);
+\end{itemize}

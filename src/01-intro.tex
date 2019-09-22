@@ -5,6 +5,7 @@ Edge Computation is believed to be a promising technology for solving increasing
 (Rich-media tasks are delay-sensitive).
 \cite{Naha2018} is a survey about fog computing in latency-aware computing in IoT, and investigate numerous proposed computing architecture.
 
+
 Related works on job dispatching on scheduling in edge computing, mostly with centralized agent to apply action and seldom take delayed information impact into consideration.
 There are some previous works on jobs scheduling strategies under the scenario of edge computation, together with joint optimization job dispatching and resource allocation:
 \begin{itemize}
@@ -13,11 +14,13 @@ There are some previous works on jobs scheduling strategies under the scenario o
     \item \cite{Alameddine2019} is a work considering task offloading, scheduling and resource allocation joint optimization with Benders Decomposition (However, delay information is previous defined);
     \item \cite{Fan2017} considers cooperation of multiple MEC-BSs of computation offloading to other MEC-BSs (However, it doesn't consider the offloading utility impact on other MEC-BSs, i.e. only optimize for one BSs in the cluster).
 \end{itemize}
-        
+
+
 Different from the previous referred works, which only consider optimization for one agent in system or using centralized agent for decision making, we focus on the impact of out-of-dated information on decision making in multiple agents distributed cooperation.
 Due to frequent jobs releasing from users and uncertainty of jobs uploading time to servers, the obsolete information is inevitable in a purely distributed system.
 This information sharing delay would cause severe mis-estimate for job dispatching decision making, and thus it will be hard to guarantee the cooperation among individual agents.
-        Moreover, the information sharing delay is often un-deterministic due to shared under-laid network topology, and offensively sharing strategy would cause network congestion to other normal functions.
+Moreover, the information sharing delay is often un-deterministic due to shared under-laid network topology, and offensively sharing strategy would cause network congestion to other normal functions.
+
 
 As what we have learned for now, there are very limited discussions on this topic:
 \begin{itemize}
@@ -30,6 +33,7 @@ As what we have learned for now, there are very limited discussions on this topi
         \cite{Lyu2018b} try to establish cooperation among selfish devices in fog computing, and out-of-date information is blamed for optimality gap but proved to asymptotically diminish with the proposed algorithm (However, the out-dated information is considered with limited effect);
 \end{itemize}
 
+%NOTE: [abandon useless references]
 % Service Placement Scenario:
 % \begin{itemize}
 %     \item \cite{Rodrigues2017} is a work on minimizing service delay in mobile edge computing;
@@ -51,6 +55,7 @@ As what we have learned for now, there are very limited discussions on this topi
 %     \item \cite{Wang2018} is a system work published in IEEE Access, considers the mobility of mobile users in limited coverage solved with service migration and handover, and propose a framework;
 % \end{itemize}
 
+
 In this article, we consider there are Access Points (AP) in this network to connect the User Equipment (UE) and the Edge Servers (ES).
 The computation jobs would be released from UEs and the dispatching decisions are determined distributed on each AP nodes as depicted in Fig.\ref{fig:system}.
 The information sharing scheme is proposed in this article with synchronized broadcast design. With the help of this scheme, we could immediately apply the job dispatching decision based on obsolete information, with some prior stochastic knowledge of global system.
@@ -61,9 +66,10 @@ Our contributions are summarized as follows.
     We with adopt value function approximation to reduce the traditional algorithm complexity, and come up with performance guarantee performance bound.
 \end{itemize}
 
-\hl{The remainder of this paper is organized as follows.}
-In Sec.II, system model.
-In Sec.III, problem formulation.
-In Sec.IV, we introduce low-complexity MDP algorithm.
-In Sec.V, evaluation.
-In Sec.VI, conclusion.
+
+The remainder of this paper is organized as follows.
+In Sec.II, we justify the motivation on our topic.
+And then we illustrate the system model and the optimization problem formulation in Sec.III and Sec.IV respectively.
+In Sec.V, we introduce a low-complexity MDP algorithm to the .
+In Sec.VI, we show the results of evaluation.
+In Sec.VII, the conclusion is given.
