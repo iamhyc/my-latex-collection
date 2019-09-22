@@ -14,11 +14,11 @@ We compare the proposed algorithm with other 3 heuristic algorithms.
 Compared Algorithm:
 \begin{itemize}
     \item \textbf{Local greedy algorithm (baseline policy)}:
-            not queue-aware and always to the server with minimum average processing time; this policy is taken as the baseline policy as the start of our proposed algorithm;
+            always choose the minimum processing time server for the job, and not queue-aware; this policy is taken as initial baseline policy as the start of our proposed algorithm;
     \item \textbf{Local queue-aware greedy algorithm}:
-            however the queue state is stale;
+            always choose the queue with minimum queue length while the obtained queue state is stale;
     \item \textbf{Heuristic queue-aware greedy algorithm}:
-            mixed algorithm with baseline policy and stale queue information considered, with weight factor $\alpha = 0.5$;
+            mixed the above two algorithm with weight factor $\alpha = 0.5$;
 \end{itemize}
 
 \subsection{Performance Analysis}
