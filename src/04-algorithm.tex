@@ -9,21 +9,21 @@ The baseline dispatching policy is adopted to obtain an approximation of value f
 \end{align}
 where $\Pi_k(t_i) \define \set{\pi^{(k)}_{m,j}(t_{i}) | \forall m\in\esSet,\forall j\in\jSpace}$ denotes ($\forall k\in\apSet$) the action set resembling the definition in \ref{def_action}.
 
-According to the additive structure of cost function, we substitute the transition function plus value function in Eqn. \ref{sp_0} with two linearly divided sections as $W^{(AP)}(\mathcal{R}(t_{i+1}))$ and $W^{(ES)}(Q^*(t_{i+1}))$ under baseline policy $\BaseLine(t_{i})$:
+According to the additive structure of cost function, we substitute the transition function plus value function in Eqn. \ref{sp_0} with two linearly divided sections as $W^{(AP)}(\mathcal{R}(t_{i+1}))$ and $W^{(ES)}(\mathcal{Q}(t_{i+1}))$ under baseline policy $\BaseLine(t_{i})$:
 \begin{align}
     &V(\Stat(t_{i})) = g(\Stat(t_{i})) +
     \nonumber\\
-    &~~~~~~\gamma \min_{\BaseLine(t_i)} \Bracket{ W^{(AP)}_{\BaseLine(t_i)}\Paren{\mathcal{R}(t_{i+1})} + W^{(ES)}_{\BaseLine(t_i)}\Paren{Q^*(t_{i+1})} },
+    &~~~~~~\gamma \min_{\BaseLine(t_i)} \Bracket{ W^{(AP)}_{\BaseLine(t_i)}\Paren{\mathcal{R}(t_{i+1})} + W^{(ES)}_{\BaseLine(t_i)}\Paren{\mathcal{Q}(t_{i+1})} },
 \end{align}
-where $W^{(AP)}_{}(\cdot)$ and $W^{(ES)}(\cdot)$ denote the split \emph{expected value function} over AP nodes and ES nodes respectively, $\Policy(\Stat(t_{i})) = \tilde{\Omega}(t_{i-1}), \BaseLine(t_i)$. The split expected value functions are defined as follows.
+where $W^{(AP)}_{\BaseLine(t_i)}(\cdot)$ and $W^{(ES)}_{\BaseLine(t_i)}(\cdot)$ denote the split \emph{expected value function} over AP nodes and ES nodes respectively, $\Policy(\Stat(t_{i})) = \tilde{\Omega}(t_{i-1}), \BaseLine(t_i)$. The split expected value functions are defined as follows.
 \begin{align}
-    W^{(AP)}(\mathcal{R}(t_{i})) &\define \sum_{k\in\apSet}\sum_{m\in\esSet}\sum_{j\in\jSpace}
+    W^{(AP)}_{\BaseLine(t_i)}(\mathcal{R}(t_{i})) &\define \sum_{k\in\apSet}\sum_{m\in\esSet}\sum_{j\in\jSpace}
         \nonumber\\
         &~~~~\mathbb{E}_{\{\BaseLine(t_i), \vec{r}^{(k)}_{m,j}(t_{i})\}}\Bracket{
             \sum_{h=0}^{\infty} \gamma^{h} \Inorm{\vec{r}^{(k)}_{m,j}(t_{i+h})}
         }
     \\
-    W^{(ES)}(Q^*(t_{i})) &\define \sum_{m\in\esSet}\sum_{j\in\jSpace}
+    W^{(ES)}_{\BaseLine(t_i)}(\mathcal{Q}(t_{i})) &\define \sum_{m\in\esSet}\sum_{j\in\jSpace}
         \nonumber\\
         &~~~~\mathbb{E}_{\{\BaseLine(t_i), Q_{m,j}(t_{i})\}}\Bracket{
             \sum_{h=0}^{\infty} \gamma^{h} l_{m,j}(t_{i+h})
@@ -34,7 +34,7 @@ The decoupled value functions for AP and ES nodes is obtained with an approximat
         
 The expected value function $W^{(AP)}(\mathcal{R}(t_{i+1}))$ under baseline $\vecG{\Pi}(t_{i})$ for AP nodes is easily obtained by calculating by the following equation:
 \begin{align}
-    &W^{(AP)}\Paren{\mathcal{R}(t_{i+1})} = \sum_{k\in\apSet}\sum_{m\in\esSet}\sum_{j\in\jSpace}
+    &W^{(AP)}_{\BaseLine(t_i)}\Paren{\mathcal{R}(t_{i+1})} = \sum_{k\in\apSet}\sum_{m\in\esSet}\sum_{j\in\jSpace}
     \nonumber\\
     & \Inorm{
         \mathbb{E}\Bracket{
@@ -68,12 +68,12 @@ where $\Inorm{\cdot}$ denotes the sum of absolute value of each entry of the vec
 % \end{align}
 % where $\tilde{W}^{(s)}_{m,j}(\Obsv(i+1)) \define \mathbb{E}_{\Pi}[\sum_{l=0}^{\infty} \gamma^{l} q_{m,j}(i+l+1)]$. It implies that the state $\Obsv^{(p)}(i)$ is substitute with its expectation under policy $\Policy(\Stat_i)$ in this value function.
 
-The expected value function $W^{(ES)}(Q^*(t_{i+1}))$ under baseline $\vecG{\Pi}(t_{i})$ for ES nodes is little complex compared to Eqn. \ref{w_ap}.
+The expected value function $W^{(ES)}(\mathcal{Q}(t_{i+1}))$ under baseline $\vecG{\Pi}(t_{i})$ for ES nodes is little complex compared to Eqn. \ref{w_ap}.
 The ES node transition is affected with both arrival process under dispatching policy and last queue state, and we reduce the states expression by taking average over the uploading process together with the transition function expression.
 \begin{align}
-    &W^{(ES)}_{m,j}\Paren{Q^*(t_{i+1})} %\define \mathbb{E}_{\Pi}[\sum_{h=0}^{\infty} \gamma^{h} l_{m,j}(t_{i+h+1})]
+    &W^{(ES)}_{\BaseLine(t_i)}\Paren{\mathcal{Q}(t_{i+1})} %\define \mathbb{E}_{\Pi}[\sum_{h=0}^{\infty} \gamma^{h} l_{m,j}(t_{i+h+1})]
     \nonumber\\
-    =& \sum_{h=0,\dots,\frac{\Xi}{T}} \gamma^{h} \mathbb{E}[ l_{m,j}(t_{i+h+1}) ]
+    =& \sum_{m,j}\sum_{h=0,\dots,\frac{\Xi}{T}} \gamma^{h} \mathbb{E}[ l_{m,j}(t_{i+h+1}) ]
     \nonumber\\
     &~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \hat{\mat{P}}_{m,j}(\tilde{\vecG{\beta}}) }^{-1} \vecG{\nu}(t_{i+\frac{\Xi}{T}+1}) \vec{g}',
 \end{align}
@@ -127,29 +127,23 @@ $\tilde{\vecG{\beta}}$ is the arrival distribution under baseline policy $\Pi(t_
 
 The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
 \begin{align}
-    \min_{\BaseLine(t_i)} W^{(AP)}\Paren{\mathcal{R}(t_{i+1})} + W^{(ES)}\Paren{Q^*(t_{i+1})}
+    \min_{\BaseLine(t_i)} W^{(AP)}_{\BaseLine(t_i)}\Paren{\mathcal{R}(t_{i+1})} + W^{(ES)}_{\BaseLine(t_i)}\Paren{\mathcal{Q}(t_{i+1})}
     \label{eqn_opt}
 \end{align}
 
 Then we introduce the iterative policy update algorithm, which optimize the 
 with improved baseline policy in each interval as performance guarantee.
 \begin{itemize}
-    \item Choose initial policy $\Policy(\Stat(t_0)) = \BaseLine(t_0)$ as start;
+    \item Choose initial policy $\Policy(\Stat(t_0)) = \BaseLine(t_0)$ as start, which is the \emph{local greedy policy};
     \item In $[t_0, t_1]$, the AP node indexed with $1$ would receive the broadcast information after $D_1(t_1)$ and updates the global information; then it solves the optimization problem in \ref{eqn_opt} with only $\Pi_{1}(t_1)$ changes in $\Policy(\Stat(t_1)) = \BaseLine(t_1) = [\Pi_{1}(t_1), \Pi_{2}(t_0), \dots, \Pi_{K}(t_0)]$;
     \item At $t_1$, the AP node indexed with $1$ would broadcast its policy $\Pi_{1}(t_1)$ together with the state information;
     \item In $[t_1, t_2]$, the AP nodes indexed with $2$ would receive the broadcast information and previous global policy $\Policy(\Stat(t_1))$; then it repeats the procedure what the $1$-st AP did;
     \item Then generally, in $[t_{i}, t_{i+1}]$, the AP nodes indexed with $(k \mod K)+1$ would update its own policy following the above procedure.
 \end{itemize}
 
-% \begin{lemma}
-%     The above algorithm would have performance improvement in each interval with baseline policy guarantee, and at least achieve local optimal.
-% \end{lemma}
-% \begin{proof}
-    
-% \end{proof}
 % [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
 % \begin{algorithm}[H]
-%     \caption{Distributed Algorithm for }
+%     \caption{Online Iterative Policy Improvement Algorithm}
 %     \begin{algorithmic}[1]
 %         \STATE $t = 0$
 %         \FOR{$t = 1,2,\dots$}
@@ -161,4 +155,18 @@ with improved baseline policy in each interval as performance guarantee.
 %         \ENDFOR
 %     \end{algorithmic}
 % \end{algorithm}
+
+\begin{lemma}
+    The above algorithm would have performance improvement in each interval with baseline policy guarantee, and at least achieve local optimal.
+\end{lemma}
+\begin{proof}
+    The improved policy in last interval becomes the baseline policy in next interval.
+    So, in each stage, it resembles the one-step Policy Improvement step in classical \emph{Policy Iteration} algorithm, and each step with different value function under baseline policy on the right-hand side.
+    
+    The insight exists that: due to the \emph{uncontrollable latency} on policy in each stage, the chosen time-invariant baseline policy actually would; so the improved policy is the baseline of next stage, and thus forms the online policy iteration.
+    discounted sum-up cost, the future states near the current state counts more and the baseline policy (which is time-invariant) would variant in each interval.
+\end{proof}
+
+\subsection{Reinforcement Learning}
+Due to the fact that the statistical parameters of job arrival distribution $\lambda_{k,j}$, uploading time distribution $U_{k,m,j}$ and processing time distribution $l_{m,j}$ are unknown at the first time, we adopt reinforcement learning algorithm to learn the parameters.
 %----------------------------------------------------------------------------------------%

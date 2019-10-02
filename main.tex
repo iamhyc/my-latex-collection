@@ -1,5 +1,5 @@
-\documentclass[10pt, conference]{IEEEtran} %INFOCOM 19'
-% \documentclass[journal, 12pt, onecolumn, draftclsnofoot]{IEEEtran} %JSAC 20'
+% \documentclass[10pt, conference]{IEEEtran} %INFOCOM 19'
+\documentclass[journal, 12pt, onecolumn, draftclsnofoot]{IEEEtran} %JSAC 20'
 \usepackage{cite}
 \usepackage{xcolor,soul,framed}
 \usepackage{amsmath,amsthm,amssymb,amsfonts}
@@ -53,6 +53,10 @@
 \newcommand{\Policy}{\vecG{\Omega}}
 \newcommand{\BaseLine}{\vecG{\Pi}}
 %---------------------------------------------------------------%
+\newcommand{\fixit}[1]{ {\color{red}{#1}} }
+\newcommand{\comment}[1]{\hl{#1}}
+\newcommand{\delete}[1]{}
+
 \begin{document}
     \title{Stale Information-based Cooperative Jobs Dispatching in Edge Computing System}
     \author{HONG Yuncong}
