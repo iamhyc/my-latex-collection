@@ -6,7 +6,6 @@ Denote the sets of APs and edge servers as $\apSet \define \set{1,\dots,K}$ and 
 Each AP collects the computation jobs from the mobile users within its coverage, and makes decision for each job on which edge server it should be dispatched to.
 \accept{In this paper, we shall focus on the dispatcher design at each AP.}
 % We denote as $\apSet \define \set{1,\dots,K}$ and $\mathcal{M} \define \set{1,\dots,M}$ Access Points (AP) and Edge Servers (ES) respectively in our system, as depicted in Fig. \ref{fig:system}.
-% We assume that both AP and ES side function at the same time slot scale which lasts for $\tau$ second ($\tau < 1$) for convenience.
 
 \begin{figure}[ht]
     \centering
@@ -19,7 +18,7 @@ Each AP collects the computation jobs from the mobile users within its coverage,
 The time axis of each AP is organized by time slots.
 Without loss of generality, it is assumed that there are $J$ types of computation jobs supported in this system, which is denoted as $\jSpace \define \set{1,\dots,J}$.
 The job arrival at each AP in each time slot is modelled as independent Bernoulli distribution.
-More specifically, the arrivals of the $j$-th type of jobs at the $k$-th AP are independent and identically distributed (i.i.d) Bernoulli random variables, and the arrival probability of which is denoted as $\lambda_{k,j}$ ($\forall k\in\apSet, j\in\jSpace$).
+More specifically, the arrivals of the $j$-th type of jobs at the $k$-th AP are independent and identically distributed (i.i.d.) Bernoulli random variables, and the arrival probability is denoted as $\lambda_{k,j}$ ($\forall k\in\apSet, j\in\jSpace$).
 % The User Equipment (UE) is connected to the AP and offload the computation jobs on demand to the AP. A list of types of jobs are supported on edge servers based on Virtual Machine (VM) resources, which is denoted as $\jSpace \define \set{1,\dots, J}$.
 % which is obtained by statistics and denoted as $p_j \define \Pr\{\text{"j-type arrival"}\}$, where $\sum_{j\in\jSpace} p_j=1$.
 % Thus the job arrival process on $k$-th AP ($\forall k\in\apSet$) is compounded of the job arrivals from all UE connected, which follows the assumption as follows.
@@ -30,7 +29,9 @@ More specifically, the arrivals of the $j$-th type of jobs at the $k$-th AP are 
 
 %NOTE: [uploading process]
 Each AP then immediately dispatches each type of received jobs to one edge server.
-Due to the random traffic in the network, the transmission of job uploading from one AP to one edge server consumes a random number of time slots. Moreover, different types of jobs may have different distributions on the sizes of computation data.
+\fixit{(define dispatching action) Let $\omega_{k,j}$ denotes the index of edge server for the processing of the $j$-th types of jobs dispatched from the $k$-th AP.}
+Due to the random traffic in the network, the job uploading from one AP to one edge server consumes a random number of time slots.
+\fixit{Moreover, different types of jobs may have different distributions on the sizes of computation data.}
 We denote $\mathcal{U}_{k,m,j}$ as the distribution of uploading delay of the $j$-th type of jobs from the $k$-th AP to the $m$-th edge server.
 \fixit{
     In practice, the distribution of uploading delay may not be known to the APs or edge servers in advance.
@@ -53,9 +54,7 @@ Hence, we denote $\mathcal{C}_{m,j}$ as the processing time distribution \fixit{
 % [abandon for \emph{unrelated machines model}]
 % For convenience, we assign jobs with \emph{infinity} processing time when there are no  have no VM resource available with , and this kind of dispatching possibility will be rejected at the AP side.
 
-%FIXME: add the following description, logically
-% After the jobs being processed on ES, we consider the life cycle of that job is ended.
-% The time from one job being offloaded to AP until leaving ES is denoted as the Job Completion Time (JCT), which characterize the response time in system.
+\fixit{We highlight the life cycle of the job being processed.}
 %----------------------------------------------------------------------------------------%
 
 \subsection{Periodic Broadcast of State Information}
@@ -79,7 +78,7 @@ The state information of one AP (say the $k$-th AP, $\forall k\in\apSet$) at the
     \mathcal{R}_{k}(i) \define \set{R^{(k)}_{m,j,\xi}(i) | \forall m\in\esSet, j\in\jSpace, \xi \in [0,\Xi]}
 \end{align}
 
-%NOTE: [state for ES]
+%NOTE: [state for Edge Server]
 Moreover, the state information of one edge server (say the $m$-th edge server, $\forall m\in\esSet$) at the $t$-th broadcast are defined as follows.
 \begin{align}
     \mathcal{Q}_{m}(i) \define \set{Q_{m,j}(i) | \forall m\in\esSet, j\in\jSpace}
@@ -95,22 +94,6 @@ Moreover, the state information of one edge server (say the $m$-th edge server, 
     \end{align}
     where $t_{i,n}$ denotes the $n$-th time slot in $i$-th interval w.r.t the start point. Especially, we denote as $t_{i} \define t_{i,0}$ as the start point of each broadcasting interval, which is called \emph{broadcast point}.
 }
-% And the broadcast information is a sampling of the system status, for $i$-th \emph{broadcast point}, the composed broadcast information from all the AP and ES nodes is listed as follows.
-% \begin{itemize}
-%     \item Denote as
-%     $\mathcal{R}(t_{i}) \define \set{ \vec{r}^{(k)}_{m,j}(t_i)|\forall k\in\apSet, m\in\esSet, j\in\jSpace }$
-%     the information AP cluster contains at $i$-th broadcast interval, where
-%     $\vec{r}^{(k)}_{m,j}(t_i) \triangleq \{ r^{(k)}_{m,j,\xi}(t_i)|\forall \xi=0,\dots,\Xi \}$
-%     denotes a series of counters recording the uploading time from $0$ to $\Xi$ of the $j$-type job from $k$-th AP to $m$-th ES.
-%     \hl{(explicit expression)}
-%     For each $k$-th AP ($\forall k\in\apSet$), it maintains its own information $\set{ \vec{r}^{(k)}_{m,j} | \forall m\in\esSet, j\in\jSpace}$;
-%     \item Denote as
-%     $\mathcal{Q}(t_{i}) \triangleq \set{ Q_{m,j}(t_i)|\forall m\in\esSet,j\in\jSpace }$
-%     the information ES cluster contains at $i$-th broadcast interval, where
-%     $Q_{m,j}(t_i) \triangleq (l_{m,j}(t_i), \eta_{m,j}(t_i))$
-%     denotes the $j$-type jobs FIFO queue on $m$-th ES, with $l_{m,j}(t_i)$ denoting the queue length and $\eta_{m,j}(t_i)$ denoting the remaining time of the job in processing.
-%     The $m$-th ES ($\forall m\in\esSet$) maintains information $\set{ Q_{m,j}(t_i)|\forall j\in\jSpace }$.
-% \end{itemize}
 
 Thus the composed broadcasting information at the $i$-th broadcast is denoted as:
 \begin{align}
@@ -128,8 +111,8 @@ Due to the un-predictability of \emph{update latency}, $D_{i,k}$ for the $k$-th 
 Moreover, we assume that the broadcast period is selected with a value that always larger than the corresponding \emph{update latency}, i.e. $t_B > \hat{D}_k$ ($\forall k\in\apSet$), where $\hat{D}_k$ is the upper bound for $D_{i,k}$ ($i=1,2,\dots$).
 
 % [abandon, definition for update latency]
-% We denote as $D^{(p)}_{k,k'}(t_i)$ the broadcast delay between $k'$-th AP and $k$-th AP ($\forall k,k'\in\apSet$), and $D^{(s)}_{k,m}(t_i)$ the broadcast delay between $m$-th ES and $k$-th AP ($\forall k\in\apSet,\forall m\in\esSet$).
-% Then we denote the latency for $k$-th AP receives broadcast information from other nodes (including all ES nodes and other AP nodes) as \emph{Maximum Broadcast Latency}.
+% We denote as $D^{(p)}_{k,k'}(t_i)$ the broadcast delay between $k'$-th AP and $k$-th AP ($\forall k,k'\in\apSet$), and $D^{(s)}_{k,m}(t_i)$ the broadcast delay between $m$-th edge server and $k$-th AP ($\forall k\in\apSet,\forall m\in\esSet$).
+% Then we denote the latency for $k$-th AP receives broadcast information from other nodes (including all edge server nodes and other AP nodes) as \emph{Maximum Broadcast Latency}.
 % \begin{definition}[Maximum Broadcast Latency]
 %     The maximum broadcast latency is the time when AP receives whole broadcast information with respect to the broadcast point. For $k$-th AP ($\forall k\in\apSet$) the latency for $i$-th interval is given as follows.
 %     \begin{align}

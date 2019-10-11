@@ -1,6 +1,6 @@
 \section{Problem Formulation}
 %----------------------------------------------------------------------------------------%
-In this section, we formulate the problem under standard MDP framework, which considering optimization of global dispatching policy over the global states which is compounded of all AP and ES nodes.
+In this section, we formulate the problem under standard MDP framework, which considering optimization of global dispatching policy over the global states which is compounded of all AP and edge servers.
 Given the fact that AP nodes would only update their own global information only after \emph{Maximum Broadcast Latency} in each broadcast interval, the state and policy in formulated MDP problem are actually composed of both stale and updated information due to that latency.
 The latency-aware algorithm proposed allow each AP agent update their policy iteratively, while they all solve the same MDP problem under different control policy. This algorithm would lead to performance improvement guarantee with global optimality as upper bound.
 At the end of this section, we show that the solution for all AP nodes suffers from curse of dimensionality and a low-complexity solution is needed.
@@ -23,7 +23,7 @@ The relative difference between broadcast point and the update time point is dep
 \end{figure}
 
 % NOTE: [partial and stale policy update definition]
-% The \emph{dispatching policy} is applied over arrival jobs in each timeslot on each AP, and thus \emph{dispatching action space} is defined as $\mathbf{A}: (j, m) \in \jSpace \times \esSet$ where $(j, m)$ denotes the action that $j$-type job should be uploaded to $m$-th ES.
+% The \emph{dispatching policy} is applied over arrival jobs in each timeslot on each AP, and thus \emph{dispatching action space} is defined as $\mathbf{A}: (j, m) \in \jSpace \times \esSet$ where $(j, m)$ denotes the action that $j$-type job should be uploaded to $m$-th edge server.
 % \begin{definition}[Update Time Points]
 %     For $k$-th AP ($\forall k\in\apSet$), partial updates firstly and then consensus update, which is defined as follows.
 %     \begin{itemize}
@@ -55,7 +55,7 @@ Based on the two stages of global broadcast information illustrated in system st
         ~(\forall k\in\apSet),
         \label{def_action}
     \end{align}
-    where $\omega^{(k)}_{m,j}(t_{i})$ denotes the deterministic dispatching policy that: when $k$-th AP with information $\Obsv(t_{i})$, it would then upload $j$-type job to $m$-th ES if and only if $\omega^{(k)}_{m,j}(t_{i})=1$.
+    where $\omega^{(k)}_{m,j}(t_{i})$ denotes the deterministic dispatching policy that: when $k$-th AP with information $\Obsv(t_{i})$, it would then upload $j$-type job to $m$-th edge server if and only if $\omega^{(k)}_{m,j}(t_{i})=1$.
 \end{definition}
 
 We note that after the dispatching policy, the arrival distribution $A_{k,j}$ is further split onto different Edge Servers. The split arrival processes for $k$-th AP ($\forall k\in\apSet$) are still i.i.d Bernoulli distribution as
@@ -70,7 +70,7 @@ $\tilde{\lambda}^{(k)}_{m,j}(t_{i}) \define \lambda_{k,j} I[\omega^{(k)}_{m,j}(t
 
 \subsection{The Optimization Problem}
 We propose the jobs dispatching optimization problem with the target to minimize \emph{average response time} of all offloaded jobs in MEC system.
-The \emph{average response time} is composed of uploading time from $AP$ to $ES$, and queueing-and-service time on corresponding ES. According to \emph{Little's Law}, the average response time of all jobs is equally as average number of jobs in system.
+The \emph{average response time} is composed of uploading time from APs to edge servers, and queueing-and-service time on corresponding edge server. According to \emph{Little's Law}, the average response time of all jobs is equally as average number of jobs in system.
         
 Due to the intrinsic property of periodic information broadcasting, we collect the cost for number counting at the pace of broadcasting interval which could be seems as sampling of original process based on timeslot scale.
 Besides the cost counted for job response time, we furthermore add penalty on jobs submission over its capacity limit when the over-limited jobs will be rejected at the end of current broadcast interval.
@@ -134,7 +134,7 @@ The details and proof will be given in the following algorithm section.
 
 To better analyze the optimization structure of the sub-problem, we decouple the transition function. The expression of transition function in Eqn. \ref{sp_k} is given as follows.
 \begin{lemma}[Transition Function Decoupling]
-    The transition function in Bellman's equation could be decoupled on AP nodes states and ES nodes states, which will facilitate the approximated value function expression in the following section.
+    The transition function in Bellman's equation could be decoupled on states of APs and edge servers, which will facilitate the approximated value function expression in the following section.
     The decoupled transition function for Eqn. \ref{sp_k} is given as follows.
     \begin{align}
         & \Pr\{\Obsv(t_{i+1})|\Obsv(t_{i}), \Policy(\Stat(t_{i}))\}
@@ -187,7 +187,7 @@ where $\vecG{\theta}^{(k)}_{m,j,0}(t_{i}) \sim \text{Bernoulli}(\tilde{\lambda}^
 where $p^{(k)}_{m,j,\xi} \define \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\xi\}$ and $\bar{p}^{(k)}_{m,j,\xi} = 1 - p^{(k)}_{m,j,\xi}$.
 And $\hat{\Gamma}^{(k)}_{m,j}$ is an off-diagonal block matrix plus the horizontal part w.r.t $\vecG{\theta}^{(k)}_{m,j,0}$, with other entries as zero.
 
-The second part denotes the state transition on ES.
+The second part denotes the state transition on edge servers.
 Denote $\Pr\Brace{ Q_{m,j}(t_{i+1})|Q_{m,j}(t_{i}), \mathcal{R}(t_{i}) } \sim \vecG{\nu}_{m,j}(t_i)$. We notice that the job arrival distribution $\vecG{\beta}_{m,j}(t_{i})$ is given by $\mathcal{R}(t_{i})$, and the departure rate in one slot is deterministic as $1/N$.
 Thus the expectation of $\vecG{\beta}$ would be always far more smaller than $1$ as composed of all $K$ AP nodes.
 We take approximation on $\vec{\beta}$ as Bernoulli distribution in each time slot that $\vecG{\beta}(t_{i,n}) \triangleq [\beta^{(0)}_{m,j}(t_{i,n}), \beta^{(1)}_{m,j}(t_{i,n})]$, where
@@ -220,6 +220,6 @@ And we could obtain the time-variant transition matrix composed of multiple tran
 %     \end{cases}
 % \end{align}
 
-However, after the state decomposition, the action space would still be exponentially expanded with respect to number AP and ES nodes. We could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity.
+However, after the state decomposition, the action space would still be exponentially expanded with respect to the number of APs and edge servers. We could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity.
 So in next section, to alleviate curse of dimensionality, we introduce baseline dispatching policy to approximate the value function, and then carry out one-step iteration to obtain a better value function approximation.
 %----------------------------------------------------------------------------------------%
