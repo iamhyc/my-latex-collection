@@ -2,7 +2,7 @@
 %----------------------------------------------------------------------------------------%
 \subsection{Network Model}
 We consider an edge computing system with $K$ Access Points (APs) and $M$ edge servers, which are connected in a network as illustrated in Fig.\ref{fig:system}.
-Denote the sets of APs and edge servers as $\apSet \define \set{1,\dots,K}$ and $\esSet \define \set{1,\dots,M}$, respectively.
+The sets of APs and edge servers are denoted as $\apSet \define \set{1,\dots,K}$ and $\esSet \define \set{1,\dots,M}$, respectively.
 Each AP collects the computation jobs from the mobile users within its coverage, and makes decision for each job on which edge server it should be dispatched to.
 \accept{In this paper, we shall focus on the dispatcher design at each AP.}
 % We denote as $\apSet \define \set{1,\dots,K}$ and $\mathcal{M} \define \set{1,\dots,M}$ Access Points (AP) and Edge Servers (ES) respectively in our system, as depicted in Fig. \ref{fig:system}.
@@ -32,10 +32,8 @@ Each AP then immediately dispatches each type of received jobs to one edge serve
 Let $\omega_{k,j}$ denotes the index of edge server for the processing of the $j$-th types of jobs dispatched from the $k$-th AP ($\forall k\in\apSet, j\in\jSpace$).
 Different types of jobs may have different distributions on the input data size.
 Moreover, due to the random traffic in the network, the job uploading from one AP to one edge server consumes a random number of time slots.
-\accept{
-    It is assumed that the distributions of uploading delay of different jobs are independent and the job uploading are independnet among jobs.
-    The uploading delay are i.i.d for all the $j$-th type of jobs from the $k$-th AP to the $m$-th edge server, which is denoted as $\mathcal{U}_{k,m,j}$ ranged in $(0,\Xi]$ with the unit of time slot ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
-}
+\fixit{It's assumed that the distributions of uploading delays are independent and time-invariant between any two in uploading jobs.}
+More specifically, The uploading delays are i.i.d for the $j$-th type of jobs from the $k$-th AP to the $m$-th edge server, which is denoted as $\mathcal{U}_{k,m,j}$ ranged in $(0,\Xi]$ with the unit of time slot ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
 In practice, the distribution of uploading delay may not be known to the APs or edge servers in advance.
 % The AP itself is assumed with no computation capability, and thus the jobs are further dispatched to the edge servers for processing.
 % The jobs on AP will be immediately dispatched to edge servers once arrives.
