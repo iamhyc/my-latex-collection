@@ -101,14 +101,18 @@ Thus the composed broadcasting information at the $i$-th broadcast is denoted as
 \end{align}
 
 %NOTE: Receiving points definition, denotation and unpredictable
-\fixit{
-    Different AP nodes would receive whole broadcast information at different time slots in one broadcast period.
-}
-We call the receiving latency as \emph{update latency}, and denote the latency in the $i$-th broadcast period for the $k$-th AP ($\forall k\in\apSet$) as $D_{i,k}$.
-% $k$-th AP receives the last partial information at $t_{i} + D_{k,t}$.
-Due to the un-predictability of \emph{update latency}, $D_{i,k}$ for the $k$-th AP in the $i$-th period could not be known exactly by other APs. This implies that the explicit sharing about timing information is not impossible in the distributed system.
-Moreover, we assume that the broadcast period is selected with a value that always larger than the corresponding \emph{update latency}, i.e. $t_B > \hat{D}_k$ ($\forall k\in\apSet$), where $\hat{D}_k$ is the upper bound for $D_{i,k}$ ($i=1,2,\dots$).
+Different AP nodes would receive the whole broadcast information at different time slot.
+We call the latency when AP receives the whole information as \emph{update latency}.
+Denote $D_{i,k}$ as the the latency in the $i$-th broadcast period for the $k$-th AP ($\forall k\in\apSet$), which is defined as follows.
+\begin{align}
+    D_{i,k} \define \max\Paren{\Brace{
+        D^{(AP)}_{k,k'}(i),
+        D^{(ES)}_{k,m}(i) | \forall k \neq k' \in \apSet, m\in\esSet
+    }}
+\end{align}
+Moreover, we assume that the broadcast period is selected with a value that always larger than the maximum \emph{update latency}, i.e. $t_B > \{\hat{D}_k|\forall k\in\apSet\}$ ($\forall k\in\apSet$), where $\hat{D}_k$ is the upper bound for $D_{i,k}$ ($i=1,2,\dots$).
 
+Due to the un-predictability of \emph{update latency}, $D_{i,k}$ for the $k$-th AP in the $i$-th period could not be known exactly by other APs. This implies that the explicit sharing about timing information is not impossible in the distributed system.
 In the problem formulation section, we will show that we could come up with better policy aware of the randomness of latency, and improve AP's policy in an iterative way.
 Furthermore, with the help of algorithm design we could prove that our improved policy is with analytical performance bound under MDP framework.
 
