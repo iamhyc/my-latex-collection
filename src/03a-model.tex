@@ -9,7 +9,7 @@ Each AP collects the computation jobs from the mobile users within its coverage,
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.45\textwidth]{system-model.pdf}
+    \includegraphics[width=0.80\textwidth]{system-model.pdf}
     \caption{The Illustration of MEC System Model}
     \label{fig:system}
 \end{figure}
@@ -53,12 +53,21 @@ The maximum job queue length for each VM is set as $l_Q$, which indicates that t
 %----------------------------------------------------------------------------------------%
 
 \subsection{Periodic Broadcast of State Information}
-%NOTE: 
-Each AP forwards the computation jobs of different types to different edge servers.
-In order to make dispatching decision, they should collect the state information from other APs and edge servers.
-It is assumed that each AP and edge server broadcast their state information every $t_B$ time slots.
+%NOTE: Periodic Broadcast is Indispensable
+In our system, each AP dispatches different types of computation jobs in a cooperative manner, where the jobs are dispatched to achieve a global optimality.
+To make such dispatching decision, they should collect the state information from other APs and edge servers.
+It is assumed that each AP and edge server broadcast their state information every $t_B$ time slots as illustrated in Fig.\ref{fig:brd-timeline}.
+More specifically, the $k$-th AP would receive $k'$-th AP ($\forall k\in\apSet$) after some delay due to the random network traffic, and same as the information broadcast by $m$-th edge server ($\forall m\in\esSet$).
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.80\textwidth]{brd-timeline.pdf}
+    \caption{The Illustration of Aligned Broadcast and Receiving Timeline}
+    \label{fig:brd-timeline}
+\end{figure}
 
-We firstly define the following notations on the state information.
+%NOTE: The broadcast information denotations
+We firstly define the following denotations on the state information for APs and edge servers.
+
 \begin{itemize}
     \item the number of jobs in uploading;
         $R^{(k)}_{m,j,\xi}$ denotes the number of the $j$-th type of jobs been uploaded to the $m$-th edge servers $\xi$ time slots ago.
@@ -68,6 +77,11 @@ We firstly define the following notations on the state information.
         \item $\eta_{m,j}$ denotes the remaining time slots of the first job in processing;
     \end{itemize}
 \end{itemize}
+
+%NOTE: Receiving points definition, denotation and unpredictable
+\fixit{
+    Different AP nodes would receive whole broadcast information at different time slots in one broadcast period.
+}
 
 %NOTE: [State for AP and Edge Server]
 The state information of one AP (say the $k$-th AP, $\forall k\in\apSet$) at the $i$-th broadcast are defined as follows.
@@ -79,14 +93,6 @@ Moreover, the state information of one edge server (say the $m$-th edge server, 
     \mathcal{Q}_{m}(i) \define \set{Q_{m,j}(i) | \forall m\in\esSet, j\in\jSpace}
 \end{align}
 
-\delete{
-    We further adopt the following time denotation.
-    \begin{align}
-        t_{i,n} = i \cdot T + n \cdot \tau, (i,n=0,1,2,\dots),
-    \end{align}
-    where $t_{i,n}$ denotes the $n$-th time slot in $i$-th interval w.r.t the start point. Especially, we denote as $t_{i} \define t_{i,0}$ as the start point of each broadcasting interval, which is called \emph{broadcast point}.
-}
-
 Thus the composed broadcasting information at the $i$-th broadcast is denoted as:
 \begin{align}
     \Obsv(i) \define
@@ -95,14 +101,21 @@ Thus the composed broadcasting information at the $i$-th broadcast is denoted as
         }.
 \end{align}
 
-As the broadcasting latency is random due to underlaid network, different AP nodes would receive whole broadcast information at different time slots in one broadcast period.
-We call the caused delay \emph{update latency}, and denote the latency in the $i$-th broadcast period for the $k$-th AP ($\forall k\in\apSet$) as $D_{i,k}$.
+We call the receiving latency as \emph{update latency}, and denote the latency in the $i$-th broadcast period for the $k$-th AP ($\forall k\in\apSet$) as $D_{i,k}$.
 % $k$-th AP receives the last partial information at $t_{i} + D_{k,t}$.
 Due to the un-predictability of \emph{update latency}, $D_{i,k}$ for the $k$-th AP in the $i$-th period could not be known exactly by other APs. This implies that the explicit sharing about timing information is not impossible in the distributed system.
 Moreover, we assume that the broadcast period is selected with a value that always larger than the corresponding \emph{update latency}, i.e. $t_B > \hat{D}_k$ ($\forall k\in\apSet$), where $\hat{D}_k$ is the upper bound for $D_{i,k}$ ($i=1,2,\dots$).
 
 In the problem formulation section, we will show that we could come up with better policy aware of the randomness of latency, and improve AP's policy in an iterative way.
 Furthermore, with the help of algorithm design we could prove that our improved policy is with analytical performance bound under MDP framework.
+
+\delete{
+    We further adopt the following time denotation.
+    \begin{align}
+        t_{i,n} = i \cdot T + n \cdot \tau, (i,n=0,1,2,\dots),
+    \end{align}
+    where $t_{i,n}$ denotes the $n$-th time slot in $i$-th interval w.r.t the start point. Especially, we denote as $t_{i} \define t_{i,0}$ as the start point of each broadcasting interval, which is called \emph{broadcast point}.
+}
 
 % In the decentralized system, a information sharing scheme is indispensable to guarantee a global-wise optimal policy than local greedy policy.
 % However, frequent information exchange would always introduce heavy network burden and communication latency is also a severe issue which causes stale information collection. So, an efficient scheme is needed to alleviate the communication burden and aware of the stale information impact.
