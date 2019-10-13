@@ -57,42 +57,41 @@ The maximum job queue length for each VM is set as $l_Q$, which indicates that t
 In our system, each AP dispatches different types of computation jobs in a cooperative manner, where the jobs are dispatched to achieve a global optimality.
 To make such dispatching decision, they should collect the state information from other APs and edge servers.
 It is assumed that each AP and edge server broadcast their state information every $t_B$ time slots as illustrated in Fig.\ref{fig:brd-timeline}.
-More specifically, the $k$-th AP would receive $k'$-th AP ($\forall k\in\apSet$) after some delay due to the random network traffic, and same as the information broadcast by $m$-th edge server ($\forall m\in\esSet$).
+More specifically, the $k$-th AP would receive $k'$-th AP after some delay $D^{(AP)}_{k,k'}$ due to the random network traffic, and $D^{(ES)}_{k,m}$ for the information broadcast by $m$-th edge server ($\forall k \neq k'\in\apSet, m\in\esSet$).
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.80\textwidth]{brd-timeline.pdf}
-    \caption{The Illustration of Aligned Broadcast and Receiving Timeline}
+    \caption{The Timeline Illustration of State Information Broadcast and Receiving}
     \label{fig:brd-timeline}
 \end{figure}
 
 %NOTE: The broadcast information denotations
 We firstly define the following denotations on the state information for APs and edge servers.
-
-\begin{itemize}
-    \item the number of jobs in uploading;
-        $R^{(k)}_{m,j,\xi}$ denotes the number of the $j$-th type of jobs been uploaded to the $m$-th edge servers $\xi$ time slots ago.
-    \item the queueing state description for the $j$-th type jobs on the $m$-th edge server: $Q_{m,j} \define (L_{m,j}, \eta_{m,j})$, where:
-    \begin{itemize}
-        \item $L_{m,j}$ denotes the number of jobs in waiting;
-        \item $\eta_{m,j}$ denotes the remaining time slots of the first job in processing;
-    \end{itemize}
-\end{itemize}
-
-%NOTE: Receiving points definition, denotation and unpredictable
-\fixit{
-    Different AP nodes would receive whole broadcast information at different time slots in one broadcast period.
-}
+One AP shall maintain state about the number of jobs still in uploading. 
+And due to the uploading time of one job is unknown until it's been uploaded, it further have counters to record the uploading time for each job.
+Denote $R^{(k)}_{m,j,\xi}$ as the number of the $j$-th type job been uploaded to the $m$-th edge server $\xi$ time slots ago from $k$-th AP ($\forall k\in\apSet, m\in\esSet, j\in\jSpace, \xi\in(0,\Xi]$).
+%
+One edge server ($\forall m\in\apSet$) shall maintain state about the queue for each VM.
+Denote $Q_{m,j} \define (L_{m,j}, \eta_{m,j})$ , where $L_{m,j}$ denotes the number of jobs in waiting and $\eta_{m,j}$ denotes the remaining time slots of the first job in processing ($\forall m\in\esSet, j\in\jSpace$). 
+% \begin{itemize}
+%     \item the number of jobs in uploading;
+%         $R^{(k)}_{m,j,\xi}$ denotes the number of the $j$-th type of jobs been uploaded to the $m$-th edge servers $\xi$ time slots ago.
+%     \item the queueing state description for the $j$-th type jobs on the $m$-th edge server: $Q_{m,j} \define (L_{m,j}, \eta_{m,j})$, where:
+%     \begin{itemize}
+%         \item $L_{m,j}$ denotes the number of jobs in waiting;
+%         \item $\eta_{m,j}$ denotes the remaining time slots of the first job in processing;
+%     \end{itemize}
+% \end{itemize}
 
 %NOTE: [State for AP and Edge Server]
-The state information of one AP (say the $k$-th AP, $\forall k\in\apSet$) at the $i$-th broadcast are defined as follows.
+The state information of one AP (say the $k$-th AP, $\forall k\in\apSet$) at the $i$-th broadcast is defined as follows.
 \begin{align}
     \mathcal{R}_{k}(i) \define \set{R^{(k)}_{m,j,\xi}(i) | \forall m\in\esSet, j\in\jSpace, \xi \in [0,\Xi]}
 \end{align}
-Moreover, the state information of one edge server (say the $m$-th edge server, $\forall m\in\esSet$) at the $t$-th broadcast are defined as follows.
+Moreover, the state information of one edge server (say the $m$-th edge server, $\forall m\in\esSet$) at the $t$-th broadcast is defined as follows.
 \begin{align}
     \mathcal{Q}_{m}(i) \define \set{Q_{m,j}(i) | \forall m\in\esSet, j\in\jSpace}
 \end{align}
-
 Thus the composed broadcasting information at the $i$-th broadcast is denoted as:
 \begin{align}
     \Obsv(i) \define
@@ -101,6 +100,10 @@ Thus the composed broadcasting information at the $i$-th broadcast is denoted as
         }.
 \end{align}
 
+%NOTE: Receiving points definition, denotation and unpredictable
+\fixit{
+    Different AP nodes would receive whole broadcast information at different time slots in one broadcast period.
+}
 We call the receiving latency as \emph{update latency}, and denote the latency in the $i$-th broadcast period for the $k$-th AP ($\forall k\in\apSet$) as $D_{i,k}$.
 % $k$-th AP receives the last partial information at $t_{i} + D_{k,t}$.
 Due to the un-predictability of \emph{update latency}, $D_{i,k}$ for the $k$-th AP in the $i$-th period could not be known exactly by other APs. This implies that the explicit sharing about timing information is not impossible in the distributed system.
