@@ -112,7 +112,11 @@ Denote $D_{i,k}$ as the the latency in the $i$-th broadcast period for the $k$-t
 \end{align}
 Moreover, we assume that the broadcast period is selected with a value that always larger than the maximum \emph{update latency}, i.e. $t_B > \{\hat{D}_k|\forall k\in\apSet\}$ ($\forall k\in\apSet$), where $\hat{D}_k$ is the upper bound for $D_{i,k}$ ($i=1,2,\dots$).
 
-Due to the un-predictability of \emph{update latency}, $D_{i,k}$ for the $k$-th AP in the $i$-th period could not be known exactly by other APs. This implies that the explicit sharing about timing information is not impossible in the distributed system.
+Due to the randomness of broadcast latency, the \emph{update latency} $D_{i,k}$ for the $k$-th AP in the $i$-th interval is also un-predictable and the other AP could not know when $k$-th AP could update with the latest broadcast.
+\fixit{
+    This implies that one AP could not know when exactly other APs update their state in one period, and they could not come to consensus on the same state, until the end of the period.
+    In the worst case, the APs would always update their dispatching decision only at the end of the period.
+}
 In the problem formulation section, we will show that we could come up with better policy aware of the randomness of latency, and improve AP's policy in an iterative way.
 Furthermore, with the help of algorithm design we could prove that our improved policy is with analytical performance bound under MDP framework.
 
