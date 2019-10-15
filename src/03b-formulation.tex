@@ -6,7 +6,7 @@ The delay-aware algorithm proposed allow each AP agent update their policy itera
 At the end of this section, we show that the solution for all AP nodes suffers from curse of dimensionality and a low-complexity solution is needed.
 
 \subsection{System State and Dispatching Policy}
-\accept{
+\delete{
     Firstly, we adopt the following time denotation in our system.
     \begin{align}
         t_{i,n} = i \cdot T + n \cdot \tau, (i,n=0,1,2,\dots),
@@ -100,7 +100,8 @@ Our distributed optimization problem definition is given as follows.
             \mathbb{E}_{\Policy}
                 \Bracket{\sum_{i=1}^{T} \gamma^{i-1} g\Paren{\Stat(t_{i}), \Policy(\Stat(t_{i}))}|\Stat(t_1)},
     \end{gather}
-    where the cost is collected with a discount factor $\gamma$, \st{and $\Policy$ is optimized policy globally always with full-state information available.}
+    where the cost is collected with a discount factor $\gamma$.
+    \delete{and $\Policy$ is optimized policy globally always with full-state information available.}
 \end{problem}
 According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
 \begin{align}
