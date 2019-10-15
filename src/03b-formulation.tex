@@ -1,12 +1,20 @@
 \section{Problem Formulation}
 %----------------------------------------------------------------------------------------%
-In this section, we formulate the problem under standard MDP framework, which considering optimization of global dispatching policy over the global states which is compounded of all AP and edge servers.
-Given the fact that AP nodes would only update their own global information only after \emph{Maximum Broadcast Latency} in each broadcast interval, the state and policy in formulated MDP problem are actually composed of both stale and updated information due to that latency.
-The latency-aware algorithm proposed allow each AP agent update their policy iteratively, while they all solve the same MDP problem under different control policy. This algorithm would lead to performance improvement guarantee with global optimality as upper bound.
+In this section, we formulate the problem under standard MDP framework, which considers optimization of global dispatching policy over the global states which is compounded of all AP and edge servers.
+Given the fact that AP nodes would only update their own global information only after \brdelay in each broadcast interval, the state and policy in formulated MDP problem are actually composed of both stale and updated information \fixit{due to that delay}.
+The delay-aware algorithm proposed allow each AP agent update their policy iteratively, while they all solve the same MDP problem under different control policy. This algorithm would lead to performance improvement guarantee with global optimality as upper bound.
 At the end of this section, we show that the solution for all AP nodes suffers from curse of dimensionality and a low-complexity solution is needed.
 
 \subsection{System State and Dispatching Policy}
-The system states is selected based on the nature that $k$-th AP comes up with complete broadcast information only after its corresponding \emph{Maximum Broadcast Latency} in the broadcast interval.
+\accept{
+    Firstly, we adopt the following time denotation in our system.
+    \begin{align}
+        t_{i,n} = i \cdot T + n \cdot \tau, (i,n=0,1,2,\dots),
+    \end{align}
+    where $t_{i,n}$ denotes the $n$-th time slot in $i$-th interval w.r.t the start point. Especially, we denote as $t_{i} \define t_{i,0}$ as the start point of each broadcasting interval, which is called \emph{broadcast point}.
+}
+
+The system states is selected based on the nature that $k$-th AP comes up with complete broadcast information only after its corresponding \brdelay in the broadcast interval.
 The relative difference between broadcast point and the update time point is depicted in Fig. \ref{fig:brd-trans}.
 \begin{definition}[System State]
     The system state at $i$-th broadcast point is denoted as
@@ -51,15 +59,15 @@ Based on the two stages of global broadcast information illustrated in system st
     denotes the local policy mapping over $\Obsv(t_{i})$ for $k$-th AP ($\forall k\in\apSet$), i.e. $k$-th AP would change its policy from $\tilde{\Omega}_{k}(\Obsv(t_{i-1}))$ to $\tilde{\Omega}_{k}(\Obsv(t_{i}))$ when receiving $\Obsv(t_{i})$.
     The explicit definition is given as follows.
     \begin{align}
-        &\tilde{\Omega}_{k}(\Obsv(t_{i})) \define \set{\omega^{(k)}_{m,j}(t_{i})|\forall m\in\esSet, j\in\jSpace}
+        &\tilde{\Omega}_{k}(\Obsv(t_{i})) \define \set{\omega_{k,j}(t_{i})|\forall m\in\esSet, j\in\jSpace}
         ~(\forall k\in\apSet),
         \label{def_action}
     \end{align}
-    where $\omega^{(k)}_{m,j}(t_{i})$ denotes the deterministic dispatching policy that: when $k$-th AP with information $\Obsv(t_{i})$, it would then upload $j$-type job to $m$-th edge server if and only if $\omega^{(k)}_{m,j}(t_{i})=1$.
+    where $\omega_{k,j}(t_{i})$ denotes the deterministic dispatching policy that: when $k$-th AP with information $\Obsv(t_{i})$, it would then upload $j$-type job to $m$-th edge server if and only if $\omega_{k,j}(t_{i})=m$.
 \end{definition}
 
 We note that after the dispatching policy, the arrival distribution $A_{k,j}$ is further split onto different Edge Servers. The split arrival processes for $k$-th AP ($\forall k\in\apSet$) are still i.i.d Bernoulli distribution as
-$\tilde{\lambda}^{(k)}_{m,j}(t_{i}) \define \lambda_{k,j} I[\omega^{(k)}_{m,j}(t_i) = 1]$ ($\forall m\in\esSet, j\in\jSpace$), where $I[\cdot]$ is indicator function.
+$\tilde{\lambda}^{(k)}_{m,j}(t_{i}) \define \lambda_{k,j} I[\omega_{k,j}(t_i) = m]$ ($\forall m\in\esSet, j\in\jSpace$), where $I[\cdot]$ is indicator function.
 
 %NOTE: [Multiple Phase of Iterative Update in Same Interval Example]
 % More specifically, the multiple-phase of the policy $\tilde{\Omega}_k(\Obsv_i)$ at multiple \emph{iterative update points} are separated by \emph{Update Latency} $d_{k}(t_{i})$ for $k$-th AP ($k\in\apSet$). One vivid example of policy adaption phase is given as follows, the update rules of which will be elaborated in next sub-section.
@@ -124,7 +132,7 @@ The details and proof will be given in the following algorithm section.
 % \end{align}
 % where $\Policy(\Stat_{t_i}) = [\Omega'(\Obsv_{i-2}), \Omega(\Obsv_{i-1}), \Omega'(\Obsv_{i-1}), \Omega'(\Obsv_{i-1})]$ without policy update in $(t_i, t_{i+1}]$.      
 % The second problem solves policy update at \emph{Iterative Update Points} which assumes no policy update at \emph{Partial Update Points}.
-% Furthermore, the update is applied iteratively, as the name implies, with the order following length of broadcast latency (i.e. the sorted AP nodes order). The corresponding Bellman's Equation for $k$-th AP ($\forall k\in\apSet$) node is defined as follows.
+% Furthermore, the update is applied iteratively, as the name implies, with the order following length of broadcast delay (i.e. the sorted AP nodes order). The corresponding Bellman's Equation for $k$-th AP ($\forall k\in\apSet$) node is defined as follows.
 % \begin{align}
 %     V(\Stat_{t_i}) = g(\Stat_{t_i}) + \gamma \min_{\Omega^{(k)}(\Obsv_{i})} \Pr\{ \Obsv_{i+1}|\Obsv_{i}, \Policy(\Stat_{t_i}) \} V(\Stat_{i+1}),
 %     \label{sp2}

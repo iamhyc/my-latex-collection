@@ -15,15 +15,15 @@ We design a periodic sampling scheme in our problem.
 Under the assumption of periodic information sharing, it's actually a quite practical model 
 
 %NOTE: second point
-Secondly, with intensive jobs release from edge devices, the information receiving latency is the key issue to take care in dispatching decision design.
+Secondly, with intensive jobs release from edge devices, the \brdelay is the key issue to take care in dispatching decision design.
 \begin{example}
     Fixed one agent, the one would adopt sub-optimal policy before receiving the information. A.k.a, sub optimal plus optimal in that period is not optimal
 \end{example}
 The insight exists in: the bottleneck may exist in Barrel Theory that one lacking agent could ruin the whole cooperation on the target.
-And we only do latency-aware instead of latency-adapt policy.
+And we only do delay-aware instead of delay-adapt policy.
 
 %NOTE: third point
-Last but not least, the biggest challenge in the way of distributed decision making is unpredictability of underlaid network latency.
+Last but not least, the biggest challenge in the way of distributed decision making is unpredictability of underlaid network delay.
 In this article, we propose model-based reinforcement learning problem formulation, to adapt with stochastic environment.
 To alleviate the curse of dimensionality, we propose a one-step value iteration approximation to solve the Bellman's Equation, which is with performance guarantee.
 

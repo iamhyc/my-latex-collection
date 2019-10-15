@@ -4,7 +4,7 @@
 \begin{itemize}
     \item $K=5$ AP nodes, $M=3$ ES nodes, and $J=5$ types of jobs;
     \item Each time slot with $\tau=0.05$ s (a.k.a $50$ ms), and broadcast interval $T=N \cdot \tau$ with $N=30$;
-    \item The maximum uploading time is $\Xi = 3 T$, and the maximum broadcast latency is shorter than $t_B$;
+    \item The maximum uploading time is $\Xi = 3 T$, and the \brdelay is shorter than $t_B$;
     \item (arrival rate is random generated as $\lambda_{k,j} \ll 1/N$)
     \item job processing time distribution generated from real data trace;
     \item Each queue on ES with maximum 10 jobs.
@@ -37,7 +37,7 @@ Compared Algorithm:
 Compared with different parameter settings:
 \begin{itemize}
     \item CDF of cost (Average JCT), with different broadcast $t_B$ setting;
-    \item CDF of cost (Average JCT), with different broadcast latency $D$ setting;
+    \item CDF of cost (Average JCT), with different \brdelay $D_{i,k}$ setting;
 \end{itemize}
 
 Compared with other algorithms:

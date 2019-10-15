@@ -163,7 +163,7 @@ with improved baseline policy in each interval as performance guarantee.
     The improved policy in last interval becomes the baseline policy in next interval.
     So, in each stage, it resembles the one-step Policy Improvement step in classical \emph{Policy Iteration} algorithm, and each step with different value function under baseline policy on the right-hand side.
     
-    The insight exists that: due to the \emph{uncontrollable latency} on policy in each stage, the chosen time-invariant baseline policy actually would; so the improved policy is the baseline of next stage, and thus forms the online policy iteration.
+    \fixit{The insight exists that: due to the uncontrollable delay on policy in each stage,} the chosen time-invariant baseline policy actually would; so the improved policy is the baseline of next stage, and thus forms the online policy iteration.
     discounted sum-up cost, the future states near the current state counts more and the baseline policy (which is time-invariant) would variant in each interval.
 \end{proof}
 

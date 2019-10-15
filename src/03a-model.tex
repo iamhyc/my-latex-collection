@@ -4,8 +4,7 @@
 We consider an edge computing system with $K$ Access Points (APs) and $M$ edge servers, which are connected in a network as illustrated in Fig.\ref{fig:system}.
 The sets of APs and edge servers are denoted as $\apSet \define \set{1,\dots,K}$ and $\esSet \define \set{1,\dots,M}$, respectively.
 Each AP collects the computation jobs from the mobile users within its coverage, and makes decision for each job on which edge server it should be dispatched to.
-\accept{In this paper, we shall focus on the dispatcher design at each AP.}
-% We denote as $\apSet \define \set{1,\dots,K}$ and $\mathcal{M} \define \set{1,\dots,M}$ Access Points (AP) and Edge Servers (ES) respectively in our system, as depicted in Fig. \ref{fig:system}.
+\accept{In this paper, we shall focus on the decentralized dispatcher design at each AP.}
 
 \begin{figure}[ht]
     \centering
@@ -19,12 +18,6 @@ The time axis of each AP is organized by time slots.
 Without loss of generality, it is assumed that there are $J$ types of computation jobs supported in this system, which is denoted as $\jSpace \define \set{1,\dots,J}$.
 The job arrivals in each time slot are modelled as independent Bernoulli distributions.
 More specifically, the arrivals of the $j$-th type of jobs at the $k$-th AP are independent and identically distributed (i.i.d.) Bernoulli random variables, and the arrival probability is denoted as $\lambda_{k,j}$ ($\forall k\in\apSet, j\in\jSpace$).
-% The User Equipment (UE) is connected to the AP and offload the computation jobs on demand to the AP. A list of types of jobs are supported on edge servers based on Virtual Machine (VM) resources, which is denoted as $\jSpace \define \set{1,\dots, J}$.
-% which is obtained by statistics and denoted as $p_j \define \Pr\{\text{"j-type arrival"}\}$, where $\sum_{j\in\jSpace} p_j=1$.
-% Thus the job arrival process on $k$-th AP ($\forall k\in\apSet$) is compounded of the job arrivals from all UE connected, which follows the assumption as follows.
-% \begin{assumption}[Job Arrival Process for AP]
-%     Thus average arrival rate of $j$-type jobs on $k$-th AP is $\mathbb{E}[A_{k,j}]=\lambda_{k,j}$.
-% \end{assumption}
 
 
 %NOTE: [uploading process]
@@ -32,22 +25,23 @@ Each AP then immediately dispatches each type of received jobs to one edge serve
 Let $\omega_{k,j}$ denotes the index of edge server for the processing of the $j$-th types of jobs dispatched from the $k$-th AP ($\forall k\in\apSet, j\in\jSpace$).
 Different types of jobs may have different distributions on the input data size.
 Moreover, due to the random traffic in the network, the job uploading from one AP to one edge server consumes a random number of time slots.
-\fixit{It's assumed that the distributions of uploading delays are independent and time-invariant between any two in uploading jobs.}
-More specifically, The uploading delays are i.i.d for the $j$-th type of jobs from the $k$-th AP to the $m$-th edge server, which is denoted as $\mathcal{U}_{k,m,j}$ ranged in $(0,\Xi]$ with the unit of time slot ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
+It's assumed that the distributions of uploading delays are independent between any two uploading jobs.
+Hence, we denote $\mathcal{U}_{k,m,j}$ as the uploading delay distribution for the $j$-th type of jobs from the $k$-th AP to the $m$-th edge server, which is ranged in $(0, \Xi]$ with the unit of time slot ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
+\delete{
+    It's assumed that the distributions of uploading delays are independent between any two uploading jobs.
+    Hence, we denote 
+    the uploading delays are i.i.d for the $j$-th type of jobs from the $k$-th AP to the $m$-th edge server, which is denoted as $\mathcal{U}_{k,m,j}$ ranged in $(0,\Xi]$ with the unit of time slot ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
+}
 In practice, the distribution of uploading delay may not be known to the APs or edge servers in advance.
-% The AP itself is assumed with no computation capability, and thus the jobs are further dispatched to the edge servers for processing.
-% The jobs on AP will be immediately dispatched to edge servers once arrives.
-% The corresponding uploading time is \emph{un-predictable} over one AP-ES link, which is composed of \emph{communication delay} due to bandwidth available and propagation delay due to underlaid network.
-% We assume that for $j$-type of job, the corresponding delay follows some distribution over one link from $k$-th AP to $m$-th ES ($\forall j\in\jSpace, k\in\apSet, \forall m\in\esSet$).
 
 %NOTE: [processing process]
 There are $J$ virtual machines (VMs) on one edge server for the computation of $J$ types of jobs.
 For each type, the uploaded jobs are computed in a First-Come-First-Serve (FCFS) manner.
-Furthermore, we adopt \emph{unrelated machines} assumption in \cite{tan-online} for job processing on edge servers, where the job processing time on different servers are machine dependent.
-We denote $\mathcal{C}_{m,j}$ as the processing time distribution of $j$-th type job on the $m$-th edge serer, whose range is in $(0, c_{m,j}]$ with the unit of time slot ($\forall m\in\esSet, j\in\jSpace$).
-The maximum job queue length for each VM is set as $l_Q$, which indicates that there are at most $l_Q$ jobs pending for one VM on the edge servers. \accept{The jobs submission over the limits would be rejected to the corresponding AP.}
-% [abandon for \emph{unrelated machines model}]
-% For convenience, we assign jobs with \emph{infinity} processing time when there are no  have no VM resource available with , and this kind of dispatching possibility will be rejected at the AP side.
+Furthermore, we adopt \emph{unrelated machines} assumption in \cite{tan-online} for job processing on edge servers.
+The job processing time on different servers are random and machine dependent, which implies that different types of jobs on different edge servers have different processing time distributions.
+We denote $\mathcal{C}_{m,j}$ as the processing time distribution of the $j$-th type job on the $m$-th edge serer, whose range is in $(0, c_{m,j}]$ with the unit of time slot ($\forall m\in\esSet, j\in\jSpace$).
+The maximum job queue length for each VM is set as $l_Q$, which indicates that there are at most $l_Q$ jobs pending for one VM on the edge servers.
+\accept{The jobs submission over the limits would be discarded.}
 
 \delete{We highlight the life cycle of the job being processed.}
 %----------------------------------------------------------------------------------------%
@@ -55,9 +49,9 @@ The maximum job queue length for each VM is set as $l_Q$, which indicates that t
 \subsection{Periodic Broadcast of State Information}
 %NOTE: Periodic Broadcast is Indispensable
 In our system, each AP dispatches different types of computation jobs in a cooperative manner, where the jobs are dispatched to achieve a global optimality.
-To make such dispatching decision, they should collect the state information from other APs and edge servers.
+To make such dispatching decision, each AP should collect the state information from other APs and edge servers.
 It is assumed that each AP and edge server broadcast their state information every $t_B$ time slots as illustrated in Fig.\ref{fig:brd-timeline}.
-More specifically, the $k$-th AP would receive $k'$-th AP after some delay $D^{(AP)}_{k,k'}$ due to the random network traffic, and $D^{(ES)}_{k,m}$ for the information broadcast by $m$-th edge server ($\forall k \neq k'\in\apSet, m\in\esSet$).
+More specifically, for $i$-th broadcast ($i=1,2,\dots$), the $k$-th AP would receive $k'$-th AP after some delay $D^{\dagger}_{k,k'}(i)$ due to the random network traffic, and $D^{\ddagger}_{k,m}(i)$ for the information broadcast by $m$-th edge server ($\forall k \neq k'\in\apSet, m\in\esSet$).
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.80\textwidth]{brd-timeline.pdf}
@@ -102,22 +96,22 @@ Thus the composed broadcasting information at the $i$-th broadcast is denoted as
 
 %NOTE: Receiving points definition, denotation and unpredictable
 Different AP nodes would receive the whole broadcast information at different time slot.
-We call the latency when AP receives the whole information as \emph{update latency}.
-Denote $D_{i,k}$ as the the latency in the $i$-th broadcast period for the $k$-th AP ($\forall k\in\apSet$), which is defined as follows.
+We call the delay when AP receives the whole information as \brdelay.
+Denote $D_{i,k}$ as the the \brdelay in the $i$-th broadcast interval for the $k$-th AP ($\forall k\in\apSet$), which is defined as follows.
 \begin{align}
     D_{i,k} \define \max\Paren{\Brace{
-        D^{(AP)}_{k,k'}(i),
-        D^{(ES)}_{k,m}(i) | \forall k \neq k' \in \apSet, m\in\esSet
+        D^{\dagger}_{k,k'}(i),
+        D^{\dagger}_{k,m}(i) | \forall k \neq k' \in \apSet, m\in\esSet
     }}
 \end{align}
-Moreover, we assume that the broadcast period is selected with a value that always larger than the maximum \emph{update latency}, i.e. $t_B > \{\hat{D}_k|\forall k\in\apSet\}$ ($\forall k\in\apSet$), where $\hat{D}_k$ is the upper bound for $D_{i,k}$ ($i=1,2,\dots$).
+Moreover, we assume that the broadcast interval is selected with a value that always larger than the maximum \brdelay, i.e. $t_B > \{\hat{D}_k|\forall k\in\apSet\}$ ($\forall k\in\apSet$), where $\hat{D}_k$ is the upper bound for $D_{i,k}$ ($i=1,2,\dots$).
 
-Due to the randomness of broadcast latency, the \emph{update latency} $D_{i,k}$ for the $k$-th AP in the $i$-th interval is also un-predictable and the other AP could not know when $k$-th AP could update with the latest broadcast.
+Due to the randomness of broadcast delay, the \brdelay $D_{i,k}$ for the $k$-th AP in the $i$-th interval is also un-predictable and the other AP could not know when $k$-th AP could update with the latest broadcast.
 \fixit{
-    This implies that one AP could not know when exactly other APs update their state in one period, and they could not come to consensus on the same state, until the end of the period.
-    In the worst case, the APs would always update their dispatching decision only at the end of the period.
+    This implies that one AP could not know when exactly other APs update their global state information, and the APs could not come to a consensus on the state information until the end of the interval.
+    In the worst case, the APs would always update their dispatching decision only at the end of the interval.
 }
-In the problem formulation section, we will show that we could come up with better policy aware of the randomness of latency, and improve AP's policy in an iterative way.
+In the problem formulation section, we will show that we could come up with better dispatching decision by awareness of the \brdelay, and improve APs' dispatching decisions in an iterative way.
 Furthermore, with the help of algorithm design we could prove that our improved policy is with analytical performance bound under MDP framework.
 
 \delete{
@@ -128,24 +122,8 @@ Furthermore, with the help of algorithm design we could prove that our improved 
     where $t_{i,n}$ denotes the $n$-th time slot in $i$-th interval w.r.t the start point. Especially, we denote as $t_{i} \define t_{i,0}$ as the start point of each broadcasting interval, which is called \emph{broadcast point}.
 }
 
-% In the decentralized system, a information sharing scheme is indispensable to guarantee a global-wise optimal policy than local greedy policy.
-% However, frequent information exchange would always introduce heavy network burden and communication latency is also a severe issue which causes stale information collection. So, an efficient scheme is needed to alleviate the communication burden and aware of the stale information impact.
-% In this article, the proposed sharing scheme leverage a common periodic broadcast which lasting for adjustable period $T \define N \times \tau$. More specifically, the broadcasting is applied in a loose synchronized way that all the nodes (including AP and ES) starts broadcasting at the same start and is received in that period due to the stochastic latency.
-
-% And we notice that though $\mathcal{R}(t_{i,n})$ and $\mathcal{Q}(t_{i,n})$ also exists in each time slot, the observed information is only available at the start of each interval via broadcast. Thus the shared information is actually a uniform sampling of the whole process.
-
-% [abandon, definition for update latency]
-% We denote as $D^{(p)}_{k,k'}(t_i)$ the broadcast delay between $k'$-th AP and $k$-th AP ($\forall k,k'\in\apSet$), and $D^{(s)}_{k,m}(t_i)$ the broadcast delay between $m$-th edge server and $k$-th AP ($\forall k\in\apSet,\forall m\in\esSet$).
-% Then we denote the latency for $k$-th AP receives broadcast information from other nodes (including all edge server nodes and other AP nodes) as \emph{Maximum Broadcast Latency}.
-% \begin{definition}[Maximum Broadcast Latency]
-%     The maximum broadcast latency is the time when AP receives whole broadcast information with respect to the broadcast point. For $k$-th AP ($\forall k\in\apSet$) the latency for $i$-th interval is given as follows.
-%     \begin{align}
-%         &D_{k}(t_i) \define \max\Paren{ \set{D^{(p)}_{k,k'}(t_i), D^{(s)}_{k,m}(t_i) |\forall k',k \in\apSet, \forall m\in\esSet} }
-%     \end{align}
-% \end{definition}
-
 \delete{
-    Due to the introduced periodic broadcasting design and the information receiving latency, this kind of system is inherent of the structure that decisions are always made with obsolete and partial information.
+    Due to the introduced periodic broadcasting design and the information receiving delay, this kind of system is inherent of the structure that decisions are always made with obsolete and partial information.
     This implies that: if any agents change its decision with respect to newly-arrival broadcast information, it will disturb other agents' decisions from cooperation due to different information of system states.
     Thus, it's unacceptable to update agents' policy only when the agents all come up with exactly same information.
 }
