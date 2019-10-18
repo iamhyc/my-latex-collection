@@ -1,19 +1,16 @@
 \section{Problem Formulation}
 %----------------------------------------------------------------------------------------%
-In this section, we formulate the problem under standard MDP framework, which considers optimization of global dispatching policy over the global states which is compounded of all AP and edge servers.
+In this section, we formulate the problem under standard MDP framework from the global perspective.
+Given that each AP collect 
+Each AP would collect the whole broadcast information as system state, and then update their policy 
+\fixit{
+    which considers optimization of global dispatching decision over the global states which is compounded of all AP and edge servers.
+}
 Given the fact that AP nodes would only update their own global information only after \brdelay in each broadcast interval, the state and policy in formulated MDP problem are actually composed of both stale and updated information \fixit{due to that delay}.
-The delay-aware algorithm proposed allow each AP agent update their policy iteratively, while they all solve the same MDP problem under different control policy. This algorithm would lead to performance improvement guarantee with global optimality as upper bound.
+The delay-aware algorithm proposed allow each AP update their policy iteratively, while they all solve the same MDP problem under different control policy. This algorithm would lead to performance improvement guarantee with global optimality as upper bound.
 At the end of this section, we show that the solution for all AP nodes suffers from curse of dimensionality and a low-complexity solution is needed.
 
 \subsection{System State and Dispatching Policy}
-\delete{
-    Firstly, we adopt the following time denotation in our system.
-    \begin{align}
-        t_{i,n} = i \cdot T + n \cdot \tau, (i,n=0,1,2,\dots),
-    \end{align}
-    where $t_{i,n}$ denotes the $n$-th time slot in $i$-th interval w.r.t the start point. Especially, we denote as $t_{i} \define t_{i,0}$ as the start point of each broadcasting interval, which is called \emph{broadcast point}.
-}
-
 The system states is selected based on the nature that $k$-th AP comes up with complete broadcast information only after its corresponding \brdelay in the broadcast interval.
 The relative difference between broadcast point and the update time point is depicted in Fig. \ref{fig:brd-trans}.
 \begin{definition}[System State]
@@ -46,7 +43,7 @@ Based on the two stages of global broadcast information illustrated in system st
 \begin{definition}[Compounded Dispatching Policy]
     The compounded dispatching policy $\Policy(\Stat(t_{i}))$ over $\Stat(t_{i})$ which is defined with two-stage broadcasting information which is given as follows.
     \begin{align}
-        \Policy(\Stat(t_{i})) \define \Bracket{
+        \Policy\Paren{\Stat(t_{i})} \define \Bracket{
             \tilde{\Policy}(\Obsv(t_{i})), \tilde{\Policy}(\Obsv(t_{i-1}))
         },
     \end{align}
@@ -59,7 +56,7 @@ Based on the two stages of global broadcast information illustrated in system st
     denotes the local policy mapping over $\Obsv(t_{i})$ for $k$-th AP ($\forall k\in\apSet$), i.e. $k$-th AP would change its policy from $\tilde{\Omega}_{k}(\Obsv(t_{i-1}))$ to $\tilde{\Omega}_{k}(\Obsv(t_{i}))$ when receiving $\Obsv(t_{i})$.
     The explicit definition is given as follows.
     \begin{align}
-        &\tilde{\Omega}_{k}(\Obsv(t_{i})) \define \set{\omega_{k,j}(t_{i})|\forall m\in\esSet, j\in\jSpace}
+        &\tilde{\Omega}_{k}\Paren{\Obsv(t_{i})} \define \set{\omega_{k,j}(t_{i})|\forall m\in\esSet, j\in\jSpace}
         ~(\forall k\in\apSet),
         \label{def_action}
     \end{align}

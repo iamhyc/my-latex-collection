@@ -51,7 +51,7 @@ In our system, each AP dispatches different types of computation jobs in a coope
 To facilitate such dispatching decision, each AP should collect the information from other APs and edge servers.
 It's assumed that every APs and edge servers broadcast their information every $t_B$ time slots as illustrated in Fig.\ref{fig:brd-timeline}.
 Furthermore, we denote $t_{i,n}$ as the $n$-th time slot in $i$-th broadcast interval, which is the interval between $(i-1)$-th and $i$-th broadcast ($i=1,2,\dots$).
-Especially, we have $t_{i} \define t_{i,0}$ as the index of $i$-th broadcast time slot and call it $i$-th \brpoint ($i=1,2,\dots$).
+Especially, we have $t_{i} \define t_{i,0}$ as the index of $i$-th broadcast time slot and call it $i$-th \brpoint~($i=1,2,\dots$).
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.80\textwidth]{brd-timeline.pdf}
@@ -86,7 +86,7 @@ And the whole broadcast information from all APs and edge servers at the $i$-th 
 
 %NOTE: Receiving points definition, denotation and unpredictable
 According to Fig.\ref{fig:brd-timeline}, different APs would receive different parts of broadcast information at different time slots.
-For $i$-th broadcast ($i=0,1,\dots$), the $k$-th AP would receive the broadcast information from $k'$-th AP after some delay $D^{\dagger}_{k,k'}(t_{i})$, and $D^{\ddagger}_{k,m}(t_{i})$ for the information from $m$-th edge server ($\forall k' \neq k \in\apSet, m\in\esSet$).
+For $i$-th broadcast ($i=0,1,\dots$), the $k$-th AP would receive the broadcast information from $k'$-th AP after some delay $D^{\dagger}_{k,k'}(t_{i})$, and $D^{\ddagger}_{k,m}(t_{i})$ for the information from the $m$-th edge server ($\forall k' \neq k \in\apSet, m\in\esSet$).
 We call the delay after which one AP (saying the $k$-th AP, $\forall k\in\apSet$) could receive the whole broadcast information as \brdelay, which is defined as follows.
 \begin{align}
     D_{k}(t_{i}) \define \max\Paren{\Brace{
@@ -94,18 +94,15 @@ We call the delay after which one AP (saying the $k$-th AP, $\forall k\in\apSet$
         D^{\dagger}_{k,m}(t_{i}) | \forall k' \neq k \in \apSet, m\in\esSet
     }}.
 \end{align}
-\fixit{
-    Due to the randomness of the network traffic, the broadcast delay of partial information
-    Due to the randomness of broadcast delay, the \brdelay $D_{k}(t_{i})$ for the $k$-th AP in the $i$-th interval is also un-predictable and the other AP could not know when $k$-th AP could update with the latest broadcast.
-    (Explain why we have large broadcast delay assumption)
-    Moreover, we set the broadcast interval a value that always larger than the maximum \brdelay, i.e. $t_B > \{\hat{D}_k|\forall k\in\apSet\}$ ($\forall k\in\apSet$), where $\hat{D}_k$ is the upper bound for $D_{k}(T_{i})$ ($i=1,2,\dots$).
-}
+Due to the randomness of the network traffic, the \brdelay~shall be random based on the uncertainty of the arrival delay of each partial broadcast information.
+Thus APs have i.i.d. distributions of \brdelay, which is denoted as $\mathcal{D}_{k}$ ($\forall k \in \apSet$).
+To avoid the \emph{broadcast storm} which could block the normal network traffic, the broadcast should have reasonable period and .
+Hence we set the broadcast interval a value always larger than the maximum \brdelay, i.e. $t_B > \hat{D}_k$ ($\forall k\in\apSet$), where $\hat{D}_k$ is the upper bound for $D_{k}(t_{i})$ ($i=1,2,\dots$).
 
 \fixit{
-    (1.explain why whole information receiving)
-    (2.difficulty cause of random delay)
-    (3. how we solve it)
-    This implies that one AP could not know when exactly other APs update their global state information, and the APs could not come to a consensus on the state information until the end of the interval.
+    The broadcast interval selected implies that any AP would receive the whole broadcast information before the next broadcast.
+    Due to the complexity of possibilities of partial broadcast information compounds, we consider the time when AP could have a consensus on the whole broadcast information.
+    The randomness of \brdelay~implies that one AP could not know other APs' \brdelay~in that interval.
     In the worst case, the APs would always update their dispatching decision only at the end of the interval.
 }
 
@@ -114,7 +111,7 @@ Furthermore, with the help of algorithm design we could prove that our improved 
 
 \delete{
     Due to the introduced periodic broadcasting design and the information receiving delay, this kind of system is inherent of the structure that decisions are always made with obsolete and partial information.
-    This implies that: if any agents change its decision with respect to newly-arrival broadcast information, it will disturb other agents' decisions from cooperation due to different information of system states.
-    Thus, it's unacceptable to update agents' policy only when the agents all come up with exactly same information.
+    This implies that: if any AP changes its decision with respect to newly-arrival broadcast information, it will disturb other APs' decisions from cooperation due to different information of system states.
+    Thus, it's unacceptable to update APs' policy only when the APs all come up with exactly same information.
 }
 %----------------------------------------------------------------------------------------%
