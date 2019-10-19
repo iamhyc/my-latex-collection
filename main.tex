@@ -45,6 +45,12 @@
 \DeclarePairedDelimiter{\Bracket}{\bigg[}{\bigg]}
 \DeclarePairedDelimiter{\Brace}{\bigg\{}{\bigg\}}
 %---------------------------------------------------------------%
+\newcommand{\fixit}[1]{{\color{red}{#1}}}
+\newcommand{\accept}[1]{#1}
+\newcommand{\deny}[1]{\st{#1}}
+\newcommand{\comment}[1]{\hl{#1}}
+\newcommand{\delete}[1]{}
+%---------------------------------------------------------------%
 \newcommand{\apSet}{\mathcal{K}}
 \newcommand{\esSet}{\mathcal{M}}
 \newcommand{\jSpace}{\mathcal{J}}
@@ -55,12 +61,6 @@
 %---------------------------------------------------------------%
 \newcommand{\brdelay}{\emph{update delay}}
 \newcommand{\brpoint}{\emph{broadcast point}}
-%---------------------------------------------------------------%
-\newcommand{\fixit}[1]{{\color{red}{#1}}}
-\newcommand{\accept}[1]{#1}
-\newcommand{\deny}[1]{\st{#1}}
-\newcommand{\comment}[1]{\hl{#1}}
-\newcommand{\delete}[1]{}
 
 \begin{document}
     \title{Stale Information-based Cooperative Jobs Dispatching in Edge Computing System}

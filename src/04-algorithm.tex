@@ -1,4 +1,8 @@
 \section{LOW-COMPLEXITY SOLUTION}
+\fixit{
+    The delay-aware algorithm proposed allow each AP update their policy iteratively, while they all solve the same MDP problem under different control policy.
+    This algorithm would lead to performance improvement guarantee with global optimality as upper bound.
+}
 In this section, we introduce a heuristic dispatching algorithm as the baseline policy, whose value function could be derived analytically.
 Then the right-hand side of Bellman's Equation turns into simple minimization problem over the control policy. The sub-optimal policy could be obtained by evaluation of approximated value function on right-hand side of Bellman's Equation with one-step iteration. And thus the approximated value function is the upper bound of the original optimal policy.
 
@@ -47,27 +51,6 @@ The expected value function $W^{(AP)}(\mathcal{R}(t_{i+1}))$ under baseline $\ve
 \end{align}
 where $\Inorm{\cdot}$ denotes the sum of absolute value of each entry of the vector, and $\mathbb[\cdot]$ over the vector of distributions gives out the vector of corresponding expectation. And the transition function $\Pr\{ \mathcal{R}(t_{i+1})|\mathcal{R}(t_{i}) \}$ is embedded with its distributions $\vecG{\Theta}^{(k)}_{m,j}(t_{i+1})$ in the equation.
 
-% NOTE: [Approximation with average on simple expectation]
-% The approximated value function $\tilde{W}^{(s)}(\Obsv(i))$ for ES nodes are different for two equations for different transition function expression.
-% We firstly express the approximated value function in Eqn. \ref{sp2} and then express the one in Eqn. \ref{sp1} with respect to it.
-% The ES node transition is affected with both arrival process under dispatching policy and last queue state, and we reduce the states expression by taking average over the uploading process together with the transition function expression.
-% The partial value function optimization for ES in Bellman's Equation right-hand side in Eqn. \ref{sp2} is given as follows.
-% \begin{align}
-%     \min_{\Policy(\Stat_i)}& \sum_{\Stat_{i+1}}
-%         \Pr\Brace{\Stat_{i+1}|\Stat_{i}, \Policy(\Stat_i)} \cdot \tilde{W}^{(s)}\Paren{\Obsv(i+1)}
-%         \nonumber\\
-%         = \min_{\Policy(\Stat_i)}& \sum_{\Obsv^{(s)}(i+1)}
-%             \Pr\Brace{\Obsv^{(s)}(i+1)|\Obsv^{(s)}(i), \Obsv^{(p)}(i), \Policy(\Stat_i)}
-%             \nonumber\\
-%             \times& \sum_{m\in\esSet} \sum_{j\in\jSpace}
-%             \underbrace{
-%                 \mathbb{E}_{\set{\Obsv^{(p)}(i+1)|\Policy(\Stat_i)}} \Bracket{\tilde{W}^{(s)}_{m,j}\Paren{\Obsv(i+1)}}
-%                 }_{
-%                 J\Paren{Q_{m,j}(i+1)}
-%             },
-% \end{align}
-% where $\tilde{W}^{(s)}_{m,j}(\Obsv(i+1)) \define \mathbb{E}_{\Pi}[\sum_{l=0}^{\infty} \gamma^{l} q_{m,j}(i+l+1)]$. It implies that the state $\Obsv^{(p)}(i)$ is substitute with its expectation under policy $\Policy(\Stat_i)$ in this value function.
-
 The expected value function $W^{(ES)}(\mathcal{Q}(t_{i+1}))$ under baseline $\vecG{\Pi}(t_{i})$ for ES nodes is little complex compared to Eqn. \ref{w_ap}.
 The ES node transition is affected with both arrival process under dispatching policy and last queue state, and we reduce the states expression by taking average over the uploading process together with the transition function expression.
 \begin{align}
@@ -90,41 +73,9 @@ $\tilde{\vecG{\beta}}$ is the arrival distribution under baseline policy $\Pi(t_
     \\
     ~~~~\tilde{\beta}^{(0)}_{m,j} &= 1 - \tilde{\beta}^{(1)}_{m,j}
 \end{align}
-
-%NOTE: non-sense
-% Thus the approximated value function for $m$-th ES node is denoted as:
-% \begin{align}
-%     J\Paren{Q_{m,j}(i+1)} \define& \lim_{T\to\infty}
-%         \mathbb{E}_{\vecG{\Pi}} \Bracket{\sum_{l=0}^{T} \gamma^{l} q_{m,j}(i+l+1)}
-%         \nonumber\\
-%         % =& \vec{u}'_i [\lim_{T\to\infty} \sum_{n=0}^{T} (\gamma \mat{P}_m)^{n}] \vec{g}_q
-%         % \nonumber\\
-%     =& \vec{\mu}'_{i+1} \Paren{ \mat{I}-\gamma\mat{P}_{m,j} }^{-1} \vec{g},
-% \end{align}
-% where $\vec{\mu}'_{i+1}$ denotes the transpose of $\vec{\mu}_{i+1}$, and $\vec{\mu}_{i+1} = [0\dots,0,1,0,\dots,0]$ with only $(i+1)$-th element as $1$; the $i$-th element of $\vec{g}$ denotes the cost of server as $q_{m,j}(i)$ for $i$-th stage.
 %----------------------------------------------------------------------------------------%
 
 \subsection{The Distributed Algorithm}
-% [abandon; previous with uniform arrival]
-% The approximate Bellman's equation under baseline policy is denoted as:
-% \begin{align}
-%     \min_{\Policy(\Stat_i)}& \sum_{\Obsv^{(s)}(i+1)} \Pr\{\Obsv^{(s)}(i+1)|\Obsv^{(s)}(i), \Obsv^{(p)}(i), \Policy(\Stat_i)\}
-%     \nonumber\\
-%     \times \Bracket{
-%         & \sum_{m\in\esSet}\sum_{j\in\jSpace} J\Paren{Q_{m,j}(i+1)}
-%         +
-%         \nonumber\\
-%         & \underbrace{\sum_{\Obsv^{(p)}(i+1)} \Pr\{\Obsv^{(p)}(i+1)|\Policy(\Stat_i)\}}_{\text{=1}}
-%         \cdot \underbrace{\tilde{W}^{(p)} \Paren{\Obsv^{(p)}(i+1)}}_{\text{constant}}
-%     },
-% \end{align}
-% and we have
-% \begin{align}
-%     \sum_{m\in\esSet}\sum_{j\in\jSpace} &\Pr\{Q_{m,j}(i+1)|Q_{m,j}(i), \Obsv^{(p)}(i), \Policy(\Stat_i)\} \mu'_{i+1}
-%         \nonumber\\
-%         &\Paren{ \mat{I}-\gamma\mat{P}_{m,j} }^{-1} \vec{g}
-% \end{align}
-
 The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
 \begin{align}
     \min_{\BaseLine(t_i)} W^{(AP)}_{\BaseLine(t_i)}\Paren{\mathcal{R}(t_{i+1})} + W^{(ES)}_{\BaseLine(t_i)}\Paren{\mathcal{Q}(t_{i+1})}
