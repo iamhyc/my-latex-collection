@@ -1,13 +1,12 @@
 \section{Problem Formulation}
 %----------------------------------------------------------------------------------------%
-In this section, we formulate the optimization problem under standard MDP framework, which aims at online optimizing dispatching decisions of all APs.
+In this section, we formulate the optimization problem under standard MDP framework, which aims at optimizing online dispatching decisions of all APs.
 Given that each AP makes decisions based on collected global state information, we describe the system state and policy from a global perspective, where each AP adopt its dispatching policy mapping from the global system state.
 
-However, due to the different distributions of \brdelay~for each AP, APs update their policy adoption at different time slots in an unknown order \fixit{which makes it impossible to optimize all the APs at once}.
-
-\fixit{
-    To overcome the gap, we have to distributed optimize the dispatching policy of each AP independently.
-    At the end of this section, we show that the solution for all AP nodes suffers from curse of dimensionality and a low-complexity solution is needed.
+Due to the different distributions of \brdelay~for each AP, APs update their policy at different time slots in an unknown order \delete{which makes it impossible to optimize all the APs at once}.
+Hence, to overcome the gap, we have to distributed optimize the dispatching policy of each AP.
+\delete{
+    At the end of this section, we show that the solution suffers from curse of dimensionality and a low-complexity solution is needed.
 }
 
 \subsection{System State and Dispatching Policy}
