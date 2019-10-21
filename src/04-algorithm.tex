@@ -17,21 +17,23 @@ The baseline dispatching policy is adopted to obtain an approximation of value f
 \end{align}
 where $\Pi_k(t_i) \define \set{\pi^{(k)}_{m,j}(t_{i}) | \forall m\in\esSet,\forall j\in\jSpace}$ denotes ($\forall k\in\apSet$) the action set resembling the definition in \ref{def_action}.
 
-According to the additive structure of cost function, we substitute the transition function plus value function in Eqn. \ref{sp_0} with two linearly divided sections as $W^{(AP)}(\mathcal{R}(t_{i+1}))$ and $W^{(ES)}(\mathcal{Q}(t_{i+1}))$ under baseline policy $\BaseLine(t_{i})$:
+According to the additive structure of cost function, we substitute the transition function plus value function in Eqn. \ref{sp_0} with two linearly divided sections as $W^{\AP}(\mathcal{R}(t_{i+1}))$ and $W^{\ES}(\mathcal{Q}(t_{i+1}))$ under baseline policy $\BaseLine(t_{i})$:
 \begin{align}
     &V(\Stat(t_{i})) = g(\Stat(t_{i})) +
     \nonumber\\
-    &~~~~~~\gamma \min_{\BaseLine(t_i)} \Bracket{ W^{(AP)}_{\BaseLine(t_i)}\Paren{\mathcal{R}(t_{i+1})} + W^{(ES)}_{\BaseLine(t_i)}\Paren{\mathcal{Q}(t_{i+1})} },
+    &~~~~~~\gamma \min_{\BaseLine(t_i)} \Bracket{ W^{\AP}_{\BaseLine(t_i)}\Paren{\mathcal{R}(t_{i+1})} + W^{\ES}_{\BaseLine(t_i)}\Paren{\mathcal{Q}(t_{i+1})} },
 \end{align}
-where $W^{(AP)}_{\BaseLine(t_i)}(\cdot)$ and $W^{(ES)}_{\BaseLine(t_i)}(\cdot)$ denote the split \emph{expected value function} over AP nodes and ES nodes respectively, $\Policy(\Stat(t_{i})) = \tilde{\Omega}(t_{i-1}), \BaseLine(t_i)$. The split expected value functions are defined as follows.
+where $W^{\AP}_{\BaseLine(t_i)}(\cdot)$ and $W^{\ES}_{\BaseLine(t_i)}(\cdot)$ denote the split \emph{expected value function} over AP nodes and ES nodes, respectively, $\Policy(\Stat(t_{i})) = \tilde{\Omega}(t_{i-1}), \BaseLine(t_i)$. The split expected value functions are defined as follows.
 \begin{align}
-    W^{(AP)}_{\BaseLine(t_i)}(\mathcal{R}(t_{i})) &\define \sum_{k\in\apSet}\sum_{m\in\esSet}\sum_{j\in\jSpace}
+    W^{\AP}_{\BaseLine(t_i)}\Paren{\mathcal{R}(t_{i})}
+        &\define \sum_{k\in\apSet}\sum_{m\in\esSet}\sum_{j\in\jSpace}
         \nonumber\\
         &~~~~\mathbb{E}_{\{\BaseLine(t_i), \vec{r}^{(k)}_{m,j}(t_{i})\}}\Bracket{
             \sum_{h=0}^{\infty} \gamma^{h} \Inorm{\vec{r}^{(k)}_{m,j}(t_{i+h})}
         }
     \\
-    W^{(ES)}_{\BaseLine(t_i)}(\mathcal{Q}(t_{i})) &\define \sum_{m\in\esSet}\sum_{j\in\jSpace}
+    W^{\ES}_{\BaseLine(t_i)}\Paren{\mathcal{Q}(t_{i})}
+        &\define \sum_{m\in\esSet}\sum_{j\in\jSpace}
         \nonumber\\
         &~~~~\mathbb{E}_{\{\BaseLine(t_i), Q_{m,j}(t_{i})\}}\Bracket{
             \sum_{h=0}^{\infty} \gamma^{h} l_{m,j}(t_{i+h})
@@ -40,9 +42,9 @@ where $W^{(AP)}_{\BaseLine(t_i)}(\cdot)$ and $W^{(ES)}_{\BaseLine(t_i)}(\cdot)$ 
         
 The decoupled value functions for AP and ES nodes is obtained with an approximated form under the baseline policy. We use the same baseline policy to evaluate both low-complexity policy performance in Eqn. \ref{sp_k}.
         
-The expected value function $W^{(AP)}(\mathcal{R}(t_{i+1}))$ under baseline $\vecG{\Pi}(t_{i})$ for AP nodes is easily obtained by calculating by the following equation:
+The expected value function $W^{\AP}(\mathcal{R}(t_{i+1}))$ under baseline $\vecG{\Pi}(t_{i})$ for AP nodes is easily obtained by calculating by the following equation:
 \begin{align}
-    &W^{(AP)}_{\BaseLine(t_i)}\Paren{\mathcal{R}(t_{i+1})} = \sum_{k\in\apSet}\sum_{m\in\esSet}\sum_{j\in\jSpace}
+    &W^{\AP}_{\BaseLine(t_i)}\Paren{\mathcal{R}(t_{i+1})} = \sum_{k\in\apSet}\sum_{m\in\esSet}\sum_{j\in\jSpace}
     \nonumber\\
     & \Inorm{
         \mathbb{E}\Bracket{
@@ -55,10 +57,10 @@ The expected value function $W^{(AP)}(\mathcal{R}(t_{i+1}))$ under baseline $\ve
 \end{align}
 where $\Inorm{\cdot}$ denotes the sum of absolute value of each entry of the vector, and $\mathbb[\cdot]$ over the vector of distributions gives out the vector of corresponding expectation. And the transition function $\Pr\{ \mathcal{R}(t_{i+1})|\mathcal{R}(t_{i}) \}$ is embedded with its distributions $\vecG{\Theta}^{(k)}_{m,j}(t_{i+1})$ in the equation.
 
-The expected value function $W^{(ES)}(\mathcal{Q}(t_{i+1}))$ under baseline $\vecG{\Pi}(t_{i})$ for ES nodes is little complex compared to Eqn. \ref{w_ap}.
+The expected value function $W^{\ES}(\mathcal{Q}(t_{i+1}))$ under baseline $\vecG{\Pi}(t_{i})$ for ES nodes is little complex compared to Eqn. \ref{w_ap}.
 The ES node transition is affected with both arrival process under dispatching policy and last queue state, and we reduce the states expression by taking average over the uploading process together with the transition function expression.
 \begin{align}
-    &W^{(ES)}_{\BaseLine(t_i)}\Paren{\mathcal{Q}(t_{i+1})} %\define \mathbb{E}_{\Pi}[\sum_{h=0}^{\infty} \gamma^{h} l_{m,j}(t_{i+h+1})]
+    &W^{\ES}_{\BaseLine(t_i)}\Paren{\mathcal{Q}(t_{i+1})} %\define \mathbb{E}_{\Pi}[\sum_{h=0}^{\infty} \gamma^{h} l_{m,j}(t_{i+h+1})]
     \nonumber\\
     =& \sum_{m,j}\sum_{h=0,\dots,\frac{\Xi}{T}} \gamma^{h} \mathbb{E}[ l_{m,j}(t_{i+h+1}) ]
     \nonumber\\
@@ -82,7 +84,7 @@ $\tilde{\vecG{\beta}}$ is the arrival distribution under baseline policy $\Pi(t_
 \subsection{The Distributed Algorithm}
 The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
 \begin{align}
-    \min_{\BaseLine(t_i)} W^{(AP)}_{\BaseLine(t_i)}\Paren{\mathcal{R}(t_{i+1})} + W^{(ES)}_{\BaseLine(t_i)}\Paren{\mathcal{Q}(t_{i+1})}
+    \min_{\BaseLine(t_i)} W^{\AP}_{\BaseLine(t_i)}\Paren{\mathcal{R}(t_{i+1})} + W^{\ES}_{\BaseLine(t_i)}\Paren{\mathcal{Q}(t_{i+1})}
     \label{eqn_opt}
 \end{align}
 

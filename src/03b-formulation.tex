@@ -3,15 +3,15 @@
 In this section, we formulate the optimization problem under standard MDP framework, which aims at optimizing online dispatching decisions of all APs.
 Given that each AP makes decisions based on collected global state information, we describe the system state and policy from a global perspective, where each AP adopt its dispatching policy mapping from the collected system information.
 Due to the different distributions of \brdelay~for each AP, APs use the stale policy in one interval firstly, and then update their policy at different time slots in an unknown order.
-\fixit{
-    At the end of this section, we show that the solution suffers from curse of dimensionality and a low-complexity solution is needed.
-}
+Therefore, we further decouple the global problem into \fixit{$K$-sub MDP-like problems} to cater for the real situations how the system state is updated for each AP.
+At the end of this section, we show that the solution suffers from curse of dimensionality and a low-complexity solution is needed.
 
 \subsection{System State and Dispatching Policy}
 The system state is selected from the global perspective based on the broadcast information.
 We consider all the APs maintain the same global information, which is collected and updated by broadcast at the beginning of each interval.
 As each AP would update its dispatching policy based on the latest broadcast information, the \brdelay{s} in each interval is also taken as a part of state information.
-The \brdelay~relative to the broadcast points and time points for policy update is depicted in Fig. \ref{fig:brd-trans}.
+The relationship between \brdelay and the policy update time points for different APs is depicted in Fig. \ref{fig:brd-trans}.
+The \brdelay~relative to the broadcast points and time points for policy update is depicted in 
 \begin{definition}[System State]
     The system state at $i$-th \brpoint~is denoted as follows.
     \begin{align}
@@ -29,36 +29,39 @@ The \brdelay~relative to the broadcast points and time points for policy update 
     \label{fig:brd-trans}
 \end{figure}
 
-
-\fixit{
-    Given the fact that AP nodes would only update their own global information only after \brdelay in each broadcast interval, the state and policy in formulated MDP problem are actually composed of both stale and updated information due to \brdelay.
-    Based on the two stages of global broadcast information illustrated in system state, the compounded global-wise policy of all AP nodes is defined as follows.
-}
-\begin{definition}[Compounded Dispatching Policy]
-    The compounded dispatching policy $\Policy(\Stat(t_{i}))$ over $\Stat(t_{i})$ which is defined with two-stage broadcasting information which is given as follows.
+Based on the two phases of global broadcast information illustrated in system state, the global policy of all AP nodes is defined as follows.
+\begin{definition}[Dispatching Policy]
+    The compounded dispatching policy $\Policy(\Stat(t_{i}))$ over $\Stat(t_{i})$ which is defined with two phases broadcasting information which is given as follows.
     \begin{align}
-        \Policy\Paren{\Stat(t_{i})} \define \Bracket{
-            \tilde{\Policy}(\Obsv(t_{i})), \tilde{\Policy}(\Obsv(t_{i-1}))
+        \Policy\Paren{\Stat(t_{i})} \define \Brace{
+            \Omega_{1}\Paren{\Stat(t_{i})}, \dots, \Omega_{K}\Paren{\Stat(t_{i})}
         },
     \end{align}
     where
-    $\tilde{\Policy}(\Obsv(t_{i})) \define [\tilde{\Omega}_{1}(\Obsv(t_{i})), \dots, \tilde{\Omega}'_{K}(\Obsv(t_{i}))]$.
-    The policy mapping over system state is further decoupled onto the two-stage broadcast information.
-
-    Furthermore,
-    $\tilde{\Omega}_{k}(\Obsv(t_{i}))$ in $\tilde{\Policy}(\Obsv(t_{i}))$
-    denotes the local policy mapping over $\Obsv(t_{i})$ for $k$-th AP ($\forall k\in\apSet$), i.e. $k$-th AP would change its policy from $\tilde{\Omega}_{k}(\Obsv(t_{i-1}))$ to $\tilde{\Omega}_{k}(\Obsv(t_{i}))$ when receiving $\Obsv(t_{i})$.
-    The explicit definition is given as follows.
+    $\Omega_{k}(\Stat(t_{i}))$ denotes the independent policy for $k$-th AP ($\forall k\in\apSet$), whose definition is given as follows.
+    \begin{align}
+        \Omega_{k}\Paren{\Stat(t_{i})} \define
+        \begin{cases}
+            \tilde{\Omega}_{k}( \Obsv(t_{i-1}) ), &n < D_{k}(t_{i})
+            \\
+            \tilde{\Omega}_{k}( \Obsv(t_{i}) ), &n \geq D_{k}(t_{i})
+        \end{cases},
+    \end{align}
+    where $n$ denotes the index of time slot in the $i$-th interval, i.e. the $k$-th AP would adopt two phases policy in $i$-th interval with $\tilde{\Omega}_{k}(\Obsv(t_{i-1}))$ before receiving the whole broadcast information $\Obsv(t_{i})$ and $\tilde{\Omega}_{k}(\Obsv(t_{i}))$ afterwards.
+    The explicit definition for $\tilde{\Omega}_{k}( \Obsv(t_{i}) )$ is given as follows.
     \begin{align}
         &\tilde{\Omega}_{k}\Paren{\Obsv(t_{i})} \define \set{\omega_{k,j}(t_{i})|\forall m\in\esSet, j\in\jSpace}
         ~(\forall k\in\apSet),
         \label{def_action}
     \end{align}
     where $\omega_{k,j}(t_{i})$ denotes the deterministic dispatching policy that: when $k$-th AP with information $\Obsv(t_{i})$, it would then upload $j$-type job to $m$-th edge server if and only if $\omega_{k,j}(t_{i})=m$.
+    
 \end{definition}
+The independent policy for each AP is defined over broadcast information and thus policy mapping over system state is further decoupled onto the two phases broadcast information, the stale one $\Obsv(t_{i-1})$ and the updated one $\Obsv(t_{i})$.
 
-We note that after the dispatching policy, the arrival distribution $A_{k,j}$ is further split onto different Edge Servers. The split arrival processes for $k$-th AP ($\forall k\in\apSet$) are still i.i.d Bernoulli distribution as
-$\tilde{\lambda}^{(k)}_{m,j}(t_{i}) \define \lambda_{k,j} I[\omega_{k,j}(t_i) = m]$ ($\forall m\in\esSet, j\in\jSpace$), where $I[\cdot]$ is indicator function.
+We note that after the dispatching policy, the arrival distribution $A_{k,j}$ is further split onto different Edge Servers.
+The split job arrival on the $k$-th AP ($\forall k\in\apSet$) are still i.i.d Bernoulli distributions with arrival probability as 
+$\tilde{\lambda}^{(k)}_{m,j}(t_{i}) \define \lambda_{k,j} I[\omega_{k,j}(t_i) = m]$ ($\forall m\in\esSet, j\in\jSpace$), where $I[\cdot]$ is the indicator function.
 %----------------------------------------------------------------------------------------%
 
 \subsection{The Optimization Problem}
@@ -66,41 +69,44 @@ We propose the jobs dispatching optimization problem with the target to minimize
 The \emph{average response time} is composed of uploading time from APs to edge servers, and queueing-and-service time on corresponding edge server. According to \emph{Little's Law}, the average response time of all jobs is equally as average number of jobs in system.
         
 \fixit{
-    Due to the intrinsic property of periodic information broadcasting, we collect the cost for number counting at the pace of broadcasting interval which could be seems as sampling of original process based on timeslot scale.
+    Due to the intrinsic property of periodic information broadcasting, we collect the cost for number counting at the pace of broadcasting interval which could be seen as a uniform sampling of original process based on timeslot scale.
 }
-Besides the cost counted for job response time, we furthermore add penalty on jobs submission over its capacity limit when the over-limited jobs will be rejected at the end of current broadcast interval.
-Therefore, the cost function of this problem is given as follows.
+Besides the cost counted for job response time, we further add penalty on jobs rejection on edge servers when the job submission is over the queue capacity limit. The penalty will be counted at the end of each broadcast interval.
+The cost function of this problem is given as follows.
 \begin{align}
-    g\Paren{\Stat(t_{i}), \Policy(\Stat(t_{i}))} \define&
-    \sum_{k\in\apSet}\sum_{m\in\esSet}\sum_{j\in\jSpace} \Inorm{\vec{r}^{(k)}_{m,j}(t_{i})} + \sum_{m\in\esSet}\sum_{j\in\jSpace}
-    \nonumber\\
-    &\Brace{
-        l_{m,j}(t_{i}) + \beta \mat{I}[l_{m,j}(t_{i})=L_Q]
-    },
+    g\Paren{\Stat(t_{i}), \Policy(\Stat(t_{i}))} \define
+        &\sum_{k\in\apSet} \sum_{m\in\esSet} \sum_{j\in\jSpace} \sum_{\xi=0}^{\Xi} R^{(k)}_{m,j,\xi}(t_{i})~+
+        \nonumber\\
+        &\sum_{m\in\esSet} \sum_{j\in\jSpace} \Brace{L_{m,j}(t_{i}) + \beta \cdot \mat{I}[L_{m,j}(t_{i})=L_Q]},
 \end{align}
-where $\Inorm{\vec{r}^{(k)}_{m,j}(t_i)}$ denotes the $L^1$-norm of vector $\vec{r}^{(k)}_{m}$, i.e. the sum up of absolute value of each entry; $\beta$ is weight factor for full-queue penalty.
+where $\beta$ is the weight factor for job rejection penalty ($\beta \in (0,1)$).
         
-Our distributed optimization problem definition is given as follows.
-\begin{problem}[Original Cooperative Job Dispatching Problem]
+The definition for global optimization problem is given as follows.
+\begin{problem}[Global Cooperative Job Dispatching Problem]
     \begin{gather}
         \min_{\Policy} \lim_{T \to \infty}
             \mathbb{E}_{\Policy}
                 \Bracket{\sum_{i=1}^{T} \gamma^{i-1} g\Paren{\Stat(t_{i}), \Policy(\Stat(t_{i}))}|\Stat(t_1)},
     \end{gather}
     where the cost is collected with a discount factor $\gamma$.
-    \delete{and $\Policy$ is optimized policy globally always with full-state information available.}
 \end{problem}
-According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
+\delete{and $\Policy$ is optimized policy globally always with full-state information available.}
+\noindent According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
 \begin{align}
-    V(\Stat(t_i)) = &g(\Stat(t_i)) + \gamma \min_{\Policy(\Stat(t_{i}))}
+    V\Paren{\Stat(t_{i})} =~&g\Paren{\Stat(t_{i})} + \gamma \min_{\Policy(\Stat(t_{i}))}
         \nonumber\\
-        & \sum_{\Stat(t_{i+1})} \Pr\{ \Stat(t_{i+1})|\Stat(t_{i}), \Policy(\Stat(t_{i})) \} \cdot V(\Stat(t_{i+1})).
+        &\sum_{\Stat(t_{i+1})} \Pr\Brace{ \Stat(t_{i+1})|\Stat(t_{i}), \Policy(\Stat(t_{i})) } \cdot V\Paren{\Stat(t_{i+1})}.
     \label{sp_0}
 \end{align}
 
-However, the state information is actually partial-presence as $\Obsv(t_{i-1})$ at $t_i$ while $\Obsv(t_{i})$ would be available only after the random \emph{Update Latency} for each AP nodes.
-This problem structure results into separated different acknowledge on when the policy should be updated for AP nodes. Thus we decouple the original problem into $K$-sub \hl{MDP-like problems} that update $\Policy$ in an iterative way which could at least converges to a sub-optimal solution.
-        
+However, the state is actually partially presented as $\Obsv(t_{i-1})$ and $\Obsv(t_{i})$ separated by the \brdelay, which discourages optimize $\Policy(\Stat(t_{i}))$ at one time.
+Moreover, \brdelay~is different for each AP which discourages optimize components of $\Policy\Paren{\Stat(t_{i})}$ all at once.
+\fixit{
+    This problem structure results into separated different acknowledge on when the policy should be updated for AP nodes. Thus we decouple the original problem into $K$-sub \fixit{MDP-like problems} that update $\Policy$ in an iterative way which could at least converges to a sub-optimal solution.
+}
+
+We leverage the above global problem structure, and develop \fixit{$K$-sub MDP-like problems} where the APs update their own policy  in a polling manner.
+The polling manner implies that when one AP carries out policy update, the other APs keep on with their last policy and don't change.
 For example, the $k$-th AP would update its policy in $k$-th sub-problem ($\forall k\in\apSet$) while the other AP nodes would keep with the previous policy. The corresponding Bellman's Equation is given as follows.
 \begin{align}
     &V(\Stat(t_{i})) = g(\Stat_{i}) 
@@ -110,7 +116,7 @@ For example, the $k$-th AP would update its policy in $k$-th sub-problem ($\fora
 \end{align}
 where $\tilde{\Omega}_{k}(\Obsv(t_{i}))$ is the component of $\Policy(\Obsv(t_{i}))$.
 The performance improvement of next policy update is guaranteed by solution of Bellman's Equation with fixed policies from previous update.
-The details and proof will be given in the following algorithm section.
+The details and proof will be given in the following algorithm section.        
 
 To better analyze the optimization structure of the sub-problem, we decouple the transition function. The expression of transition function in Eqn. \ref{sp_k} is given as follows.
 \begin{lemma}[Transition Function Decoupling]
