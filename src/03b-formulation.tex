@@ -3,15 +3,14 @@
 In this section, we formulate the optimization problem under standard MDP framework, which aims at optimizing online dispatching decisions of all APs.
 Given that each AP makes decisions based on collected global state information, we describe the system state and policy from a global perspective, where each AP adopt its dispatching policy mapping from the collected system information.
 Due to the different distributions of \brdelay~for each AP, APs use the stale policy in one interval firstly, and then update their policy at different time slots in an unknown order.
-Therefore, we further decouple the global problem into \fixit{$K$-sub MDP-like problems} to cater for the real situations how the system state is updated for each AP.
+Therefore, we further decouple the global problem into \fixit{$K$ sub-problems} to cater for the real decentralized situations \delete{how the system state is updated for each AP}.
 At the end of this section, we show that the solution suffers from curse of dimensionality and a low-complexity solution is needed.
 
 \subsection{System State and Dispatching Policy}
-The system state is selected from the global perspective based on the broadcast information.
+The system state is selected from the global perspective.
 We consider all the APs maintain the same global information, which is collected and updated by broadcast at the beginning of each interval.
 As each AP would update its dispatching policy based on the latest broadcast information, the \brdelay{s} in each interval is also taken as a part of state information.
-The relationship between \brdelay and the policy update time points for different APs is depicted in Fig. \ref{fig:brd-trans}.
-The \brdelay~relative to the broadcast points and time points for policy update is depicted in 
+The relationship between \brdelay~and the policy update time points for different APs is depicted in Fig. \ref{fig:brd-trans}.
 \begin{definition}[System State]
     The system state at $i$-th \brpoint~is denoted as follows.
     \begin{align}
@@ -19,7 +18,7 @@ The \brdelay~relative to the broadcast points and time points for policy update 
             \Obsv(t_{i-1}), \Obsv({t_{i}}), \mathcal{D}(t_{i})
         },
     \end{align}
-    where $\mathcal{D}(t_{i}) \define \set{D_{1}(t_{i}), \dots, D_{K}(t_{i})}$ denotes the \brdelay for each AP, $\Obsv(t_{i})$ denotes updated information after receiving the whole broadcasting information, and $\Obsv(t_{i-1})$ denotes the stale information which impact on the policy adopted in current interval ($i=1,2,\dots$).
+    where $\mathcal{D}(t_{i}) \define \set{D_{1}(t_{i}), \dots, D_{K}(t_{i})}$ denotes the \brdelay~for each AP, $\Obsv(t_{i})$ denotes updated information after receiving the whole broadcasting information, and $\Obsv(t_{i-1})$ denotes the stale information which impact on the policy adopted in current interval ($i=1,2,\dots$).
 \end{definition}
 
 \begin{figure}[ht]
@@ -29,7 +28,7 @@ The \brdelay~relative to the broadcast points and time points for policy update 
     \label{fig:brd-trans}
 \end{figure}
 
-Based on the two phases of global broadcast information illustrated in system state, the global policy of all AP nodes is defined as follows.
+Based on the two phases of global broadcast information illustrated in system state, the global compounded policy of all APs is defined as follows.
 \begin{definition}[Compounded Dispatching Policy]
     The compounded dispatching policy $\Policy(\Stat(t_{i}))$ over $\Stat(t_{i})$ which is defined with two phases broadcasting information which is given as follows.
     \begin{align}
@@ -127,8 +126,10 @@ The corresponding Bellman's Equation for the $k$-th sub-problem is given as foll
     Assume that we solve the sub-problems following the order of index of AP set, and substitute the solution to the $k$-th problem to the $(k+1)$-th problem ($\forall k\in\apSet$).
     Apparently, we could achieve a sub-optimal solution of all APs which is upper bounded by the solution to the original problem.
 \end{remark}
-The performance improvement of next policy update is guaranteed by solution of Bellman's Equation with fixed policies from previous update.
-The details and proof will be given in the following algorithm section.        
+\fixit{
+    The performance improvement of next policy update is guaranteed by solution of Bellman's Equation with fixed policies from previous update.
+    The details and proof will be given in the following algorithm section.
+}     
 
 To better analyze the optimization structure of the sub-problem, we decouple the transition function. The expression of transition function in Eqn. \ref{sp_k} is given as follows.
 \begin{lemma}[Transition Function Decoupling]
