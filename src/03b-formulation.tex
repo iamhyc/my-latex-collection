@@ -30,7 +30,7 @@ The \brdelay~relative to the broadcast points and time points for policy update 
 \end{figure}
 
 Based on the two phases of global broadcast information illustrated in system state, the global policy of all AP nodes is defined as follows.
-\begin{definition}[Dispatching Policy]
+\begin{definition}[Compounded Dispatching Policy]
     The compounded dispatching policy $\Policy(\Stat(t_{i}))$ over $\Stat(t_{i})$ which is defined with two phases broadcasting information which is given as follows.
     \begin{align}
         \Policy\Paren{\Stat(t_{i})} \define \Brace{
@@ -82,16 +82,16 @@ The cost function of this problem is given as follows.
 where $\beta$ is the weight factor for job rejection penalty ($\beta \in (0,1)$).
         
 The definition for global optimization problem is given as follows.
-\begin{problem}[Global Cooperative Job Dispatching Problem]
-    \begin{gather}
+\begin{problem}[Global Job Dispatching Problem]
+    \begin{align}
         \min_{\Policy} \lim_{T \to \infty}
             \mathbb{E}_{\Policy}
                 \Bracket{\sum_{i=1}^{T} \gamma^{i-1} g\Paren{\Stat(t_{i}), \Policy(\Stat(t_{i}))}|\Stat(t_1)},
-    \end{gather}
+    \end{align}
     where the cost is collected with a discount factor $\gamma$.
 \end{problem}
 \delete{and $\Policy$ is optimized policy globally always with full-state information available.}
-\noindent According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
+According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
 \begin{align}
     V\Paren{\Stat(t_{i})} =~&g\Paren{\Stat(t_{i})} + \gamma \min_{\Policy(\Stat(t_{i}))}
         \nonumber\\
@@ -99,22 +99,34 @@ The definition for global optimization problem is given as follows.
     \label{sp_0}
 \end{align}
 
-However, the state is actually partially presented as $\Obsv(t_{i-1})$ and $\Obsv(t_{i})$ separated by the \brdelay, which discourages optimize $\Policy(\Stat(t_{i}))$ at one time.
-Moreover, \brdelay~is different for each AP which discourages optimize components of $\Policy\Paren{\Stat(t_{i})}$ all at once.
-\fixit{
-    This problem structure results into separated different acknowledge on when the policy should be updated for AP nodes. Thus we decouple the original problem into $K$-sub \fixit{MDP-like problems} that update $\Policy$ in an iterative way which could at least converges to a sub-optimal solution.
-}
+However, in practice, the system state is actually partially presented as $\Obsv(t_{i-1})$ and $\Obsv(t_{i})$ separated by the \brdelay, which is different for each AP in each broadcast interval.
+This results into isolated acknowledge for each AP on the compounded policy and transition function, because the delay information could not be shared among APs.
+Thus the joint optimization over the components of $\Policy(\Stat(t_{i}))$ is impossible.
 
-We leverage the above global problem structure, and develop \fixit{$K$-sub MDP-like problems} where the APs update their own policy  in a polling manner.
-The polling manner implies that when one AP carries out policy update, the other APs keep on with their last policy and don't change.
-For example, the $k$-th AP would update its policy in $k$-th sub-problem ($\forall k\in\apSet$) while the other AP nodes would keep with the previous policy. The corresponding Bellman's Equation is given as follows.
+To overcome the gap, we leverage the above global problem structure, but develop \fixit{$K$-sub MDP problems} where the APs update their own policy independently in a decentralized manner.
+The decentralized manner implies each AP only update the policy of itself, and consider other APs' policy fixed in the environment.
+The decentralized sub-problem formulation is given as follows.
+\begin{problem}[Decentralized Cooperative Job Dispatching sub-Problem]
+    We have total $K$ sub-problems and the definition for the $k$-th sub-problem is given as follows ($\forall k\in\apSet$).
+    \begin{align}
+        \min_{\tilde{\Omega}_k} \lim_{T \to \infty}
+            \mathbb{E}_{\Policy'_{k}}
+                \Bracket{\sum_{i=1}^{T} \gamma^{i-1} g\Paren{\Stat(t_{i}), \Policy'_{k}(\Stat(t_{i}))}|\Stat(t_1)},
+    \end{align}
+    where $\Policy'_{k}(\Stat(t_{i})) \define \set{\Omega_{1}, \dots, \Omega_{k}(\Stat(t_{i})), \dots, \Omega_{K}}$.
+\end{problem}
+The corresponding Bellman's Equation for the $k$-th sub-problem is given as follows.
 \begin{align}
-    &V(\Stat(t_{i})) = g(\Stat_{i}) 
+    &V\Paren{\Stat(t_{i})} = g\Paren{\Stat(t_{i})}
     \nonumber\\
-    &~~~~+ \gamma \min_{\tilde{\Omega}_{k}(\Obsv(t_{i}))} \Pr\{ \Obsv(t_{i+1})|\Obsv(t_{i}), \Policy(\Stat(t_{i})) \} \cdot V(\Stat(t_{i+1})),
+    &~~~~+ \gamma \min_{\tilde{\Omega}_{k}(\Obsv(t_{i}))} \Brace{ \Obsv(t_{i+1})|\Obsv(t_{i}), \Policy'_{k}(\Stat(t_{i})), D_{k}(t_{i}) } \cdot V\Paren{\Stat(t_{i+1})}.
     \label{sp_k}
 \end{align}
-where $\tilde{\Omega}_{k}(\Obsv(t_{i}))$ is the component of $\Policy(\Obsv(t_{i}))$.
+% $\tilde{\Omega}_{k}(\Obsv(t_{i}))$ is the component of $\Policy(\Obsv(t_{i}))$.
+\begin{remark}
+    Assume that we solve the sub-problems following the order of index of AP set, and substitute the solution to the $k$-th problem to the $(k+1)$-th problem ($\forall k\in\apSet$).
+    Apparently, we could achieve a sub-optimal solution of all APs which is upper bounded by the solution to the original problem.
+\end{remark}
 The performance improvement of next policy update is guaranteed by solution of Bellman's Equation with fixed policies from previous update.
 The details and proof will be given in the following algorithm section.        
 
@@ -123,17 +135,17 @@ To better analyze the optimization structure of the sub-problem, we decouple the
     The transition function in Bellman's equation could be decoupled on states of APs and edge servers, which will facilitate the approximated value function expression in the following section.
     The decoupled transition function for Eqn. \ref{sp_k} is given as follows.
     \begin{align}
-        & \Pr\{\Obsv(t_{i+1})|\Obsv(t_{i}), \Policy(\Stat(t_{i}))\}
+        & \Pr\{\Obsv(t_{i+1})|\Obsv(t_{i}), \Policy(\Stat(t_{i})), D_{k}(t_{i})\}
         \nonumber\\
         =& \prod_{k\in\apSet}\prod_{m\in\esSet}\prod_{j\in\jSpace}
                 \Pr\Brace{
-                    \vec{r}^{(k)}_{m,j}(t_{i+1})|\vec{r}^{(k)}_{m,j}(t_{i}), \Policy(\Stat(t_{i}))
+                    \vec{r}^{(k)}_{m,j}(t_{i+1})|\vec{r}^{(k)}_{m,j}(t_{i}), \Policy(\Stat(t_{i})), D_{k}(t_{i})
                 }
                 \times  
             \nonumber\\
             & \prod_{m\in\esSet}\prod_{j\in\jSpace}
                 \Pr\Brace{
-                    Q_{m,j}(t_{i+1})|Q_{m,j}(t_{i}), \mathcal{R}(t_{i}), \Policy(\Stat(t_{i}))
+                    Q_{m,j}(t_{i+1})|Q_{m,j}(t_{i}), \mathcal{R}(t_{i}), \Policy(\Stat(t_{i})), D_{k}(t_{i})
                 }.
     \end{align}
 \end{lemma}

@@ -7,6 +7,11 @@
     The delay-aware algorithm proposed allow each AP update their policy iteratively, while they all solve the same MDP problem under different control policy.
     This algorithm would lead to performance improvement guarantee with global optimality as upper bound.
 }
+
+\fixit{
+    there is at most one AP updates its policy at one time while the other APs keep on with the last policy.
+    For example, in the $i$-th broadcast interval, the $k$-th AP would update its policy $\tilde{\Omega}_{k}(\Obsv(t_{i}))$ according to the $k$-th sub-problem while the other AP nodes would keep with the previous policy $\tilde{\Omega}_{k'}(\Obsv(t_{i-1}))$($\forall k' \neq k \in\apSet$).
+}
 In this section, we introduce a heuristic dispatching algorithm as the baseline policy, whose value function could be derived analytically.
 Then the right-hand side of Bellman's Equation turns into simple minimization problem over the control policy. The sub-optimal policy could be obtained by evaluation of approximated value function on right-hand side of Bellman's Equation with one-step iteration. And thus the approximated value function is the upper bound of the original optimal policy.
 
