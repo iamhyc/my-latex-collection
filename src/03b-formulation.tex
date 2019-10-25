@@ -28,7 +28,7 @@ The relationship between \brdelay~and the policy update time points for differen
     \label{fig:brd-trans}
 \end{figure}
 
-Based on the two phases of global broadcast information illustrated in system state, the global compounded policy of all APs is defined as follows.
+Based on the two phases of global broadcast information in the system state, the global compounded policy of all APs is defined as follows.
 \begin{definition}[Compounded Dispatching Policy]
     The compounded dispatching policy $\Policy(\Stat(t_{i}))$ over $\Stat(t_{i})$ which is defined with two phases broadcasting information which is given as follows.
     \begin{align}
@@ -67,14 +67,14 @@ $\tilde{\lambda}^{(k)}_{m,j}(t_{i}) \define \lambda_{k,j} I[\omega_{k,j}(t_i) = 
 We propose the jobs dispatching optimization problem with the target to minimize \emph{average response time} of all offloaded jobs in MEC system.
 The \emph{average response time} is composed of uploading time from APs to edge servers, and queueing-and-service time on corresponding edge server. According to \emph{Little's Law}, the average response time of all jobs is equally as average number of jobs in system.
         
-\fixit{
-    Due to the intrinsic property of periodic information broadcasting, we collect the cost for number counting at the pace of broadcasting interval which could be seen as a uniform sampling of original process based on timeslot scale.
+\accept{
+    Due to the periodic information broadcasting, we collect the cost for counting numbers at the pace of broadcasting interval which could be seen as a uniform sampling of original process based on timeslot scale.
 }
 Besides the cost counted for job response time, we further add penalty on jobs rejection on edge servers when the job submission is over the queue capacity limit. The penalty will be counted at the end of each broadcast interval.
 The cost function of this problem is given as follows.
 \begin{align}
     g\Paren{\Stat(t_{i}), \Policy(\Stat(t_{i}))} \define
-        &\sum_{k\in\apSet} \sum_{m\in\esSet} \sum_{j\in\jSpace} \sum_{\xi=0}^{\Xi} R^{(k)}_{m,j,\xi}(t_{i})~+
+        &\sum_{k\in\apSet} \sum_{m\in\esSet} \sum_{j\in\jSpace} \vec{R}^{(k)}_{m,j,\xi}(t_{i})~+
         \nonumber\\
         &\sum_{m\in\esSet} \sum_{j\in\jSpace} \Brace{L_{m,j}(t_{i}) + \beta \cdot \mat{I}[L_{m,j}(t_{i})=L_Q]},
 \end{align}
@@ -102,7 +102,7 @@ However, in practice, the system state is actually partially presented as $\Obsv
 This results into isolated acknowledge for each AP on the compounded policy and transition function, because the delay information could not be shared among APs.
 Thus the joint optimization over the components of $\Policy(\Stat(t_{i}))$ is impossible.
 
-To overcome the gap, we leverage the above global problem structure, but develop \fixit{$K$-sub MDP problems} where the APs update their own policy independently in a decentralized manner.
+To overcome the gap, we leverage the above global problem structure, but develop \fixit{$K$ sub-problems} where the APs update their own policy independently in a decentralized manner.
 The decentralized manner implies each AP only update the policy of itself, and consider other APs' policy fixed in the environment.
 The decentralized sub-problem formulation is given as follows.
 \begin{problem}[Decentralized Cooperative Job Dispatching sub-Problem]
@@ -118,35 +118,34 @@ The corresponding Bellman's Equation for the $k$-th sub-problem is given as foll
 \begin{align}
     &V\Paren{\Stat(t_{i})} = g\Paren{\Stat(t_{i})}
     \nonumber\\
-    &~~~~+ \gamma \min_{\tilde{\Omega}_{k}(\Obsv(t_{i}))} \Brace{ \Obsv(t_{i+1})|\Obsv(t_{i}), \Policy'_{k}(\Stat(t_{i})), D_{k}(t_{i}) } \cdot V\Paren{\Stat(t_{i+1})}.
+    &~~~~+ \gamma \min_{\tilde{\Omega}_{k}(\Obsv(t_{i}))} \Pr\Brace{ \Stat(t_{i+1})|\Stat(t_{i}), \Policy'_{k}(\Stat(t_{i})) } \cdot V\Paren{\Stat(t_{i+1})}.
     \label{sp_k}
 \end{align}
 % $\tilde{\Omega}_{k}(\Obsv(t_{i}))$ is the component of $\Policy(\Obsv(t_{i}))$.
 \begin{remark}
-    Assume that we solve the sub-problems following the order of index of AP set, and substitute the solution to the $k$-th problem to the $(k+1)$-th problem ($\forall k\in\apSet$).
+    Assume that we solve the sub-problems following the order of index of AP set, and then substitute the solution to the $k$-th problem to the $(k+1)$-th problem ($\forall k\in\apSet$).
     Apparently, we could achieve a sub-optimal solution of all APs which is upper bounded by the solution to the original problem.
 \end{remark}
-\fixit{
-    The performance improvement of next policy update is guaranteed by solution of Bellman's Equation with fixed policies from previous update.
-    The details and proof will be given in the following algorithm section.
-}     
 
 To better analyze the optimization structure of the sub-problem, we decouple the transition function. The expression of transition function in Eqn. \ref{sp_k} is given as follows.
 \begin{lemma}[Transition Function Decoupling]
     The transition function in Bellman's equation could be decoupled on states of APs and edge servers, which will facilitate the approximated value function expression in the following section.
     The decoupled transition function for Eqn. \ref{sp_k} is given as follows.
     \begin{align}
-        & \Pr\{\Obsv(t_{i+1})|\Obsv(t_{i}), \Policy(\Stat(t_{i})), D_{k}(t_{i})\}
+        & \Pr\Brace{ \Stat(t_{i+1})|\Stat(t_{i}), \Policy'_{k}(\Stat(t_{i})) }
+        \nonumber\\
+        =& \Pr\Brace{ \Obsv(t_{i+1})|\Obsv(t_{i}), \Policy'_{k}(\Stat(t_{i})), D_{k}(t_{i}) } \times \Pr\{\mathcal{D}(t_{i+1})\}
         \nonumber\\
         =& \prod_{k\in\apSet}\prod_{m\in\esSet}\prod_{j\in\jSpace}
                 \Pr\Brace{
-                    \vec{r}^{(k)}_{m,j}(t_{i+1})|\vec{r}^{(k)}_{m,j}(t_{i}), \Policy(\Stat(t_{i})), D_{k}(t_{i})
+                    \vec{R}^{(k)}_{m,j}(t_{i+1}) | \vec{R}^{(k)}_{m,j}(t_{i}),
+                    \Policy'_{k}(\Stat(t_{i})), D_{k}(t_{i})
                 }
                 \times  
             \nonumber\\
             & \prod_{m\in\esSet}\prod_{j\in\jSpace}
                 \Pr\Brace{
-                    Q_{m,j}(t_{i+1})|Q_{m,j}(t_{i}), \mathcal{R}(t_{i}), \Policy(\Stat(t_{i})), D_{k}(t_{i})
+                    Q_{m,j}(t_{i+1})|Q_{m,j}(t_{i}), \mathcal{R}(t_{i}), \Policy'_{k}(\Stat(t_{i})), D_{k}(t_{i})
                 }.
     \end{align}
 \end{lemma}
@@ -155,9 +154,15 @@ To better analyze the optimization structure of the sub-problem, we decouple the
 \end{proof}
 
 The first part denotes the state transition on AP.
-Denote as $\Pr\Brace{\vec{r}^{(k)}_{m,j}(t_{i+1})|\vec{r}^{(k)}_{m,j}(t_{i})} \sim \vecG{\Theta}^{(k)}_{m,j}(t_{i+1})$, where $\vecG{\Theta}^{(k)}_{m,j}(t_{i+1}) \define [\vecG{\theta}^{(k)}_{m,j,0}(t_{i+1}), \dots, \vecG{\theta}^{(k)}_{m,j,\Xi}(t_{i+1})]$.
+Denote as
+\begin{align}
+    \Pr\Brace{
+        \vec{R}^{(k)}_{m,j}(t_{i+1}) | \vec{R}^{(k)}_{m,j}(t_{i})
+    } \sim \vecG{\Theta}^{(k)}_{m,j}(t_{i+1}),
+\end{align}
+where $\vecG{\Theta}^{(k)}_{m,j}(t_{i+1}) \define [\vecG{\theta}^{(k)}_{m,j,0}(t_{i+1}), \dots, \vecG{\theta}^{(k)}_{m,j,\Xi}(t_{i+1})]$.
 Given that the uploading process could be depicted by the series of counters, we further have
-$\Pr\Brace{r^{(k)}_{m,j,\xi+1}(t_{i+1})|r^{(k)}_{m,j,\xi}(t_{i})} \sim \vecG{\theta}^{(k)}_{m,j,\xi}(t_{i+1})$ ($\forall \xi=0,\dots,\Xi$).
+$\Pr\Brace{R^{(k)}_{m,j,\xi+1}(t_{i+1})|R^{(k)}_{m,j,\xi}(t_{i})} \sim \vecG{\theta}^{(k)}_{m,j,\xi}(t_{i+1})$ ($\forall \xi=0,\dots,\Xi$).
 Then we could express the distribution with a transition matrix as:
 \begin{align}
     \vecG{\Theta}^{(k)}_{m,j}(t_{i+1}) \define \hat{\Gamma}^{(k)}_{m,j}\Paren{\Policy(\Stat(t_i)) }\vecG{\Theta}^{(k)}_{m,j}(t_{i}),
@@ -187,7 +192,11 @@ where $p^{(k)}_{m,j,\xi} \define \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\x
 And $\hat{\Gamma}^{(k)}_{m,j}$ is an off-diagonal block matrix plus the horizontal part w.r.t $\vecG{\theta}^{(k)}_{m,j,0}$, with other entries as zero.
 
 The second part denotes the state transition on edge servers.
-Denote $\Pr\Brace{ Q_{m,j}(t_{i+1})|Q_{m,j}(t_{i}), \mathcal{R}(t_{i}) } \sim \vecG{\nu}_{m,j}(t_i)$. We notice that the job arrival distribution $\vecG{\beta}_{m,j}(t_{i})$ is given by $\mathcal{R}(t_{i})$, and the departure rate in one slot is deterministic as $1/N$.
+Denote
+\begin{align}
+    \Pr\Brace{ Q_{m,j}(t_{i+1})|Q_{m,j}(t_{i}), \mathcal{R}(t_{i}) } \sim \vecG{\nu}_{m,j}(t_{i}).
+\end{align}
+We notice that the job arrival distribution $\vecG{\beta}_{m,j}(t_{i})$ is given by $\mathcal{R}(t_{i})$, and the departure rate in one slot is deterministic as $1/N$.
 Thus the expectation of $\vecG{\beta}$ would be always far more smaller than $1$ as composed of all $K$ AP nodes.
 We take approximation on $\vec{\beta}$ as Bernoulli distribution in each time slot that $\vecG{\beta}(t_{i,n}) \triangleq [\beta^{(0)}_{m,j}(t_{i,n}), \beta^{(1)}_{m,j}(t_{i,n})]$, where
 \begin{align}
@@ -220,5 +229,6 @@ And we could obtain the time-variant transition matrix composed of multiple tran
 % \end{align}
 
 However, after the state decomposition, the action space would still be exponentially expanded with respect to the number of APs and edge servers. We could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity.
-So in next section, to alleviate curse of dimensionality, we introduce baseline dispatching policy to approximate the value function, and then carry out one-step iteration to obtain a better value function approximation.
+And we have to come up with an algorithm which could solve all $K$ sub-problems to achieve a global solution.
+So in next section, to alleviate curse of dimensionality, we introduce baseline dispatching policy to approximate the value function, and then carry out one-step iteration in a polling manner to obtain a better value function approximation.
 %----------------------------------------------------------------------------------------%
