@@ -4,7 +4,7 @@ In this section, we formulate the optimization problem under standard MDP framew
 Given that each AP makes decisions based on collected global state information, we describe the system state and policy from a global perspective, where each AP adopt its dispatching policy mapping from the collected system information.
 Due to the different distributions of \brdelay~for each AP, APs use the stale policy in one interval firstly, and then update their policy at different time slots in an unknown order.
 Therefore, we further decouple the global problem into \fixit{$K$ sub-problems} to cater for the real decentralized situations \delete{how the system state is updated for each AP}.
-At the end of this section, we show that the solution suffers from curse of dimensionality and a low-complexity solution is needed.
+At the end of this section, we show that the solution of the parallel sub-problems suffers from curse of dimensionality and a low-complexity solution is needed.
 
 \subsection{System State and Dispatching Policy}
 The system state is selected from the global perspective.
@@ -18,7 +18,7 @@ The relationship between \brdelay~and the policy update time points for differen
             \Obsv(t_{i-1}), \Obsv({t_{i}}), \mathcal{D}(t_{i})
         },
     \end{align}
-    where $\mathcal{D}(t_{i}) \define \set{D_{1}(t_{i}), \dots, D_{K}(t_{i})}$ denotes the \brdelay~for each AP, $\Obsv(t_{i})$ denotes updated information after receiving the whole broadcasting information, and $\Obsv(t_{i-1})$ denotes the stale information which impact on the policy adopted in current interval ($i=1,2,\dots$).
+    where $\mathcal{D}(t_{i}) \define \set{D_{1}(t_{i}), \dots, D_{K}(t_{i})}$ denotes the \brdelay~for each AP, $\Obsv(t_{i})$ denotes updated information after receiving the whole broadcasting information, and $\Obsv(t_{i-1})$ denotes the stale information.
 \end{definition}
 
 \begin{figure}[ht]
@@ -47,13 +47,11 @@ Based on the two phases of global broadcast information in the system state, the
         \end{cases},
     \end{align}
     where $n$ denotes the index of time slot in the $i$-th interval.
-    
 \end{definition}
-The independent policy for each AP is defined over broadcast information and thus policy mapping over system state is further decoupled onto the two phases broadcast information, the stale one $\Obsv(t_{i-1})$ and the updated one $\Obsv(t_{i})$.
 
-We note that after the dispatching policy, the arrival distribution $A_{k,j}$ is further split onto different Edge Servers.
-The split job arrival on the $k$-th AP ($\forall k\in\apSet$) are still i.i.d Bernoulli distributions with arrival probability as 
-$\tilde{\lambda}^{(k)}_{m,j}(t_{i}) \define \lambda_{k,j} I[\omega_{k,j}(t_i) = m]$ ($\forall m\in\esSet, j\in\jSpace$), where $I[\cdot]$ is the indicator function.
+We note that with the dispatching policy given, the arrival distribution $A_{k,j}$ of the $j$-th job on the $k$-th AP ($\forall k\in\apSet, j\in\jSpace$) is further split onto different Edge Servers.
+The split job arrival distributions are still i.i.d Bernoulli distributions with arrival probability as 
+$\tilde{\lambda}^{(k)}_{m,j}(t_{i}) \define \lambda_{k,j} I[\omega_{k,j}(t_i) = m]$ ($\forall m\in\esSet$), where $I[\cdot]$ is the indicator function.
 %----------------------------------------------------------------------------------------%
 
 \subsection{The Optimization Problem}
@@ -91,13 +89,16 @@ According to \cite{sutton1998introduction}, the above problem could be solved by
     \label{sp_0}
 \end{align}
 
-However, in practice, the system state is actually partially presented as $\Obsv(t_{i-1})$ and $\Obsv(t_{i})$ separated by the \brdelay, which is different for each AP in each broadcast interval.
+However in practice, the system state is actually partially presented as $\Obsv(t_{i-1})$ and $\Obsv(t_{i})$ separated by the \brdelay, which is different for each AP in each broadcast interval.
 This results into isolated acknowledge for each AP on the compounded policy and transition function, because the delay information could not be shared among APs.
 Thus the joint optimization over the components of $\Policy(\Stat(t_{i}))$ is impossible.
 
-To overcome the gap, we leverage the above global problem structure, but develop \fixit{$K$ sub-problems} where the APs update their own policy independently in a decentralized manner.
-The decentralized manner implies each AP only update the policy of itself, and consider other APs' policy fixed in the environment.
-The decentralized sub-problem formulation is given as follows.
+To overcome the gap, we leverage the above global problem structure, and develop \fixit{$K$ parallel sub-problems} where the $k$-th AP would determine its own optimal policy in the $k$-th problem ($\forall k\in\apSet$) while consider others' policy as fixed.
+\delete{
+    the APs update their own policy independently in a decentralized manner.
+    The decentralized manner implies each AP only update the policy of itself, and consider other APs' policy fixed in the environment.
+}
+The formulation of sub-problem is given as follows.
 \begin{problem}[Decentralized Cooperative Job Dispatching sub-Problem]
     We have total $K$ sub-problems and the definition for the $k$-th sub-problem is given as follows ($\forall k\in\apSet$).
     \begin{align}
