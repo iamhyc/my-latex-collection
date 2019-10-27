@@ -37,7 +37,7 @@ Based on the two phases of global broadcast information in the system state, the
         },
     \end{align}
     where
-    $\Omega_{k}(\Stat(t_{i}))$ denotes the independent policy for $k$-th AP ($\forall k\in\apSet$), whose definition is given as follows.
+    $\Omega_{k}(\Stat(t_{i}))$ denotes the independent policy for the $k$-th AP ($\forall k\in\apSet$), whose definition is given as follows.
     \begin{align}
         \Omega_{k}\Paren{\Stat(t_{i})} \define
         \begin{cases}
@@ -46,14 +46,7 @@ Based on the two phases of global broadcast information in the system state, the
             \tilde{\Omega}_{k}( \Obsv(t_{i}) ), &n \geq D_{k}(t_{i})
         \end{cases},
     \end{align}
-    where $n$ denotes the index of time slot in the $i$-th interval, i.e. the $k$-th AP would adopt two phases policy in $i$-th interval with $\tilde{\Omega}_{k}(\Obsv(t_{i-1}))$ before receiving the whole broadcast information $\Obsv(t_{i})$ and $\tilde{\Omega}_{k}(\Obsv(t_{i}))$ afterwards.
-    The explicit definition for $\tilde{\Omega}_{k}( \Obsv(t_{i}) )$ is given as follows.
-    \begin{align}
-        &\tilde{\Omega}_{k}\Paren{\Obsv(t_{i})} \define \set{\omega_{k,j}(t_{i})|\forall m\in\esSet, j\in\jSpace}
-        ~(\forall k\in\apSet),
-        \label{def_action}
-    \end{align}
-    where $\omega_{k,j}(t_{i})$ denotes the deterministic dispatching policy that: when $k$-th AP with information $\Obsv(t_{i})$, it would then upload $j$-type job to $m$-th edge server if and only if $\omega_{k,j}(t_{i})=m$.
+    where $n$ denotes the index of time slot in the $i$-th interval.
     
 \end{definition}
 The independent policy for each AP is defined over broadcast information and thus policy mapping over system state is further decoupled onto the two phases broadcast information, the stale one $\Obsv(t_{i-1})$ and the updated one $\Obsv(t_{i})$.
