@@ -47,7 +47,7 @@ The maximum job queue length for each VM is set as $l_Q$, which indicates that t
 
 \subsection{Periodic Broadcast of State Information}
 %NOTE: Periodic Broadcast is Indispensable
-In our system, each AP dispatches different types of computation jobs in a cooperative manner, where the jobs are dispatched to achieve a global optimality.
+In our system, each AP dispatches different types of computation jobs in a fully cooperative manner, where the jobs are dispatched to achieve a global optimality.
 To facilitate such dispatching decision, each AP should collect the information from other APs and edge servers.
 It's assumed that every APs and edge servers broadcast their information every $t_B$ time slots as illustrated in Fig.\ref{fig:brd-timeline}.
 Furthermore, we denote $t_{i,n}$ as the $n$-th time slot in $i$-th broadcast interval, which is the interval between $(i-1)$-th and $i$-th broadcast ($i\in\domP$).
@@ -114,7 +114,8 @@ The two phases policy of all APs together determine the information of $\Obsv(t_
 
 However, the randomness of \brdelay~implies that one AP could not know other APs' \brdelay~in the same interval.
 Thus, APs are unable to evaluate the impact introduced by others' policy on the next broadcast information and fail to establish exact cooperation.
-An naive way to solve this problem is to force all APs update their policy only at the end the interval, which introduces the information lagging for a whole broadcast interval.
+An naive way to solve this problem is to force all APs update their policy only at the end of the interval, which introduces a inevitable lagging for a whole broadcast interval.
+\delete{A toy example is given as follow.}
 
 In the following problem formulation section, we will show that we could come up with better dispatching decision update solution which is aware of the \brdelay, and improve APs' dispatching decisions in an iterative way.
 \fixit{

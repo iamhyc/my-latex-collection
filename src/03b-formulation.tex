@@ -1,8 +1,16 @@
 \section{Problem Formulation}
 %----------------------------------------------------------------------------------------%
-In this section, we formulate the optimization problem under standard MDP framework, which aims at optimizing online dispatching decisions of all APs.
-Given that each AP makes decisions based on collected global broadcast information, we describe the system state and policy from a global perspective, where each AP adopts the dispatching policy mapping from the global state.
+Outline:
+\begin{itemize}
+    \item multi-agent planning problem, multi-agent Markov decision problem (MMDP);
+    \item fully cooperative, share the same utility function;
+    \item The resulting joint action influences the evolution of the system;
+    \item However, we formulate the MMDP into standard MDP framework, with fully-observable information and joint actions;
+    \item two phases policy, due to partially observed information; thus we come up with sub-optimal solution to the Bellman equation; (where the lower and upper bound are analytically obtained)
+\end{itemize}
 
+In this section, we formulate the optimization problem under standard MDP framework, which aims at optimizing online dispatching decisions of all APs.
+We describe the system state and policy from a global perspective, where each AP adopts the dispatching policy mapping from the collected global state information.
 \fixit{
     Due to the different distributions of \brdelay~for each AP, APs use the stale policy in one interval firstly, and then update their policy at different time slots in an unknown order.
     Therefore, we further decouple the global problem into $K$ sub-problems to cater for the real decentralized situations how the system state is updated for each AP.
@@ -10,6 +18,7 @@ Given that each AP makes decisions based on collected global broadcast informati
 }
 
 \subsection{System State and Dispatching Policy}
+We formulate the multi-agent MDP problem where each AP shares same utility function in a fully cooperative setting and individually takes action to perform.
 The system state is selected from the global perspective.
 We consider all the APs maintain the same global information, which is collected and updated by broadcast at the beginning of each interval.
 As each AP would update its dispatching policy based on the latest broadcast information, the \brdelay{s} in each interval is also taken as a part of state information.
@@ -31,9 +40,10 @@ The relationship between \brdelay~and the policy update time points for differen
     \label{fig:brd-trans}
 \end{figure}
 
-Based on the two phases of global broadcast information in the system state, the global compounded policy of all APs is defined as follows.
-\begin{definition}[Compounded Dispatching Policy]
-    The compounded dispatching policy $\Policy(\Stat(t_{i}))$ over $\Stat(t_{i})$ which is defined with two phases broadcasting information which is given as follows.
+Based on the two phases of global broadcast information in the system state, the global joint policy of all APs is defined as follows.
+\fixit{Independent Action space by Cartesian product, e.g. $A \times A \times \dots \times A$;}
+\begin{definition}[Joint Dispatching Policy]
+    The joint dispatching policy $\Policy(\Stat(t_{i}))$ over $\Stat(t_{i})$ which is defined with two phases broadcasting information which is given as follows.
     \begin{align}
         \Policy\Paren{\Stat(t_{i})} \define \Brace{
             \Omega_{1}\Paren{\Stat(t_{i})}, \dots, \Omega_{K}\Paren{\Stat(t_{i})}

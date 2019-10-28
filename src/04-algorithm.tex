@@ -4,7 +4,7 @@ Then the right-hand side of Bellman's Equation turns into simple minimization pr
 
 \fixit{
     However in practice, the system state is actually partially presented as $\Obsv(t_{i-1})$ and $\Obsv(t_{i})$ separated by the \brdelay, which is different for each AP in each broadcast interval.
-    This results into isolated acknowledge for each AP on the compounded policy and transition function, because the delay information could not be shared among APs.
+    This results into isolated acknowledge for each AP on the joint policy and transition function, because the delay information could not be shared among APs.
     Thus the joint optimization over the components of $\Policy(\Stat(t_{i}))$ is impossible.
 
     To overcome the gap, we leverage the above global problem structure, and develop \fixit{$K$ parallel sub-problems} where the $k$-th AP would determine its own optimal policy in the $k$-th problem ($\forall k\in\apSet$) while consider others' policy as fixed.
