@@ -1,10 +1,13 @@
 \section{Problem Formulation}
 %----------------------------------------------------------------------------------------%
 In this section, we formulate the optimization problem under standard MDP framework, which aims at optimizing online dispatching decisions of all APs.
-Given that each AP makes decisions based on collected global state information, we describe the system state and policy from a global perspective, where each AP adopt its dispatching policy mapping from the collected system information.
-Due to the different distributions of \brdelay~for each AP, APs use the stale policy in one interval firstly, and then update their policy at different time slots in an unknown order.
-Therefore, we further decouple the global problem into \fixit{$K$ sub-problems} to cater for the real decentralized situations \delete{how the system state is updated for each AP}.
-At the end of this section, we show that the solution of the parallel sub-problems suffers from curse of dimensionality and a low-complexity solution is needed.
+Given that each AP makes decisions based on collected global broadcast information, we describe the system state and policy from a global perspective, where each AP adopts the dispatching policy mapping from the global state.
+
+\fixit{
+    Due to the different distributions of \brdelay~for each AP, APs use the stale policy in one interval firstly, and then update their policy at different time slots in an unknown order.
+    Therefore, we further decouple the global problem into $K$ sub-problems to cater for the real decentralized situations how the system state is updated for each AP.
+    At the end of this section, we show that the solution of the parallel sub-problems suffers from curse of dimensionality and a low-complexity solution is needed.
+}
 
 \subsection{System State and Dispatching Policy}
 The system state is selected from the global perspective.
@@ -89,42 +92,39 @@ According to \cite{sutton1998introduction}, the above problem could be solved by
     \label{sp_0}
 \end{align}
 
-However in practice, the system state is actually partially presented as $\Obsv(t_{i-1})$ and $\Obsv(t_{i})$ separated by the \brdelay, which is different for each AP in each broadcast interval.
-This results into isolated acknowledge for each AP on the compounded policy and transition function, because the delay information could not be shared among APs.
-Thus the joint optimization over the components of $\Policy(\Stat(t_{i}))$ is impossible.
-
-To overcome the gap, we leverage the above global problem structure, and develop \fixit{$K$ parallel sub-problems} where the $k$-th AP would determine its own optimal policy in the $k$-th problem ($\forall k\in\apSet$) while consider others' policy as fixed.
 \delete{
     the APs update their own policy independently in a decentralized manner.
     The decentralized manner implies each AP only update the policy of itself, and consider other APs' policy fixed in the environment.
 }
-The formulation of sub-problem is given as follows.
-\begin{problem}[Decentralized Cooperative Job Dispatching sub-Problem]
-    We have total $K$ sub-problems and the definition for the $k$-th sub-problem is given as follows ($\forall k\in\apSet$).
+\delete{
+    The formulation of sub-problem is given as follows.
+    \begin{problem}[Decentralized Cooperative Job Dispatching sub-Problem]
+        We have total $K$ sub-problems and the definition for the $k$-th sub-problem is given as follows ($\forall k\in\apSet$).
+        \begin{align}
+            \min_{\tilde{\Omega}_k} \lim_{T \to \infty}
+                \mathbb{E}_{\Policy'_{k}}
+                    \Bracket{\sum_{i=1}^{T} \gamma^{i-1} g\Paren{\Stat(t_{i}), \Policy'_{k}(\Stat(t_{i}))}|\Stat(t_1)},
+        \end{align}
+        where $\Policy'_{k}(\Stat(t_{i})) \define \set{\Omega_{1}, \dots, \Omega_{k}(\Stat(t_{i})), \dots, \Omega_{K}}$.
+    \end{problem}
+    The corresponding Bellman's Equation for the $k$-th sub-problem is given as follows.
     \begin{align}
-        \min_{\tilde{\Omega}_k} \lim_{T \to \infty}
-            \mathbb{E}_{\Policy'_{k}}
-                \Bracket{\sum_{i=1}^{T} \gamma^{i-1} g\Paren{\Stat(t_{i}), \Policy'_{k}(\Stat(t_{i}))}|\Stat(t_1)},
+        &V\Paren{\Stat(t_{i})} = g\Paren{\Stat(t_{i})}
+        \nonumber\\
+        &~~~~+ \gamma \min_{\tilde{\Omega}_{k}(\Obsv(t_{i}))} \Pr\Brace{ \Stat(t_{i+1})|\Stat(t_{i}), \Policy'_{k}(\Stat(t_{i})) } \cdot V\Paren{\Stat(t_{i+1})}.
+        \label{sp_k}
     \end{align}
-    where $\Policy'_{k}(\Stat(t_{i})) \define \set{\Omega_{1}, \dots, \Omega_{k}(\Stat(t_{i})), \dots, \Omega_{K}}$.
-\end{problem}
-The corresponding Bellman's Equation for the $k$-th sub-problem is given as follows.
-\begin{align}
-    &V\Paren{\Stat(t_{i})} = g\Paren{\Stat(t_{i})}
-    \nonumber\\
-    &~~~~+ \gamma \min_{\tilde{\Omega}_{k}(\Obsv(t_{i}))} \Pr\Brace{ \Stat(t_{i+1})|\Stat(t_{i}), \Policy'_{k}(\Stat(t_{i})) } \cdot V\Paren{\Stat(t_{i+1})}.
-    \label{sp_k}
-\end{align}
-% $\tilde{\Omega}_{k}(\Obsv(t_{i}))$ is the component of $\Policy(\Obsv(t_{i}))$.
-\begin{remark}
-    Assume that we solve the sub-problems following the order of index of AP set, and then substitute the solution to the $k$-th problem to the $(k+1)$-th problem ($\forall k\in\apSet$).
-    Apparently, we could achieve a sub-optimal solution of all APs which is upper bounded by the solution to the original problem.
-\end{remark}
+    % $\tilde{\Omega}_{k}(\Obsv(t_{i}))$ is the component of $\Policy(\Obsv(t_{i}))$.
+    \begin{remark}
+        Assume that we solve the sub-problems following the order of index of AP set, and then substitute the solution to the $k$-th problem to the $(k+1)$-th problem ($\forall k\in\apSet$).
+        Apparently, we could achieve a sub-optimal solution of all APs which is upper bounded by the solution to the original problem.
+    \end{remark}
+}
 
-To better analyze the optimization structure of the sub-problem, we decouple the transition function. The expression of transition function in Eqn. \ref{sp_k} is given as follows.
+To better analyze the optimization structure of the problem, we decouple the transition function. The expression of transition function in Eqn. \ref{sp_0} is given as follows.
 \begin{lemma}[Transition Function Decoupling]
     The transition function in Bellman's equation could be decoupled on states of APs and edge servers, which will facilitate the approximated value function expression in the following section.
-    The decoupled transition function for Eqn. \ref{sp_k} is given as follows.
+    The decoupled transition function for Eqn. \ref{sp_0} is given as follows.
     \begin{align}
         & \Pr\Brace{ \Stat(t_{i+1})|\Stat(t_{i}), \Policy'_{k}(\Stat(t_{i})) }
         \nonumber\\
@@ -222,7 +222,8 @@ And we could obtain the time-variant transition matrix composed of multiple tran
 %     \end{cases}
 % \end{align}
 
-However, after the state decomposition, the action space would still be exponentially expanded with respect to the number of APs and edge servers. We could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity.
-And we have to come up with an algorithm which could solve all $K$ sub-problems to achieve a global solution.
-So in next section, to alleviate curse of dimensionality, we introduce baseline dispatching policy to approximate the value function, and then carry out one-step iteration in a polling manner to obtain a better value function approximation.
+However, after the state decomposition, the action space would still be exponentially expanded with respect to the number of APs and edge servers.
+We could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity.
+\st{And we come up with an algorithm which could solve all $K$ sub-problems to achieve a global solution.}
+So in next section, to alleviate curse of dimensionality, we introduce baseline dispatching policy to approximate the value function, and then carry out one-step iteration \st{in a polling manner} to obtain a better value function approximation.
 %----------------------------------------------------------------------------------------%

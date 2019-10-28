@@ -1,7 +1,15 @@
 \section{LOW-COMPLEXITY SOLUTION}
 In this section, we introduce a heuristic dispatching algorithm as the baseline policy, whose value function could be derived analytically.
 Then the right-hand side of Bellman's Equation turns into simple minimization problem over the control policy. The sub-optimal policy could be obtained by evaluation of approximated value function on right-hand side of Bellman's Equation with one-step iteration. And thus the approximated value function is the upper bound of the original optimal policy.
+
 \fixit{
+    However in practice, the system state is actually partially presented as $\Obsv(t_{i-1})$ and $\Obsv(t_{i})$ separated by the \brdelay, which is different for each AP in each broadcast interval.
+    This results into isolated acknowledge for each AP on the compounded policy and transition function, because the delay information could not be shared among APs.
+    Thus the joint optimization over the components of $\Policy(\Stat(t_{i}))$ is impossible.
+
+    To overcome the gap, we leverage the above global problem structure, and develop \fixit{$K$ parallel sub-problems} where the $k$-th AP would determine its own optimal policy in the $k$-th problem ($\forall k\in\apSet$) while consider others' policy as fixed.
+}
+\delete{
     \begin{itemize}
         \item The updated global system state information presents at different time slots for different APs.
         \item The delay-aware algorithm proposed allow APs update their policy iteratively in a polling manner, while they all solve their own approximated Bellman's equation.
@@ -41,8 +49,8 @@ where $W^{\AP}_{\BaseLine(t_i)}(\cdot)$ and $W^{\ES}_{\BaseLine(t_i)}(\cdot)$ de
         }.
 \end{align}
         
-The decoupled value functions for AP and ES nodes is obtained with an approximated form under the baseline policy. We use the same baseline policy to evaluate both low-complexity policy performance in Eqn. \ref{sp_k}.
-        
+The decoupled value functions for AP and ES nodes is obtained with an approximated form under the baseline policy. We use the same baseline policy to evaluate both low-complexity policy performance in Eqn. \ref{sp_0}.
+
 The expected value function $W^{\AP}(\mathcal{R}(t_{i+1}))$ under baseline $\vecG{\Pi}(t_{i})$ for AP nodes is easily obtained by calculating by the following equation:
 \begin{align}
     &W^{\AP}_{\BaseLine(t_i)}\Paren{\mathcal{R}(t_{i+1})} = \sum_{k\in\apSet}\sum_{m\in\esSet}\sum_{j\in\jSpace}
@@ -114,16 +122,18 @@ with improved baseline policy in each interval as performance guarantee.
 %     \end{algorithmic}
 % \end{algorithm}
 
-\begin{lemma}
-    The above algorithm would have performance improvement in each interval with baseline policy guarantee, and at least achieve local optimal.
-\end{lemma}
-\begin{proof}
-    The improved policy in last interval becomes the baseline policy in next interval.
-    So, in each stage, it resembles the one-step Policy Improvement step in classical \emph{Policy Iteration} algorithm, and each step with different value function under baseline policy on the right-hand side.
-    
-    \fixit{The insight exists that: due to the uncontrollable delay on policy in each stage,} the chosen time-invariant baseline policy actually would; so the improved policy is the baseline of next stage, and thus forms the online policy iteration.
-    discounted sum-up cost, the future states near the current state counts more and the baseline policy (which is time-invariant) would variant in each interval.
-\end{proof}
+\delete{
+    \begin{lemma}
+        The above algorithm would have performance improvement in each interval with baseline policy guarantee, and at least achieve local optimal.
+    \end{lemma}
+    \begin{proof}
+        The improved policy in last interval becomes the baseline policy in next interval.
+        So, in each stage, it resembles the one-step Policy Improvement step in classical \emph{Policy Iteration} algorithm, and each step with different value function under baseline policy on the right-hand side.
+        
+        \accept{The insight exists that: due to the uncontrollable delay on policy in each stage,} the chosen time-invariant baseline policy actually would; so the improved policy is the baseline of next stage, and thus forms the online policy iteration.
+        discounted sum-up cost, the future states near the current state counts more and the baseline policy (which is time-invariant) would variant in each interval.
+    \end{proof}
+}
 
 \subsection{Reinforcement Learning}
 Due to the fact that the statistical parameters of job arrival distribution $\lambda_{k,j}$, uploading time distribution $U_{k,m,j}$ and processing time distribution $l_{m,j}$ are unknown at the first time, we adopt reinforcement learning algorithm to learn the parameters.
