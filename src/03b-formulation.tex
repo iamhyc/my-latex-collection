@@ -10,6 +10,8 @@ Outline:
 \end{itemize}
 
 In this section, we formulate the optimization problem under standard MDP framework, which aims at optimizing online dispatching decisions of all APs.
+The joint optimization over decisions from individual APs is a multi-agent planning problem, and we consider a fully cooperative design where each AP shares the same utility function.
+
 We describe the system state and policy from a global perspective, where each AP adopts the dispatching policy mapping from the collected global state information.
 \fixit{
     Due to the different distributions of \brdelay~for each AP, APs use the stale policy in one interval firstly, and then update their policy at different time slots in an unknown order.
