@@ -2,16 +2,14 @@
 %----------------------------------------------------------------------------------------%
 Outline:
 \begin{itemize}
-    \item multi-agent planning problem, multi-agent Markov decision problem (MMDP);
-    \item fully cooperative, share the same utility function;
-    \item The resulting joint action influences the evolution of the system;
+    \item multi-agent planning problem, multi-agent Markov decision problem (MMDP), ;
+    \item fully cooperative mult-agent system (MAS), each agent shares the same utility function;
+    \item The resulting joint action influences the evolution of the system; ("Sequential Optimality and Coordination in Multi-agent Systems", Craig Boutilie, 1999) ("Taming Decentralized POMDPs: Towards Efficient Policy Computation for Multi-agent Settings", R.Nair, 2003)
     \item However, we formulate the MMDP into standard MDP framework, with fully-observable information and joint actions;
     \item two phases policy, due to partially observed information; thus we come up with sub-optimal solution to the Bellman equation; (where the lower and upper bound are analytically obtained)
 \end{itemize}
 
-In this section, we formulate the optimization problem under standard MDP framework, which aims at optimizing online dispatching decisions of all APs.
-The joint optimization over decisions from individual APs is a multi-agent planning problem, and we consider a fully cooperative design where each AP shares the same utility function.
-
+In this section, we formulate the optimization problem which aims at online optimizing job dispatching decisions of all APs.
 We describe the system state and policy from a global perspective, where each AP adopts the dispatching policy mapping from the collected global state information.
 \fixit{
     Due to the different distributions of \brdelay~for each AP, APs use the stale policy in one interval firstly, and then update their policy at different time slots in an unknown order.
