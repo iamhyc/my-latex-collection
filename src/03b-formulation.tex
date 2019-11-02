@@ -2,19 +2,28 @@
 %----------------------------------------------------------------------------------------%
 Outline:
 \begin{itemize}
-    \item multi-agent planning problem, multi-agent Markov decision problem (MMDP), ;
-    \item fully cooperative mult-agent system (MAS), each agent shares the same utility function;
-    \item The resulting joint action influences the evolution of the system; ("Sequential Optimality and Coordination in Multi-agent Systems", Craig Boutilie, 1999) ("Taming Decentralized POMDPs: Towards Efficient Policy Computation for Multi-agent Settings", R.Nair, 2003)
+    \item The resulting joint action influences the evolution of the system;
     \item However, we formulate the MMDP into standard MDP framework, with fully-observable information and joint actions;
     \item two phases policy, due to partially observed information; thus we come up with sub-optimal solution to the Bellman equation; (where the lower and upper bound are analytically obtained)
 \end{itemize}
 
+\delete{
+    [MMDP, POMDP, DEC-POMDP]
+    [1] "Sequential Optimality and Coordination in Multi-agent Systems", Craig Boutilie, 1999
+    [2] "Taming Decentralized POMDPs: Towards Efficient Policy Computation for Multi-agent Settings", R.Nair, 2003
+}
+
 In this section, we formulate the optimization problem which aims at online optimizing job dispatching decisions of all APs.
-We describe the system state and policy from a global perspective, where each AP adopts the dispatching policy mapping from the collected global state information.
+This kind of optimization problem falls into multi-agent planning problem, which considers a fully cooperative multi-agent system (MAS) and each agent shares the same utility function \needref{Craig Boutilie, 1999}.
+
+\needref{R.Nair, 2003} introduces DEC-POMDP to characterize the decentralized
+We formulate the problem under standard Markov Decision Program (MDP) framework, which
+
 \fixit{
+    We describe the system state and policy from a global perspective, where each AP adopts the dispatching policy mapping from the collected global state information.
     Due to the different distributions of \brdelay~for each AP, APs use the stale policy in one interval firstly, and then update their policy at different time slots in an unknown order.
-    Therefore, we further decouple the global problem into $K$ sub-problems to cater for the real decentralized situations how the system state is updated for each AP.
-    At the end of this section, we show that the solution of the parallel sub-problems suffers from curse of dimensionality and a low-complexity solution is needed.
+    Therefore, we come up with efficient decentralized online algorithm (polling iterative update), which is upper bounded by 
+    At the end of this section, we show that the (polling iterative) solution of the problem suffers from curse of dimensionality and a low-complexity solution is needed.
 }
 
 \subsection{System State and Dispatching Policy}
