@@ -1,32 +1,23 @@
 \section{Problem Formulation}
 %----------------------------------------------------------------------------------------%
-Outline:
-\begin{itemize}
-    \item The resulting joint action influences the evolution of the system;
-    \item However, we formulate the MMDP into standard MDP framework, with fully-observable information and joint actions;
-    \item two phases policy, due to partially observed information; thus we come up with sub-optimal solution to the Bellman equation; (where the lower and upper bound are analytically obtained)
-\end{itemize}
-
-\delete{
-    [MMDP, POMDP, DEC-POMDP]
+In this section, we formulate the optimization problem which aims at online optimizing job dispatching decisions of all APs.
+This kind of optimization problem falls into multi-agent planning problem, which considers a fully cooperative multi-agent system (MAS) and each agent shares the same utility function \needref{Craig Boutilie, 1999}.
+In our problem, we focus on the real situation about communication overhead in MAS, where the system information is always stale due to periodic broadcast and \brdelay.
+\needref{R.Nair, 2003} uses DEC-POMDP (Decentralized Partial-Observed MDP) framework to characterize the coordination among decentralized and partially observed multi-agent problem. The solution to its problem is of high complexity and requires extra information of \emph{belief states}.
+Instead, we formulate the problem under standard MDP framework, which is with fully-observable information.
+At the end of this section, we show that we could come up with decentralized algorithm under the global problem formulation heuristically. A low-complexity solution is also provided in the following section to alleviate the curse of dimensionality.
+\delete{Reference list
     [1] "Sequential Optimality and Coordination in Multi-agent Systems", Craig Boutilie, 1999
     [2] "Taming Decentralized POMDPs: Towards Efficient Policy Computation for Multi-agent Settings", R.Nair, 2003
 }
 
-In this section, we formulate the optimization problem which aims at online optimizing job dispatching decisions of all APs.
-This kind of optimization problem falls into multi-agent planning problem, which considers a fully cooperative multi-agent system (MAS) and each agent shares the same utility function \needref{Craig Boutilie, 1999}.
-
-\needref{R.Nair, 2003} introduces DEC-POMDP to characterize the decentralized
-We formulate the problem under standard Markov Decision Program (MDP) framework, which
-
-\fixit{
-    We describe the system state and policy from a global perspective, where each AP adopts the dispatching policy mapping from the collected global state information.
-    Due to the different distributions of \brdelay~for each AP, APs use the stale policy in one interval firstly, and then update their policy at different time slots in an unknown order.
-    Therefore, we come up with efficient decentralized online algorithm (polling iterative update), which is upper bounded by 
-    At the end of this section, we show that the (polling iterative) solution of the problem suffers from curse of dimensionality and a low-complexity solution is needed.
-}
-
 \subsection{System State and Dispatching Policy}
+\delete{
+    1. The resulting joint action influences the evolution of the system;
+    2. We describe the system state and policy from a global perspective, where each AP adopts the dispatching policy mapping from the collected global state information.
+    3. Due to the different distributions of \brdelay~for each AP, APs use the stale policy in one interval firstly, and then update their policy at different time slots in an unknown order.
+    4. two phases policy, due to partially observed information; thus we come up with sub-optimal solution to the Bellman equation; (where the lower and upper bound are analytically obtained)
+}
 We formulate the multi-agent MDP problem where each AP shares same utility function in a fully cooperative setting and individually takes action to perform.
 The system state is selected from the global perspective.
 We consider all the APs maintain the same global information, which is collected and updated by broadcast at the beginning of each interval.
