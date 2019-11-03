@@ -1,3 +1,3 @@
-# Stale Partial Information-based Jobs Scheduling in Edge Computing System with Reinforcement Learning
+# Solve Broadcast-based DEC-POMDP with Approximate MDP with Performance Guarantee
 
-This work is trying to leverage Stale and Partial information to establish cooperation in edge computing system.
+> No details will be provided, for now.

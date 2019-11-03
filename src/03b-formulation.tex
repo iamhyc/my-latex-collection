@@ -62,22 +62,13 @@ $\tilde{\lambda}^{(k)}_{m,j}(t_{i}) \define \lambda_{k,j} I[\omega_{k,j}(t_i) = 
 %----------------------------------------------------------------------------------------%
 
 \subsection{The Optimization Problem}
-\delete{
-    Outline:
-    \begin{itemize}
-        \item We formulate the multi-agent MDP problem where each AP shares same utility function in a fully cooperative setting and individually takes action to perform.
-        \item \needref{R.Nair, 2003} uses DEC-POMDP (Decentralized Partial-Observed MDP) framework to characterize the coordination among decentralized and partially observed multi-agent problem. The solution to its problem is of high complexity and requires extra information;
-        \item thus we come up with sub-optimal solution to the Bellman equation; (where the lower and upper bound are analytically obtained
-    \end{itemize}
-}
+In our system, each AP individually performs job dispatching decision, and coordinates in a fully cooperative manner sharing the same utility function.
 We propose the jobs dispatching optimization problem with the target to minimize \emph{average response time} of all offloaded jobs in MEC system.
 The \emph{average response time} is composed of uploading time from APs to edge servers, and queueing-and-service time on corresponding edge server. According to \emph{Little's Law}, the average response time of all jobs is equally as average number of jobs in system.
-        
-\accept{
-    Due to the periodic information broadcasting, we collect the cost for counting numbers at the pace of broadcast interval which could be seen as a uniform sampling of original process based on timeslot scale.
-}
+
+Due to the periodic information broadcasting, we collect the cost for counting numbers each interval, which could be seen as a uniform sampling on timeslot scale.
 Besides the cost counted for job response time, we further add penalty on jobs rejection on edge servers when the job submission is over the queue capacity limit. The penalty will be counted at the end of each broadcast interval.
-The cost function of this problem is given as follows.
+The definition of the cost function is given as follows.
 \begin{align}
     g\Paren{\Stat(t_{i}), \Policy(\Stat(t_{i}))} \define
         &\sum_{k\in\apSet} \sum_{m\in\esSet} \sum_{j\in\jSpace} \vec{R}^{(k)}_{m,j,\xi}(t_{i})~+
@@ -85,9 +76,8 @@ The cost function of this problem is given as follows.
         &\sum_{m\in\esSet} \sum_{j\in\jSpace} \Brace{L_{m,j}(t_{i}) + \beta \cdot \mat{I}[L_{m,j}(t_{i})=L_Q]},
 \end{align}
 where $\beta$ is the weight factor for job rejection penalty ($\beta \in (0,1)$).
-        
-The definition for global optimization problem is given as follows.
-\begin{problem}[Global Job Dispatching Problem]
+
+\begin{problem}[Centralized Job Dispatching Problem]
     \begin{align}
         \min_{\Policy} \lim_{T \to \infty}
             \mathbb{E}_{\Policy}
@@ -95,7 +85,6 @@ The definition for global optimization problem is given as follows.
     \end{align}
     where the cost is collected with a discount factor $\gamma$.
 \end{problem}
-\delete{and $\Policy$ is optimized policy globally always with full-state information available.}
 According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
 \begin{align}
     V\Paren{\Stat(t_{i})} =~&g\Paren{\Stat(t_{i})} + \gamma \min_{\Policy(\Stat(t_{i}))}
@@ -104,60 +93,45 @@ According to \cite{sutton1998introduction}, the above problem could be solved by
     \label{sp_0}
 \end{align}
 
-\delete{
-    the APs update their own policy independently in a decentralized manner.
-    The decentralized manner implies each AP only update the policy of itself, and consider other APs' policy fixed in the environment.
-}
-\delete{
-    The formulation of sub-problem is given as follows.
-    \begin{problem}[Decentralized Cooperative Job Dispatching sub-Problem]
-        We have total $K$ sub-problems and the definition for the $k$-th sub-problem is given as follows ($\forall k\in\apSet$).
-        \begin{align}
-            \min_{\tilde{\Omega}_k} \lim_{T \to \infty}
-                \mathbb{E}_{\Policy'_{k}}
-                    \Bracket{\sum_{i=1}^{T} \gamma^{i-1} g\Paren{\Stat(t_{i}), \Policy'_{k}(\Stat(t_{i}))}|\Stat(t_1)},
-        \end{align}
-        where $\Policy'_{k}(\Stat(t_{i})) \define \set{\Omega_{1}, \dots, \Omega_{k}(\Stat(t_{i})), \dots, \Omega_{K}}$.
-    \end{problem}
-    The corresponding Bellman's Equation for the $k$-th sub-problem is given as follows.
-    \begin{align}
-        &V\Paren{\Stat(t_{i})} = g\Paren{\Stat(t_{i})}
-        \nonumber\\
-        &~~~~+ \gamma \min_{\tilde{\Omega}_{k}(\Obsv(t_{i}))} \Pr\Brace{ \Stat(t_{i+1})|\Stat(t_{i}), \Policy'_{k}(\Stat(t_{i})) } \cdot V\Paren{\Stat(t_{i+1})}.
-        \label{sp_k}
-    \end{align}
-    % $\tilde{\Omega}_{k}(\Obsv(t_{i}))$ is the component of $\Policy(\Obsv(t_{i}))$.
-    \begin{remark}
-        Assume that we solve the sub-problems following the order of index of AP set, and then substitute the solution to the $k$-th problem to the $(k+1)$-th problem ($\forall k\in\apSet$).
-        Apparently, we could achieve a sub-optimal solution of all APs which is upper bounded by the solution to the original problem.
-    \end{remark}
-}
-
-To better analyze the optimization structure of the problem, we decouple the transition function. The expression of transition function in Eqn. \ref{sp_0} is given as follows.
+To better analyze the structure of the optimization problem, we decouple the transition function.
+The expression of transition function in Eqn. \ref{sp_0} is given as follows.
 \begin{lemma}[Transition Function Decoupling]
     The transition function in Bellman's equation could be decoupled on states of APs and edge servers, which will facilitate the approximated value function expression in the following section.
     The decoupled transition function for Eqn. \ref{sp_0} is given as follows.
     \begin{align}
-        & \Pr\Brace{ \Stat(t_{i+1})|\Stat(t_{i}), \Policy'_{k}(\Stat(t_{i})) }
+        & \Pr\Brace{ \Stat(t_{i+1})|\Stat(t_{i}), \Policy(\Stat(t_{i})) }
         \nonumber\\
-        =& \Pr\Brace{ \Obsv(t_{i+1})|\Obsv(t_{i}), \Policy'_{k}(\Stat(t_{i})), D_{k}(t_{i}) } \times \Pr\{\mathcal{D}(t_{i+1})\}
+        =& \Pr\{\mathcal{D}(t_{i+1})\} \times \Pr\Brace{ \Obsv(t_{i+1})|\Obsv(t_{i}), \Policy(\Stat(t_{i}))}
         \nonumber\\
-        =& \prod_{k\in\apSet}\prod_{m\in\esSet}\prod_{j\in\jSpace}
+        =& \Pr\{\mathcal{D}(t_{i+1})\} \times \prod_{k\in\apSet}\prod_{m\in\esSet}\prod_{j\in\jSpace}
                 \Pr\Brace{
                     \vec{R}^{(k)}_{m,j}(t_{i+1}) | \vec{R}^{(k)}_{m,j}(t_{i}),
-                    \Policy'_{k}(\Stat(t_{i})), D_{k}(t_{i})
-                }
-                \times  
+                    \Policy(\Stat(t_{i}))
+                }  
             \nonumber\\
-            & \prod_{m\in\esSet}\prod_{j\in\jSpace}
+            & \times \prod_{m\in\esSet}\prod_{j\in\jSpace}
                 \Pr\Brace{
-                    Q_{m,j}(t_{i+1})|Q_{m,j}(t_{i}), \mathcal{R}(t_{i}), \Policy'_{k}(\Stat(t_{i})), D_{k}(t_{i})
+                    Q_{m,j}(t_{i+1})|Q_{m,j}(t_{i}), \mathcal{R}(t_{i}), \Policy(\Stat(t_{i}))
                 }.
     \end{align}
 \end{lemma}
 \begin{proof}
     Proof deleted.
 \end{proof}
+
+\delete{
+    Outline:
+    \begin{itemize}
+        \item and $\Policy$ is optimized policy globally always with full-state information available.
+        \item \needref{R.Nair, 2003} uses DEC-POMDP (Decentralized Partial-Observed MDP) framework to characterize the coordination among decentralized and partially observed multi-agent problem. The solution to its problem is of high complexity and requires extra information;
+        \item thus we come up with sub-optimal solution to the Bellman equation; (where the lower and upper bound are analytically obtained;
+        \item The \emph{exhaustive-JESP} algorithm implies, each AP only update the policy of itself, and consider other APs' policy fixed in the environment.
+        \item Remark: Assume that we solve the sub-problems following the order of index of AP set, and then substitute the solution to the $k$-th problem to the $(k+1)$-th problem ($\forall k\in\apSet$).
+              Apparently, we could achieve a sub-optimal solution of all APs which is upper bounded by the solution to the original problem.
+        \item We restrict out observation in solution part, and just leverage the structure of the above centralized optimization problem.
+        \end{remark}
+    \end{itemize}
+}
 
 The first part denotes the state transition on AP.
 Denote as
