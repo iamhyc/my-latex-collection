@@ -12,17 +12,10 @@ At the end of this section, we show that we could come up with decentralized alg
 }
 
 \subsection{System State and Dispatching Policy}
-\delete{
-    1. The resulting joint action influences the evolution of the system;
-    2. We describe the system state and policy from a global perspective, where each AP adopts the dispatching policy mapping from the collected global state information.
-    3. Due to the different distributions of \brdelay~for each AP, APs use the stale policy in one interval firstly, and then update their policy at different time slots in an unknown order.
-    4. two phases policy, due to partially observed information; thus we come up with sub-optimal solution to the Bellman equation; (where the lower and upper bound are analytically obtained)
-}
-We formulate the multi-agent MDP problem where each AP shares same utility function in a fully cooperative setting and individually takes action to perform.
-The system state is selected from the global perspective.
-We consider all the APs maintain the same global information, which is collected and updated by broadcast at the beginning of each interval.
-As each AP would update its dispatching policy based on the latest broadcast information, the \brdelay{s} in each interval is also taken as a part of state information.
+We formulate the multi-agent MDP problem from a global perspective, where each AP adopts the dispatching policy mapping from the collected global state information.
+As each AP would always update its dispatching policy based on the latest broadcast information, the \brdelay{s} in each interval is also taken as a part of state information.
 The relationship between \brdelay~and the policy update time points for different APs is depicted in Fig. \ref{fig:brd-trans}.
+
 \begin{definition}[System State]
     The system state at $i$-th \brpoint~is denoted as follows.
     \begin{align}
@@ -30,7 +23,7 @@ The relationship between \brdelay~and the policy update time points for differen
             \Obsv(t_{i-1}), \Obsv({t_{i}}), \mathcal{D}(t_{i})
         },
     \end{align}
-    where $\mathcal{D}(t_{i}) \define \set{D_{1}(t_{i}), \dots, D_{K}(t_{i})}$ denotes the \brdelay~for each AP, $\Obsv(t_{i})$ denotes updated information after receiving the whole broadcasting information, and $\Obsv(t_{i-1})$ denotes the stale information.
+    where $\mathcal{D}(t_{i}) \define \set{D_{1}(t_{i}), \dots, D_{K}(t_{i})}$ denotes the \brdelay~for each AP, $\Obsv(t_{i})$ denotes updated information after receiving the whole broadcast information, and $\Obsv(t_{i-1})$ denotes the stale information.
 \end{definition}
 
 \begin{figure}[ht]
@@ -40,10 +33,11 @@ The relationship between \brdelay~and the policy update time points for differen
     \label{fig:brd-trans}
 \end{figure}
 
-Based on the two phases of global broadcast information in the system state, the global joint policy of all APs is defined as follows.
-\fixit{Independent Action space by Cartesian product, e.g. $A \times A \times \dots \times A$;}
+Based on the two phases of broadcast information in the system state, the system evolves with the joint actions of all APs.
+Due to the different distributions of \brdelay~for each AP in one interval, APs use the stale policy in firstly and then update their policy based on latest information in random order.
+The joint policy of all APs is defined as follows.
 \begin{definition}[Joint Dispatching Policy]
-    The joint dispatching policy $\Policy(\Stat(t_{i}))$ over $\Stat(t_{i})$ which is defined with two phases broadcasting information which is given as follows.
+    The joint dispatching policy $\Policy(\Stat(t_{i}))$ over $\Stat(t_{i})$ which is defined with two phases broadcast information which is given as follows.
     \begin{align}
         \Policy\Paren{\Stat(t_{i})} \define \Brace{
             \Omega_{1}\Paren{\Stat(t_{i})}, \dots, \Omega_{K}\Paren{\Stat(t_{i})}
@@ -62,17 +56,25 @@ Based on the two phases of global broadcast information in the system state, the
     where $n$ denotes the index of time slot in the $i$-th interval.
 \end{definition}
 
-We note that with the dispatching policy given, the arrival distribution $A_{k,j}$ of the $j$-th job on the $k$-th AP ($\forall k\in\apSet, j\in\jSpace$) is further split onto different Edge Servers.
+We note that with the given dispatching policy, the arrival distribution $A_{k,j}$ of the $j$-th job on the $k$-th AP ($\forall k\in\apSet, j\in\jSpace$) is further split onto different Edge Servers.
 The split job arrival distributions are still i.i.d Bernoulli distributions with arrival probability as 
 $\tilde{\lambda}^{(k)}_{m,j}(t_{i}) \define \lambda_{k,j} I[\omega_{k,j}(t_i) = m]$ ($\forall m\in\esSet$), where $I[\cdot]$ is the indicator function.
 %----------------------------------------------------------------------------------------%
 
 \subsection{The Optimization Problem}
+\delete{
+    Outline:
+    \begin{itemize}
+        \item We formulate the multi-agent MDP problem where each AP shares same utility function in a fully cooperative setting and individually takes action to perform.
+        \item \needref{R.Nair, 2003} uses DEC-POMDP (Decentralized Partial-Observed MDP) framework to characterize the coordination among decentralized and partially observed multi-agent problem. The solution to its problem is of high complexity and requires extra information;
+        \item thus we come up with sub-optimal solution to the Bellman equation; (where the lower and upper bound are analytically obtained
+    \end{itemize}
+}
 We propose the jobs dispatching optimization problem with the target to minimize \emph{average response time} of all offloaded jobs in MEC system.
 The \emph{average response time} is composed of uploading time from APs to edge servers, and queueing-and-service time on corresponding edge server. According to \emph{Little's Law}, the average response time of all jobs is equally as average number of jobs in system.
         
 \accept{
-    Due to the periodic information broadcasting, we collect the cost for counting numbers at the pace of broadcasting interval which could be seen as a uniform sampling of original process based on timeslot scale.
+    Due to the periodic information broadcasting, we collect the cost for counting numbers at the pace of broadcast interval which could be seen as a uniform sampling of original process based on timeslot scale.
 }
 Besides the cost counted for job response time, we further add penalty on jobs rejection on edge servers when the job submission is over the queue capacity limit. The penalty will be counted at the end of each broadcast interval.
 The cost function of this problem is given as follows.
