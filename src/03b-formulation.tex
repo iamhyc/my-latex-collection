@@ -119,20 +119,6 @@ The expression of transition function in Eqn. \ref{sp_0} is given as follows.
     Proof deleted.
 \end{proof}
 
-\delete{
-    Outline:
-    \begin{itemize}
-        \item and $\Policy$ is optimized policy globally always with full-state information available.
-        \item \needref{R.Nair, 2003} uses DEC-POMDP (Decentralized Partial-Observed MDP) framework to characterize the coordination among decentralized and partially observed multi-agent problem. The solution to its problem is of high complexity and requires extra information;
-        \item thus we come up with sub-optimal solution to the Bellman equation; (where the lower and upper bound are analytically obtained;
-        \item The \emph{exhaustive-JESP} algorithm implies, each AP only update the policy of itself, and consider other APs' policy fixed in the environment.
-        \item Remark: Assume that we solve the sub-problems following the order of index of AP set, and then substitute the solution to the $k$-th problem to the $(k+1)$-th problem ($\forall k\in\apSet$).
-              Apparently, we could achieve a sub-optimal solution of all APs which is upper bounded by the solution to the original problem.
-        \item We restrict out observation in solution part, and just leverage the structure of the above centralized optimization problem.
-        \end{remark}
-    \end{itemize}
-}
-
 The first part denotes the state transition on AP.
 Denote as
 \begin{align}
@@ -141,13 +127,13 @@ Denote as
     } \sim \vecG{\Theta}^{(k)}_{m,j}(t_{i+1}),
 \end{align}
 where $\vecG{\Theta}^{(k)}_{m,j}(t_{i+1}) \define [\vecG{\theta}^{(k)}_{m,j,0}(t_{i+1}), \dots, \vecG{\theta}^{(k)}_{m,j,\Xi}(t_{i+1})]$.
-Given that the uploading process could be depicted by the series of counters, we further have
+Given that the uploading process is depicted by a series of counters, we further have
 $\Pr\Brace{R^{(k)}_{m,j,\xi+1}(t_{i+1})|R^{(k)}_{m,j,\xi}(t_{i})} \sim \vecG{\theta}^{(k)}_{m,j,\xi}(t_{i+1})$ ($\forall \xi=0,\dots,\Xi$).
 Then we could express the distribution with a transition matrix as:
 \begin{align}
     \vecG{\Theta}^{(k)}_{m,j}(t_{i+1}) \define \hat{\Gamma}^{(k)}_{m,j}\Paren{\Policy(\Stat(t_i)) }\vecG{\Theta}^{(k)}_{m,j}(t_{i}),
 \end{align}
-where transition matrix $\hat{\Gamma}^{(k)}_{m,j}$ is a \emph{block matrix}, whose element is transition matrix $\Gamma^{(k)}_{m,j,\xi}$ for the distribution on the series of counters. The definition is given as follows.
+where transition matrix $\hat{\Gamma}^{(k)}_{m,j}$ is a \emph{block matrix} whose element is transition matrix $\Gamma^{(k)}_{m,j,\xi}$ for the distribution on the series of counters. The definition is given as follows.
 \begin{align}
     &\vecG{\theta}^{(k)}_{m,j,\xi+1}(t_{i+1}) \define
     \nonumber\\
@@ -157,7 +143,7 @@ where transition matrix $\hat{\Gamma}^{(k)}_{m,j}$ is a \emph{block matrix}, who
         ( \Gamma^{(k)}_{m,j,\xi} \dots \Gamma^{(k)}_{m,j,1} ) \times \vecG{\theta}^{(k)}_{m,j,0}(t_i), &{\xi < N}
     \end{cases},
 \end{align}
-where $\vecG{\theta}^{(k)}_{m,j,0}(t_{i}) \sim \text{Bernoulli}(\tilde{\lambda}^{(k)}_{m,j}(t_i))$, and transition matrix $\Gamma^{(k)}_{m,j,\xi}$ is time-invariant and defined as follows.
+where $\vecG{\theta}^{(k)}_{m,j,0}(t_{i}) \sim \text{Bernoulli}(\tilde{\lambda}^{(k)}_{m,j}(t_i))$. The transition matrix $\Gamma^{(k)}_{m,j,\xi}$ is time-invariant and the definition is given as follows.
 \begin{align}
     \Gamma^{(k)}_{m,j,\xi} = 
     \begin{bmatrix}
@@ -169,10 +155,10 @@ where $\vecG{\theta}^{(k)}_{m,j,0}(t_{i}) \sim \text{Bernoulli}(\tilde{\lambda}^
     \end{bmatrix}^T,
 \end{align}
 where $p^{(k)}_{m,j,\xi} \define \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\xi\}$ and $\bar{p}^{(k)}_{m,j,\xi} = 1 - p^{(k)}_{m,j,\xi}$.
-And $\hat{\Gamma}^{(k)}_{m,j}$ is an off-diagonal block matrix plus the horizontal part w.r.t $\vecG{\theta}^{(k)}_{m,j,0}$, with other entries as zero.
+Intuitively, $\hat{\Gamma}^{(k)}_{m,j}$ is an off-diagonal block matrix plus a horizontal part w.r.t $\vecG{\theta}^{(k)}_{m,j,0}$, while the other entries as all zero.
 
 The second part denotes the state transition on edge servers.
-Denote
+Denote as
 \begin{align}
     \Pr\Brace{ Q_{m,j}(t_{i+1})|Q_{m,j}(t_{i}), \mathcal{R}(t_{i}) } \sim \vecG{\nu}_{m,j}(t_{i}).
 \end{align}
@@ -197,19 +183,21 @@ And we could obtain the time-variant transition matrix composed of multiple tran
     \vecG{\nu}(t_{i+1}) &= \prod_{n=0,\dots,N-1} P_{m,j}\Paren{\vecG{\beta}(t_{i,n})} \vecG{\nu}(t_{i}),
     \label{eqn_4}
 \end{align}
-%FIXME: could/should we give explicit definition for $P_{m,j}$ ?
-% where
-% \begin{align}
-%     \Paren{ P_{m,j}(\vecG{\beta}(t_{i,n})) }_{} \define 
-%     \begin{cases}
-%         , &\eta_{m,j} = 1
-%         \\
-%         , &\eta_{m,j} > 1
-%     \end{cases}
-% \end{align}
 
+\delete{
+    Outline:
+    \begin{itemize}
+        \item and $\Policy$ is optimized policy globally always with full-state information available.
+        \item \needref{R.Nair, 2003} uses DEC-POMDP (Decentralized Partial-Observed MDP) framework to characterize the coordination among decentralized and partially observed multi-agent problem. The solution to its problem is of high complexity and requires extra information;
+        \item thus we come up with sub-optimal solution to the Bellman equation; (where the lower and upper bound are analytically obtained;
+        \item The \emph{exhaustive-JESP} algorithm implies, each AP only update the policy of itself, and consider other APs' policy fixed in the environment.
+        \item Remark: Assume that we solve the sub-problems following the order of index of AP set, and then substitute the solution to the $k$-th problem to the $(k+1)$-th problem ($\forall k\in\apSet$).
+              Apparently, we could achieve a sub-optimal solution of all APs which is upper bounded by the solution to the original problem.
+        \item We restrict out observation in solution part, and just leverage the structure of the above centralized optimization problem.
+        \end{remark}
+    \end{itemize}
+}
 However, after the state decomposition, the action space would still be exponentially expanded with respect to the number of APs and edge servers.
 We could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity.
-\st{And we come up with an algorithm which could solve all $K$ sub-problems to achieve a global solution.}
 So in next section, to alleviate curse of dimensionality, we introduce baseline dispatching policy to approximate the value function, and then carry out one-step iteration \st{in a polling manner} to obtain a better value function approximation.
 %----------------------------------------------------------------------------------------%
