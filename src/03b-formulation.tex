@@ -142,12 +142,12 @@ where transition matrix $\hat{\Gamma}^{(k)}_{m,j}$ is a \emph{block matrix} whos
     &\vecG{\theta}^{(k)}_{m,j,\xi+1}(t) \define
     \nonumber\\
     &\begin{cases}
-        ( \Gamma^{(k)}_{m,j,\xi} \dots \Gamma^{(k)}_{m,j,\xi-N} ) \times \vecG{\theta}^{(k)}_{m,j,\xi-N-1}(t_i), &{\xi \geq N}
+        ( \Gamma^{(k)}_{m,j,\xi} \dots \Gamma^{(k)}_{m,j,\xi-N} ) \times \vecG{\theta}^{(k)}_{m,j,\xi-N-1}({t}), &{\xi \geq N}
         \\
-        ( \Gamma^{(k)}_{m,j,\xi} \dots \Gamma^{(k)}_{m,j,1} ) \times \vecG{\theta}^{(k)}_{m,j,0}(t_i), &{\xi < N}
+        ( \Gamma^{(k)}_{m,j,\xi} \dots \Gamma^{(k)}_{m,j,1} ) \times \vecG{\theta}^{(k)}_{m,j,0}({t}), &{\xi < N}
     \end{cases},
 \end{align}
-where $\vecG{\theta}^{(k)}_{m,j,0}(t_{i}) \sim \text{Bernoulli}(\tilde{\lambda}^{(k)}_{m,j}(t_i))$. The transition matrix $\Gamma^{(k)}_{m,j,\xi}$ is time-invariant and the definition is given as follows.
+where $\vecG{\theta}^{(k)}_{m,j,0}({t}) \sim \text{Bernoulli}(\tilde{\lambda}^{(k)}_{m,j}({t}))$. The transition matrix $\Gamma^{(k)}_{m,j,\xi}$ is time-invariant and the definition is given as follows.
 \begin{align}
     \Gamma^{(k)}_{m,j,\xi} = 
     \begin{bmatrix}
@@ -164,27 +164,27 @@ Intuitively, $\hat{\Gamma}^{(k)}_{m,j}$ is an off-diagonal block matrix plus a h
 The second part denotes the state transition on edge servers.
 Denote as
 \begin{align}
-    \Pr\Brace{ Q_{m,j}(t_{i+1})|Q_{m,j}(t_{i}), \mathcal{R}(t_{i}) } \sim \vecG{\nu}_{m,j}(t_{i}).
+    \Pr\Brace{ Q_{m,j}({t+1})|Q_{m,j}({t}), \mathcal{R}({t}) } \sim \vecG{\nu}_{m,j}({t}).
 \end{align}
-We notice that the job arrival distribution $\vecG{\beta}_{m,j}(t_{i})$ is given by $\mathcal{R}(t_{i})$, and the departure rate in one slot is deterministic as $1/N$.
+We notice that the job arrival distribution $\vecG{\beta}_{m,j}({t})$ is given by $\mathcal{R}({t})$, and the departure rate in one slot is deterministic as $1/N$.
 Thus the expectation of $\vecG{\beta}$ would be always far more smaller than $1$ as composed of all $K$ AP nodes.
-We take approximation on $\vec{\beta}$ as Bernoulli distribution in each time slot that $\vecG{\beta}(t_{i,n}) \triangleq [\beta^{(0)}_{m,j}(t_{i,n}), \beta^{(1)}_{m,j}(t_{i,n})]$, where
+We take approximation on $\vec{\beta}$ as Bernoulli distribution in each time slot that $\vecG{\beta}({t,n}) \triangleq [\beta^{(0)}_{m,j}({t,n}), \beta^{(1)}_{m,j}({t,n})]$, where
 \begin{align}
-    \beta^{(1)}_{m,j}(t_{i,n}) &\define \sum_{k\in\mathcal{K}} \sum_{\xi=0,\dots,\Xi-1} \mathbb{E}[\vecG{\rho}^{(k,+)}_{m,j,\xi}(t_{i,n})]
+    \beta^{(1)}_{m,j}({t,n}) &\define \sum_{k\in\mathcal{K}} \sum_{\xi=0,\dots,\Xi-1} \mathbb{E}[\vecG{\rho}^{(k,+)}_{m,j,\xi}({t,n})]
     \label{eqn_0}
     \\
-    \vecG{\rho}^{(k,+)}_{m,j,\xi}(t_{i,n}) &\define \tilde{\Gamma}^{(k)}_{m,j,\xi} \times \vecG{\theta}^{(k)}_{m,j,\xi}(t_{i,n})
+    \vecG{\rho}^{(k,+)}_{m,j,\xi}({t,n}) &\define \tilde{\Gamma}^{(k)}_{m,j,\xi} \times \vecG{\theta}^{(k)}_{m,j,\xi}({t,n})
     % \label{eqn_1}
     \\
-    \beta^{(0)}_{m,j}(t_{i,n}) &= 1-\beta^{(1)}_{m,j}(t_{i,n})
+    \beta^{(0)}_{m,j}({t,n}) &= 1-\beta^{(1)}_{m,j}({t,n})
     % \label{eqn_2} 
 \end{align}
-And we could obtain the time-variant transition matrix composed of multiple transition matrix $P_{m,j}(\vecG{\beta}(t_{i,n}))$ in all the time slots in $i$-th interval as follows.
+And we could obtain the time-variant transition matrix composed of multiple transition matrix $P_{m,j}(\vecG{\beta}({t,n}))$ in all the time slots in $i$-th interval as follows.
 \begin{align}
-    \vecG{\nu}(t_{i,n+1}) &= P_{m,j}\Paren{\vecG{\beta}(t_{i,n})} \vecG{\nu}(t_{i,n})
+    \vecG{\nu}({t,n+1}) &= P_{m,j}\Paren{\vecG{\beta}({t,n})} \vecG{\nu}({t,n})
     % \label{eqn_3}
     \\
-    \vecG{\nu}(t_{i+1}) &= \prod_{n=0,\dots,N-1} P_{m,j}\Paren{\vecG{\beta}(t_{i,n})} \vecG{\nu}(t_{i}),
+    \vecG{\nu}({t+1}) &= \prod_{n=0,\dots,N-1} P_{m,j}\Paren{\vecG{\beta}({t,n})} \vecG{\nu}({t}),
     \label{eqn_4}
 \end{align}
 
