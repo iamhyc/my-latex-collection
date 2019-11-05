@@ -17,13 +17,13 @@ As each AP would always update its dispatching policy based on the latest broadc
 The relationship between \brdelay~and the policy update time points for different APs is depicted in Fig. \ref{fig:brd-trans}.
 
 \begin{definition}[System State]
-    The system state at $i$-th \brpoint~is denoted as follows.
+    The system state at $t$-th \brpoint~is denoted as follows.
     \begin{align}
-        \Stat(t_i) \define \Paren{
-            \Obsv(t_{i-1}), \Obsv({t_{i}}), \mathcal{D}(t_{i})
+        \Stat({t}) \define \Paren{
+            \Obsv({t-1}), \Obsv({t}), \mathcal{D}({t})
         },
     \end{align}
-    where $\mathcal{D}(t_{i}) \define \set{D_{1}(t_{i}), \dots, D_{K}(t_{i})}$ denotes the \brdelay~for each AP, $\Obsv(t_{i})$ denotes updated information after receiving the whole broadcast information, and $\Obsv(t_{i-1})$ denotes the stale information.
+    where $\mathcal{D}({t}) \define \set{D_{1}({t}), \dots, D_{K}({t})}$ denotes the \brdelay~for each AP, $\Obsv({t})$ denotes updated information after receiving the whole broadcast information, and $\Obsv({t-1})$ denotes the stale information.
 \end{definition}
 
 \begin{figure}[ht]
@@ -37,28 +37,28 @@ Based on the two phases of broadcast information in the system state, the system
 Due to the different distributions of \brdelay~for each AP in one interval, APs use the stale policy in firstly and then update their policy based on latest information in random order.
 The joint policy of all APs is defined as follows.
 \begin{definition}[Joint Dispatching Policy]
-    The joint dispatching policy $\Policy(\Stat(t_{i}))$ over $\Stat(t_{i})$ which is defined with two phases broadcast information which is given as follows.
+    The joint dispatching policy $\Policy(\Stat({t}))$ over $\Stat({t})$ which is defined with two phases broadcast information which is given as follows.
     \begin{align}
-        \Policy\Paren{\Stat(t_{i})} \define \Brace{
-            \Omega_{1}\Paren{\Stat(t_{i})}, \dots, \Omega_{K}\Paren{\Stat(t_{i})}
+        \Policy\Paren{\Stat({t})} \define \Brace{
+            \Omega_{1}\Paren{\Stat({t})}, \dots, \Omega_{K}\Paren{\Stat({t})}
         },
     \end{align}
     where
-    $\Omega_{k}(\Stat(t_{i}))$ denotes the independent policy for the $k$-th AP ($\forall k\in\apSet$), whose definition is given as follows.
+    $\Omega_{k}(\Stat({t}))$ denotes the independent policy for the $k$-th AP ($\forall k\in\apSet$), whose definition is given as follows.
     \begin{align}
-        \Omega_{k}\Paren{\Stat(t_{i})} \define
+        \Omega_{k}\Paren{\Stat({t})} \define
         \begin{cases}
-            \tilde{\Omega}_{k}( \Obsv(t_{i-1}) ), &n < D_{k}(t_{i})
+            \tilde{\Omega}_{k}( \Obsv({t-1}) ), &n <    D_{k}({t})
             \\
-            \tilde{\Omega}_{k}( \Obsv(t_{i}) ), &n \geq D_{k}(t_{i})
+            \tilde{\Omega}_{k}( \Obsv({t}) ),   &n \geq D_{k}({t})
         \end{cases},
     \end{align}
-    where $n$ denotes the index of time slot in the $i$-th interval.
+    where $n$ denotes the index of time slot in the $t$-th interval.
 \end{definition}
 
 We note that with the given dispatching policy, the arrival distribution $A_{k,j}$ of the $j$-th job on the $k$-th AP ($\forall k\in\apSet, j\in\jSpace$) is further split onto different Edge Servers.
 The split job arrival distributions are still i.i.d Bernoulli distributions with arrival probability as 
-$\tilde{\lambda}^{(k)}_{m,j}(t_{i}) \define \lambda_{k,j} I[\omega_{k,j}(t_i) = m]$ ($\forall m\in\esSet$), where $I[\cdot]$ is the indicator function.
+$\tilde{\lambda}^{(k)}_{m,j}({t}) \define \lambda_{k,j} I[\omega_{k,j}({t}) = m]$ ($\forall m\in\esSet$), where $I[\cdot]$ is the indicator function.
 %----------------------------------------------------------------------------------------%
 
 \subsection{The Optimization Problem}
@@ -70,10 +70,10 @@ Due to the periodic information broadcasting, we collect the cost for counting n
 Besides the cost counted for job response time, we further add penalty on jobs rejection on edge servers when the job submission is over the queue capacity limit. The penalty will be counted at the end of each broadcast interval.
 The definition of the cost function is given as follows.
 \begin{align}
-    g\Paren{\Stat(t_{i}), \Policy(\Stat(t_{i}))} \define
-        &\sum_{k\in\apSet} \sum_{m\in\esSet} \sum_{j\in\jSpace} \vec{R}^{(k)}_{m,j,\xi}(t_{i})~+
+    g\Paren{\Stat({t}), \Policy(\Stat({t}))} \define
+        &\sum_{k\in\apSet} \sum_{m\in\esSet} \sum_{j\in\jSpace} \vec{R}^{(k)}_{m,j,\xi}({t})~+
         \nonumber\\
-        &\sum_{m\in\esSet} \sum_{j\in\jSpace} \Brace{L_{m,j}(t_{i}) + \beta \cdot \mat{I}[L_{m,j}(t_{i})=L_Q]},
+        &\sum_{m\in\esSet} \sum_{j\in\jSpace} \Brace{L_{m,j}({t}) + \beta \cdot \mat{I}[L_{m,j}({t})=L_Q]},
 \end{align}
 where $\beta$ is the weight factor for job rejection penalty ($\beta \in (0,1)$).
 
@@ -81,15 +81,15 @@ where $\beta$ is the weight factor for job rejection penalty ($\beta \in (0,1)$)
     \begin{align}
         \min_{\Policy} \lim_{T \to \infty}
             \mathbb{E}_{\Policy}
-                \Bracket{\sum_{i=1}^{T} \gamma^{i-1} g\Paren{\Stat(t_{i}), \Policy(\Stat(t_{i}))}|\Stat(t_1)},
+                \Bracket{\sum_{t=1}^{T} \gamma^{t-1} g\Paren{\Stat({t}), \Policy(\Stat({t}))}|\Stat(1)},
     \end{align}
     where the cost is collected with a discount factor $\gamma$.
 \end{problem}
 According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
 \begin{align}
-    V\Paren{\Stat(t_{i})} =~&g\Paren{\Stat(t_{i})} + \gamma \min_{\Policy(\Stat(t_{i}))}
+    V\Paren{\Stat({t})} =~&g\Paren{\Stat({t})} + \gamma \min_{\Policy(\Stat({t}))}
         \nonumber\\
-        &\sum_{\Stat(t_{i+1})} \Pr\Brace{ \Stat(t_{i+1})|\Stat(t_{i}), \Policy(\Stat(t_{i})) } \cdot V\Paren{\Stat(t_{i+1})}.
+        &\sum_{\Stat({t+1})} \Pr\Brace{ \Stat({t+1})|\Stat({t}), \Policy(\Stat({t})) } \cdot V\Paren{\Stat({t+1})}.
     \label{sp_0}
 \end{align}
 
@@ -99,19 +99,19 @@ The expression of transition function in Eqn. \ref{sp_0} is given as follows.
     The transition function in Bellman's equation could be decoupled on states of APs and edge servers, which will facilitate the approximated value function expression in the following section.
     The decoupled transition function for Eqn. \ref{sp_0} is given as follows.
     \begin{align}
-        & \Pr\Brace{ \Stat(t_{i+1})|\Stat(t_{i}), \Policy(\Stat(t_{i})) }
+        & \Pr\Brace{ \Stat({t+1})|\Stat({t}), \Policy(\Stat({t})) }
         \nonumber\\
-        =& \Pr\{\mathcal{D}(t_{i+1})\} \times \Pr\Brace{ \Obsv(t_{i+1})|\Obsv(t_{i}), \Policy(\Stat(t_{i}))}
+        =& \Pr\{\mathcal{D}({t+1})\} \times \Pr\Brace{ \Obsv({t+1})|\Obsv({t}), \Policy(\Stat({t}))}
         \nonumber\\
-        =& \Pr\{\mathcal{D}(t_{i+1})\} \times \prod_{k\in\apSet}\prod_{m\in\esSet}\prod_{j\in\jSpace}
+        =& \Pr\{\mathcal{D}({t+1})\} \times \prod_{k\in\apSet}\prod_{m\in\esSet}\prod_{j\in\jSpace}
                 \Pr\Brace{
-                    \vec{R}^{(k)}_{m,j}(t_{i+1}) | \vec{R}^{(k)}_{m,j}(t_{i}),
-                    \Policy(\Stat(t_{i}))
+                    \vec{R}^{(k)}_{m,j}({t+1}) | \vec{R}^{(k)}_{m,j}({t}),
+                    \Policy(\Stat({t}))
                 }  
             \nonumber\\
             & \times \prod_{m\in\esSet}\prod_{j\in\jSpace}
                 \Pr\Brace{
-                    Q_{m,j}(t_{i+1})|Q_{m,j}(t_{i}), \mathcal{R}(t_{i}), \Policy(\Stat(t_{i}))
+                    Q_{m,j}({t+1})|Q_{m,j}({t}), \mathcal{R}({t}), \Policy(\Stat({t}))
                 }.
     \end{align}
 \end{lemma}
@@ -119,23 +119,27 @@ The expression of transition function in Eqn. \ref{sp_0} is given as follows.
     Proof deleted.
 \end{proof}
 
-The first part denotes the state transition on AP.
-Denote as
+The transition function, except for standalone distribution of $\Pr\{\mathcal{D}({t})\}$ falls into two production part.
+\fixit{
+    The first part denotes the state transition on AP.
+    We obs
+    Denote as
+}
 \begin{align}
     \Pr\Brace{
-        \vec{R}^{(k)}_{m,j}(t_{i+1}) | \vec{R}^{(k)}_{m,j}(t_{i})
-    } \sim \vecG{\Theta}^{(k)}_{m,j}(t_{i+1}),
+        \vec{R}^{(k)}_{m,j}({t+1}) | \vec{R}^{(k)}_{m,j}(t)
+    } \sim \vecG{\Theta}^{(k)}_{m,j}({t+1}),
 \end{align}
-where $\vecG{\Theta}^{(k)}_{m,j}(t_{i+1}) \define [\vecG{\theta}^{(k)}_{m,j,0}(t_{i+1}), \dots, \vecG{\theta}^{(k)}_{m,j,\Xi}(t_{i+1})]$.
+where $\vecG{\Theta}^{(k)}_{m,j}({t+1}) \define [\vecG{\theta}^{(k)}_{m,j,0}({t+1}), \dots, \vecG{\theta}^{(k)}_{m,j,\Xi}({t+1})]$.
 Given that the uploading process is depicted by a series of counters, we further have
-$\Pr\Brace{R^{(k)}_{m,j,\xi+1}(t_{i+1})|R^{(k)}_{m,j,\xi}(t_{i})} \sim \vecG{\theta}^{(k)}_{m,j,\xi}(t_{i+1})$ ($\forall \xi=0,\dots,\Xi$).
+$\Pr\Brace{R^{(k)}_{m,j,\xi+1}({t+1})|R^{(k)}_{m,j,\xi}({t})} \sim \vecG{\theta}^{(k)}_{m,j,\xi}({t+1})$ ($\forall \xi=0,\dots,\Xi$).
 Then we could express the distribution with a transition matrix as:
 \begin{align}
-    \vecG{\Theta}^{(k)}_{m,j}(t_{i+1}) \define \hat{\Gamma}^{(k)}_{m,j}\Paren{\Policy(\Stat(t_i)) }\vecG{\Theta}^{(k)}_{m,j}(t_{i}),
+    \vecG{\Theta}^{(k)}_{m,j}({t+1}) \define \hat{\Gamma}^{(k)}_{m,j}\Paren{\Policy(\Stat({t})) }\vecG{\Theta}^{(k)}_{m,j}({t}),
 \end{align}
 where transition matrix $\hat{\Gamma}^{(k)}_{m,j}$ is a \emph{block matrix} whose element is transition matrix $\Gamma^{(k)}_{m,j,\xi}$ for the distribution on the series of counters. The definition is given as follows.
 \begin{align}
-    &\vecG{\theta}^{(k)}_{m,j,\xi+1}(t_{i+1}) \define
+    &\vecG{\theta}^{(k)}_{m,j,\xi+1}(t) \define
     \nonumber\\
     &\begin{cases}
         ( \Gamma^{(k)}_{m,j,\xi} \dots \Gamma^{(k)}_{m,j,\xi-N} ) \times \vecG{\theta}^{(k)}_{m,j,\xi-N-1}(t_i), &{\xi \geq N}
