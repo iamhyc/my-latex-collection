@@ -119,24 +119,26 @@ The expression of transition function in Eqn. \ref{sp_0} is given as follows.
     Proof deleted.
 \end{proof}
 
-The transition function, except for standalone distribution of $\Pr\{\mathcal{D}({t})\}$ falls into two production part.
+The transition function, except for standalone distribution of $\Pr\{\mathcal{D}({t})\}$ is consisted of two parts of state transitions on APs and edge servers, respectively.
+To efficiently express the state transition, we further convert the state vector into the corresponding probability vector, and perform the state transition with the transition matrix for explicit.
+
+For state transition of APs, we denote $\vecG{\Theta}^{(k)}_{m,j}$ and $\hat{\Gamma}^{(k)}_{m,j}$ as probability vector and transition matrix, respectively, for $\vec{R}^{(k)}_{m,j}$ of the $j$-th type of job uploading from the $k$-th AP to the $m$-th edge server ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
 \fixit{
-    The first part denotes the state transition on AP.
-    We obs
-    Denote as
+    \begin{itemize}
+        \item definition for $\vecG{\Theta}^{(k)}_{m,j}$, and the conversion function given $\Policy(\Stat(t))$;
+        \item definition for $\Gamma^{(k)}_{m,j}$ (not block matrix any more);
+        \item Given that the uploading process is depicted by a series of counters \dots
+    \end{itemize}
 }
-\begin{align}
-    \Pr\Brace{
-        \vec{R}^{(k)}_{m,j}({t+1}) | \vec{R}^{(k)}_{m,j}(t)
-    } \sim \vecG{\Theta}^{(k)}_{m,j}({t+1}),
-\end{align}
-where $\vecG{\Theta}^{(k)}_{m,j}({t+1}) \define [\vecG{\theta}^{(k)}_{m,j,0}({t+1}), \dots, \vecG{\theta}^{(k)}_{m,j,\Xi}({t+1})]$.
-Given that the uploading process is depicted by a series of counters, we further have
-$\Pr\Brace{R^{(k)}_{m,j,\xi+1}({t+1})|R^{(k)}_{m,j,\xi}({t})} \sim \vecG{\theta}^{(k)}_{m,j,\xi}({t+1})$ ($\forall \xi=0,\dots,\Xi$).
-Then we could express the distribution with a transition matrix as:
-\begin{align}
-    \vecG{\Theta}^{(k)}_{m,j}({t+1}) \define \hat{\Gamma}^{(k)}_{m,j}\Paren{\Policy(\Stat({t})) }\vecG{\Theta}^{(k)}_{m,j}({t}),
-\end{align}
+\begin{gather*}
+    \vecG{\Theta}^{(k)}_{m,j}({t+1}) \define \Gamma^{(k)}_{m,j} \times \vecG{\Theta}^{(k)}_{m,j}({t}),
+    \\
+    \vecG{\Theta}^{(k)}_{m,j}({t+1}) \define [p^{(k)}_{m,j,0}({t+1}), \dots, p^{(k)}_{m,j,\Xi}({t+1})]
+    \\
+    \Pr\Brace{R^{(k)}_{m,j,\xi+1}({t+1})|R^{(k)}_{m,j,\xi}({t})} \sim \vecG{\theta}^{(k)}_{m,j,\xi}({t+1})
+\end{gather*}
+($\forall \xi=0,\dots,\Xi$).
+
 where transition matrix $\hat{\Gamma}^{(k)}_{m,j}$ is a \emph{block matrix} whose element is transition matrix $\Gamma^{(k)}_{m,j,\xi}$ for the distribution on the series of counters. The definition is given as follows.
 \begin{align}
     &\vecG{\theta}^{(k)}_{m,j,\xi+1}(t) \define
@@ -148,20 +150,16 @@ where transition matrix $\hat{\Gamma}^{(k)}_{m,j}$ is a \emph{block matrix} whos
     \end{cases},
 \end{align}
 where $\vecG{\theta}^{(k)}_{m,j,0}({t}) \sim \text{Bernoulli}(\tilde{\lambda}^{(k)}_{m,j}({t}))$. The transition matrix $\Gamma^{(k)}_{m,j,\xi}$ is time-invariant and the definition is given as follows.
-\begin{align}
-    \Gamma^{(k)}_{m,j,\xi} = 
-    \begin{bmatrix}
-        &0 \\
-        &p^{(k)}_{m,j,\xi} &\bar{p}^{(k)}_{m,j,\xi} \\
-        &(p^{(k)}_{m,j,\xi})^2 &2(p^{(k)}_{m,j,\xi}\bar{p}^{(k)}_{m,j,\xi}) &(\bar{p}^{(k)}_{m,j,\xi})^2 \\
-        % &(p^{(k)}_{m,j,\xi})^3 &3(p^{(k)}_{m,j,\xi})^2(\bar{p}^{(k)}_{m,j,\xi}) &3(p^{(k)}_{m,j,\xi})(\bar{p}^{(k)}_{m,j,\xi})^2 &(p^{(k)}_{m,j,\xi})^3 \\
-        &\dots &\dots &\dots &\dots
-    \end{bmatrix}^T,
-\end{align}
 where $p^{(k)}_{m,j,\xi} \define \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\xi\}$ and $\bar{p}^{(k)}_{m,j,\xi} = 1 - p^{(k)}_{m,j,\xi}$.
 Intuitively, $\hat{\Gamma}^{(k)}_{m,j}$ is an off-diagonal block matrix plus a horizontal part w.r.t $\vecG{\theta}^{(k)}_{m,j,0}$, while the other entries as all zero.
 
-The second part denotes the state transition on edge servers.
+For state transition of edge servers, we denote $\vecG{\mu}_{m,j}$ and $P_{m,j}$ as probability vector and transition matrix, respectively, for $Q_{m,j}$ of the $j$-th job processing on the $m$-th edge server ($\forall m\in\esSet, j\in\jSpace$).
+\fixit{
+    \begin{itemize}
+        \item explain the little probability approximation;
+        \item definition of $\vecG{\mu}_{m,j}$
+    \end{itemize}
+}
 Denote as
 \begin{align}
     \Pr\Brace{ Q_{m,j}({t+1})|Q_{m,j}({t}), \mathcal{R}({t}) } \sim \vecG{\nu}_{m,j}({t}).
