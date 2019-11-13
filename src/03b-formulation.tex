@@ -123,7 +123,7 @@ The transition function, except for standalone probability distribution $\Pr\{\m
 To efficiently express the state transition, we further elaborate the 
 
 To efficiently express the state transition, we further elaborate the distribution probability of the state vector as the corresponding probability vector, and perform the state transition with the transition matrix.
-For state transition of APs, we denote $\vecG{\Theta}^{(k)}_{m,j}$ and $\dot{\Gamma}^{(k)}_{m,j}$ as probability vector and transition matrix, respectively, for $\vec{R}^{(k)}_{m,j}$ of the $j$-th type of job uploading from the $k$-th AP to the $m$-th edge server ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$). The definition is given as follows.
+For state transition of APs inside one interval, we denote $\vecG{\Theta}^{(k)}_{m,j}$ and $\hat{\Gamma}^{(k)}_{m,j}(t,n)$ as probability vector and transition matrix, respectively, for $\vec{R}^{(k)}_{m,j}$ of the $j$-th type of job uploading from the $k$-th AP to the $m$-th edge server ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$). The definition is given as follows.
 \begin{align}
     \Gamma^{(k)}_{m,j}(t,n) \define
     \begin{bmatrix}
@@ -145,9 +145,11 @@ For state transition of APs, we denote $\vecG{\Theta}^{(k)}_{m,j}$ and $\dot{\Ga
 where $p^{(k)}_{m,j,\xi} \define \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\xi\}$ ($\forall \xi=0,\dots,\Xi$).
 \fixit{
     And we notice that $\Pr\{R^{(k)}_{m,j,0}\}(t,n)$ is determined simply by arrival process and dispatching policy which motivates the system to work.
-    \\
-    $\vecG{\Theta}^{(k)}_{m,j}({t+1}) \define \Gamma^{(k)}_{m,j} \times \vecG{\Theta}^{(k)}_{m,j}({t}),$
 }
+\begin{align}
+    \vecG{\Theta}^{(k)}_{m,j}({t+1}) \define ( \Gamma^{(k)}_{m,j} )^{N} \times \vecG{\Theta}^{(k)}_{m,j}({t}),
+\end{align}
+where $\hat{\Gamma} \define $
 
 where transition matrix $\dot{\Gamma}^{(k)}_{m,j}$ is a \emph{block matrix} whose element is transition matrix $\Gamma^{(k)}_{m,j,\xi}$ for the distribution on the series of counters. The definition is given as follows.
 \begin{align}
