@@ -119,10 +119,31 @@ The expression of transition function in Eqn. \ref{sp_0} is given as follows.
     Proof deleted.
 \end{proof}
 
-The transition function, except for standalone distribution of $\Pr\{\mathcal{D}({t})\}$ is consisted of two parts of state transitions on APs and edge servers, respectively.
-To efficiently express the state transition, we further elaborate the distribution probability of the state vector as the corresponding probability vector, and perform the state transition with the transition matrix for explicit.
+The transition function, except for standalone probability distribution $\Pr\{\mathcal{D}({t})\}$, is consisted of two parts of state transitions on APs and edge servers, respectively.
+To efficiently express the state transition, we further elaborate the 
 
-For state transition of APs, we denote $\vecG{\Theta}^{(k)}_{m,j}$ and $\hat{\Gamma}^{(k)}_{m,j}$ as probability vector and transition matrix, respectively, for $\vec{R}^{(k)}_{m,j}$ of the $j$-th type of job uploading from the $k$-th AP to the $m$-th edge server ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
+To efficiently express the state transition, we further elaborate the distribution probability of the state vector as the corresponding probability vector, and perform the state transition with the transition matrix.
+\begin{align}
+    \Gamma^{(k)}_{m,j} \define
+    \begin{bmatrix}
+        1 & \bar{p}^{(k)}_{m,j,0} &                       &        &                           \\
+          & 0                     & \bar{p}^{(k)}_{m,j,1} &        &                           \\
+          &                       & \ddots                & \ddots &                           \\
+          &                       &                       & \ddots & \bar{p}^{(k)}_{m,j,\Xi-1} \\
+          &                       &                       &        & 0                         \\
+    \end{bmatrix},
+    \Theta^{(k)}_{m,j} \define
+    \begin{bmatrix}
+        \Pr\{R^{(k)}_{m,j,0} = 1\} \\
+        \Pr\{R^{(k)}_{m,j,1} = 1\} \\
+        \vdots \\
+        \vdots \\
+        \Pr\{R^{(k)}_{m,j,\Xi} = 1\}
+    \end{bmatrix},
+\end{align}
+where $p^{(k)}_{m,j,\xi} \define \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\xi\}$.
+
+For state transition of APs, we denote $\vecG{\Theta}^{(k)}_{m,j}$ and $\dot{\Gamma}^{(k)}_{m,j}$ as probability vector and transition matrix, respectively, for $\vec{R}^{(k)}_{m,j}$ of the $j$-th type of job uploading from the $k$-th AP to the $m$-th edge server ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
 The probability vector denotes the ???
 \fixit{
     \begin{itemize}
@@ -140,7 +161,7 @@ The probability vector denotes the ???
 \end{gather*}
 ($\forall \xi=0,\dots,\Xi$).
 
-where transition matrix $\hat{\Gamma}^{(k)}_{m,j}$ is a \emph{block matrix} whose element is transition matrix $\Gamma^{(k)}_{m,j,\xi}$ for the distribution on the series of counters. The definition is given as follows.
+where transition matrix $\dot{\Gamma}^{(k)}_{m,j}$ is a \emph{block matrix} whose element is transition matrix $\Gamma^{(k)}_{m,j,\xi}$ for the distribution on the series of counters. The definition is given as follows.
 \begin{align}
     &\vecG{\theta}^{(k)}_{m,j,\xi+1}(t) \define
     \nonumber\\
@@ -152,7 +173,7 @@ where transition matrix $\hat{\Gamma}^{(k)}_{m,j}$ is a \emph{block matrix} whos
 \end{align}
 where $\vecG{\theta}^{(k)}_{m,j,0}({t}) \sim \text{Bernoulli}(\tilde{\lambda}^{(k)}_{m,j}({t}))$. The transition matrix $\Gamma^{(k)}_{m,j,\xi}$ is time-invariant and the definition is given as follows.
 where $p^{(k)}_{m,j,\xi} \define \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\xi\}$ and $\bar{p}^{(k)}_{m,j,\xi} = 1 - p^{(k)}_{m,j,\xi}$.
-Intuitively, $\hat{\Gamma}^{(k)}_{m,j}$ is an off-diagonal block matrix plus a horizontal part w.r.t $\vecG{\theta}^{(k)}_{m,j,0}$, while the other entries as all zero.
+Intuitively, $\dot{\Gamma}^{(k)}_{m,j}$ is an off-diagonal block matrix plus a horizontal part w.r.t $\vecG{\theta}^{(k)}_{m,j,0}$, while the other entries as all zero.
 
 For state transition of edge servers, we denote $\vecG{\mu}_{m,j}$ and $P_{m,j}$ as probability vector and transition matrix, respectively, for $Q_{m,j}$ of the $j$-th job processing on the $m$-th edge server ($\forall m\in\esSet, j\in\jSpace$).
 \fixit{
