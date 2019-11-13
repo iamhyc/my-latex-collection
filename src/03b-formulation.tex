@@ -123,8 +123,9 @@ The transition function, except for standalone probability distribution $\Pr\{\m
 To efficiently express the state transition, we further elaborate the 
 
 To efficiently express the state transition, we further elaborate the distribution probability of the state vector as the corresponding probability vector, and perform the state transition with the transition matrix.
+For state transition of APs, we denote $\vecG{\Theta}^{(k)}_{m,j}$ and $\dot{\Gamma}^{(k)}_{m,j}$ as probability vector and transition matrix, respectively, for $\vec{R}^{(k)}_{m,j}$ of the $j$-th type of job uploading from the $k$-th AP to the $m$-th edge server ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$). The definition is given as follows.
 \begin{align}
-    \Gamma^{(k)}_{m,j} \define
+    \Gamma^{(k)}_{m,j}(t,n) \define
     \begin{bmatrix}
         1 & \bar{p}^{(k)}_{m,j,0} &                       &        &                           \\
           & 0                     & \bar{p}^{(k)}_{m,j,1} &        &                           \\
@@ -132,34 +133,21 @@ To efficiently express the state transition, we further elaborate the distributi
           &                       &                       & \ddots & \bar{p}^{(k)}_{m,j,\Xi-1} \\
           &                       &                       &        & 0                         \\
     \end{bmatrix},
-    \Theta^{(k)}_{m,j} \define
+    \Theta^{(k)}_{m,j}(t,n) \define
     \begin{bmatrix}
-        \Pr\{R^{(k)}_{m,j,0} = 1\} \\
-        \Pr\{R^{(k)}_{m,j,1} = 1\} \\
+        \Pr\{R^{(k)}_{m,j,0}(t,n) = 1\} \\
+        \Pr\{R^{(k)}_{m,j,1}(t,n) = 1\} \\
         \vdots \\
         \vdots \\
-        \Pr\{R^{(k)}_{m,j,\Xi} = 1\}
+        \Pr\{R^{(k)}_{m,j,\Xi}(t,n) = 1\}
     \end{bmatrix},
 \end{align}
-where $p^{(k)}_{m,j,\xi} \define \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\xi\}$.
-
-For state transition of APs, we denote $\vecG{\Theta}^{(k)}_{m,j}$ and $\dot{\Gamma}^{(k)}_{m,j}$ as probability vector and transition matrix, respectively, for $\vec{R}^{(k)}_{m,j}$ of the $j$-th type of job uploading from the $k$-th AP to the $m$-th edge server ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
-The probability vector denotes the ???
+where $p^{(k)}_{m,j,\xi} \define \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\xi\}$ ($\forall \xi=0,\dots,\Xi$).
 \fixit{
-    \begin{itemize}
-        \item definition for $\vecG{\Theta}^{(k)}_{m,j}$, and the conversion function given $\Policy(\Stat(t))$;
-        \item definition for $\Gamma^{(k)}_{m,j}$ (not block matrix any more);
-        \item Given that the uploading process is depicted by a series of counters \dots
-    \end{itemize}
+    And we notice that $\Pr\{R^{(k)}_{m,j,0}\}(t,n)$ is determined simply by arrival process and dispatching policy which motivates the system to work.
+    \\
+    $\vecG{\Theta}^{(k)}_{m,j}({t+1}) \define \Gamma^{(k)}_{m,j} \times \vecG{\Theta}^{(k)}_{m,j}({t}),$
 }
-\begin{gather*}
-    \vecG{\Theta}^{(k)}_{m,j}({t+1}) \define \Gamma^{(k)}_{m,j} \times \vecG{\Theta}^{(k)}_{m,j}({t}),
-    \\
-    \vecG{\Theta}^{(k)}_{m,j}({t+1}) \define [p^{(k)}_{m,j,0}({t+1}), \dots, p^{(k)}_{m,j,\Xi}({t+1})]
-    \\
-    \Pr\Brace{R^{(k)}_{m,j,\xi+1}({t+1})|R^{(k)}_{m,j,\xi}({t})} \sim \vecG{\theta}^{(k)}_{m,j,\xi}({t+1})
-\end{gather*}
-($\forall \xi=0,\dots,\Xi$).
 
 where transition matrix $\dot{\Gamma}^{(k)}_{m,j}$ is a \emph{block matrix} whose element is transition matrix $\Gamma^{(k)}_{m,j,\xi}$ for the distribution on the series of counters. The definition is given as follows.
 \begin{align}
