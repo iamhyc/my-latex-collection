@@ -67,7 +67,7 @@ The broadcast information of the $k$-th AP at the $t$-th broadcast ($t\in\domZ$)
 \begin{align}
     \mathcal{R}_{k}({t}) \define \set{R^{(k)}_{m,j,\xi}({t}) | \forall m\in\esSet, j\in\jSpace, \xi \in [0,\Xi]},
 \end{align}
-where we have $\vec{R}^{(k)}_{m,j} \define ( R^{(k)}_{m,j,0},\dots,R^{(k)}_{m,j,\Xi} )$ denotes the vector of random variables for convenience.
+where we have $\vec{R}^{(k)}_{m,j} \define ( R^{(k)}_{m,j,0},\dots,R^{(k)}_{m,j,\Xi} )$ denote the vector of random variables for convenience.
 
 %NOTE: State and Broadcast Information for ES
 One edge server shall maintain information about the queue status for each VM.
@@ -92,11 +92,11 @@ We call the delay after which one AP (saying the $k$-th AP, $\forall k\in\apSet$
 \begin{align}
     D_{k}({t}) \define \max\Paren{\Brace{
         D^{\dagger}_{k,k'}({t}),
-        D^{\dagger}_{k,m}({t}) | \forall k' \neq k \in \apSet, m\in\esSet
+        D^{\ddagger}_{k,m}({t}) | \forall k' \neq k \in \apSet, m\in\esSet
     }}.
 \end{align}
 Due to the randomness of the network traffic, the \brdelay~shall be random based on the uncertainty of the arrival delay of each partial broadcast information.
-Thus APs have i.i.d. distributions of \brdelay, which is denoted as $\zeta_{k}$ ($\forall k \in \apSet$).
+Thus APs have i.i.d. distributions of \brdelay, which is denoted as $D_{k}$ ($\forall k \in \apSet$).
 
 As a high frequency broadcast design could result into \emph{broadcast storm} and block the normal network traffic, we introduce a slow enough broadcast interval selection in the system.
 The broadcast interval is always larger than the maximum \brdelay, i.e. $t_B > \hat{D}_k$ ($\forall k\in\apSet$), where $\hat{D}_k$ is the upper bound for $D_{k}({t})$ ($t\in\domP$).
@@ -105,7 +105,7 @@ The broadcast interval selected implies that any AP would always receive the who
 Each AP tries to update its dispatching decisions once it receives the latest system state via broadcast.
 Denote the dispatching policy of the $k$-th AP ($\forall k\in\apSet$) based on the broadcast information $\Obsv({t})$ ($t \in\domP$) as follows.
 \begin{align}
-    &\tilde{\Omega}_{k}\Paren{\Obsv({t})} \define \set{\omega_{k,j}({t})|\forall m\in\esSet, j\in\jSpace}
+    &\tilde{\Omega}_{k}\Paren{\Obsv({t})} \define \set{\omega_{k,j}|\forall m\in\esSet, j\in\jSpace}
     ~(\forall k\in\apSet).
     \label{def_action}
 \end{align}

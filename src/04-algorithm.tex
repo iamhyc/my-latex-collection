@@ -2,13 +2,10 @@
 In this section, we introduce a heuristic dispatching algorithm as the baseline policy, whose value function could be derived analytically.
 Then the right-hand side of Bellman's Equation turns into simple minimization problem over the control policy. The sub-optimal policy could be obtained by evaluation of approximated value function on right-hand side of Bellman's Equation with one-step iteration. And thus the approximated value function is the upper bound of the original optimal policy.
 
-\fixit{
-    However in practice, the system state is actually partially presented as $\Obsv({t-1})$ and $\Obsv({t})$ separated by the \brdelay, which is different for each AP in each broadcast interval.
-    This results into isolated acknowledge for each AP on the joint policy and transition function, because the delay information could not be shared among APs.
-    Thus the joint optimization over the components of $\Policy(\Stat({t}))$ is impossible.
+Moreover, as the system state is partially presented as $\Obsv({t-1})$ and $\Obsv({t})$ separated by the \brdelay~$\mathcal{D}(T)$, different APs would have isolated acknowledge on the joint policy and transition function due to different $D_k(t)$ ($\forall k\in\apSet$).
+Thus the joint optimization over the components of $\Policy(\Stat({t}))$ is impossible.
+To overcome the gap, we leverage the above global problem structure, but solve it with iterative policy update algorithm.
 
-    To overcome the gap, we leverage the above global problem structure, and develop \fixit{$K$ parallel sub-problems} where the $k$-th AP would determine its own optimal policy in the $k$-th problem ($\forall k\in\apSet$) while consider others' policy as fixed.
-}
 \delete{
     \begin{itemize}
         \item The updated global system state information presents at different time slots for different APs.
@@ -58,35 +55,31 @@ The expected value function $W^{\AP}(\mathcal{R}({t+1}))$ under baseline $\vecG{
     & \Inorm{
         \mathbb{E}\Bracket{
             \Paren{
-                1 - \gamma \hat{\Gamma}^{(k)}_{m,j}(\BaseLine({t}))
+                1 - \gamma [\Gamma^{(k)}_{m,j}(\BaseLine({t}))]^{N}
             }^{-1} \times \vecG{\Theta}^{(k)}_{m,j}({t+1})
         }
     },
     \label{w_ap}
 \end{align}
-where $\Inorm{\cdot}$ denotes the sum of absolute value of each entry of the vector, and $\mathbb[\cdot]$ over the vector of distributions gives out the vector of corresponding expectation. And the transition function $\Pr\{ \mathcal{R}({t+1})|\mathcal{R}({t}) \}$ is embedded with its distributions $\vecG{\Theta}^{(k)}_{m,j}({t+1})$ in the equation.
+where $\Inorm{\cdot}$ denotes the sum of absolute value of each entry of the vector, and $\mathbb[\cdot]$ over the vector of distributions gives out the vector of corresponding expectation. \delete{And the transition function $\Pr\{ \mathcal{R}({t+1})|\mathcal{R}({t}) \}$ is embedded with its distributions $\vecG{\Theta}^{(k)}_{m,j}({t+1})$ in the equation}.
 
-The expected value function $W^{\ES}(\mathcal{Q}({t+1}))$ under baseline $\vecG{\Pi}({t})$ for ES nodes is little complex compared to Eqn. \ref{w_ap}.
+The expected value function $W^{\ES}(\mathcal{Q}({t+1}))$ under baseline $\vecG{\Pi}({t})$ for ES nodes is little more complex compared to Eqn. \ref{w_ap}.
 The ES node transition is affected with both arrival process under dispatching policy and last queue state, and we reduce the states expression by taking average over the uploading process together with the transition function expression.
 \begin{align}
     &W^{\ES}_{\BaseLine({t})}\Paren{\mathcal{Q}({t+1})}
     \nonumber\\
     =& \sum_{m,j}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ l_{m,j}({t+i+1}) ]
     \nonumber\\
-    &~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \hat{\mat{P}}_{m,j}(\tilde{\vecG{\beta}}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}',
+    &~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \hat{\mat{P}}_{m,j}(\tilde{\beta}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}',
 \end{align}
-where $\hat{\mat{P}}_{m,j}(\tilde{\vecG{\beta}}) \define \prod_{n=0,\dots,N-1} \mat{P}_{m,j}(\tilde{\vecG{\beta}})$;
-$l_{m,j}({t+i+1}) \sim \vecG{\nu}({t+i+1})$, and $\vec{\nu}_{m,j}({t+i+1})$ ($\forall i=0,\dots,\frac{\Xi}{T}$) is obtained by calculation over equation (\ref{eqn_0})-(\ref{eqn_4});
-\fixit{the $i$-th element of vector $\vec{g}$ denotes the cost of server as $l_{m,j}(t)$;}
-$\tilde{\vecG{\beta}}$ is the arrival distribution under baseline policy $\Pi({t})$ (on $m$-th ES with $j$-type job), where:
+where $\hat{\mat{P}}_{m,j}(\tilde{\beta}) \define \prod_{n=0,\dots,N-1} \mat{P}_{m,j}(\tilde{\beta})$;
+the probability distribution of $l_{m,j}({t+i+1})$ is denoted by $\vecG{\nu}({t+i+1})$ and $\vec{\nu}_{m,j}({t+i+1})$ is obtained by calculation over equation Enq.\ref{eqn_0} - Eqn.\ref{eqn_4} ($\forall i=0,\dots,\frac{\Xi}{T}$);
+\accept{the $i$-th element of vector $\vec{g}$ denotes the cost of server as $l_{m,j}(t)$;}
+$\tilde{\beta}$ is the arrival distribution under baseline policy $\Pi({t})$ (on $m$-th ES with $j$-type job), where:
 \begin{align}
-    ~~~~\tilde{\vecG{\beta}} &\define [\tilde{\beta}^{(1)}_{m,j}, \tilde{\beta}^{(0)}_{m,j}]
-    \\
-    ~~~~\tilde{\beta}^{(1)}_{m,j} &\define \sum_{k\in\apSet} \lambda^{(k)}_{m,j} \times \sum_{\xi=0,\dots,\Xi-1} \Pr\{ \xi<U_{k,m}\leq(\xi+1) \}
+    \tilde{\beta}_{m,j} &\define \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j} \times \sum_{\xi=0,\dots,\Xi-1} \Pr\{ \xi<U_{k,m}\leq(\xi+1) \}
         \nonumber\\
-    ~~~~&= \sum_{k\in\apSet} \lambda^{(k)}_{m,j}
-    \\
-    ~~~~\tilde{\beta}^{(0)}_{m,j} &= 1 - \tilde{\beta}^{(1)}_{m,j}
+    ~~~~&= \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j}
 \end{align}
 %----------------------------------------------------------------------------------------%
 

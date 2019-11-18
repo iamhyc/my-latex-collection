@@ -55,10 +55,6 @@ The joint policy of all APs is defined as follows.
     \end{align}
     where $n$ denotes the index of time slot in the $t$-th interval.
 \end{definition}
-
-We note that with the given dispatching policy, the arrival distribution $A_{k,j}$ of the $j$-th job on the $k$-th AP ($\forall k\in\apSet, j\in\jSpace$) is further split onto different Edge Servers.
-The split job arrival distributions are still i.i.d Bernoulli distributions with arrival probability as 
-$\tilde{\lambda}^{(k)}_{m,j}({t}) \define \lambda_{k,j} I[\omega_{k,j}({t}) = m]$ ($\forall m\in\esSet$), where $I[\cdot]$ is the indicator function.
 %----------------------------------------------------------------------------------------%
 
 \subsection{The Optimization Problem}
@@ -119,11 +115,9 @@ The expression of transition function in Eqn. \ref{sp_0} is given as follows.
     Proof deleted.
 \end{proof}
 
-The transition function, except for standalone probability distribution $\Pr\{\mathcal{D}({t})\}$, is consisted of two parts of state transitions on APs and edge servers, respectively.
-To efficiently express the state transition, we further elaborate the 
-
+The transition function, \fixit{except for standalone probability distribution $\Pr\{\mathcal{D}({t})\}$,} is consisted of two parts of state transitions on APs and edge servers, respectively.
 To efficiently express the state transition, we further elaborate the distribution probability of the state vector as the corresponding probability vector, and perform the state transition with the transition matrix.
-For state transition of APs inside one interval, we denote $\vecG{\Theta}^{(k)}_{m,j}$ and $\hat{\Gamma}^{(k)}_{m,j}(t,n)$ as probability vector and transition matrix, respectively, for $\vec{R}^{(k)}_{m,j}$ of the $j$-th type of job uploading from the $k$-th AP to the $m$-th edge server ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$). The definition is given as follows.
+For state transition of APs inside one interval, we denote $\vecG{\Theta}^{(k)}_{m,j}(t,n)$ and ${\Gamma}^{(k)}_{m,j}(t,n)$ as probability vector and transition matrix, respectively, for $\vec{R}^{(k)}_{m,j}(t,n)$ of the $j$-th type of job uploading from the $k$-th AP to the $m$-th edge server ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$). The definition is given as follows.
 \begin{align}
     \Gamma^{(k)}_{m,j}(t,n) \define
     \begin{bmatrix}
@@ -133,70 +127,85 @@ For state transition of APs inside one interval, we denote $\vecG{\Theta}^{(k)}_
           &                       &                       & \ddots & \bar{p}^{(k)}_{m,j,\Xi-1} \\
           &                       &                       &        & 0                         \\
     \end{bmatrix},
-    \Theta^{(k)}_{m,j}(t,n) \define
+    \vecG{\Theta}^{(k)}_{m,j}(t,n) \define
     \begin{bmatrix}
-        \Pr\{R^{(k)}_{m,j,0}(t,n) = 1\} \\
-        \Pr\{R^{(k)}_{m,j,1}(t,n) = 1\} \\
+        \theta^{(k)}_{m,j,0}(t,n) \\
+        \theta^{(k)}_{m,j,1}(t,n) \\
         \vdots \\
         \vdots \\
-        \Pr\{R^{(k)}_{m,j,\Xi}(t,n) = 1\}
+        \theta^{(k)}_{m,j,\Xi}(t,n)
     \end{bmatrix},
 \end{align}
-where $p^{(k)}_{m,j,\xi} \define \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\xi\}$ ($\forall \xi=0,\dots,\Xi$).
-\fixit{
-    And we notice that $\Pr\{R^{(k)}_{m,j,0}\}(t,n)$ is determined simply by arrival process and dispatching policy which motivates the system to work.
-}
-\begin{align}
-    \vecG{\Theta}^{(k)}_{m,j}({t+1}) \define ( \Gamma^{(k)}_{m,j} )^{N} \times \vecG{\Theta}^{(k)}_{m,j}({t}),
-\end{align}
-where $\hat{\Gamma} \define $
+where $p^{(k)}_{m,j,\xi} \define \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\xi\}$ and $\bar{p}^{(k)}_{m,j,\xi} = 1 - p^{(k)}_{m,j,\xi}$ denote the probability of staying and offloading, respectively; $\theta^{(k)}_{m,j,\xi}(t,n) \define \Pr\{R^{(k)}_{m,j,\xi}(t,n) = 1\}$ denotes the distribution probability of existing job in the corresponding counters of the AP ($\forall \xi=0,\dots,\Xi$).
 
-where transition matrix $\dot{\Gamma}^{(k)}_{m,j}$ is a \emph{block matrix} whose element is transition matrix $\Gamma^{(k)}_{m,j,\xi}$ for the distribution on the series of counters. The definition is given as follows.
+And we note that $\theta^{(k)}_{m,j,0}(t,n)$ is purely determined by the arrival process and dispatching policy of the $j$-th type of job on the $k$-th AP, i.e. $\theta^{(k)}_{m,j,0}(t,n) = \lambda_{k,j} I[\omega_{k,j}(t,n) = m]$, where $I[\cdot]$ is the indicator function.
+Hence, the state transition between adjacent interval from $\vecG{\Theta}^{(k)}_{m,j}(t+1)$ to $\vecG{\Theta}^{(k)}_{m,j}(t)$ is composed of two-phase policy separated by $D_k(t)$, which could be expressed as follows.
 \begin{align}
-    &\vecG{\theta}^{(k)}_{m,j,\xi+1}(t) \define
+    \vecG{\Theta}^{(k)}_{m,j}(t, D_{k}(t)) &= (\Gamma^{(k)}_{m,j})^{D_{k}(t)} \times \vecG{\Theta}^{(k)}_{m,j}(t),
     \nonumber\\
-    &\begin{cases}
-        ( \Gamma^{(k)}_{m,j,\xi} \dots \Gamma^{(k)}_{m,j,\xi-N} ) \times \vecG{\theta}^{(k)}_{m,j,\xi-N-1}({t}), &{\xi \geq N}
-        \\
-        ( \Gamma^{(k)}_{m,j,\xi} \dots \Gamma^{(k)}_{m,j,1} ) \times \vecG{\theta}^{(k)}_{m,j,0}({t}), &{\xi < N}
-    \end{cases},
+    \vecG{\Theta}^{(k)}_{m,j}({t+1}) &= (\Gamma^{(k)}_{m,j})^{N-D_{k}(t)} \times \vecG{\Theta}^{(k)}_{m,j}(t, D_{k}(t)).
 \end{align}
-where $\vecG{\theta}^{(k)}_{m,j,0}({t}) \sim \text{Bernoulli}(\tilde{\lambda}^{(k)}_{m,j}({t}))$. The transition matrix $\Gamma^{(k)}_{m,j,\xi}$ is time-invariant and the definition is given as follows.
-where $p^{(k)}_{m,j,\xi} \define \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\xi\}$ and $\bar{p}^{(k)}_{m,j,\xi} = 1 - p^{(k)}_{m,j,\xi}$.
-Intuitively, $\dot{\Gamma}^{(k)}_{m,j}$ is an off-diagonal block matrix plus a horizontal part w.r.t $\vecG{\theta}^{(k)}_{m,j,0}$, while the other entries as all zero.
 
-For state transition of edge servers, we denote $\vecG{\mu}_{m,j}$ and $P_{m,j}$ as probability vector and transition matrix, respectively, for $Q_{m,j}$ of the $j$-th job processing on the $m$-th edge server ($\forall m\in\esSet, j\in\jSpace$).
-\fixit{
-    \begin{itemize}
-        \item explain the little probability approximation;
-        \item definition of $\vecG{\mu}_{m,j}$
-    \end{itemize}
-}
-Denote as
+For state transition of edge servers, we denote $\vecG{\mu}_{m,j}$ and $P_{m,j}$ as probability vector and transition matrix, respectively, for $Q_{m,j}$ of the $j$-th job processing on the $m$-th edge server ($\forall m\in\esSet, j\in\jSpace$). The definition of the probability vector $\vecG{\mu}_{m,j}(t,n)$ at the $n$-th time slot in the $t$-the interval is given as follows.
 \begin{align}
-    \Pr\Brace{ Q_{m,j}({t+1})|Q_{m,j}({t}), \mathcal{R}({t}) } \sim \vecG{\nu}_{m,j}({t}).
+    \vecG{\mu}_{m,j}(t,n) \define 
+    \begin{bmatrix}
+        &\Pr\{L_{m,j}(t,n)=0,   &        & \eta_{m,j}(t,n)=0\} \\
+        &\Pr\{L_{m,j}(t,n)=0,   &        & \eta_{m,j}(t,n)=1\} \\
+        &                       & \vdots & \\
+        &\Pr\{L_{m,j}(t,n)=0,   &        & \eta_{m,j}(t,n)=\mathcal{C}_{m,j}-1\} \\
+        &\Pr\{L_{m,j}(t,n)=1,   &        & \eta_{m,j}(t,n)=0\} \\
+        &                       & \vdots & \\
+        &\Pr\{L_{m,j}(t,n)=L_Q, &        & \eta_{m,j}(t,n)=\mathcal{C}_{m,j}-1\}
+    \end{bmatrix}
 \end{align}
-We notice that the job arrival distribution $\vecG{\beta}_{m,j}({t})$ is given by $\mathcal{R}({t})$, and the departure rate in one slot is deterministic as $1/N$.
-Thus the expectation of $\vecG{\beta}$ would be always far more smaller than $1$ as composed of all $K$ AP nodes.
-We take approximation on $\vec{\beta}$ as Bernoulli distribution in each time slot that $\vecG{\beta}({t,n}) \triangleq [\beta^{(0)}_{m,j}({t,n}), \beta^{(1)}_{m,j}({t,n})]$, where
+However, the expression of transition matrix $P_{m,j}$ is more complex. Firstly, we notice that in the transition function of edge server, the distribution of offloading number of jobs from all APs in the interval contributes to the job arrival process on edge server as $\mathcal{R}(t)$. We denote the offloading matrix $\bar{\Gamma}^{(k)}_{m,j}$ from each AP to the $m$-th edge server as follows.
 \begin{align}
-    \beta^{(1)}_{m,j}({t,n}) &\define \sum_{k\in\mathcal{K}} \sum_{\xi=0,\dots,\Xi-1} \mathbb{E}[\vecG{\rho}^{(k,+)}_{m,j,\xi}({t,n})]
+    \bar{\Gamma}^{(k)}_{m,j}(t,n) \define
+    \begin{bmatrix}
+        0 & p^{(k)}_{m,j,0} &                 &        &                     \\
+          & 0               & p^{(k)}_{m,j,1} &        &                     \\
+          &                 & \ddots          & \ddots &                     \\
+          &                 &                 & \ddots & p^{(k)}_{m,j,\Xi-1} \\
+          &                 &                 &        & 1                   \\
+    \end{bmatrix},
+\end{align}
+And the offloading number vectors are denoted as follows.
+\begin{align}
+    \vecG{\rho}^{(k,+)}_{m,j}({t,n}) &\define \bar{\Gamma}^{(k)}_{m,j} \times \vecG{\theta}^{(k)}_{m,j}({t,n}),
+\end{align}
+and the arrival number at the $n$-th time slot in the $t$-th interval on the $m$-th server is $\sum_{k\in\apSet} \vecG{\rho}^{(k,+)}_{m,j}({t,n})$,
+The dimension of the compounded vector would be un-acceptable, as the increase of AP numbers would result into exponential expansion of dimensionality.
+Thus we rewrite the arrival process on edge server with little probability approximation, i.e. there would be at most one job arring in one time slot, with the probability as the expected arrival rate of the original distribution. The explicit definition of the approximate arriving probability $\beta_{m,j}({t,n})$ is given as follows.
+\begin{align}
+    {\beta}_{m,j}({t,n}) &\define \sum_{k\in\mathcal{K}} \sum_{\xi=0,\dots,\Xi-1} \mathbb{E}[\vecG{\rho}^{(k,+)}_{m,j,\xi}({t,n})]
     \label{eqn_0}
-    \\
-    \vecG{\rho}^{(k,+)}_{m,j,\xi}({t,n}) &\define \tilde{\Gamma}^{(k)}_{m,j,\xi} \times \vecG{\theta}^{(k)}_{m,j,\xi}({t,n})
-    % \label{eqn_1}
-    \\
-    \beta^{(0)}_{m,j}({t,n}) &= 1-\beta^{(1)}_{m,j}({t,n})
-    % \label{eqn_2} 
 \end{align}
-And we could obtain the time-variant transition matrix composed of multiple transition matrix $P_{m,j}(\vecG{\beta}({t,n}))$ in all the time slots in $i$-th interval as follows.
+We could prove that the error due to approximation is negligible.
+\begin{lemma}[Little Probability Approximation]
+    The probability distribution of $\sum_{k\in\apSet} \vecG{\rho}^{(k,+)}_{m,j}({t,n})$ could be approximated with Bernoulli arrival process with the same expected arrival rate denoted as ${\beta}_{m,j}({t,n})$.
+\end{lemma}
+\begin{proof}
+    \fixit{
+        We notice that the job arrival distribution ${\beta}_{m,j}({t})$ is given by $\mathcal{R}({t})$, and the departure rate in one slot is deterministic as $1/N$.
+        Thus the expectation of ${\beta}$ would be always far more smaller than $1$ as composed of all $K$ AP nodes.
+        We take approximation on ${\beta}$ as Bernoulli distribution in each time slot.
+    }
+\end{proof}
+
+Thus we could obtain the time-variant transition matrix composed of multiple transition matrix $P_{m,j}(\beta({t,n}))$ in all the time slots in $i$-th interval as follows.
 \begin{align}
-    \vecG{\nu}({t,n+1}) &= P_{m,j}\Paren{\vecG{\beta}({t,n})} \vecG{\nu}({t,n})
+    \vecG{\nu}({t,n+1}) &= P_{m,j}\Paren{\beta({t,n})} \vecG{\nu}({t,n})
     % \label{eqn_3}
     \\
-    \vecG{\nu}({t+1}) &= \prod_{n=0,\dots,N-1} P_{m,j}\Paren{\vecG{\beta}({t,n})} \vecG{\nu}({t}),
+    \vecG{\nu}({t+1}) &= \prod_{n=0,\dots,N-1} P_{m,j}\Paren{\beta({t,n})} \vecG{\nu}({t}),
     \label{eqn_4}
 \end{align}
+
+However, after the state decomposition, the action space would still be exponentially expanded with respect to the number of APs and edge servers.
+We could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity.
+So in next section, to alleviate curse of dimensionality, we introduce baseline dispatching policy to approximate the value function, and then carry out one-step iteration \st{in a polling manner} to obtain a better value function approximation.
+%----------------------------------------------------------------------------------------%
 
 \delete{
     Outline:
@@ -211,7 +220,3 @@ And we could obtain the time-variant transition matrix composed of multiple tran
         \end{remark}
     \end{itemize}
 }
-However, after the state decomposition, the action space would still be exponentially expanded with respect to the number of APs and edge servers.
-We could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity.
-So in next section, to alleviate curse of dimensionality, we introduce baseline dispatching policy to approximate the value function, and then carry out one-step iteration \st{in a polling manner} to obtain a better value function approximation.
-%----------------------------------------------------------------------------------------%
