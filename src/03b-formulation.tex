@@ -90,10 +90,10 @@ According to \cite{sutton1998introduction}, the above problem could be solved by
 \end{align}
 
 To better analyze the structure of the optimization problem, we decouple the transition function.
-The expression of transition function in Eqn. \ref{sp_0} is given as follows.
+The expression of transition function in Eqn. (\ref{sp_0}) is given as follows.
 \begin{lemma}[Transition Function Decoupling]
     The transition function in Bellman's equation could be decoupled on states of APs and edge servers, which will facilitate the approximated value function expression in the following section.
-    The decoupled transition function for Eqn. \ref{sp_0} is given as follows.
+    The decoupled transition function for Eqn. (\ref{sp_0}) is given as follows.
     \begin{align}
         & \Pr\Brace{ \Stat({t+1})|\Stat({t}), \Policy(\Stat({t})) }
         \nonumber\\
@@ -195,10 +195,10 @@ We could prove that the error due to approximation is negligible.
 
 Thus we could obtain the time-variant transition matrix composed of multiple transition matrix $P_{m,j}(\beta({t,n}))$ in all the time slots in $i$-th interval as follows.
 \begin{align}
-    \vecG{\nu}({t,n+1}) &= P_{m,j}\Paren{\beta({t,n})} \vecG{\nu}({t,n})
+    \vecG{\nu}({t,n+1}) &= P_{m,j}\Paren{\beta_{m,j}({t,n})} \vecG{\nu}({t,n})
     % \label{eqn_3}
     \\
-    \vecG{\nu}({t+1}) &= \prod_{n=0,\dots,N-1} P_{m,j}\Paren{\beta({t,n})} \vecG{\nu}({t}),
+    \vecG{\nu}({t+1}) &= \prod_{n=0,\dots,N-1} P_{m,j}\Paren{\beta_{m,j}({t,n})} \vecG{\nu}({t}),
     \label{eqn_4}
 \end{align}
 
