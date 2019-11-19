@@ -6,7 +6,7 @@ Moreover, as the system state is partially presented as $\Obsv({t-1})$ and $\Obs
 Thus the joint optimization over the components of $\Policy(\Stat({t}))$ is impossible.
 To overcome the gap, we leverage the above global problem structure, but solve it with iterative policy update algorithm.
 
-\delete{
+\delete{v4}{
     \begin{itemize}
         \item The updated global system state information presents at different time slots for different APs.
         \item The delay-aware algorithm proposed allow APs update their policy iteratively in a polling manner, while they all solve their own approximated Bellman's equation.
@@ -60,7 +60,7 @@ The expected value function $W^{\AP}(\mathcal{R}({t+1}))$ under baseline $\vecG{
     \label{w_ap}
 \end{align}
 where $\hat{\Gamma}^{(k)}_{m,j} \define (\Gamma^{(k)}_{m,j})^{N}$, $\Inorm{\cdot}$ denotes the sum of absolute value of each entry of the vector.
-\delete{And the transition function $\Pr\{ \mathcal{R}({t+1})|\mathcal{R}({t}) \}$ is embedded with its distributions $\vecG{\Theta}^{(k)}_{m,j}({t+1})$ in the equation.}
+\delete{v4}{And the transition function $\Pr\{ \mathcal{R}({t+1})|\mathcal{R}({t}) \}$ is embedded with its distributions $\vecG{\Theta}^{(k)}_{m,j}({t+1})$ in the equation.}
 
 The expected value function $W^{\ES}(\mathcal{Q}({t+1}))$ under baseline $\vecG{\Pi}({t})$ for ES nodes is little more complex compared to Eqn. (\ref{w_ap}).
 The ES node transition is affected with both arrival process under dispatching policy and last queue state, and we reduce the states expression by taking average over the uploading process together with the transition function expression.
@@ -143,7 +143,7 @@ with improved baseline policy in each interval as performance guarantee.
 %     \end{algorithmic}
 % \end{algorithm}
 
-\delete{
+\delete{v4}{
     \begin{lemma}
         The above algorithm would have performance improvement in each interval with baseline policy guarantee, and at least achieve local optimal.
     \end{lemma}
@@ -157,5 +157,5 @@ with improved baseline policy in each interval as performance guarantee.
 }
 
 \subsection{Reinforcement Learning}
-Due to the fact that the statistical parameters of job arrival distribution $\lambda_{k,j}$, uploading time distribution $U_{k,m,j}$ and processing time distribution $l_{m,j}$ are unknown at the first time, we adopt reinforcement learning algorithm to learn the parameters.
+Due to the fact that the statistical parameters of job arrival distribution $\lambda_{k,j}$, uploading time distribution $U_{k,m,j}$ and processing time distribution $C_{m,j}$ are unknown at the first time, we adopt reinforcement learning algorithm to learn the parameters.
 %----------------------------------------------------------------------------------------%

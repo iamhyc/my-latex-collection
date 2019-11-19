@@ -6,7 +6,7 @@ In our problem, we focus on the real situation about communication overhead in M
 \needref{R.Nair, 2003} uses DEC-POMDP (Decentralized Partial-Observed MDP) framework to characterize the coordination among decentralized and partially observed multi-agent problem. The solution to its problem is of high complexity and requires extra information of \emph{belief states}.
 Instead, we formulate the problem under standard MDP framework, which is with fully-observable information.
 At the end of this section, we show that we could come up with decentralized algorithm under the global problem formulation heuristically. A low-complexity solution is also provided in the following section to alleviate the curse of dimensionality.
-\delete{Reference list
+\delete{v4}{Reference list
     [1] "Sequential Optimality and Coordination in Multi-agent Systems", Craig Boutilie, 1999
     [2] "Taming Decentralized POMDPs: Towards Efficient Policy Computation for Multi-agent Settings", R.Nair, 2003
 }
@@ -62,7 +62,7 @@ In our system, each AP individually performs job dispatching decision, and coord
 We propose the jobs dispatching optimization problem with the target to minimize \emph{average response time} of all offloaded jobs in MEC system.
 The \emph{average response time} is composed of uploading time from APs to edge servers, and queueing-and-service time on corresponding edge server. According to \emph{Little's Law}, the average response time of all jobs is equally as average number of jobs in system.
 
-Due to the periodic information broadcasting, we collect the cost for counting numbers each interval, which could be seen as a uniform sampling on timeslot scale.
+Due to the periodic information broadcasting, we collect the cost for counting numbers each interval, which could be seen as a uniform sampling at times lot scale.
 Besides the cost counted for job response time, we further add penalty on jobs rejection on edge servers when the job submission is over the queue capacity limit. The penalty will be counted at the end of each broadcast interval.
 The definition of the cost function is given as follows.
 \begin{align}
@@ -207,7 +207,7 @@ We could not use traditional \emph{policy iteration} or \emph{value iteration} a
 So in next section, to alleviate curse of dimensionality, we introduce baseline dispatching policy to approximate the value function, and then carry out one-step iteration \st{in a polling manner} to obtain a better value function approximation.
 %----------------------------------------------------------------------------------------%
 
-\delete{
+\delete{v4}{
     Outline:
     \begin{itemize}
         \item and $\Policy$ is optimized policy globally always with full-state information available.

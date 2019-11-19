@@ -3,8 +3,16 @@
 \subsection{Network Model}
 We consider an edge computing system with $K$ Access Points (APs) and $M$ edge servers, which are connected in a network as illustrated in Fig.\ref{fig:system}.
 The sets of APs and edge servers are denoted as $\apSet \define \set{1,\dots,K}$ and $\esSet \define \set{1,\dots,M}$, respectively.
-Each AP collects the computation jobs from the mobile users within its coverage, and makes decision for each job on which edge server it should be dispatched to.
-\accept{In this paper, we shall focus on the decentralized dispatcher design at each AP.}
+Each AP collects the computation jobs from the mobile users within its coverage, and makes decision on the processing edge servers from the set $\esSet$.
+\delete{v5}{
+    Each AP collects the computation jobs from the mobile users within its coverage, and makes decision for each job on which edge server it should be dispatched to.
+}
+In this paper, we shall focus on the decentralized dispatcher design at each AP.
+\accept{
+    Specifically, each AP and edge server periodically broadcast their state information (e.g., computing queue length, list of jobs being uploaded from APs to edge servers and etc.).
+    One AP updates its strategy on job dispatching when receiving the broadcast state information.
+    Due to random transmission latency in the network, it is not sure when one AP can receive the complete broadcast information, and the dispatching design could take this practical issue into consideration.
+}
 
 \begin{figure}[ht]
     \centering
@@ -14,10 +22,12 @@ Each AP collects the computation jobs from the mobile users within its coverage,
 \end{figure}
 
 %NOTE: [job space support and arrival process]
-The time axis of each AP is organized by time slots.
-Without loss of generality, it is assumed that there are $J$ types of computation jobs supported in this system, which is denoted as $\jSpace \define \set{1,\dots,J}$.
-The job arrivals in each time slot are modelled as independent Bernoulli distributions.
-More specifically, the arrivals of the $j$-th type of jobs at the $k$-th AP are independent and identically distributed (i.i.d.) Bernoulli random variables, and the arrival probability is denoted as $\lambda_{k,j}$ ($\forall k\in\apSet, j\in\jSpace$).
+\delete{v5}{
+    The time axis of each AP is organized by time slots.
+    Without loss of generality, it is assumed that there are $J$ types of computation jobs supported in this system, which is denoted as $\jSpace \define \set{1,\dots,J}$.
+    The job arrivals in each time slot are modelled as independent Bernoulli distributions.
+    More specifically, the arrivals of the $j$-th type of jobs at the $k$-th AP are independent and identically distributed (i.i.d.) Bernoulli random variables, and the arrival probability is denoted as $\lambda_{k,j}$ ($\forall k\in\apSet, j\in\jSpace$).
+}
 
 
 %NOTE: [uploading process]
@@ -26,21 +36,23 @@ Let $\omega_{k,j}$ denotes the index of edge server for the processing of the $j
 Different types of jobs may have different distributions on the input data size.
 Moreover, due to the random traffic in the network, the job uploading from one AP to one edge server consumes a random number of time slots.
 It's assumed that the distributions of uploading delays are independent between any two uploading jobs.
-Hence, we denote $\mathcal{U}_{k,m,j}$ as the uploading delay distribution for the $j$-th type of jobs from the $k$-th AP to the $m$-th edge server, which is ranged in $(0, \Xi]$ with the unit of time slot ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
-\delete{
+Hence, we denote $\mathcal{U}_{k,m,j}$ as the uploading delay distribution ranged in $(0, \Xi]$ (with the unit of time slot) for the $j$-th type of jobs from the $k$-th AP to the $m$-th edge server with support ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
+\delete{v4}{
     It's assumed that the distributions of uploading delays are independent between any two uploading jobs.
     Denote the uploading delays are i.i.d for the $j$-th type of jobs from the $k$-th AP to the $m$-th edge server, which is denoted as $\mathcal{U}_{k,m,j}$ ranged in $(0,\Xi]$ with the unit of time slot ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
 }
 In practice, the distribution of uploading delay may not be known to the APs or edge servers in advance.
 
 %NOTE: [processing process]
-There are $J$ virtual machines (VMs) on one edge server for the computation of $J$ types of jobs.
-For each type, the uploaded jobs are computed in a First-Come-First-Serve (FCFS) manner.
-Furthermore, we adopt \emph{unrelated machines} assumption in \cite{tan-online} for job processing on edge servers.
-The job processing time on different servers are random and machine dependent, which implies that different types of jobs on different edge servers have different processing time distributions.
-We denote $\mathcal{C}_{m,j}$ as the processing time distribution of the $j$-th type job on the $m$-th edge serer, whose range is in $(0, c_{m,j}]$ with the unit of time slot ($\forall m\in\esSet, j\in\jSpace$).
-The maximum job queue length for each VM is set as $l_Q$, which indicates that there are at most $l_Q$ jobs pending for one VM on the edge servers.
-\accept{The jobs submission over the limits would be discarded.}
+\delete{v5}{
+    There are $J$ virtual machines (VMs) on one edge server for the computation of $J$ types of jobs.
+    For each type, the uploaded jobs are computed in a First-Come-First-Serve (FCFS) manner.
+    Furthermore, we adopt \emph{unrelated machines} assumption in \cite{tan-online} for job processing on edge servers.
+    The job processing time on different servers are random and machine dependent, which implies that different types of jobs on different edge servers have different processing time distributions.
+    We denote $\mathcal{C}_{m,j}$ as the processing time distribution of the $j$-th type job on the $m$-th edge serer, whose range is in $(0, c_{m,j}]$ with the unit of time slot ($\forall m\in\esSet, j\in\jSpace$).
+    The maximum computing queue length for each VM is set as $l_Q$, which indicates that there are at most $l_Q$ jobs pending for one VM on the edge servers.
+    \accept{The jobs submission over the limits would be discarded.}
+}
 %----------------------------------------------------------------------------------------%
 
 \subsection{Periodic Broadcast of State Information}
@@ -48,7 +60,7 @@ The maximum job queue length for each VM is set as $l_Q$, which indicates that t
 In our system, each AP dispatches different types of computation jobs in a fully cooperative manner, where the jobs are dispatched to achieve a global optimality.
 To facilitate such dispatching decision, each AP should collect the information from other APs and edge servers.
 It's assumed that every APs and edge servers broadcast their information every $t_B$ time slots as illustrated in Fig.\ref{fig:brd-timeline}.
-\delete{
+\delete{v4}{
     Furthermore, we denote $({i,n})$ as the $n$-th time slot in $i$-th broadcast interval, which is the interval between $(i-1)$-th and $i$-th broadcast ($i\in\domP$).
     Especially, we have $({i}) \define ({i,0})$ as the index of $i$-th broadcast time slot and call it $i$-th \brpoint~($i\in\domP$).
 }
@@ -70,7 +82,7 @@ The broadcast information of the $k$-th AP at the $t$-th broadcast ($t\in\domZ$)
 where we have $\vec{R}^{(k)}_{m,j} \define ( R^{(k)}_{m,j,0},\dots,R^{(k)}_{m,j,\Xi} )$ denote the vector of random variables for convenience.
 
 %NOTE: State and Broadcast Information for ES
-One edge server shall maintain information about the queue status for each VM.
+One edge server shall maintain information about the computing queue status for each VM.
 More specifically, at the $n$ time slot in the $t$-th interval, the $m$-th edge server have $L_{m,j}({t,n})$ and $\eta_{m,j}({t,n})$ denote the pending number and the first job remaining time of the $j$-th type job, respectively ($\forall m\in\esSet, j\in\jSpace$).
 The broadcast information of the $m$-th edge server at the $t$-th ($t\in\domZ$) broadcast is defined as follows.
 \begin{align}
@@ -115,7 +127,7 @@ The two phases policy of all APs together determine the information of $\Obsv({t
 However, the randomness of \brdelay~implies that one AP could not know other APs' \brdelay~in the same interval.
 Thus, APs are unable to evaluate the impact introduced by others' policy on the next broadcast information and fail to establish exact cooperation.
 An naive way to solve this problem is to force all APs update their policy only at the end of the interval, which introduces a inevitable lagging for a whole broadcast interval.
-\delete{A toy example is given as follow.}
+\delete{v4}{A toy example is given as follow.}
 
 In the following problem formulation section, we will show that we could come up with better dispatching decision update solution which is aware of the \brdelay, and improve APs' dispatching decisions in an iterative way.
 \fixit{
