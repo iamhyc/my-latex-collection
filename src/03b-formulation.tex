@@ -69,7 +69,7 @@ The definition of the cost function is given as follows.
     g\Paren{\Stat({t}), \Policy(\Stat({t}))} \define
         &\sum_{k\in\apSet} \sum_{m\in\esSet} \sum_{j\in\jSpace} \vec{R}^{(k)}_{m,j,\xi}({t})~+
         \nonumber\\
-        &\sum_{m\in\esSet} \sum_{j\in\jSpace} \Brace{L_{m,j}({t}) + \beta \cdot \mat{I}[L_{m,j}({t})=L_Q]},
+        &\sum_{m\in\esSet} \sum_{j\in\jSpace} \Brace{L_{m,j}({t}) + \beta \cdot \mat{I}[L_{m,j}({t})=L_{max}]},
 \end{align}
 where $\beta$ is the weight factor for job rejection penalty ($\beta \in (0,1)$).
 
@@ -156,7 +156,7 @@ For state transition of edge servers, we denote $\vecG{\mu}_{m,j}$ and $P_{m,j}$
         &\Pr\{L_{m,j}(t,n)=0,   &        & \eta_{m,j}(t,n)=\mathcal{C}_{m,j}-1\} \\
         &\Pr\{L_{m,j}(t,n)=1,   &        & \eta_{m,j}(t,n)=0\} \\
         &                       & \vdots & \\
-        &\Pr\{L_{m,j}(t,n)=L_Q, &        & \eta_{m,j}(t,n)=\mathcal{C}_{m,j}-1\}
+        &\Pr\{L_{m,j}(t,n)=L_{max}, &        & \eta_{m,j}(t,n)=\mathcal{C}_{m,j}-1\}
     \end{bmatrix}
 \end{align}
 However, the expression of transition matrix $P_{m,j}$ is more complex. Firstly, we notice that in the transition function of edge server, the distribution of offloading number of jobs from all APs in the interval contributes to the job arrival process on edge server as $\mathcal{R}(t)$. We denote the offloading matrix $\bar{\Gamma}^{(k)}_{m,j}$ from each AP to the $m$-th edge server as follows.

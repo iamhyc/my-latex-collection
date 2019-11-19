@@ -5,7 +5,7 @@ We consider an edge computing system with $K$ Access Points (APs) and $M$ edge s
 The sets of APs and edge servers are denoted as $\apSet \define \set{1,\dots,K}$ and $\esSet \define \set{1,\dots,M}$, respectively.
 Each AP collects the computation jobs from the mobile users within its coverage, and makes decision on the processing edge servers from the set $\esSet$.
 \delete{v5}{
-    Each AP collects the computation jobs from the mobile users within its coverage, and makes decision for each job on which edge server it should be dispatched to.
+Each AP collects the computation jobs from the mobile users within its coverage, and makes decision for each job on which edge server it should be dispatched to.
 }
 In this paper, we shall focus on the decentralized dispatcher design at each AP.
 \accept{
@@ -22,13 +22,10 @@ In this paper, we shall focus on the decentralized dispatcher design at each AP.
 \end{figure}
 
 %NOTE: [job space support and arrival process]
-\delete{v5}{
-    The time axis of each AP is organized by time slots.
-    Without loss of generality, it is assumed that there are $J$ types of computation jobs supported in this system, which is denoted as $\jSpace \define \set{1,\dots,J}$.
-    The job arrivals in each time slot are modelled as independent Bernoulli distributions.
-    More specifically, the arrivals of the $j$-th type of jobs at the $k$-th AP are independent and identically distributed (i.i.d.) Bernoulli random variables, and the arrival probability is denoted as $\lambda_{k,j}$ ($\forall k\in\apSet, j\in\jSpace$).
-}
-
+Without loss of generality, it is assumed that there are $J$ types of computation jobs supported in this system, which are denoted via the set $\jSpace \define \set{1,\dots,J}$.
+The time axis of each AP is organized by time slots.
+The job arrivals in each time slot are modelled via independent Bernoulli distributions.
+Specifically, the arrivals of the $j$-th job type at the $k$-th AP in different time slots are independent and identically distributed (i.i.d.) Bernoulli random variables, and the arrival probability is denoted as $\lambda_{k,j}$ ($\forall k\in\apSet, j\in\jSpace$).
 
 %NOTE: [uploading process]
 Each AP then immediately dispatches each type of received jobs to one edge server.
@@ -37,22 +34,27 @@ Different types of jobs may have different distributions on the input data size.
 Moreover, due to the random traffic in the network, the job uploading from one AP to one edge server consumes a random number of time slots.
 It's assumed that the distributions of uploading delays are independent between any two uploading jobs.
 Hence, we denote $\mathcal{U}_{k,m,j}$ as the uploading delay distribution ranged in $(0, \Xi]$ (with the unit of time slot) for the $j$-th type of jobs from the $k$-th AP to the $m$-th edge server with support ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
+In practice, the distribution of uploading delay may not be known to the APs or edge servers in advance.
 \delete{v4}{
     It's assumed that the distributions of uploading delays are independent between any two uploading jobs.
     Denote the uploading delays are i.i.d for the $j$-th type of jobs from the $k$-th AP to the $m$-th edge server, which is denoted as $\mathcal{U}_{k,m,j}$ ranged in $(0,\Xi]$ with the unit of time slot ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
 }
-In practice, the distribution of uploading delay may not be known to the APs or edge servers in advance.
 
 %NOTE: [processing process]
+There are $J$ virtual machines (VMs) on each edge server for the computation of $J$ job types, respectively.
+Different edge servers have different processing capability on different job types.
+For each type, the uploaded jobs are computed in a First-Come-First-Serve (FCFS) manner.
+Hence, a processing queue with maximum $L_{max}$ jobs is established for each VM.
+The arrival jobs will be discarded when the processing queue is full.
+Furthermore, we adopt the \emph{unrelated machines} assumption in \cite{tan-online} for job processing on edge servers.
+Specifically, it is assumed that different types of jobs on different edge servers have different distributions of computing time.
+We denote $C_{m,j}$ as the computing time distribution (with the unit of time slot) of the $j$-th job type on the $m$-th edge server, and $f_{m,j}(x)$ as the probability mass function (PMF) of $C_{m,j}$ where $x$ is ranged in $(0, c_{m,j}]$ ($\forall m\in\esSet, j\in\jSpace$).
+
 \delete{v5}{
-    There are $J$ virtual machines (VMs) on one edge server for the computation of $J$ types of jobs.
-    For each type, the uploaded jobs are computed in a First-Come-First-Serve (FCFS) manner.
-    Furthermore, we adopt \emph{unrelated machines} assumption in \cite{tan-online} for job processing on edge servers.
     The job processing time on different servers are random and machine dependent, which implies that different types of jobs on different edge servers have different processing time distributions.
     We denote $\mathcal{C}_{m,j}$ as the processing time distribution of the $j$-th type job on the $m$-th edge serer, whose range is in $(0, c_{m,j}]$ with the unit of time slot ($\forall m\in\esSet, j\in\jSpace$).
-    The maximum computing queue length for each VM is set as $l_Q$, which indicates that there are at most $l_Q$ jobs pending for one VM on the edge servers.
-    \accept{The jobs submission over the limits would be discarded.}
 }
+
 %----------------------------------------------------------------------------------------%
 
 \subsection{Periodic Broadcast of State Information}
