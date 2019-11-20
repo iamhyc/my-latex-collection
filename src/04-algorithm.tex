@@ -73,7 +73,7 @@ The ES node transition is affected with both arrival process under dispatching p
 \end{align}
 where $\hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) \define \prod_{n=0,\dots,N-1} \mat{P}_{m,j}(\tilde{\beta}_{m,j})$;
 the probability distribution of $l_{m,j}({t+i+1})$ is denoted by $\vecG{\nu}({t+i+1})$ which is obtained by calculation over equation Enq. (\ref{eqn_0}) - Eqn. (\ref{eqn_4}) ($\forall i=0,\dots,\frac{\Xi}{T}$);
-\accept{the $i$-th element of vector $\vec{g}$ denotes the cost of server as $l_{m,j}(t)$;}
+the $i$-th element of vector $\vec{g}$ denotes the cost of server as $l_{m,j}(t)$;
 $\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\Pi({t})$ (on $m$-th ES with $j$-type job), where:
 \begin{align}
     \tilde{\beta}_{m,j} &\define \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j} \times \sum_{\xi=0,\dots,\Xi-1} \Pr\{ \xi<U_{k,m}\leq(\xi+1) \}
@@ -151,7 +151,7 @@ with improved baseline policy in each interval as performance guarantee.
         The improved policy in last interval becomes the baseline policy in next interval.
         So, in each stage, it resembles the one-step Policy Improvement step in classical \emph{Policy Iteration} algorithm, and each step with different value function under baseline policy on the right-hand side.
         
-        \accept{The insight exists that: due to the uncontrollable delay on policy in each stage,} the chosen time-invariant baseline policy actually would; so the improved policy is the baseline of next stage, and thus forms the online policy iteration.
+        The insight exists that: due to the uncontrollable delay on policy in each stage, the chosen time-invariant baseline policy actually would; so the improved policy is the baseline of next stage, and thus forms the online policy iteration.
         discounted sum-up cost, the future states near the current state counts more and the baseline policy (which is time-invariant) would variant in each interval.
     \end{proof}
 }

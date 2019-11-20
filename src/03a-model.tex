@@ -4,15 +4,14 @@
 We consider an edge computing system with $K$ Access Points (APs) and $M$ edge servers, which are connected in a network as illustrated in Fig.\ref{fig:system}.
 The sets of APs and edge servers are denoted as $\apSet \define \set{1,\dots,K}$ and $\esSet \define \set{1,\dots,M}$, respectively.
 Each AP collects the computation jobs from the mobile users within its coverage, and makes decision on the processing edge servers from the set $\esSet$.
-\delete{v5}{
-Each AP collects the computation jobs from the mobile users within its coverage, and makes decision for each job on which edge server it should be dispatched to.
+\comment{
+    Due to the limitation of network topology, each AP could only dispatch the computation jobs to a subset of edge servers, which is denoted as \emph{candidate set} $\mathcal{M}_{k} \subseteq \esSet$ ($\forall k\in\apSet$).
 }
+
 In this paper, we shall focus on the decentralized dispatcher design at each AP.
-\accept{
-    Specifically, each AP and edge server periodically broadcast their state information (e.g., computing queue length, list of jobs being uploaded from APs to edge servers and etc.).
-    One AP updates its strategy on job dispatching when receiving the broadcast state information.
-    Due to random transmission latency in the network, it is not sure when one AP can receive the complete broadcast information, and the dispatching design could take this practical issue into consideration.
-}
+Specifically, each AP and edge server periodically broadcast their state information (e.g., edge server dispatching choice for each job type, list of jobs being uploaded from APs to edge servers, computing queue length and etc.).
+One AP updates its strategy on job dispatching when receiving the \comment{partial broadcast state information which is enough its decision making}.
+Due to random transmission latency in the network, it is not sure when one AP can receive the \comment{complete partial broadcast information}, and the dispatching design could take this practical issue into consideration.
 
 \begin{figure}[ht]
     \centering
@@ -101,15 +100,15 @@ And the whole broadcast information from all APs and edge servers at the $i$-th 
 
 %NOTE: Receiving points definition, denotation and unpredictable
 According to Fig.\ref{fig:brd-timeline}, different APs would receive different parts of broadcast information at different time slots.
-For $t$-th broadcast ($t\in\domZ$), the $k$-th AP would receive the broadcast information from $k'$-th AP after some delay $D^{\dagger}_{k,k'}({t})$, and $D^{\ddagger}_{k,m}({t})$ for the information from the $m$-th edge server ($\forall k' \neq k \in\apSet, m\in\esSet$).
-We call the delay after which one AP (saying the $k$-th AP, $\forall k\in\apSet$) could receive the whole broadcast information as \brdelay, which is defined as follows.
+For $t$-th broadcast ($t\in\domZ$), the $k$-th AP would receive the broadcast information from $k'$-th AP after some latency $D^{\dagger}_{k,k'}({t})$, and $D^{\ddagger}_{k,m}({t})$ for the information from the $m$-th edge server ($\forall k' \neq k \in\apSet, m\in\esSet$).
+We call the latency after which one AP (saying the $k$-th AP, $\forall k\in\apSet$) could receive the whole broadcast information as \brdelay, which is defined as follows.
 \begin{align}
     D_{k}({t}) \define \max\Paren{\Brace{
         D^{\dagger}_{k,k'}({t}),
         D^{\ddagger}_{k,m}({t}) | \forall k' \neq k \in \apSet, m\in\esSet
     }}.
 \end{align}
-Due to the randomness of the network traffic, the \brdelay~shall be random based on the uncertainty of the arrival delay of each partial broadcast information.
+Due to the randomness of the network traffic, the \brdelay~shall be random based on the uncertainty of the arrival latency of each partial broadcast information.
 Thus APs have i.i.d. distributions of \brdelay, which is denoted as $D_{k}$ ($\forall k \in \apSet$).
 
 As a high frequency broadcast design could result into \emph{broadcast storm} and block the normal network traffic, we introduce a slow enough broadcast interval selection in the system.
