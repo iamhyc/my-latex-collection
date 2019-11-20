@@ -42,7 +42,7 @@ The joint policy of all APs is defined as follows.
     \begin{definition}[Joint Dispatching Policy]
         The joint dispatching policy $\Policy(\Stat({t}))$ over global system state $\Stat({t})$ which is defined as follows.
         \begin{align}
-            \Policy(\Stat(t)) \define \Brace{
+            \Policy^{\dagger}(\Stat(t)) \define \Brace{
                 \Omega^{\dagger}_{1}(\Stat(t)), \dots, \Omega^{\dagger}_{K}(\Stat(t))
             },
         \end{align}
@@ -69,8 +69,8 @@ Due to the periodic information broadcasting, we collect the cost for counting n
 Besides the cost counted for job response time, we further add penalty on jobs rejection on edge servers when the job submission is over the queue capacity limit. The penalty will be counted at the end of each broadcast interval.
 The definition of the cost function is given as follows.
 \begin{align}
-    g\Paren{\Stat({t}), \Policy(\Stat({t}))} \define
-        &\sum_{k\in\apSet} \sum_{m\in\esSet} \sum_{j\in\jSpace} \vec{R}^{(k)}_{m,j,\xi}({t})~+
+    g^{\dagger}\Paren{\Stat({t}), \Policy^{\dagger}(\Stat({t}))} \define
+        &\sum_{k\in\apSet} \sum_{m\in\esSet} \sum_{j\in\jSpace} \vec{R}^{(k)}_{m,j}({t})~+
         \nonumber\\
         &\sum_{m\in\esSet} \sum_{j\in\jSpace} \Brace{L_{m,j}({t}) + \beta \cdot \mat{I}[L_{m,j}({t})=L_{max}]},
 \end{align}
@@ -78,20 +78,40 @@ where $\beta$ is the weight factor for job rejection penalty ($\beta \in (0,1)$)
 
 \begin{problem}[Centralized Job Dispatching Problem]
     \begin{align}
-        \min_{\Policy} \lim_{T \to \infty}
-            \mathbb{E}_{\Policy}
-                \Bracket{\sum_{t=1}^{T} \gamma^{t-1} g\Paren{\Stat({t}), \Policy(\Stat({t}))}|\Stat(1)},
+        \min_{\Policy^{\dagger}} \lim_{T \to \infty}
+            \mathbb{E}_{\Policy^{\dagger}}
+                \Bracket{\sum_{t=1}^{T} \gamma^{t-1} g^{\dagger}\Paren{\Stat({t}), \Policy^{\dagger}(\Stat({t}))}|\Stat(1)},
     \end{align}
     where the cost is collected with a discount factor $\gamma$.
 \end{problem}
 According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
 \begin{align}
-    V\Paren{\Stat({t})} =~&g\Paren{\Stat({t})} + \gamma \min_{\Policy(\Stat({t}))}
+    V^{\dagger}\Paren{\Stat({t})} =~&g^{\dagger}\Paren{\Stat({t})} + \gamma \min_{\Policy(\Stat({t}))}
         \nonumber\\
-        &\sum_{\Stat({t+1})} \Pr\Brace{ \Stat({t+1})|\Stat({t}), \Policy(\Stat({t})) } \cdot V\Paren{\Stat({t+1})}.
+        &\sum_{\Stat({t+1})} \Pr\Brace{ \Stat({t+1})|\Stat({t}), \Policy(\Stat({t})) } \cdot V^{\dagger}\Paren{\Stat({t+1})}.
     \label{sp_0}
 \end{align}
-
+\comment{
+    However, if we only update the individual policy of the $k$-th AP ($\forall k\in\apSet$) at one time, the Bellman's equation would reduce into the form as follows, where only the partial information for the $k$-th AP matters.
+    \begin{align}
+        V_{k}\Paren{\Obsv_{k}({t})} =& g_{k}(\Obsv_{k}(t)) +
+        \gamma\min_{\Omega_{k}(\Obsv_{k}(t))}
+        \nonumber\\
+        &\sum_{\Obsv_{k}(t+1)} \Pr
+        \Brace{ 
+            \Obsv_{k}(t+1) | \Obsv_{k}(t), \Policy_{k}(t-1), \Omega_{k}(\Obsv_{k}(t))
+        } \cdot V_{k}\Paren{\Obsv_{k}({t+1})},
+    \end{align}
+    where,
+    \begin{align}
+        g_{k}(\Obsv_{k}(t)) \define& \sum_{j\in\jSpace} \Brace{
+            \sum_{k\in\mathcal{X}_{k}} \sum_{m\in\esSet_{k}} \vec{R}^{(k)}_{m,j}(t) +
+            \sum_{m\in\esSet_{k}} \set{ L_{m,j}(t) + \beta \cdot \mat{I}[L_{m,j}(t)=L_{max}] }
+        }
+        \\
+        \Policy_{k}(t-1) \define & \Brace{ \Omega_{k'}(\Obsv_{k'}(t-1)) | \forall k'\in\mathcal{X}_{k} }
+    \end{align}
+}
 To better analyze the structure of the optimization problem, we decouple the transition function.
 The expression of transition function in Eqn. (\ref{sp_0}) is given as follows.
 \begin{lemma}[Transition Function Decoupling]
@@ -179,13 +199,13 @@ And the offloading number vectors are denoted as follows.
 \end{align}
 and the arrival number at the $n$-th time slot in the $t$-th interval on the $m$-th server is $\sum_{k\in\apSet} \vecG{\rho}^{(k,+)}_{m,j}({t,n})$,
 The dimension of the compounded vector would be un-acceptable, as the increase of AP numbers would result into exponential expansion of dimensionality.
-Thus we rewrite the arrival process on edge server with little probability approximation, i.e. there would be at most one job arring in one time slot, with the probability as the expected arrival rate of the original distribution. The explicit definition of the approximate arriving probability $\beta_{m,j}({t,n})$ is given as follows.
+Thus we rewrite the arrival process on edge server with small probability approximation, i.e. there would be at most one job arring in one time slot, with the probability as the expected arrival rate of the original distribution. The explicit definition of the approximate arriving probability $\beta_{m,j}({t,n})$ is given as follows.
 \begin{align}
     {\beta}_{m,j}({t,n}) &\define \sum_{k\in\mathcal{K}} \sum_{\xi=0,\dots,\Xi-1} \mathbb{E}[\vecG{\rho}^{(k,+)}_{m,j,\xi}({t,n})]
     \label{eqn_0}
 \end{align}
 We could prove that the error due to approximation is negligible.
-\begin{lemma}[Little Probability Approximation]
+\begin{lemma}[Small Probability Approximation]
     The probability distribution of $\sum_{k\in\apSet} \vecG{\rho}^{(k,+)}_{m,j}({t,n})$ could be approximated with Bernoulli arrival process with the same expected arrival rate denoted as ${\beta}_{m,j}({t,n})$.
 \end{lemma}
 \begin{proof}

@@ -80,9 +80,11 @@ One AP shall maintain information about the number of jobs still in uploading.
 And due to the uploading time of one job is unknown until it's been uploaded, it further has counters to record the elapsed time slots for each job.
 More specifically, at the $n$ time slot in the $t$-th interval, the number of the $j$-th type job been uploaded to the $m$-th edge server $\xi$ time slots ago from $k$-th AP is denoted as $R^{(k)}_{m,j,\xi}({t,n})$ ($\forall k\in\apSet, m\in\esSet, j\in\jSpace, \xi\in(0,\Xi]$).
 The broadcast information of the $k$-th AP at the $t$-th broadcast ($t\in\domZ$) includes the information about uploading job and the dispatching decision for each type of jobs, which is defined as follows.
-\begin{align}
-    \mathcal{R}_{k}({t}) \define \set{\vec{R}^{(k)}_{m,j}({t}), \set{\omega_{k,j}(t)|\forall j\in\jSpace} | \forall m\in\esSet, j\in\jSpace},
-\end{align}
+\comment{
+    \begin{align}
+        \mathcal{R}_{k}({t}) \define \set{\vec{R}^{(k)}_{m,j}({t}), \set{\omega_{k,j}(t)|\forall j\in\jSpace} | \forall m\in\esSet, j\in\jSpace},
+    \end{align}
+}
 where $\vec{R}^{(k)}_{m,j} \define ( R^{(k)}_{m,j,0},\dots,R^{(k)}_{m,j,\Xi} )$ denotes the vector of random variables for convenience.
 
 %NOTE: State and Broadcast Information for ES
