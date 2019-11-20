@@ -12,19 +12,21 @@ At the end of this section, we show that we could come up with decentralized alg
 }
 
 \subsection{System State and Dispatching Policy}
-We formulate the multi-agent MDP problem from a global perspective, where each AP adopts the dispatching policy mapping from the collected global state information.
-As each AP would always update its dispatching policy based on the latest broadcast information, the \brdelay{s} in each interval is also taken as a part of state information.
+We formulate the multi-agent MDP problem \comment{from a global perspective}, where each AP adopts the dispatching policy \comment{mapping from the global broadcast information $\Obsv^{\dagger}$}.
+% As each AP would always update its dispatching policy based on the latest broadcast information, the \brdelay{s} in each interval is also taken as a part of state information.
 The relationship between \brdelay~and the policy update time points for different APs is depicted in Fig. \ref{fig:brd-trans}.
 
-\begin{definition}[System State]
-    The system state at $t$-th \brpoint~is denoted as follows.
-    \begin{align}
-        \Stat({t}) \define \Paren{
-            \Obsv({t-1}), \Obsv({t}), \mathcal{D}({t})
-        },
-    \end{align}
-    where $\mathcal{D}({t}) \define \set{D_{1}({t}), \dots, D_{K}({t})}$ denotes the \brdelay~for each AP, $\Obsv({t})$ denotes updated information after receiving the whole broadcast information, and $\Obsv({t-1})$ denotes the stale information.
-\end{definition}
+\comment{
+    \begin{definition}[System State]
+        The system state at $t$-th \brpoint~is denoted as follows.
+        \begin{align}
+            \Stat({t}) \define \Paren{
+                \Obsv^{\dagger}({t-1}), \Obsv^{\dagger}({t}), \mathcal{D}({t})
+            },
+        \end{align}
+        where $\mathcal{D}({t}) \define \set{D_{1}({t}), \dots, D_{K}({t})}$ denotes the \brdelay~for each AP, $\Obsv^{\dagger}({t})$ denotes updated global information with the whole broadcast information, and $\Obsv^{\dagger}({t-1})$ denotes the stale global information.
+    \end{definition}
+}
 
 \begin{figure}[ht]
     \centering
@@ -36,25 +38,26 @@ The relationship between \brdelay~and the policy update time points for differen
 Based on the two phases of broadcast information in the system state, the system evolves with the joint actions of all APs.
 Due to the different distributions of \brdelay~for each AP in one interval, APs use the stale policy in firstly and then update their policy based on latest information in random order.
 The joint policy of all APs is defined as follows.
-\begin{definition}[Joint Dispatching Policy]
-    The joint dispatching policy $\Policy(\Stat({t}))$ over $\Stat({t})$ which is defined with two phases broadcast information which is given as follows.
-    \begin{align}
-        \Policy\Paren{\Stat({t})} \define \Brace{
-            \Omega_{1}\Paren{\Stat({t})}, \dots, \Omega_{K}\Paren{\Stat({t})}
-        },
-    \end{align}
-    where
-    $\Omega_{k}(\Stat({t}))$ denotes the independent policy for the $k$-th AP ($\forall k\in\apSet$), whose definition is given as follows.
-    \begin{align}
-        \Omega_{k}\Paren{\Stat({t})} \define
-        \begin{cases}
-            \tilde{\Omega}_{k}( \Obsv({t-1}) ), &n <    D_{k}({t})
-            \\
-            \tilde{\Omega}_{k}( \Obsv({t}) ),   &n \geq D_{k}({t})
-        \end{cases},
-    \end{align}
-    where $n$ denotes the index of time slot in the $t$-th interval.
-\end{definition}
+\comment{
+    \begin{definition}[Joint Dispatching Policy]
+        The joint dispatching policy $\Policy(\Stat({t}))$ over global system state $\Stat({t})$ which is defined as follows.
+        \begin{align}
+            \Policy(\Stat(t)) \define \Brace{
+                \Omega^{\dagger}_{1}(\Stat(t)), \dots, \Omega^{\dagger}_{K}(\Stat(t))
+            },
+        \end{align}
+        where $\Omega^{\dagger}_{k}(\Stat({t}))$ denotes the independent policy for the $k$-th AP ($\forall k\in\apSet$) mapping from the global state. whose definition is given as follows.
+        \begin{align}
+            \Omega^{\dagger}_{k}\Paren{\Stat({t})} \define
+            \begin{cases}
+                {\Omega}_{k}( \Obsv_{k}({t-1}) ), &n <    D_{k}({t})
+                \\
+                {\Omega}_{k}( \Obsv_{k}({t}) ),   &n \geq D_{k}({t})
+            \end{cases},
+        \end{align}
+        where $n$ denotes the index of time slot in the $t$-th interval. And we note that the individual policy ${\Omega}_{k}( \Obsv_{k}({t}) )$ would be adopted when the $k$-th AP receives the partial information ($t+D_{k}(t)$), and lasts until the time when the next partial broadcast information arrives ($t+1+D_{k}(t+1)$). The lasting time of one individual policy is un-deterministic. 
+    \end{definition}
+}
 %----------------------------------------------------------------------------------------%
 
 \subsection{The Optimization Problem}

@@ -63,10 +63,10 @@ Specifically, it is assumed that different types of jobs on different edge serve
 %NOTE: Periodic Broadcast is Indispensable
 In our system, each AP dispatches different types of computation jobs in a fully cooperative manner, where the jobs are dispatched to achieve a global optimality.
 To facilitate such dispatching decision, each AP should collect the information from other APs and edge servers.
-It's assumed that every APs and edge servers broadcast their information every $t_B$ time slots as illustrated in Fig.\ref{fig:brd-timeline}.
+It's assumed that every APs and edge servers broadcast their information every $t_B$ time slots as depicted in Fig.\ref{fig:brd-timeline}.
 \delete{v4}{
-    Furthermore, we denote $({i,n})$ as the $n$-th time slot in $i$-th broadcast interval, which is the interval between $(i-1)$-th and $i$-th broadcast ($i\in\domP$).
-    Especially, we have $({i}) \define ({i,0})$ as the index of $i$-th broadcast time slot and call it $i$-th \brpoint~($i\in\domP$).
+    Furthermore, we denote $({t,n})$ as the $n$-th time slot in $t$-th broadcast interval, which is the interval between $(t-1)$-th and $t$-th broadcast ($t\in\domP$).
+    Especially, we have $({t}) \define ({t,0})$ as the index of $t$-th broadcast time slot and call it $t$-th \brpoint~($t\in\domP$).
 }
 \begin{figure}[ht]
     \centering
@@ -79,54 +79,85 @@ It's assumed that every APs and edge servers broadcast their information every $
 One AP shall maintain information about the number of jobs still in uploading. 
 And due to the uploading time of one job is unknown until it's been uploaded, it further has counters to record the elapsed time slots for each job.
 More specifically, at the $n$ time slot in the $t$-th interval, the number of the $j$-th type job been uploaded to the $m$-th edge server $\xi$ time slots ago from $k$-th AP is denoted as $R^{(k)}_{m,j,\xi}({t,n})$ ($\forall k\in\apSet, m\in\esSet, j\in\jSpace, \xi\in(0,\Xi]$).
-The broadcast information of the $k$-th AP at the $t$-th broadcast ($t\in\domZ$) is defined as follows.
+The broadcast information of the $k$-th AP at the $t$-th broadcast ($t\in\domZ$) includes the information about uploading job and the dispatching decision for each type of jobs, which is defined as follows.
 \begin{align}
-    \mathcal{R}_{k}({t}) \define \set{R^{(k)}_{m,j,\xi}({t}) | \forall m\in\esSet, j\in\jSpace, \xi \in [0,\Xi]},
+    \mathcal{R}_{k}({t}) \define \set{\vec{R}^{(k)}_{m,j}({t}), \set{\omega_{k,j}(t)|\forall j\in\jSpace} | \forall m\in\esSet, j\in\jSpace},
 \end{align}
-where we have $\vec{R}^{(k)}_{m,j} \define ( R^{(k)}_{m,j,0},\dots,R^{(k)}_{m,j,\Xi} )$ denote the vector of random variables for convenience.
+where $\vec{R}^{(k)}_{m,j} \define ( R^{(k)}_{m,j,0},\dots,R^{(k)}_{m,j,\Xi} )$ denotes the vector of random variables for convenience.
 
 %NOTE: State and Broadcast Information for ES
 One edge server shall maintain information about the computing queue status for each VM.
-More specifically, at the $n$ time slot in the $t$-th interval, the $m$-th edge server have $L_{m,j}({t,n})$ and $\eta_{m,j}({t,n})$ denote the pending number and the first job remaining time of the $j$-th type job, respectively ($\forall m\in\esSet, j\in\jSpace$).
-The broadcast information of the $m$-th edge server at the $t$-th ($t\in\domZ$) broadcast is defined as follows.
-\begin{align}
-    \mathcal{Q}_{m}({t}) \define \set{Q_{m,j}({t}) | \forall j\in\jSpace},
-\end{align}
-where $Q_{m,j} \define (L_{m,j}, \eta_{m,j})$.
-And the whole broadcast information from all APs and edge servers at the $i$-th broadcast ($i\in\domZ$) is denoted as:
-\begin{align}
-    \Obsv({t}) \define
-        \Brace{
-            \mathcal{R}_{k}({t}), \mathcal{Q}_{m}({t}) | \forall k\in\apSet, m\in\esSet
-        }.
-\end{align}
+\comment{
+    More specifically, at the $n$ time slot in the $t$-th interval, the $m$-th edge server have $Q_{m,j}({t,n})$ denote the pending number of the $j$-th type job ($\forall m\in\esSet, j\in\jSpace$).
+    The broadcast information of the $m$-th edge server at the $t$-th ($t\in\domZ$) broadcast is defined as follows.
+    \begin{align}
+        \mathcal{Q}_{m}({t}) \define \set{Q_{m,j}({t}) | \forall j\in\jSpace}.
+    \end{align}
+    And the whole broadcast information from all APs and edge servers at the $i$-th broadcast ($i\in\domZ$) is denoted as:
+    \begin{align}
+        \Obsv^{\dagger}(t) \define
+            \Brace{
+                \mathcal{R}_{k}({t}), \mathcal{Q}_{m}({t}) | \forall k\in\apSet, m\in\esSet
+            },
+    \end{align}
+}
 
-%NOTE: Receiving points definition, denotation and unpredictable
+%NOTE: Conflict of AP set and partial information definition
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.80\textwidth]{images/draft-conflict.png}
+    \caption{The Example Illustraction of Conflict Set and Partial Broadcast Information}
+    \label{fig:conflict}
+\end{figure}
+
 According to Fig.\ref{fig:brd-timeline}, different APs would receive different parts of broadcast information at different time slots.
-For $t$-th broadcast ($t\in\domZ$), the $k$-th AP would receive the broadcast information from $k'$-th AP after some latency $D^{\dagger}_{k,k'}({t})$, and $D^{\ddagger}_{k,m}({t})$ for the information from the $m$-th edge server ($\forall k' \neq k \in\apSet, m\in\esSet$).
-We call the latency after which one AP (saying the $k$-th AP, $\forall k\in\apSet$) could receive the whole broadcast information as \brdelay, which is defined as follows.
-\begin{align}
-    D_{k}({t}) \define \max\Paren{\Brace{
-        D^{\dagger}_{k,k'}({t}),
-        D^{\ddagger}_{k,m}({t}) | \forall k' \neq k \in \apSet, m\in\esSet
-    }}.
-\end{align}
-Due to the randomness of the network traffic, the \brdelay~shall be random based on the uncertainty of the arrival latency of each partial broadcast information.
-Thus APs have i.i.d. distributions of \brdelay, which is denoted as $D_{k}$ ($\forall k \in \apSet$).
+\comment{
+    Specifically, each AP would require only partial braodcast information to help it make dispatching decision.
+    We denote the \emph{conflict set} for the $k$-th AP ($\forall k\in\apSet$) as follows.
+    \begin{align}
+        \mathcal{X}_k \define \set{\forall k' \neq k\in\apSet|\esSet_{k'} \cap \esSet_{k} \neq \emptyset}
+    \end{align}
+    The \emph{conflict set} indicates the subset of APs whose status information could affect the decision making for the $k$-th AP.
+
+    Hence, each AP would only require the broadcast information from .
+    The denotation of partial broadcast information for the $k$-th AP ($\forall k\in\apSet$) is given as follows.
+    \begin{align}
+        \Obsv_{k} &= \set{\mathcal{R}_{k'} | \forall k'\in\mathcal{X}}
+                        \cup \set{\mathcal{Q}_{m} | \forall m\in\esSet_{k}},
+    \end{align}
+    One simple example is given as follows.
+    \begin{example}
+        As depicted in \ref{fig:conflict}, there are 3 APs and 3 edge servers in the system.
+        The \emph{candidate set} for each AP is denoted as: $\esSet_{1}=\set{1}, \esSet_{2}=\set{1,2}, \esSet_{3}=\set{2,3}$, respectively.
+        The \emph{conflict set} for each AP is denoted as: $\mathcal{X}_{1}=\set{1,2}, \mathcal{X}_{2}=\set{1,2,3}, \mathcal{X}_{3}=\set{2,3}$.
+        And the partial information required for each AP is denoted as follows.
+        \begin{align*}
+            \Obsv_{1} &= \set{ \mathcal{R}_{2} } \cup \set{ \mathcal{Q}_{1} }
+            \\
+            \Obsv_{3} &= \set{ \mathcal{R}_{2} } \cup \set{ \mathcal{Q}_{2}, \mathcal{Q}_{3} }
+        \end{align*}
+        % And we note that
+    \end{example}
+
+    For the $t$-th broadcast ($t\in\domZ$), the $k$-th AP would receive the partial broadcast information $\Obsv_{k}(t)$ after some latency which is denoted as \brdelay~$D_{k}(t)$.
+    Due to the randomness of the network traffic, the \brdelay~shall be random based on the uncertainty of the arrival latency of each part of information from \emph{candidate set} of edge servers and \emph{conflict set} of APs.
+    Thus the probability distributions of \brdelay~ are i.i.d random variables following some distributions.
+}
 
 As a high frequency broadcast design could result into \emph{broadcast storm} and block the normal network traffic, we introduce a slow enough broadcast interval selection in the system.
 The broadcast interval is always larger than the maximum \brdelay, i.e. $t_B > \hat{D}_k$ ($\forall k\in\apSet$), where $\hat{D}_k$ is the upper bound for $D_{k}({t})$ ($t\in\domP$).
 The broadcast interval selected implies that any AP would always receive the whole broadcast information once before the next broadcast, and the \brdelay~is comparable to the broadcast interval thus not negligible.
 
-Each AP tries to update its dispatching decisions once it receives the latest system state via broadcast.
-Denote the dispatching policy of the $k$-th AP ($\forall k\in\apSet$) based on the broadcast information $\Obsv({t})$ ($t \in\domP$) as follows.
-\begin{align}
-    &\tilde{\Omega}_{k}\Paren{\Obsv({t})} \define \set{\omega_{k,j}|\forall m\in\esSet, j\in\jSpace}
-    ~(\forall k\in\apSet).
-    \label{def_action}
-\end{align}
-The $k$-th AP would always adopt two phases polices in the $i$-th interval, i.e. $\tilde{\Omega}_{k}(\Obsv({t-1}))$ before receiving $\Obsv({t})$ and $\tilde{\Omega}_{k}(\Obsv({t}))$ afterwards.
-The two phases policy of all APs together determine the information of $\Obsv({t+1})$ in the next interval.
+Each AP tries to update its dispatching decisions once it receives partial broadcast information.
+\comment{
+    Denote the individual dispatching policy of the $k$-th AP ($\forall k\in\apSet$) based on the broadcast information $\Obsv_{k}({t})$ ($t \in\domP$) as follows.
+    \begin{align}
+        &\Omega_{k}(\Obsv_{k}(t)) \define \set{\omega_{k,j}|\forall m\in\esSet, j\in\jSpace}.
+        \label{def_action}
+    \end{align}
+    And we note that the $k$-th AP would always adopt two phases polices in the $t$-th interval, i.e. $\Omega_{k}(\Obsv_{k}({t-1}))$ before receiving $\Obsv_{k}(t)$ and $\Omega_{k}(\Obsv_{k}(t))$ afterwards.
+    % The two phases policy of APs in one together determine the transition of $\Obsv({t+1})$ in the next interval.
+}
 
 However, the randomness of \brdelay~implies that one AP could not know other APs' \brdelay~in the same interval.
 Thus, APs are unable to evaluate the impact introduced by others' policy on the next broadcast information and fail to establish exact cooperation.
@@ -134,7 +165,7 @@ An naive way to solve this problem is to force all APs update their policy only 
 \delete{v4}{A toy example is given as follow.}
 
 In the following problem formulation section, we will show that we could come up with better dispatching decision update solution which is aware of the \brdelay, and improve APs' dispatching decisions in an iterative way.
-\fixit{
+\accept{
     Furthermore, with the help of algorithm design we could prove that our improved policy is with analytical performance bound under MDP framework.
 }
 %----------------------------------------------------------------------------------------%
