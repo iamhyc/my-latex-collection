@@ -12,11 +12,11 @@ At the end of this section, we show that we could come up with decentralized alg
 }
 
 \subsection{System State and Dispatching Policy}
-We formulate the multi-agent MDP problem \comment{from a global perspective}, where each AP adopts the dispatching policy \comment{mapping from the global broadcast information $\Obsv^{\dagger}$}.
+We formulate the multi-agent MDP problem from a global perspective, where each AP adopts the dispatching policy mapping from the global broadcast information $\Obsv^{\dagger}$.
 % As each AP would always update its dispatching policy based on the latest broadcast information, the \brdelay{s} in each interval is also taken as a part of state information.
 The relationship between \brdelay~and the policy update time points for different APs is depicted in Fig. \ref{fig:brd-trans}.
 
-\comment{
+\accept{
     \begin{definition}[System State]
         The system state at $t$-th \brpoint~is denoted as follows.
         \begin{align}
@@ -38,7 +38,7 @@ The relationship between \brdelay~and the policy update time points for differen
 Based on the two phases of broadcast information in the system state, the system evolves with the joint actions of all APs.
 Due to the different distributions of \brdelay~for each AP in one interval, APs use the stale policy in firstly and then update their policy based on latest information in random order.
 The joint policy of all APs is defined as follows.
-\comment{
+\accept{
     \begin{definition}[Joint Dispatching Policy]
         The joint dispatching policy $\Policy(\Stat({t}))$ over global system state $\Stat({t})$ which is defined as follows.
         \begin{align}
@@ -91,7 +91,7 @@ According to \cite{sutton1998introduction}, the above problem could be solved by
         &\sum_{\Stat({t+1})} \Pr\Brace{ \Stat({t+1})|\Stat({t}), \Policy(\Stat({t})) } \cdot V^{\dagger}\Paren{\Stat({t+1})}.
     \label{sp_0}
 \end{align}
-\comment{
+\accept{
     However, if we only update the individual policy of the $k$-th AP ($\forall k\in\apSet$) at one time, the Bellman's equation would reduce into the form as follows, where only the partial information for the $k$-th AP matters.
     \begin{align}
         V_{k}\Paren{\Obsv_{k}({t})} =& g_{k}(\Obsv_{k}(t)) +

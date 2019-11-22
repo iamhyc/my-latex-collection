@@ -4,14 +4,16 @@
 We consider an edge computing system with $K$ Access Points (APs) and $M$ edge servers, which are connected in a network as illustrated in Fig.\ref{fig:system}.
 The sets of APs and edge servers are denoted as $\apSet \define \set{1,\dots,K}$ and $\esSet \define \set{1,\dots,M}$, respectively.
 Each AP collects the computation jobs from the mobile users within its coverage, and makes decision on the processing edge servers from the set $\esSet$.
-\comment{
+\accept{
     Due to the limitation of network topology, each AP could only dispatch the computation jobs to a subset of edge servers, which is denoted as \emph{candidate set} $\esSet_{k} \subseteq \esSet$ ($\forall k\in\apSet$).
 }
 
 In this paper, we shall focus on the decentralized dispatcher design at each AP.
 Specifically, each AP and edge server periodically broadcast their state information (e.g., edge server dispatching choice for each job type, list of jobs being uploaded from APs to edge servers, computing queue length and etc.).
-One AP updates its strategy on job dispatching when receiving the \comment{partial broadcast state information which is enough its decision making}.
-Due to random transmission latency in the network, it is not sure when one AP can receive the \comment{complete partial broadcast information}, and the dispatching design could take this practical issue into consideration.
+\fixit{
+    One AP updates its strategy on job dispatching when receiving the {partial broadcast state information which is enough its decision making}.
+    Due to random transmission latency in the network, it is not sure when one AP can receive the {complete partial broadcast information}, and the dispatching design could take this practical issue into consideration.
+}
 
 \begin{figure}[ht]
     \centering
@@ -28,7 +30,7 @@ Specifically, the arrivals of the $j$-th job type at the $k$-th AP in different 
 
 %NOTE: [uploading process]
 Each AP then immediately dispatches each type of received jobs to one edge server.
-Let \comment{$\omega_{k,j} \in \esSet_{k}$} denotes the index of edge server for the processing of the $j$-th types of jobs dispatched from the $k$-th AP ($\forall k\in\apSet, j\in\jSpace$).
+Let $\omega_{k,j} \in \esSet_{k}$ denotes the index of edge server for the processing of the $j$-th types of jobs dispatched from the $k$-th AP ($\forall k\in\apSet, j\in\jSpace$).
 Different types of jobs may have different distributions on the input data size.
 Moreover, due to the random traffic in the network, the job uploading from one AP to one edge server consumes a random number of time slots.
 It's assumed that the distributions of uploading delays are independent between any two uploading jobs.
@@ -47,7 +49,7 @@ Hence, a processing queue with maximum $L_{max}$ jobs is established for each VM
 The arrival jobs will be discarded when the processing queue is full.
 Furthermore, we adopt the \emph{unrelated machines} assumption in \cite{tan-online} for job processing on edge servers.
 Specifically, it is assumed that different types of jobs on different edge servers have different distributions of computing time.
-\comment{
+\accept{
     The computing processing is formulated as memory-less Geometric process, and we denote $C_{m,j}$ as the computing time distribution (with the unit of time slot) of the $j$-th job type on the $m$-th edge server.
     The probability mass function (PMF) of $C_{m,j}$ is denoted as $f_{m,j}(k) \define (1-\frac{1}{c_{m,j}})^{k-1} \frac{1}{c_{m,j}}$ with expectation $c_{m,j}$.
 }
@@ -80,7 +82,7 @@ One AP shall maintain information about the number of jobs still in uploading.
 And due to the uploading time of one job is unknown until it's been uploaded, it further has counters to record the elapsed time slots for each job.
 More specifically, at the $n$ time slot in the $t$-th interval, the number of the $j$-th type job been uploaded to the $m$-th edge server $\xi$ time slots ago from $k$-th AP is denoted as $R^{(k)}_{m,j,\xi}({t,n})$ ($\forall k\in\apSet, m\in\esSet, j\in\jSpace, \xi\in(0,\Xi]$).
 The broadcast information of the $k$-th AP at the $t$-th broadcast ($t\in\domZ$) includes the information about uploading job and the dispatching decision for each type of jobs, which is defined as follows.
-\comment{
+\accept{
     \begin{align}
         \mathcal{R}_{k}({t}) \define \set{\vec{R}^{(k)}_{m,j}({t}), \set{\omega_{k,j}(t)|\forall j\in\jSpace} | \forall m\in\esSet, j\in\jSpace},
     \end{align}
@@ -89,7 +91,7 @@ where $\vec{R}^{(k)}_{m,j} \define ( R^{(k)}_{m,j,0},\dots,R^{(k)}_{m,j,\Xi} )$ 
 
 %NOTE: State and Broadcast Information for ES
 One edge server shall maintain information about the computing queue status for each VM.
-\comment{
+\accept{
     More specifically, at the $n$ time slot in the $t$-th interval, the $m$-th edge server have $Q_{m,j}({t,n})$ denote the pending number of the $j$-th type job ($\forall m\in\esSet, j\in\jSpace$).
     The broadcast information of the $m$-th edge server at the $t$-th ($t\in\domZ$) broadcast is defined as follows.
     \begin{align}
@@ -113,7 +115,7 @@ One edge server shall maintain information about the computing queue status for 
 \end{figure}
 
 According to Fig.\ref{fig:brd-timeline}, different APs would receive different parts of broadcast information at different time slots.
-\comment{
+\accept{
     Specifically, each AP would require only partial braodcast information to help it make dispatching decision.
     We denote the \emph{conflict set} for the $k$-th AP ($\forall k\in\apSet$) as follows.
     \begin{align}
@@ -151,7 +153,7 @@ The broadcast interval is always larger than the maximum \brdelay, i.e. $t_B > \
 The broadcast interval selected implies that any AP would always receive the whole broadcast information once before the next broadcast, and the \brdelay~is comparable to the broadcast interval thus not negligible.
 
 Each AP tries to update its dispatching decisions once it receives partial broadcast information.
-\comment{
+\accept{
     Denote the individual dispatching policy of the $k$-th AP ($\forall k\in\apSet$) based on the broadcast information $\Obsv_{k}({t})$ ($t \in\domP$) as follows.
     \begin{align}
         &\Omega_{k}(\Obsv_{k}(t)) \define \set{\omega_{k,j}|\forall m\in\esSet, j\in\jSpace}.
