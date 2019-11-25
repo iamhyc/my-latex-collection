@@ -3,16 +3,20 @@
 \subsection{Network Model}
 We consider an edge computing system with $K$ Access Points (APs) and $M$ edge servers, which are connected in a network as illustrated in Fig.\ref{fig:system}.
 The sets of APs and edge servers are denoted as $\apSet \define \set{1,\dots,K}$ and $\esSet \define \set{1,\dots,M}$, respectively.
-Each AP collects the computation jobs from the mobile users within its coverage, and makes decision on the processing edge servers from the set $\esSet$.
 \accept{
-    Due to the limitation of network topology, each AP could only dispatch the computation jobs to a subset of edge servers, which is denoted as \emph{candidate set} $\esSet_{k} \subseteq \esSet$ ($\forall k\in\apSet$).
+    Without loss of generality, it is assumed that there are $J$ types of computation jobs supported in this system, which are denoted via the $\mathcal{J} \define \set{1,\dots,J}$.
 }
-
-In this paper, we shall focus on the decentralized dispatcher design at each AP.
-Specifically, each AP and edge server periodically broadcast their state information (e.g., edge server dispatching choice for each job type, list of jobs being uploaded from APs to edge servers, computing queue length and etc.).
-\fixit{
-    One AP updates its strategy on job dispatching when receiving the {partial broadcast state information which is enough its decision making}.
-    Due to random transmission latency in the network, it is not sure when one AP can receive the {complete partial broadcast information}, and the dispatching design could take this practical issue into consideration.
+Each AP collects the computation jobs from the mobile users within its coverage, and makes decision on the processing edge servers for each job type from the set $\esSet$.
+It is assumed that the $k$-th AP only dispatches the computation jobs to the edge servers \fixit{within a certain number of hops.}
+Let $\esSet_{k} \subseteq \esSet$ be the set of edge servers, which can compute the jobs from the $k$-th AP;
+and $\ccSet_{k}$ be the set of APs, which may upload jobs to the $m$-th edge server.
+We refer to $\esSet_{k}$ as the \emph{cadidate server set} of the $k$-th AP, and $\apSet_{m}$ as the \emph{candidate AP set} of the $m$-th edge server.
+As illustrated in Fig.\ref{fig:conflict}, different APs may have different candidate server ser according to their locations in the network.
+For example, it is possible that $\esSet_{k} \neq \esSet_{k'}$ and $\esSet_{k} \cap \esSet_{k'} \neq \emptyset$ when $k \neq k' \in \apSet$.
+In this edge computing network, we shall focus on the decentralized dispatcher design at each AP.
+Specifically, each AP and edge server periodically broadcast their state information (e.g. edge server dispatching choice for each job type, list of jobs being uploaded from APs to edge servers, computing queue length and etc.), and one AP updates its strategy on job dispatching when receiving the broadcast state information.
+\comment{
+    In this paper, we shall optimize the job dispatching strategy at APs with part of the broadcast information and random broadcast latency.
 }
 
 \begin{figure}[ht]
@@ -23,10 +27,14 @@ Specifically, each AP and edge server periodically broadcast their state informa
 \end{figure}
 
 %NOTE: [job space support and arrival process]
-Without loss of generality, it is assumed that there are $J$ types of computation jobs supported in this system, which are denoted via the set $\jSpace \define \set{1,\dots,J}$.
-The time axis of each AP is organized by time slots.
-The job arrivals in each time slot are modelled via independent Bernoulli distributions.
-Specifically, the arrivals of the $j$-th job type at the $k$-th AP in different time slots are independent and identically distributed (i.i.d.) Bernoulli random variables, and the arrival probability is denoted as $\lambda_{k,j}$ ($\forall k\in\apSet, j\in\jSpace$).
+The time axis is organized by time slots.
+The job arrivals in each time slot at each AP are modelled via independent Bernoulli distributions.
+Specifically, the arrivals of the $j$-th job type at the $k$-th AP in different time slots are independent and identically distributed (i.i.d) Bernoulli random variables, and the arrival probability is denoted as $\lambda_{k,j}$ ($\forall k\in\apSet, j\in\jSpace$).
+Let $A_{k,j}(t) \in \set{0,1}$ represents the event of job arrival, where $A_{k,j}(t)=1$ means one job of the $j$-th job type arrives on the $k$-th at the $t$-th time slot, and $A_{k,j}(t)=0$ means other wise.
+Hence,
+\begin{align}
+    \Pr\{ A_{k,j}(t) = 1 \} = \lambda_{k,j}, \forall k,j,t
+\end{align}
 
 %NOTE: [uploading process]
 Each AP then immediately dispatches each type of received jobs to one edge server.
@@ -119,21 +127,21 @@ According to Fig.\ref{fig:brd-timeline}, different APs would receive different p
     Specifically, each AP would require only partial braodcast information to help it make dispatching decision.
     We denote the \emph{conflict set} for the $k$-th AP ($\forall k\in\apSet$) as follows.
     \begin{align}
-        \mathcal{X}_k \define \set{\forall k' \neq k\in\apSet|\esSet_{k'} \cap \esSet_{k} \neq \emptyset}
+        \ccSet_k \define \set{\forall k' \neq k\in\apSet|\esSet_{k'} \cap \esSet_{k} \neq \emptyset}
     \end{align}
     The \emph{conflict set} indicates the subset of APs whose status information could affect the decision making for the $k$-th AP.
 
     Hence, each AP would only require the broadcast information from .
     The denotation of partial broadcast information for the $k$-th AP ($\forall k\in\apSet$) is given as follows.
     \begin{align}
-        \Obsv_{k} &= \set{\mathcal{R}_{k'} | \forall k'\in\mathcal{X}}
+        \Obsv_{k} &= \set{\mathcal{R}_{k'} | \forall k'\in\ccSet_{k}}
                         \cup \set{\mathcal{Q}_{m} | \forall m\in\esSet_{k}},
     \end{align}
     One simple example is given as follows.
     \begin{example}
         As depicted in \ref{fig:conflict}, there are 3 APs and 3 edge servers in the system.
         The \emph{candidate set} for each AP is denoted as: $\esSet_{1}=\set{1}, \esSet_{2}=\set{1,2}, \esSet_{3}=\set{2,3}$, respectively.
-        The \emph{conflict set} for each AP is denoted as: $\mathcal{X}_{1}=\set{1,2}, \mathcal{X}_{2}=\set{1,2,3}, \mathcal{X}_{3}=\set{2,3}$.
+        The \emph{conflict set} for each AP is denoted as: $\ccSet_{1}=\set{1,2}, \ccSet_{2}=\set{1,2,3}, \ccSet_{3}=\set{2,3}$.
         And the partial information required for each AP is denoted as follows.
         \begin{align*}
             \Obsv_{1} &= \set{ \mathcal{R}_{2} } \cup \set{ \mathcal{Q}_{1} }
