@@ -3,19 +3,19 @@
 \subsection{Network Model}
 We consider an edge computing system with $K$ Access Points (APs) and $M$ edge servers, which are connected in a network as illustrated in Fig.\ref{fig:system}.
 The sets of APs and edge servers are denoted as $\apSet \define \set{1,\dots,K}$ and $\esSet \define \set{1,\dots,M}$, respectively.
-\accept{
-    Without loss of generality, it is assumed that there are $J$ types of computation jobs supported in this system, which are denoted via the $\mathcal{J} \define \set{1,\dots,J}$.
-}
+Without loss of generality, it is assumed that there are $J$ types of computation jobs supported in this system, which are denoted via the $\mathcal{J} \define \set{1,\dots,J}$.
 Each AP collects the computation jobs from the mobile users within its coverage, and makes decision on the processing edge servers for each job type from the set $\esSet$.
-It is assumed that the $k$-th AP only dispatches the computation jobs to the edge servers \fixit{within a certain number of hops.}
-Let $\esSet_{k} \subseteq \esSet$ be the set of edge servers, which can compute the jobs from the $k$-th AP;
-and $\ccSet_{k}$ be the set of APs, which may upload jobs to the $m$-th edge server.
+It is assumed that the $k$-th AP only dispatches the computation jobs to the edge servers \accept{within a certain number of hops.}
+Let $\esSet_{k} \subseteq \esSet$ be the set of edge servers, which can compute the jobs from the $k$-th AP and $\apSet_{m}$ be the set of APs, which may upload jobs to the $m$-th edge server.
 We refer to $\esSet_{k}$ as the \emph{cadidate server set} of the $k$-th AP, and $\apSet_{m}$ as the \emph{candidate AP set} of the $m$-th edge server.
 As illustrated in Fig.\ref{fig:conflict}, different APs may have different candidate server ser according to their locations in the network.
 For example, it is possible that $\esSet_{k} \neq \esSet_{k'}$ and $\esSet_{k} \cap \esSet_{k'} \neq \emptyset$ when $k \neq k' \in \apSet$.
-In this edge computing network, we shall focus on the decentralized dispatcher design at each AP.
-Specifically, each AP and edge server periodically broadcast their state information (e.g. edge server dispatching choice for each job type, list of jobs being uploaded from APs to edge servers, computing queue length and etc.), and one AP updates its strategy on job dispatching when receiving the broadcast state information.
 \comment{
+    In this edge computing network, each AP decentralized makes job dispatching decision faciliated by inforamtion sharing from other APs and edge servers.
+    % In this edge computing network, we shall focus on the decentralized dispatcher design at each AP.
+}
+Specifically, each AP and edge server periodically broadcast their state information (e.g. edge server dispatching choice for each job type, list of jobs being uploaded from APs to edge servers, computing queue length and etc.), and one AP updates its strategy on job dispatching when receiving the broadcast state information.
+\accept{
     In this paper, we shall optimize the job dispatching strategy at APs with part of the broadcast information and random broadcast latency.
 }
 
@@ -28,7 +28,7 @@ Specifically, each AP and edge server periodically broadcast their state informa
 
 %NOTE: [job space support and arrival process]
 The time axis is organized by time slots.
-The job arrivals in each time slot at each AP are modelled via independent Bernoulli distributions.
+The job arrivals in each time slot on each AP are modelled via independent Bernoulli distributions.
 Specifically, the arrivals of the $j$-th job type at the $k$-th AP in different time slots are independent and identically distributed (i.i.d) Bernoulli random variables, and the arrival probability is denoted as $\lambda_{k,j}$ ($\forall k\in\apSet, j\in\jSpace$).
 Let $A_{k,j}(t) \in \set{0,1}$ represents the event of job arrival, where $A_{k,j}(t)=1$ means one job of the $j$-th job type arrives on the $k$-th at the $t$-th time slot, and $A_{k,j}(t)=0$ means other wise.
 Hence,
@@ -51,9 +51,9 @@ For each type, the uploaded jobs are computed in a First-Come-First-Serve (FCFS)
 Hence, a processing queue with maximum $L_{max}$ jobs is established for each VM.
 The arrival jobs will be discarded when the processing queue is full.
 Furthermore, we adopt the \emph{unrelated machines} assumption in \cite{tan-online} for job processing on edge servers.
-Specifically, it is assumed that the computation time of different job types on different edge servers follows the memory-less Geometric distribution with different expectations.
-\fixit{
-    Let $C_{m,j} \sim \mathbb{G}(1/c_{m,j})$ be the computation time distribution (with the unit of time slot) of the $j$-th job type on the $m$-th edge server, where $c_{m,j}$ is the expectation.
+Specifically, it is assumed that the computation time of different job types on different edge servers follows the memory-less Geometric distribution (with the unit of time slot) with different expectations.
+\accept{
+    Let $C_{m,j} \sim \mathbb{G}(1/c_{m,j})$ be the computation time distribution of the $j$-th job type on the $m$-th edge server, where $c_{m,j}$ is the expectation.
 }
 Hence, the probability mass function (PMF) of $C_{m,j}$ is given by:
 \begin{align}
