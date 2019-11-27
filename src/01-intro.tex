@@ -1,7 +1,12 @@
 
 \section{Introduction}
 
-\delete{}{
+\comment{
+    Edge computing is believed to be the solid solution for increasing computation-intensive and energy-hungry applications on mobile devices.
+    The edge server clusters are deployed in closer proximity to mobile devices than cloud infrastructure, which alleviates the communication overhead and enables \emph{time-sensitive} and \emph{deadline-aware} tasks offloading.
+}
+
+\delete{v6.2}{
     A number of emerging mobile applications, such as face recofnition, speech recognition and high-definition video rendering, are computation-intensive and delay-sensitive.
     Because of the limited computation resource and battery capacity, it is promising for the mobile devices to upload their computational0intensive jobs to edge servers with much more powerful computation capability.
     In this paper, we focus on the job dispatching optimization between multiple access points (APs) and edge servers via a network with random jobs uploading delay.
@@ -88,7 +93,7 @@ The computation jobs would be released from UEs and the dispatching decisions ar
 The information sharing scheme is proposed in this article with synchronized broadcast design. With the help of this scheme, we could immediately apply the job dispatching decision based on obsolete information, with some prior stochastic knowledge of global system.
 Our contributions are summarized as follows.
 \begin{itemize}
-    \item To our best knowledge, we are the first work to propose the MDP framework making use of obsolete information in edge computing system. With shared prior stochastic knowledge about broadcast delay and uploading delay, the distributed agent could come to consensus on optimal policy adopting globally;
+    \item To our best knowledge, we are the first work to propose the MDP framework making use of obsolete information in edge computing system. With shared prior stochastic knowledge about broadcast delay and uploading delay, the distributed agent could \fixit{come to consensus} on optimal policy adopting globally;
     \item We propose a global state MDP formulation to characterize the multiple-agent problem, i.e. single agent would consider multiple-agent decision optimality to achieve cooperation.
     We with adopt value function approximation to reduce the traditional algorithm complexity, and come up with performance guarantee performance bound.
 \end{itemize}
