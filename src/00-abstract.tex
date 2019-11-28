@@ -1,32 +1,35 @@
 \begin{abstract}
     \comment{
-        Edge servers is located in 
-        % In this paper, the cooperative edge computing network is considered in a relative large-scale Metropolitan Area Network (MAN) scenario.
+        In this paper, we consider the scenario that edge servers are scattered into a Metropolitan Area Network (MAN).
+        The access points (APs) are deployed to collect jobs from the mobile users in its coverage, and then dispath the jobs to the feasible edge servers via MAN.
+        While existing literature 
+
+        
         \begin{itemize}
-            \item We consider edge computing network backed by Metropolitan Area Network (MAN); there are numbers of APs to collect jobs from mobile users, and then offloading to edge servers in support;
-            \item Due to the non-predictable routing path and network congestion, the information propagation is limited, and the centralized dispatcher design is impractical;
-            \item Considering the information staleness is non-negligible, we 
+            \item We consider edge computing network backed by Metropolitan Area Network (MAN); there are numbers of APs to collect jobs from mobile users in its coverage, and the jobs are then offloading to the edge servers in its support set.
+            \item Due to the cooperative APs in this system, the APs has to collect state information from other APs and edge servers to individually apply the job dispatching decision.
+            \item Due to the non-predictable transmission latency and network congestion with time-variant routing path, the information propagation time is not negligible.
+            Hence, the centralized dispatcher design is impractical.
+            Moreover, only a part of the edge servers are available to one AP due to the \fixit{maximum network hop limitation}.
+            \item Considering the information staleness is not negligible, 
+            
+            \item A periodic-broadcast information sharing scheme via broadcast is proposed, and the standard MDP framework is introduced to depict the stale-aware dispatching process;
+            \item Due to the uncertain traffic of the network between APs and edge servers, the job uploading latency is random and unpredictable; random job uploading delay, queueing delay at the edge servers and random job computing time are all considered in the optimization;
         \end{itemize}
     }
 
     \delete{v6.2}{
+        In this paper, we formulate the job dispatching problem in distributed Edge Computing system, and identify that the difficulty exists in how the decision is made decentralized based on stale information sharing.
+
         In this paper, the cooperative job dispatching problem in an edge computing network with multiple access points (APs) and edge servers is considered.
-        Due to the uncertain traffic of the network between APs and edge servers, the job uploading delay is random and unpredictable.
-        Since each job dispatching decision will affect the system state in the future, we formulate the joint optimization of job dispatching at all the APs and all the scheduling time slots as an infinite horizon Markov decision process (MDP) problem, where random job uploading delay, queueing delay at the edge servers and random job computing time are all considered in the optimization.
-        The minimization objective is a discounted measurement of total uploading, queueing and computing time.
+
+        Since each job dispatching decision will affect the system state in the future, we formulate the joint optimization of job dispatching at all the APs and all the scheduling time slots as an infinite horizon Markov decision process (MDP) problem, where .
+
+        The minimization objective is a discounted measurement of \emph{average job response time}.
         In this problem, the approximate MDP should be adopted to address the curse of dimensionality.
+
         Conventional low-complexity approximate solution of MDP is usually hard to predict the performance analytically.
         In this paper, a novel approximate MDP solution framework is proposed via one-step policy iteration over a baseline policy, where the analytical performance bound can be obtained.
-        It is shown by simulations that the proposed low-complexity algorithm can effectively reduce the total uploading, queueing and computing time per job of the considered edge computing network.
-    }
-
-    \delete{v6.2}{
-        The edge servers are always with limited computation resources standalone, and efficient cooperation is indispensable among distributed servers.
-        However, due to intensive job arrival and unpredictable delay, the effect of stale information sharing would cause severe jobs misplacement and over-submission.
-
-        In this work, we formulate the job dispatching problem in distributed Edge Computing system, and identify that the difficulty exists in how the decision is made decentralized based on stale information sharing.
-        A periodic information sharing scheme via broadcast is proposed, and the standard MDP framework is introduced to depict the delay-aware dispatching process.
-        The delicately designed low-complexity algorithm is adopted to provide an approximation solution against curse of dimensionality and with bounded analytical performance guarantee.
-        The value function approximation and one-step policy iteration method is adopted to obtain a sub-optimal dispatching policy whose performance can be bounded analytically.
+        It is shown by simulations that the proposed low-complexity algorithm can effectively reduce the \emph{average job response time} per job of the considered edge computing network.
     }
 \end{abstract}
