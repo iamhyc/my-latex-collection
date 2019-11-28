@@ -3,11 +3,11 @@
 \subsection{Network Model}
 We consider an edge computing system with $K$ Access Points (APs) and $M$ edge servers, which are connected in a network as illustrated in Fig.\ref{fig:system}.
 The sets of APs and edge servers are denoted as $\apSet \define \set{1,\dots,K}$ and $\esSet \define \set{1,\dots,M}$, respectively.
-Without loss of generality, it is assumed that there are $J$ types of computation jobs supported in this system, which are denoted via the $\mathcal{J} \define \set{1,\dots,J}$.
+Without loss of generality, it is assumed that there are $J$ types of computation jobs supported in this system, which are denoted via the set $\mathcal{J} \define \set{1,\dots,J}$.
 Each AP collects the computation jobs from the mobile users within its coverage, and makes decision on the processing edge servers for each job type from the set $\esSet$.
 It is assumed that the $k$-th AP only dispatches the computation jobs to the feasible edge servers, e.g. the edge servers within a certain number of hops.
 Let $\esSet_{k} \subseteq \esSet$ be the set of edge servers, which can compute the jobs from the $k$-th AP and $\apSet_{m}$ be the set of APs, which may upload jobs to the $m$-th edge server.
-We refer to $\esSet_{k}$ as the \emph{candidate server set} of the $k$-th AP, and $\apSet_{m}$ as the \emph{candidate AP set} of the $m$-th edge server.
+We refer to $\esSet_{k}$ as the \emph{candidate server set} of the $k$-th AP, and $\apSet_{m}$ as the \emph{candidate AP set} of the $m$-th edge server ($\forall k\in\apSet, m\in\esSet$).
 % As illustrated in Fig.\ref{fig:conflict},
 Different APs may have different candidate servers according to their locations in the network.
 For example, it is possible that $\esSet_{k} \neq \esSet_{k'}$ and $\esSet_{k} \cap \esSet_{k'} \neq \emptyset$ when $k \neq k' \in \apSet$.
@@ -43,15 +43,13 @@ Hence, we denote $\mathcal{U}_{k,m,j}$ as the uploading time for the $j$-th job 
 In practice, the distribution of uploading latency may not be known to the APs or edge servers in advance.
 
 %NOTE: [processing process]
-There are $J$ virtual machines (VMs) on each edge server for the computation of $J$ job types, respectively.
-For each type, the uploaded jobs are computed in a First-Come-First-Serve (FCFS) manner.
+There are $J$ virtual machines (VMs) running parallel on each edge server for the computation of $J$ job types, respectively.
+For each job type, the uploaded jobs are computed in a First-Come-First-Serve (FCFS) manner.
 Hence, a processing queue with maximum $L_{max}$ jobs is established for each VM.
 The arrival jobs will be discarded when the processing queue is full.
 Furthermore, we adopt the \emph{unrelated machines assumption} in \cite{tan-online} for job processing on edge servers.
 Specifically, it is assumed that the computation time of different job types on different edge servers follows the memory-less Geometric distribution (with the unit of time slot) with different expectations.
-\accept{
-    Let $C_{m,j} \sim \mathbb{G}(1/c_{m,j})$ be the computation time distribution of the $j$-th job type on the $m$-th edge server, where $c_{m,j}$ is the expectation.
-}
+Let $C_{m,j} \sim \mathbb{G}(1/c_{m,j})$ be the computation time distribution of the $j$-th job type on the $m$-th edge server, where $c_{m,j}$ is the expectation.
 Hence, the probability mass function (PMF) of $C_{m,j}$ is given by:
 \begin{align}
     f_{m,j}(k) \define (1-\frac{1}{c_{m,j}})^{k-1} \frac{1}{c_{m,j}}.
@@ -63,7 +61,7 @@ Hence, the probability mass function (PMF) of $C_{m,j}$ is given by:
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.80\textwidth]{brd-timeline.pdf}
-    \caption{The Timeline Illustration of State Information Broadcast and Receiving}
+    \caption{The timeline illustration of LSI broadcast with 2 APs and 1 edge server.}
     \label{fig:brd-timeline}
 \end{figure}
 
@@ -74,10 +72,10 @@ At the beginning of each broadcast interval (say the $t$-th broadcast interval),
 
 %NOTE: State and Broadcast Information for AP
 \begin{definition}[Local State Information for AP]
-    One AP shall maintain LSI about the number of jobs in uploading and the dispatching choice on edge server for each job type.
-    Specifically, at the $n$-th time slot in the $t$-th interval, the number of the $j$-th type job been uploaded to the $m$-th edge server $\xi$ time slots ago from $k$-th AP is denoted as $R^{(k)}_{m,j,\xi}({t,n})$ ($\forall k\in\apSet, m\in\esSet, j\in\jSpace, \xi\in(0,\Xi]$);
-    the dispatching choice of the $k$-th AP fro processing of the $j$-th job type is denoted as $\omega_{k,j}(t,n) \in \esSet_{k}$.
-    Hence, the broadcast LSI of the $k$-th AP at the $t$-th broadcast is given as follows.
+    One AP shall maintain LSI about the number of jobs in uploading, and the dispatching choice on edge server for each job type.
+    Specifically, at the $n$-th time slot in the $t$-th interval, the number of the $j$-th type job being uploaded to the $m$-th edge server $\xi$ time slots ago from $k$-th AP is denoted as $R^{(k)}_{m,j,\xi}({t,n})$ ($\forall k\in\apSet, m\in\esSet, j\in\jSpace, \xi\in(0,\Xi]$);
+    the dispatching choice of the $k$-th AP for processing of the $j$-th job type is denoted as $\omega_{k,j}(t,n) \in \esSet_{k}$.
+    Hence, the LSI of the $k$-th AP at the $t$-th broadcast is given as follows.
     \begin{align}
         \mathcal{R}_{k}({t}) \define \set{\vec{R}^{(k)}_{m,j}({t}), \set{\omega_{k,j}(t)|\forall j\in\jSpace} | \forall m\in\esSet, j\in\jSpace},
     \end{align}
@@ -88,14 +86,14 @@ At the beginning of each broadcast interval (say the $t$-th broadcast interval),
 \begin{definition}[Local State Information for Edge Servers]
     One edge server shall maintain LSI about the computing queue status for each VM.
     Specifically, at the $n$ time slot in the $t$-th interval, the $m$-th edge server have $Q_{m,j}({t,n})$ denote the pending number of the $j$-th type job ($\forall m\in\esSet, j\in\jSpace$).
-    Hence, the broadcast LSI of the $m$-th edge server at the $t$-th broadcast is defined as follows.
+    Hence, the LSI of the $m$-th edge server at the $t$-th broadcast is defined as follows.
     \begin{align}
         \mathcal{Q}_{m}({t}) \define \set{Q_{m,j}({t}) | \forall j\in\jSpace},
     \end{align}
     where we have index $t$ short for $(t, 0)$, i.e. the beginning time slot of the $t$-th broadcast interval.
 \end{definition}
 
-And we refer the \emph{global state information} (GSI) as the composition of all the broadcast information from all APs and edge servers in one broadcast and the definition is give as follows.
+And we refer to the \emph{global state information} (GSI) as the composition of all the broadcast information from all APs and edge servers in one broadcast of which the definition is given as follows.
 \begin{definition}[Global State Information]
     \begin{align}
         \Obsv^{\dagger}(t) \define
@@ -103,31 +101,36 @@ And we refer the \emph{global state information} (GSI) as the composition of all
                 \mathcal{R}_{k}({t}), \mathcal{Q}_{m}({t}) | \forall k\in\apSet, m\in\esSet
             },
     \end{align}
-    which is composed of all the broadcast information from all APs and edge servers at the $t$-th broadcast denoted as follows.
+    which is composed of all the broadcast information from all APs and edge servers at the $t$-th broadcast.
 \end{definition}
 
-%NOTE: Conflict of AP set and partial information definition
 In \comments{an extensive edge computing network residing in MAN}, it may not be feasible for each AP to collect the LSI from all other APs and edge servers.
-Hence, we first define the \emph{conflict AP set} as follows.
-\begin{align}
-    \ccSet_{k} \define \bigcup_{m\in\esSet_{k}} \apSet_{m}
-    % \ccSet_{k} \define \set{\forall k' \neq k\in\apSet|\esSet_{k'} \cap \esSet_{k} \neq \emptyset}
-\end{align}
-The \emph{conflict AP set} indicates the subset of APs whose LSIn could affect the decision making for the $k$-th AP.
-It is assumed that each AP can only collect the LSI from the APs in its \emph{conflict AP set} and edge servers from its \emph{candidate server set}.
-
-Moreover, the transmission latency of LSI in \comments{an extensive MAN} is not negligible.
+Moreover, the transmission latency of LSI in \comments{such extensive edge computing network} is not negligible.
 It is assumed that the $k$-th AP is able to collect the OSI $D_{k}(t)$ time slots later after the broadcast of the $t$-th interval, where $D_{k}(t)$ is a random variable follows some distribution.
 As a high frequency broadcast design would always result into \emph{broadcast storm} and block the normal network traffic \needref{broadcast-storm article}, we introduce a slow enough broadcast interval selection in the system.
 The broadcast interval is always larger than the maximum \brdelay, i.e. $t_B > \hat{D}_k$ ($\forall k\in\apSet$), where $\hat{D}_k$ is the upper bound for $D_{k}({t})$.
 Hence, $D_{k}(t)$ follows some distribution with support $\set{1,\dots,t_B}$, i.e. the broadcast interval $t_B$ is set that the $k$-th AP ($\forall k\in\apSet$) could receive the complete OSI before the start of next broadcast interval.
 
 \fixit{
-    Hence, we can define the \emph{observed state information} (OSI) of the $k$-th AP as follows.
+    observed information definition should be put into solution part.
+
+    %NOTE: Conflict of AP set and partial information definition
+    In \comments{an extensive edge computing network residing in MAN}, it may not be feasible for each AP to collect the LSI from all other APs and edge servers.
+    Hence, we first define the \emph{conflict AP set} as follows.
     \begin{align}
-        \Obsv_{k} &= \set{\mathcal{R}_{k'} | \forall k'\in\ccSet_{k}}
-                        \cup \set{\mathcal{Q}_{m} | \forall m\in\esSet_{k}},
+        \ccSet_{k} \define \bigcup_{m\in\esSet_{k}} \apSet_{m}
+        % \ccSet_{k} \define \set{\forall k' \neq k\in\apSet|\esSet_{k'} \cap \esSet_{k} \neq \emptyset}
     \end{align}
+    The \emph{conflict AP set} indicates the subset of APs whose LSI could affect the decision making for the $k$-th AP.
+    It is assumed that each AP can only collect the LSI from the APs in its \emph{conflict AP set} and edge servers from its \emph{candidate server set}.
+
+    \begin{definition}[Global State Information]
+        Hence, we can define the \emph{observed state information} (OSI) of the $k$-th AP as follows.
+        \begin{align}
+            \Obsv_{k} &= \set{\mathcal{R}_{k'} | \forall k'\in\ccSet_{k}}
+                            \cup \set{\mathcal{Q}_{m} | \forall m\in\esSet_{k}},
+        \end{align}
+    \end{definition}
 
     One AP will update its dispatching decision after the reception of its OSI.
     Specifically, let $\omega'_{k,j}(t)$ be the new computing edge server for the $t$-the broadcast interval, the $k$-th AP should determine th new policy $\omega'_{k,j}(t)$ in the $D_{k}(t)$ time slot of the $t$-th broadcast interval.
