@@ -91,30 +91,10 @@ According to \cite{sutton1998introduction}, the above problem could be solved by
         &\sum_{\Stat({t+1})} \Pr\Brace{ \Stat({t+1})|\Stat({t}), \Policy(\Stat({t})) } \cdot V^{\dagger}\Paren{\Stat({t+1})}.
     \label{sp_0}
 \end{align}
-\accept{
-    However, if we only update the individual policy of the $k$-th AP ($\forall k\in\apSet$) at one time, the Bellman's equation would reduce into the form as follows, where only the partial information for the $k$-th AP matters.
-    \begin{align}
-        V_{k}\Paren{\Obsv_{k}({t})} =& g_{k}(\Obsv_{k}(t)) +
-        \gamma\min_{\Omega_{k}(\Obsv_{k}(t))}
-        \nonumber\\
-        &\sum_{\Obsv_{k}(t+1)} \Pr
-        \Brace{ 
-            \Obsv_{k}(t+1) | \Obsv_{k}(t), \Policy_{k}(t-1), \Omega_{k}(\Obsv_{k}(t))
-        } \cdot V_{k}\Paren{\Obsv_{k}({t+1})},
-    \end{align}
-    where,
-    \begin{align}
-        g_{k}(\Obsv_{k}(t)) \define& \sum_{j\in\jSpace} \Brace{
-            \sum_{k\in\mathcal{X}_{k}} \sum_{m\in\esSet_{k}} \vec{R}^{(k)}_{m,j}(t) +
-            \sum_{m\in\esSet_{k}} \set{ L_{m,j}(t) + \beta \cdot \mat{I}[L_{m,j}(t)=L_{max}] }
-        }
-        \\
-        \Policy_{k}(t-1) \define & \Brace{ \Omega_{k'}(\Obsv_{k'}(t-1)) | \forall k'\in\mathcal{X}_{k} }
-    \end{align}
-}
-To better analyze the structure of the optimization problem, we decouple the transition function.
-The expression of transition function in Eqn. (\ref{sp_0}) is given as follows.
+
 \delete{v7}{
+    To better analyze the structure of the optimization problem, we decouple the transition function.
+    The expression of transition function in Eqn. (\ref{sp_0}) is given as follows.
     \begin{lemma}[Transition Function Decoupling]
         The transition function in Bellman's equation could be decoupled on states of APs and edge servers, which will facilitate the approximated value function expression in the following section.
         The decoupled transition function for Eqn. (\ref{sp_0}) is given as follows.

@@ -88,22 +88,23 @@ As what we have learned for now, there are very limited discussions on this topi
 %     \item \cite{Wang2018} is a system work published in IEEE Access, considers the mobility of mobile users in limited coverage solved with service migration and handover, and propose a framework;
 % \end{itemize}
 
-In this article, we consider there are Access Points (APs) in this network to connect the mobile users and edge servers.
-The computation jobs would be released from UEs and the dispatching decisions are determined distributed on each AP nodes as depicted in Fig.\ref{fig:system}.
-The information sharing scheme is proposed in this article with synchronized broadcast design. With the help of this scheme, we could immediately apply the job dispatching decision based on obsolete information, with some prior stochastic knowledge of global system.
-Our contributions are summarized as follows.
-\begin{itemize}
-    \item To our best knowledge, this is the first work to propose a global standard MDP framework to characterize the stale information in edge computing network.
-    With the broadcast information sharing scheme, the APs could
-    With shared prior stochastic knowledge about broadcast delay and uploading delay
-    \item We propose a global state MDP formulation to characterize the multiple-agent problem, i.e. single agent would consider multiple-agent decision optimality to achieve cooperation.
-    We with adopt value function approximation to reduce the traditional algorithm complexity, and come up with performance guarantee performance bound.
-\end{itemize}
-
+\fixit{
+    In this article, we consider there are Access Points (APs) in this network to connect the mobile users and edge servers.
+    The edge computing network resided in Metropolitan area network (MAN).
+    The computation jobs would be released from UEs and the dispatching decisions are determined distributed on each AP nodes as depicted in Fig.\ref{fig:system}.
+    The information sharing scheme is proposed in this article with synchronized broadcast design. With the help of this scheme, we could immediately apply the job dispatching decision based on obsolete information, with some prior stochastic knowledge of global system.
+    Our contributions are summarized as follows.
+    \begin{itemize}
+        \item To our best knowledge, this is the first work to propose a global standard MDP framework to characterize the stale information in edge computing network.
+        With the broadcast information sharing scheme, the APs cooperatively dispatch the jobs;
+        \item We propose a global state MDP formulation to characterize the multiple-agent problem, i.e. single agent would consider multiple-agent decision optimality to achieve cooperation.
+        We with adopt value function approximation to reduce the traditional algorithm complexity, and come up with performance guarantee performance bound.
+    \end{itemize}
+}
 
 The remainder of this paper is organized as follows.
-In Sec.II, we justify the motivation on our topic.
-And then we illustrate the system model and the optimization problem formulation in Sec.III and Sec.IV, respectively.
-In Sec.V, we introduce a low-complexity MDP algorithm to the .
-In Sec.VI, we show the results of evaluation.
+In Sec.II, we illustrate the system model and broadcast information sharing design.
+In Sec.III, we formulate the global optimization problem of joint optimization on dispatching decisions of all APs.
+In Sec.IV, we argue that the global joint optimization of all APs is impractical and then decouple the problem into optimization over individual APs.
+We introduce a low-complexity algorithm in Sec.V and then show the numerical analysis in Sec.VI.
 In Sec.VII, the conclusion is given.
