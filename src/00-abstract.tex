@@ -4,7 +4,15 @@
         The access points (APs) are deployed to collect jobs from the mobile users in its coverage, and then dispath the jobs to the feasible edge servers via MAN.
         While existing literature 
 
-        
+        In this paper, the cooperative job dispatching problem in an edge computing network with multiple access points (APs) and edge servers is considered.
+    }
+
+    \delete{v6.2}{
+        \text{
+            decentrlized; decision making; stale information sharing;
+            multiple agents; joint optimization; 
+        }
+
         \begin{itemize}
             \item We consider edge computing network backed by Metropolitan Area Network (MAN); there are numbers of APs to collect jobs from mobile users in its coverage, and the jobs are then offloading to the edge servers in its support set.
             \item Due to the cooperative APs in this system, the APs has to collect state information from other APs and edge servers to individually apply the job dispatching decision.
@@ -16,12 +24,6 @@
             \item A periodic-broadcast information sharing scheme via broadcast is proposed, and the standard MDP framework is introduced to depict the stale-aware dispatching process;
             \item Due to the uncertain traffic of the network between APs and edge servers, the job uploading latency is random and unpredictable; random job uploading delay, queueing delay at the edge servers and random job computing time are all considered in the optimization;
         \end{itemize}
-    }
-
-    \delete{v6.2}{
-        In this paper, we formulate the job dispatching problem in distributed Edge Computing system, and identify that the difficulty exists in how the decision is made decentralized based on stale information sharing.
-
-        In this paper, the cooperative job dispatching problem in an edge computing network with multiple access points (APs) and edge servers is considered.
 
         Since each job dispatching decision will affect the system state in the future, we formulate the joint optimization of job dispatching at all the APs and all the scheduling time slots as an infinite horizon Markov decision process (MDP) problem, where .
 
