@@ -4,23 +4,15 @@ We introduce a heuristic dispatching algorithm as the baseline policy, whose val
 Then the right-hand-side of Bellman's Equation is replaced with the above approximated Bellman's equation, and the sub-optimal solution can be obtained with one-step policy iteration.
 Hence, the derived approximated value function of the baseline policy becomes the cost upper bound of the proposed sub-optimal policy.
 
-% To overcome the gap, we leverage the above global problem structure, but solve it with iterative policy update algorithm.
-
-\fixit{
-    Moreover, due to network topology limit, we first define the conflict AP set, and then define the partial information set.
-    APs iteratively update their policies.
-    The AP would update its policy once receive the \emph{Observed State Information} (OSI).
-    And we redefine the following concepts (for the $k$-th AP):
-        1) \brlatency~due to OSI;
-        2) policy mapping over OSI;
-        3) baseline policy (t);
-        4) the approximated expected value function;
-}
+Moreover, we remove the assumption on centralized agent in the problem formulation, and APs iteratively apply policy update.
+Under this scheme, we could further reduce the state information required for one AP and alleviate the impact of \brlatency.
+Then we leverage the sub-optimal solution obtained above, and replace the expression with reduced state information.
+% The whole solution procedure is as illustrated in Fig.\ref{fig:solution}.
 
 \subsection{Low-Complexity Solution}
 The baseline dispatching policy is adopted to obtain an approximation of value function. The policy on each AP nodes is state-invariant, which is denoted as:
 \begin{align}
-    \BaseLine(t) \define \Bracket{\Pi_1(t), \Pi_2(t), \dots, \Pi_K(t)},
+    \BaseLine(t) \define \Bracket{\Pi_1, \Pi_2, \dots, \Pi_K},
 \end{align}
 where $\Pi_k(t) \define \set{\pi^{(k)}_{m,j}(t) | \forall m\in\esSet,\forall j\in\jSpace}$ denotes ($\forall k\in\apSet$) the action set resembling the definition in Eqn. (\ref{def_action}).
 More specifically, $\BaseLine(t)$ is assumed as the stationary baseline policy adopted globally after the $t$-th \brpoint~and the baseline policies are different in each broadcast interval.
@@ -84,14 +76,22 @@ $\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\Pi(t)$
 %----------------------------------------------------------------------------------------%
 
 \subsection{Problem Decoupling with Partial Observed Information}
-We restrict out observation in solution part, and just leverage the structure of the above centralized optimization problem.
-\begin{remark}
-    Assume that we solve the sub-problems following the order of index of AP set, and then substitute the solution to the $k$-th problem to the $(k+1)$-th problem ($\forall k\in\apSet$).
-    Apparently, we could achieve a sub-optimal solution of all APs which is upper bounded by the solution to the original problem.
-\end{remark}
+\fixit{
+    The AP would update its policy once receive the \emph{Observed State Information} (OSI).
+    And we redefine the following concepts (for the $k$-th AP):
+        1) \brlatency~due to OSI;
+        2) policy mapping over OSI;
+        3) baseline policy (t);
+        4) the approximated expected value function;
+    
+    We restrict out observation in solution part, and just leverage the structure of the above centralized optimization problem.
+    \begin{remark}
+        Assume that we solve the sub-problems following the order of index of AP set, and then substitute the solution to the $k$-th problem to the $(k+1)$-th problem ($\forall k\in\apSet$).
+        Apparently, we could achieve a sub-optimal solution of all APs which is upper bounded by the solution to the original problem.
+    \end{remark}
+}
 
-It's still impossible to evaluate the above Bellman's equation due to the complexity would increase exponentially with respect to number of APs and edge servers.
-Thus we leverage the fact that:
+% It's still impossible to evaluate the above Bellman's equation due to the complexity would increase exponentially with respect to number of APs and edge servers.
 %NOTE: Conflict of AP set and partial information definition
 In \comments{an extensive edge computing network residing in MAN}, it may not be feasible for each AP to collect the LSI from all other APs and edge servers.
 Hence, we first define the \emph{conflict AP set} as follows.
@@ -101,22 +101,23 @@ Hence, we first define the \emph{conflict AP set} as follows.
 \end{align}
 The \emph{conflict AP set} indicates that the subset of APs whose LSI could affect the decision making for the $k$-th AP.
 It is assumed that each AP can only collect the LSI from the APs in its \emph{conflict AP set} and edge servers from its \emph{candidate server set}.
+Hence, we refer to the reduced state information required as \emph{observed state information} (OSI) and the definition of the $k$-th AP is given as follows ($\forall k\in\apSet$).
 \begin{definition}[Observed State Information]
-    Hence, we can define the \emph{observed state information} (OSI) of the $k$-th AP as follows.
     \begin{align}
         \Obsv_{k} &= \set{\mathcal{R}_{k'} | \forall k'\in\ccSet_{k}}
                         \cup \set{\mathcal{Q}_{m} | \forall m\in\esSet_{k}},
     \end{align}
 \end{definition}
 
-\fixit{
-    One AP will update its dispatching decision after the reception of its OSI.
-    We denote the individual dispatching policy of the $k$-th AP ($\forall k\in\apSet$) based on its OSI $\Obsv_{k}({t})$ as follows.
-    \begin{align}
-        &\Omega_{k}(\Obsv_{k}(t)) \define \set{\omega'_{k,j}(t)|\forall m\in\esSet, j\in\jSpace}.
-        \label{def_action}
-    \end{align}
+One AP will update its dispatching decision after the reception of its OSI, while the others will keep their previous policies.
+We denote the individual dispatching policy of the $k$-th AP ($\forall k\in\apSet$) based on its OSI $\Obsv_{k}({t})$ as follows.
+\begin{align}
+    &\Omega_{k}(\Obsv_{k}(t)) \define \set{\omega'_{k,j}(t)|\forall m\in\esSet, j\in\jSpace}.
+    \label{def_action}
+\end{align}
 
+
+\fixit{
     Hence, we only update the individual policy of the $k$-th AP ($\forall k\in\apSet$) at one time, and the Bellman's equation would reduce into the form as follows, where only the OSI (partial information) for the $k$-th AP matters.
     \begin{align}
         V_{k}\Paren{\Obsv_{k}({t})} =& g_{k}(\Obsv_{k}(t)) +
@@ -124,7 +125,7 @@ It is assumed that each AP can only collect the LSI from the APs in its \emph{co
         \nonumber\\
         &\sum_{\Obsv_{k}(t+1)} \Pr
         \Brace{ 
-            \Obsv_{k}(t+1) | \Obsv_{k}(t), \Policy_{k}(t-1), \Omega_{k}(\Obsv_{k}(t))
+            \Obsv_{k}(t+1) | \Obsv_{k}(t), \Omega_{k}(\Obsv_{k}(t))
         } \cdot V_{k}\Paren{\Obsv_{k}({t+1})},
     \end{align}
     where,
@@ -133,8 +134,6 @@ It is assumed that each AP can only collect the LSI from the APs in its \emph{co
             \sum_{k\in\mathcal{X}_{k}} \sum_{m\in\esSet_{k}} \vec{R}^{(k)}_{m,j}(t) +
             \sum_{m\in\esSet_{k}} \set{ L_{m,j}(t) + \beta \cdot \mat{I}[L_{m,j}(t)=L_{max}] }
         }
-        \\
-        \Policy_{k}(t-1) \define & \Brace{ \Omega_{k'}(\Obsv_{k'}(t-1)) | \forall k'\in\mathcal{X}_{k} }
     \end{align}
 }
 %----------------------------------------------------------------------------------------%
@@ -297,3 +296,4 @@ with improved baseline policy in each interval as performance guarantee.
     %     \end{algorithmic}
     % \end{algorithm}
 }
+%----------------------------------------------------------------------------------------%
