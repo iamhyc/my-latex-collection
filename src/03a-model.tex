@@ -114,7 +114,7 @@ Specifically, let $\omega_{k,j}(t)$ denote the edge server choice of the $k$-th 
 The new policy is denoted as $\omega_{k,j}(t+1)$ because the $k$-th AP would broadcast it at the $(t+1)$-th broadcast.
 Hence, we denote the individual dispatching policy of the $k$-th AP based on the GSI $\Obsv^{\dagger}(t)$ as follows.
 \begin{align}
-    &\Omega_{k}(\Obsv^{\dagger}(t)) \define \set{\omega_{k,j}(t+1)|\forall j\in\jSpace}.
+    &\Omega^{\dagger}_{k}(\Obsv^{\dagger}(t)) \define \set{\omega_{k,j}(t+1)|\forall j\in\jSpace}.
     \label{def_action}
 \end{align}
 We note that the $k$-th AP would always adopt two phases of polices in the $t$-th broadcast interval, i.e. $\Omega_{k}(\Obsv_{k}({t-1}))$ with $\omega_{k,j}(t)$ before receiving $\Obsv^{\dagger}(t)$ and $\Omega_{k}(\Obsv_{k}(t))$ with $\omega_{k,j}(t+1)$ afterwards ($\forall k\in\apSet, j\in\jSpace$).

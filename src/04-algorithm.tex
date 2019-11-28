@@ -1,12 +1,18 @@
-\section{LOW-COMPLEXITY SOLUTION}
-In this section, we introduce a heuristic dispatching algorithm as the baseline policy, whose value function could be derived analytically.
-Then the right-hand side of Bellman's Equation turns into simple minimization problem over the control policy. The sub-optimal policy could be obtained by evaluation of approximated value function on right-hand side of Bellman's Equation with one-step iteration. And thus the approximated value function is the upper bound of the original optimal policy.
+\section{Decentralized Algorithm with Partial Information}
 
-Moreover, as the system state is partially presented as $\Obsv({t-1})$ and $\Obsv(t)$ separated by the \brlatency~$\mathcal{D}(t)$, different APs would have isolated acknowledge on the joint policy and transition function due to different $D_k(t)$ ($\forall k\in\apSet$).
-Thus the joint optimization over the components of $\Policy(\Stat(t))$ is impossible.
-To overcome the gap, we leverage the above global problem structure, but solve it with iterative policy update algorithm.
+\fixit{
+    We could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity.
+    To alleviate the curse of dimensionality, we introduce baseline dispatching policy to approximate the value function.
 
-\subsection{Baseline Dispatching Policy}
+    In this section, we introduce a heuristic dispatching algorithm as the baseline policy, whose value function could be derived analytically.
+    Then the right-hand side of Bellman's Equation turns into simple minimization problem over the control policy. The sub-optimal policy could be obtained by evaluation of approximated value function on right-hand side of Bellman's Equation with one-step iteration. And thus the approximated value function is the upper bound of the original optimal policy.
+
+    Moreover, as the system state is partially presented as $\Obsv({t-1})$ and $\Obsv(t)$ separated by the \brlatency~$\mathcal{D}(t)$, different APs would have isolated acknowledge on the joint policy and transition function due to different $D_k(t)$ ($\forall k\in\apSet$).
+    Thus the joint optimization over the components of $\Policy(\Stat(t))$ is impossible.
+    To overcome the gap, we leverage the above global problem structure, but solve it with iterative policy update algorithm.
+}
+
+\subsection{Low-Complexity Solution}
 The baseline dispatching policy is adopted to obtain an approximation of value function. The policy on each AP nodes is state-invariant, which is denoted as:
 \begin{align}
     \BaseLine(t) \define \Bracket{\Pi_1(t), \Pi_2(t), \dots, \Pi_K(t)},
@@ -14,7 +20,7 @@ The baseline dispatching policy is adopted to obtain an approximation of value f
 where $\Pi_k(t) \define \set{\pi^{(k)}_{m,j}(t) | \forall m\in\esSet,\forall j\in\jSpace}$ denotes ($\forall k\in\apSet$) the action set resembling the definition in Eqn. (\ref{def_action}).
 More specifically, $\BaseLine(t)$ is assumed as the stationary baseline policy adopted globally after the $t$-th \brpoint~and the baseline policies are different in each broadcast interval.
 
-According to the additive structure of cost function, we substitute the transition function plus value function in Eqn. (\ref{sp_0}) with two linearly divided sections as $W^{\AP}(\mathcal{R}(t+1))$ and $W^{\ES}(\mathcal{Q}(t+1))$ under baseline policy $\BaseLine(t)$:
+According to the additive structure of cost function, we substitute the transition function plus value function in Eqn. (\ref{eqn:sp_0}) with two linearly divided sections as $W^{\AP}(\mathcal{R}(t+1))$ and $W^{\ES}(\mathcal{Q}(t+1))$ under baseline policy $\BaseLine(t)$:
 \begin{align}
     &V(\Stat(t)) = g(\Stat(t)) +
     \nonumber\\
@@ -37,7 +43,7 @@ where $W^{\AP}_{\BaseLine(t)}(\cdot)$ and $W^{\ES}_{\BaseLine(t)}(\cdot)$ denote
         }.
 \end{align}
         
-The decoupled value functions for AP and ES nodes is obtained with an approximated form under the baseline policy. We use the same baseline policy to evaluate both low-complexity policy performance in Eqn. (\ref{sp_0}).
+The decoupled value functions for AP and ES nodes is obtained with an approximated form under the baseline policy. We use the same baseline policy to evaluate both low-complexity policy performance in Eqn. (\ref{eqn:sp_0}).
 
 The expected value function $W^{\AP}(\mathcal{R}(t+1))$ under baseline $\vecG{\Pi}(t)$ for AP nodes is easily obtained by calculating by the following equation:
 \begin{align}
@@ -73,6 +79,12 @@ $\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\Pi(t)$
 %----------------------------------------------------------------------------------------%
 
 \subsection{Problem Decoupling with Partial Observed Information}
+We restrict out observation in solution part, and just leverage the structure of the above centralized optimization problem.
+\begin{remark}
+    Assume that we solve the sub-problems following the order of index of AP set, and then substitute the solution to the $k$-th problem to the $(k+1)$-th problem ($\forall k\in\apSet$).
+    Apparently, we could achieve a sub-optimal solution of all APs which is upper bounded by the solution to the original problem.
+\end{remark}
+
 It's still impossible to evaluate the above Bellman's equation due to the complexity would increase exponentially with respect to number of APs and edge servers.
 Thus we leverage the fact that:
 %NOTE: Conflict of AP set and partial information definition
@@ -122,7 +134,7 @@ It is assumed that each AP can only collect the LSI from the APs in its \emph{co
 }
 %----------------------------------------------------------------------------------------%
 
-\subsection{The Distributed Algorithm}
+\subsection{The Decentralized Algorithm}
 \fixit{
     \begin{itemize}
         \item We leverage the global optimization problem, while the presence of $\mathcal{D}(t)$ doesn't matter in our algorithm;
@@ -168,31 +180,115 @@ with improved baseline policy in each interval as performance guarantee.
         \end{itemize}
     }
 \end{proof}
-% [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
-% \begin{algorithm}[H]
-%     \caption{Online Iterative Policy Improvement Algorithm}
-%     \begin{algorithmic}[1]
-%         \STATE $t = 0$
-%         \FOR{$t = 1,2,\dots$}
-%             \STATE Evaluate $\Omega_0$ in \textbf{P1} according to Eqn. \ref{sp1}
-%             \FOR{$k \in \mathcal{K}$}
-%                 \STATE fix policy $\vec{\Omega}^{(k)}(t) \forall k' < k$
-%                 \STATE Evaluate $k$-th AP Local Policy $\tilde{\Omega}_k$ in \textbf{Pk} according to Eqn. \ref{sp2}
-%             \ENDFOR
-%         \ENDFOR
-%     \end{algorithmic}
-% \end{algorithm}
 
-\delete{v4}{
-    \begin{lemma}
-        The above algorithm would have performance improvement in each interval with baseline policy guarantee, and at least achieve local optimal.
+%----------------------------------------------------------------------------------------%
+\delete{v7}{
+    To better analyze the structure of the optimization problem, we decouple the transition function.
+    The decoupled transition function for Eqn. (\ref{eqn:sp_0}) is given as follows.
+    The expression of transition function in Eqn. (\ref{eqn:sp_0}) is given as follows.
+    The transition function is consisted of two parts of state transitions on APs and edge servers, respectively.
+    To efficiently express the state transition, we further elaborate the distribution probability of the state vector as the corresponding probability vector, and perform the state transition with the transition matrix.
+
+    %NOTE: transition matrix and vector for AP
+    For state transition of APs inside one interval, we denote $\vecG{\Theta}^{(k)}_{m,j}(t,n)$ and ${\Gamma}^{(k)}_{m,j}(t,n)$ as probability vector and transition matrix, respectively, for $\vec{R}^{(k)}_{m,j}(t,n)$ of the $j$-th type of job uploading from the $k$-th AP to the $m$-th edge server ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$). The definition is given as follows.
+    \begin{align}
+        \Gamma^{(k)}_{m,j}(t,n) \define
+        \begin{bmatrix}
+            1 & \bar{p}^{(k)}_{m,j,0} &                       &        &                           \\
+            & 0                     & \bar{p}^{(k)}_{m,j,1} &        &                           \\
+            &                       & \ddots                & \ddots &                           \\
+            &                       &                       & \ddots & \bar{p}^{(k)}_{m,j,\Xi-1} \\
+            &                       &                       &        & 0                         \\
+        \end{bmatrix},
+        \vecG{\Theta}^{(k)}_{m,j}(t,n) \define
+        \begin{bmatrix}
+            \theta^{(k)}_{m,j,0}(t,n) \\
+            \theta^{(k)}_{m,j,1}(t,n) \\
+            \vdots \\
+            \vdots \\
+            \theta^{(k)}_{m,j,\Xi}(t,n)
+        \end{bmatrix},
+    \end{align}
+    where $p^{(k)}_{m,j,\xi} \define \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\xi\}$ and $\bar{p}^{(k)}_{m,j,\xi} = 1 - p^{(k)}_{m,j,\xi}$ denote the probability of staying and offloading, respectively; $\theta^{(k)}_{m,j,\xi}(t,n) \define \Pr\{R^{(k)}_{m,j,\xi}(t,n) = 1\}$ denotes the distribution probability of existing job in the corresponding counters of the AP ($\forall \xi=0,\dots,\Xi$).
+
+    And we note that $\theta^{(k)}_{m,j,0}(t,n)$ is purely determined by the arrival process and dispatching policy of the $j$-th type of job on the $k$-th AP, i.e. $\theta^{(k)}_{m,j,0}(t,n) = \lambda_{k,j} I[\omega_{k,j}(t,n) = m]$, where $I[\cdot]$ is the indicator function.
+    Hence, the state transition between adjacent interval from $\vecG{\Theta}^{(k)}_{m,j}(t+1)$ to $\vecG{\Theta}^{(k)}_{m,j}(t)$ is composed of two-phase policy separated by $D_k(t)$, which could be expressed as follows.
+    \begin{align}
+        \vecG{\Theta}^{(k)}_{m,j}(t, D_{k}(t)) &= (\Gamma^{(k)}_{m,j})^{D_{k}(t)} \times \vecG{\Theta}^{(k)}_{m,j}(t),
+        \nonumber\\
+        \vecG{\Theta}^{(k)}_{m,j}({t+1}) &= (\Gamma^{(k)}_{m,j})^{N-D_{k}(t)} \times \vecG{\Theta}^{(k)}_{m,j}(t, D_{k}(t)).
+    \end{align}
+
+    %NOTE: small probability approximation
+    For state transition of edge servers, we denote $\vecG{\mu}_{m,j}$ and $P_{m,j}$ as probability vector and transition matrix, respectively, for $Q_{m,j}$ of the $j$-th job processing on the $m$-th edge server ($\forall m\in\esSet, j\in\jSpace$). The definition of the probability vector $\vecG{\mu}_{m,j}(t,n)$ at the $n$-th time slot in the $t$-the interval is given as follows.
+    \begin{align}
+        \vecG{\mu}_{m,j}(t,n) \define 
+        \begin{bmatrix}
+            &\Pr\{L_{m,j}(t,n)=0,   &        & \eta_{m,j}(t,n)=0\} \\
+            &\Pr\{L_{m,j}(t,n)=0,   &        & \eta_{m,j}(t,n)=1\} \\
+            &                       & \vdots & \\
+            &\Pr\{L_{m,j}(t,n)=0,   &        & \eta_{m,j}(t,n)=\mathcal{C}_{m,j}-1\} \\
+            &\Pr\{L_{m,j}(t,n)=1,   &        & \eta_{m,j}(t,n)=0\} \\
+            &                       & \vdots & \\
+            &\Pr\{L_{m,j}(t,n)=L_{max}, &        & \eta_{m,j}(t,n)=\mathcal{C}_{m,j}-1\}
+        \end{bmatrix}
+    \end{align}
+    However, the expression of transition matrix $P_{m,j}$ is more complex. Firstly, we notice that in the transition function of edge server, the distribution of offloading number of jobs from all APs in the interval contributes to the job arrival process on edge server as $\mathcal{R}(t)$. We denote the offloading matrix $\bar{\Gamma}^{(k)}_{m,j}$ from each AP to the $m$-th edge server as follows.
+    \begin{align}
+        \bar{\Gamma}^{(k)}_{m,j}(t,n) \define
+        \begin{bmatrix}
+            0 & p^{(k)}_{m,j,0} &                 &        &                     \\
+            & 0               & p^{(k)}_{m,j,1} &        &                     \\
+            &                 & \ddots          & \ddots &                     \\
+            &                 &                 & \ddots & p^{(k)}_{m,j,\Xi-1} \\
+            &                 &                 &        & 1                   \\
+        \end{bmatrix},
+    \end{align}
+    And the offloading number vectors are denoted as follows.
+    \begin{align}
+        \vecG{\rho}^{(k,+)}_{m,j}({t,n}) &\define \bar{\Gamma}^{(k)}_{m,j} \times \vecG{\theta}^{(k)}_{m,j}({t,n}),
+    \end{align}
+    and the arrival number at the $n$-th time slot in the $t$-th interval on the $m$-th server is $\sum_{k\in\apSet} \vecG{\rho}^{(k,+)}_{m,j}({t,n})$,
+    The dimension of the compounded vector would be un-acceptable, as the increase of AP numbers would result into exponential expansion of dimensionality.
+    Thus we rewrite the arrival process on edge server with small probability approximation, i.e. there would be at most one job arring in one time slot, with the probability as the expected arrival rate of the original distribution. The explicit definition of the approximate arriving probability $\beta_{m,j}({t,n})$ is given as follows.
+    \begin{align}
+        {\beta}_{m,j}({t,n}) &\define \sum_{k\in\mathcal{K}} \sum_{\xi=0,\dots,\Xi-1} \mathbb{E}[\vecG{\rho}^{(k,+)}_{m,j,\xi}({t,n})]
+        \label{eqn_0}
+    \end{align}
+    We could prove that the error due to approximation is negligible.
+    \begin{lemma}[Small Probability Approximation]
+        The probability distribution of $\sum_{k\in\apSet} \vecG{\rho}^{(k,+)}_{m,j}({t,n})$ could be approximated with Bernoulli arrival process with the same expected arrival rate denoted as ${\beta}_{m,j}({t,n})$.
     \end{lemma}
     \begin{proof}
-        The improved policy in last interval becomes the baseline policy in next interval.
-        So, in each stage, it resembles the one-step Policy Improvement step in classical \emph{Policy Iteration} algorithm, and each step with different value function under baseline policy on the right-hand side.
-        
-        The insight exists that: due to the uncontrollable delay on policy in each stage, the chosen time-invariant baseline policy actually would; so the improved policy is the baseline of next stage, and thus forms the online policy iteration.
-        discounted sum-up cost, the future states near the current state counts more and the baseline policy (which is time-invariant) would variant in each interval.
+        \fixit{
+            We notice that the job arrival distribution ${\beta}_{m,j}(t)$ is given by $\mathcal{R}(t)$, and the departure rate in one slot is deterministic as $1/N$.
+            Thus the expectation of ${\beta}$ would be always far more smaller than $1$ as composed of all $K$ AP nodes.
+            We take approximation on ${\beta}$ as Bernoulli distribution in each time slot.
+        }
     \end{proof}
+
+    %NOTE: transition matrix and vector for ES
+    Thus we could obtain the time-variant transition matrix composed of multiple transition matrix $P_{m,j}(\beta({t,n}))$ in all the time slots in $i$-th interval as follows.
+    \begin{align}
+        \vecG{\nu}({t,n+1}) &= P_{m,j}\Paren{\beta_{m,j}({t,n})} \vecG{\nu}({t,n})
+        % \label{eqn_3}
+        \\
+        \vecG{\nu}({t+1}) &= \prod_{n=0,\dots,N-1} P_{m,j}\Paren{\beta_{m,j}({t,n})} \vecG{\nu}(t),
+        \label{eqn_4}
+    \end{align}
+
+    % [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
+    % \begin{algorithm}[H]
+    %     \caption{Online Iterative Policy Improvement Algorithm}
+    %     \begin{algorithmic}[1]
+    %         \STATE $t = 0$
+    %         \FOR{$t = 1,2,\dots$}
+    %             \STATE Evaluate $\Omega_0$ in \textbf{P1} according to Eqn. \ref{sp1}
+    %             \FOR{$k \in \mathcal{K}$}
+    %                 \STATE fix policy $\vec{\Omega}^{(k)}(t) \forall k' < k$
+    %                 \STATE Evaluate $k$-th AP Local Policy $\tilde{\Omega}_k$ in \textbf{Pk} according to Eqn. \ref{sp2}
+    %             \ENDFOR
+    %         \ENDFOR
+    %     \end{algorithmic}
+    % \end{algorithm}
 }
-%----------------------------------------------------------------------------------------%
