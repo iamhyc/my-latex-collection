@@ -114,29 +114,31 @@ According to \cite{sutton1998introduction}, the above problem could be solved by
 }
 To better analyze the structure of the optimization problem, we decouple the transition function.
 The expression of transition function in Eqn. (\ref{sp_0}) is given as follows.
-\begin{lemma}[Transition Function Decoupling]
-    The transition function in Bellman's equation could be decoupled on states of APs and edge servers, which will facilitate the approximated value function expression in the following section.
-    The decoupled transition function for Eqn. (\ref{sp_0}) is given as follows.
-    \begin{align}
-        & \Pr\Brace{ \Stat({t+1})|\Stat({t}), \Policy(\Stat({t})) }
-        \nonumber\\
-        =& \Pr\{\mathcal{D}({t+1})\} \times \Pr\Brace{ \Obsv({t+1})|\Obsv({t}), \Policy(\Stat({t}))}
-        \nonumber\\
-        =& \Pr\{\mathcal{D}({t+1})\} \times \prod_{k\in\apSet}\prod_{m\in\esSet}\prod_{j\in\jSpace}
-                \Pr\Brace{
-                    \vec{R}^{(k)}_{m,j}({t+1}) | \vec{R}^{(k)}_{m,j}({t}),
-                    \Policy(\Stat({t}))
-                }  
+\delete{v7}{
+    \begin{lemma}[Transition Function Decoupling]
+        The transition function in Bellman's equation could be decoupled on states of APs and edge servers, which will facilitate the approximated value function expression in the following section.
+        The decoupled transition function for Eqn. (\ref{sp_0}) is given as follows.
+        \begin{align}
+            & \Pr\Brace{ \Stat({t+1})|\Stat({t}), \Policy(\Stat({t})) }
             \nonumber\\
-            & \times \prod_{m\in\esSet}\prod_{j\in\jSpace}
-                \Pr\Brace{
-                    Q_{m,j}({t+1})|Q_{m,j}({t}), \mathcal{R}({t}), \Policy(\Stat({t}))
-                }.
-    \end{align}
-\end{lemma}
-\begin{proof}
-    Proof deleted.
-\end{proof}
+            =& \Pr\{\mathcal{D}({t+1})\} \times \Pr\Brace{ \Obsv({t+1})|\Obsv({t}), \Policy(\Stat({t}))}
+            \nonumber\\
+            =& \Pr\{\mathcal{D}({t+1})\} \times \prod_{k\in\apSet}\prod_{m\in\esSet}\prod_{j\in\jSpace}
+                    \Pr\Brace{
+                        \vec{R}^{(k)}_{m,j}({t+1}) | \vec{R}^{(k)}_{m,j}({t}),
+                        \Policy(\Stat({t}))
+                    }  
+                \nonumber\\
+                & \times \prod_{m\in\esSet}\prod_{j\in\jSpace}
+                    \Pr\Brace{
+                        Q_{m,j}({t+1})|Q_{m,j}({t}), \mathcal{R}({t}), \Policy(\Stat({t}))
+                    }.
+        \end{align}
+    \end{lemma}
+    \begin{proof}
+        Proof deleted.
+    \end{proof}
+}
 
 The transition function, \fixit{except for standalone probability distribution $\Pr\{\mathcal{D}({t})\}$,} is consisted of two parts of state transitions on APs and edge servers, respectively.
 To efficiently express the state transition, we further elaborate the distribution probability of the state vector as the corresponding probability vector, and perform the state transition with the transition matrix.
@@ -205,16 +207,19 @@ Thus we rewrite the arrival process on edge server with small probability approx
     \label{eqn_0}
 \end{align}
 We could prove that the error due to approximation is negligible.
-\begin{lemma}[Small Probability Approximation]
-    The probability distribution of $\sum_{k\in\apSet} \vecG{\rho}^{(k,+)}_{m,j}({t,n})$ could be approximated with Bernoulli arrival process with the same expected arrival rate denoted as ${\beta}_{m,j}({t,n})$.
-\end{lemma}
-\begin{proof}
-    \fixit{
-        We notice that the job arrival distribution ${\beta}_{m,j}({t})$ is given by $\mathcal{R}({t})$, and the departure rate in one slot is deterministic as $1/N$.
-        Thus the expectation of ${\beta}$ would be always far more smaller than $1$ as composed of all $K$ AP nodes.
-        We take approximation on ${\beta}$ as Bernoulli distribution in each time slot.
-    }
-\end{proof}
+
+\delete{v7}{
+    \begin{lemma}[Small Probability Approximation]
+        The probability distribution of $\sum_{k\in\apSet} \vecG{\rho}^{(k,+)}_{m,j}({t,n})$ could be approximated with Bernoulli arrival process with the same expected arrival rate denoted as ${\beta}_{m,j}({t,n})$.
+    \end{lemma}
+    \begin{proof}
+        \fixit{
+            We notice that the job arrival distribution ${\beta}_{m,j}({t})$ is given by $\mathcal{R}({t})$, and the departure rate in one slot is deterministic as $1/N$.
+            Thus the expectation of ${\beta}$ would be always far more smaller than $1$ as composed of all $K$ AP nodes.
+            We take approximation on ${\beta}$ as Bernoulli distribution in each time slot.
+        }
+    \end{proof}
+}
 
 Thus we could obtain the time-variant transition matrix composed of multiple transition matrix $P_{m,j}(\beta({t,n}))$ in all the time slots in $i$-th interval as follows.
 \begin{align}
