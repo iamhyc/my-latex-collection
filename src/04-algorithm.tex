@@ -1,15 +1,20 @@
 \section{Decentralized Algorithm with Partial Information}
+In this section, we first propose a low-complexity solution to the global optimization problem.
+We introduce a heuristic dispatching algorithm as the baseline policy, whose value function could be derived analytically.
+Then the right-hand-side of Bellman's Equation is replaced with the above approximated Bellman's equation, and the sub-optimal solution can be obtained with one-step policy iteration.
+Hence, the derived approximated value function of the baseline policy becomes the cost upper bound of the proposed sub-optimal policy.
+
+% To overcome the gap, we leverage the above global problem structure, but solve it with iterative policy update algorithm.
 
 \fixit{
-    We could not use traditional \emph{policy iteration} or \emph{value iteration} algorithm \cite{sutton1998introduction} for unacceptable computational complexity.
-    To alleviate the curse of dimensionality, we introduce baseline dispatching policy to approximate the value function.
-
-    In this section, we introduce a heuristic dispatching algorithm as the baseline policy, whose value function could be derived analytically.
-    Then the right-hand side of Bellman's Equation turns into simple minimization problem over the control policy. The sub-optimal policy could be obtained by evaluation of approximated value function on right-hand side of Bellman's Equation with one-step iteration. And thus the approximated value function is the upper bound of the original optimal policy.
-
-    Moreover, as the system state is partially presented as $\Obsv({t-1})$ and $\Obsv(t)$ separated by the \brlatency~$\mathcal{D}(t)$, different APs would have isolated acknowledge on the joint policy and transition function due to different $D_k(t)$ ($\forall k\in\apSet$).
-    Thus the joint optimization over the components of $\Policy(\Stat(t))$ is impossible.
-    To overcome the gap, we leverage the above global problem structure, but solve it with iterative policy update algorithm.
+    Moreover, due to network topology limit, we first define the conflict AP set, and then define the partial information set.
+    APs iteratively update their policies.
+    The AP would update its policy once receive the \emph{Observed State Information} (OSI).
+    And we redefine the following concepts (for the $k$-th AP):
+        1) \brlatency~due to OSI;
+        2) policy mapping over OSI;
+        3) baseline policy (t);
+        4) the approximated expected value function;
 }
 
 \subsection{Low-Complexity Solution}

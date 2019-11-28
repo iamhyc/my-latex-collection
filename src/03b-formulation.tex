@@ -81,12 +81,13 @@ Moreover, the system state transition function could be rewrite in the following
     =& \prod_{j\in\jSpace}\prod_{k\in\apSet}\prod_{m\in\esSet}
             \Pr\Brace{
                 \vec{R}^{(k)}_{m,j}({t+1}) | \vec{R}^{(k)}_{m,j}(t),
-                \Policy^{\dagger}(\Stat(t))
+                \set{\omega_{k,j}(t), \omega_{k,j}(t+1)}
             }  
         \nonumber\\
         & \times \prod_{j\in\jSpace}\prod_{m\in\esSet}
             \Pr\Brace{
-                Q_{m,j}({t+1})|Q_{m,j}(t), \mathcal{R}(t), \Policy^{\dagger}(\Stat(t))
+                Q_{m,j}({t+1})|Q_{m,j}(t), \mathcal{R}(t),
+                \set{\omega_{k,j}(t), \omega_{k,j}(t+1)|\forall k\in\apSet}
             },
 \end{align}
 where the transition function is decoupled into two parts of state transition on APs and edge servers, respectively.
