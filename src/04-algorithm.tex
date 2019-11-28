@@ -12,12 +12,12 @@ Then we leverage the sub-optimal solution obtained above, and replace the expres
 \subsection{Low-Complexity Solution}
 The baseline dispatching policy is adopted to obtain an approximation of value function. The policy on each AP nodes is state-invariant, which is denoted as:
 \begin{align}
-    \BaseLine(t) \define \Bracket{\Pi_1, \Pi_2, \dots, \Pi_K},
+    \BaseLine(t) \define \Bracket{\Pi_1(t), \Pi_2(t), \dots, \Pi_K(t)},
 \end{align}
 where $\Pi_k(t) \define \set{\pi^{(k)}_{m,j}(t) | \forall m\in\esSet,\forall j\in\jSpace}$ denotes ($\forall k\in\apSet$) the action set resembling the definition in Eqn. (\ref{def_action}).
-More specifically, $\BaseLine(t)$ is assumed as the stationary baseline policy adopted globally after the $t$-th \brpoint~and the baseline policies are different in each broadcast interval.
+More specifically, $\BaseLine(t)$ is assumed as the stationary baseline policy adopted globally after the $t$-th broadcast and the baseline policies are different in each broadcast interval.
 
-According to the additive structure of cost function, we substitute the transition function plus value function in Eqn. (\ref{eqn:sp_0}) with two linearly divided sections as $W^{\AP}(\mathcal{R}(t+1))$ and $W^{\ES}(\mathcal{Q}(t+1))$ under baseline policy $\BaseLine(t)$:
+According to the additive structure of cost function, we substitute the transition function plus value function in Eqn. (\ref{eqn:sp_0}) with two linearly sections as $W^{\AP}(\mathcal{R}(t+1))$ and $W^{\ES}(\mathcal{Q}(t+1))$ under baseline policy $\BaseLine(t)$:
 \begin{align}
     &V(\Stat(t)) = g(\Stat(t)) +
     \nonumber\\
@@ -56,16 +56,17 @@ where $\hat{\Gamma}^{(k)}_{m,j} \define (\Gamma^{(k)}_{m,j})^{N}$, $\Inorm{\cdot
 \delete{v4}{And the transition function $\Pr\{ \mathcal{R}(t+1)|\mathcal{R}(t) \}$ is embedded with its distributions $\vecG{\Theta}^{(k)}_{m,j}(t+1)$ in the equation.}
 
 The expected value function $W^{\ES}(\mathcal{Q}(t+1))$ under baseline $\vecG{\Pi}(t)$ for ES nodes is little more complex compared to Eqn. (\ref{w_ap}).
-The ES node transition is affected with both arrival process under dispatching policy and last queue state, and we reduce the states expression by taking average over the uploading process together with the transition function expression.
+The ES node transition is affected with both arrival process under dispatching policy and last queue state.
+However, we notice that the arrival process would be stationary after the maximum uploading time under the stationary baseline policy and the relationship between APs and edge server could be decoupled.
 \begin{align}
     &W^{\ES}_{\BaseLine(t)}\Paren{\mathcal{Q}(t+1)}
     \nonumber\\
-    =& \sum_{m,j}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ l_{m,j}({t+i+1}) ]
+    =& \sum_{m,j}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ Q_{m,j}({t+i+1}) ]
     \nonumber\\
     &~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}',
 \end{align}
 where $\hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) \define \prod_{n=0,\dots,N-1} \mat{P}_{m,j}(\tilde{\beta}_{m,j})$;
-the probability distribution of $l_{m,j}({t+i+1})$ is denoted by $\vecG{\nu}({t+i+1})$ which is obtained by calculation over equation Enq. (\ref{eqn_0}) - Eqn. (\ref{eqn_4}) ($\forall i=0,\dots,\frac{\Xi}{T}$);
+the probability distribution of $Q_{m,j}({t+i+1})$ is denoted by $\vecG{\nu}({t+i+1})$ which is obtained by calculation over equation Enq. (\ref{eqn_0}) - Eqn. (\ref{eqn_4}) ($\forall i=0,\dots,\frac{\Xi}{T}$);
 the $i$-th element of vector $\vec{g}$ denotes the cost of server as $l_{m,j}(t)$;
 $\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\Pi(t)$ (on $m$-th ES with $j$-type job), where:
 \begin{align}
