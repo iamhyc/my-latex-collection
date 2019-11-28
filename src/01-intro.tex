@@ -1,9 +1,9 @@
 
 \section{Introduction}
 
-\comment{
+\comments{
     Edge computing is believed to be the solid solution for increasing computation-intensive and energy-hungry applications on mobile devices.
-    The edge server clusters are deployed in closer proximity to mobile devices than cloud infrastructure, which alleviates the communication overhead and enables \emph{time-sensitive} and \emph{deadline-aware} tasks offloading.
+    The edge server clusters are deployed in closer proximity to mobile devices than cloud infrastructure, which alleviates the communication overhead and enables {time-sensitive} and {deadline-aware} tasks offloading.
     The edge servers are always with limited computation resources standalone, and efficient cooperation is indispensable among distributed servers.
 }
 
@@ -38,7 +38,6 @@
 Edge Computation is believed to be a promising technology for solving increasingly communication congestion in backbone network.
 (Rich-media tasks are delay-sensitive).
 \cite{Naha2018} is a survey about fog computing in delay-aware computing in IoT, and investigate numerous proposed computing architecture.
-\fixit{(fully cooperative)}
 
 Related works on job dispatching on scheduling in edge computing, mostly with centralized agent to apply action and seldom take delayed information impact into consideration.
 There are some previous works on jobs scheduling strategies under the scenario of edge computation, together with joint optimization job dispatching and resource allocation:
@@ -94,7 +93,9 @@ The computation jobs would be released from UEs and the dispatching decisions ar
 The information sharing scheme is proposed in this article with synchronized broadcast design. With the help of this scheme, we could immediately apply the job dispatching decision based on obsolete information, with some prior stochastic knowledge of global system.
 Our contributions are summarized as follows.
 \begin{itemize}
-    \item To our best knowledge, we are the first work to propose the MDP framework making use of obsolete information in edge computing system. With shared prior stochastic knowledge about broadcast delay and uploading delay, the distributed agent could \fixit{come to consensus} on optimal policy adopting globally;
+    \item To our best knowledge, this is the first work to propose a global standard MDP framework to characterize the stale information in edge computing network.
+    With the broadcast information sharing scheme, the APs could
+    With shared prior stochastic knowledge about broadcast delay and uploading delay
     \item We propose a global state MDP formulation to characterize the multiple-agent problem, i.e. single agent would consider multiple-agent decision optimality to achieve cooperation.
     We with adopt value function approximation to reduce the traditional algorithm complexity, and come up with performance guarantee performance bound.
 \end{itemize}

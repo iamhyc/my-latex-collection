@@ -1,5 +1,6 @@
 % \documentclass[10pt, conference]{IEEEtran} %INFOCOM 19'
 \documentclass[journal, 12pt, onecolumn, draftclsnofoot]{IEEEtran} %JSAC 20'
+% \documentclass[sigconf]{acmart} %ACM Mobihoc 20'
 \usepackage{cite}
 \usepackage{xcolor,soul,framed}
 \usepackage{amsmath,amsthm,amssymb,amsfonts}
@@ -12,8 +13,8 @@
 \usepackage{mathtools}
 \graphicspath{ {./images/} }
 %---------------------------------------------------------------%
-\theoremstyle{definition}
 \newtheorem{definition}{Definition}
+\theoremstyle{definition}
 \newtheorem{program}{Program}
 \newtheorem{assumption}{Assumption}
 \newtheorem{example}{Example}
@@ -49,7 +50,7 @@
 \newcommand{\fixit}[1]{{\color{red}{#1}}}
 \newcommand{\accept}[1]{#1}
 \newcommand{\deny}[1]{\st{#1}}
-\newcommand{\comment}[1]{{\color{blue}{#1}}}
+\newcommand{\comments}[1]{{\color{blue}{#1}}}
 \newcommand{\delete}[2]{}
 \newcommand{\needref}[1]{\text{[#1]}}
 %---------------------------------------------------------------%

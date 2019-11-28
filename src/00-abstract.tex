@@ -1,16 +1,25 @@
 \begin{abstract}
-    \comment{
+    \comments{
         In this paper, we consider the scenario that edge servers are scattered into a Metropolitan Area Network (MAN).
         The access points (APs) are deployed to collect jobs from the mobile users in its coverage, and then dispath the jobs to the feasible edge servers via MAN.
         While existing literature 
 
         In this paper, the cooperative job dispatching problem in an edge computing network with multiple access points (APs) and edge servers is considered.
+
+        Conventional low-complexity approximate solution of MDP is usually hard to predict the performance analytically.
+        In this paper, a novel approximate MDP solution framework is proposed via one-step policy iteration over a baseline policy, where the analytical performance bound can be obtained.
+        It is shown by simulations that the proposed low-complexity algorithm can effectively reduce the \emph{average job response time} per job of the considered edge computing network.
+
+        Since each job dispatching decision will affect the system state in the future, we formulate the joint optimization of job dispatching at all the APs and all the scheduling time slots as an infinite horizon Markov decision process (MDP) problem.
+        The minimization objective is a discounted measurement of \emph{average job response time}.
+        In this problem, the approximate MDP should be adopted to address the curse of dimensionality.
     }
 
     \delete{v6.2}{
         \text{
             decentrlized; decision making; stale information sharing;
-            multiple agents; joint optimization; 
+            propagation delay;
+            multiple agents; joint optimization; infinite horizon Markov decision process (MDP) problem;
         }
 
         \begin{itemize}
@@ -24,14 +33,5 @@
             \item A periodic-broadcast information sharing scheme via broadcast is proposed, and the standard MDP framework is introduced to depict the stale-aware dispatching process;
             \item Due to the uncertain traffic of the network between APs and edge servers, the job uploading latency is random and unpredictable; random job uploading delay, queueing delay at the edge servers and random job computing time are all considered in the optimization;
         \end{itemize}
-
-        Since each job dispatching decision will affect the system state in the future, we formulate the joint optimization of job dispatching at all the APs and all the scheduling time slots as an infinite horizon Markov decision process (MDP) problem, where .
-
-        The minimization objective is a discounted measurement of \emph{average job response time}.
-        In this problem, the approximate MDP should be adopted to address the curse of dimensionality.
-
-        Conventional low-complexity approximate solution of MDP is usually hard to predict the performance analytically.
-        In this paper, a novel approximate MDP solution framework is proposed via one-step policy iteration over a baseline policy, where the analytical performance bound can be obtained.
-        It is shown by simulations that the proposed low-complexity algorithm can effectively reduce the \emph{average job response time} per job of the considered edge computing network.
     }
 \end{abstract}
