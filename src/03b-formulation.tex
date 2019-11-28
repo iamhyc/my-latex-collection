@@ -2,7 +2,7 @@
 %----------------------------------------------------------------------------------------%
 In this section, we formulate the optimization problem which aims at online optimizing job dispatching decisions of all APs.
 This kind of optimization problem falls into multi-agent planning problem, which considers a fully cooperative multi-agent system (MAS) and each agent shares the same utility function \needref{Craig Boutilie, 1999}.
-In our problem, we focus on the real situation about communication overhead in MAS, where the system information is always stale due to periodic broadcast and \brdelay.
+In our problem, we focus on the real situation about communication overhead in MAS, where the system information is always stale due to periodic broadcast and \brlatency.
 \needref{R.Nair, 2003} uses DEC-POMDP (Decentralized Partial-Observed MDP) framework to characterize the coordination among decentralized and partially observed multi-agent problem. The solution to its problem is of high complexity and requires extra information of \emph{belief states}.
 Instead, we formulate the problem under standard MDP framework, which is with fully-observable information.
 At the end of this section, we show that we could come up with decentralized algorithm under the global problem formulation heuristically. A low-complexity solution is also provided in the following section to alleviate the curse of dimensionality.
@@ -13,8 +13,8 @@ At the end of this section, we show that we could come up with decentralized alg
 
 \subsection{System State and Dispatching Policy}
 We formulate the multi-agent MDP problem from a global perspective, where each AP adopts the dispatching policy mapping from the global broadcast information $\Obsv^{\dagger}$.
-% As each AP would always update its dispatching policy based on the latest broadcast information, the \brdelay{s} in each interval is also taken as a part of state information.
-The relationship between \brdelay~and the policy update time points for different APs is depicted in Fig. \ref{fig:brd-trans}.
+% As each AP would always update its dispatching policy based on the latest broadcast information, the \brlatency{s} in each interval is also taken as a part of state information.
+The relationship between \brlatency~and the policy update time points for different APs is depicted in Fig. \ref{fig:brd-trans}.
 
 \accept{
     \begin{definition}[System State]
@@ -24,11 +24,11 @@ The relationship between \brdelay~and the policy update time points for differen
                 \Obsv^{\dagger}({t-1}), \Obsv^{\dagger}({t}), \mathcal{D}({t})
             },
         \end{align}
-        where $\mathcal{D}({t}) \define \set{D_{1}({t}), \dots, D_{K}({t})}$ denotes the \brdelay~for each AP, $\Obsv^{\dagger}({t})$ denotes updated global information with the whole broadcast information, and $\Obsv^{\dagger}({t-1})$ denotes the stale global information.
+        where $\mathcal{D}({t}) \define \set{D_{1}({t}), \dots, D_{K}({t})}$ denotes the \brlatency~for each AP, $\Obsv^{\dagger}({t})$ denotes updated global information with the whole broadcast information, and $\Obsv^{\dagger}({t-1})$ denotes the stale global information.
     \end{definition}
 }
 
-\begin{figure}[ht]
+\begin{figure}[htp]
     \centering
     \includegraphics[width=0.80\textwidth]{brd-trans.pdf}
     \caption{Global System Transition with Partial Information-based Dispatching Decision}
@@ -36,7 +36,7 @@ The relationship between \brdelay~and the policy update time points for differen
 \end{figure}
 
 Based on the two phases of broadcast information in the system state, the system evolves with the joint actions of all APs.
-Due to the different distributions of \brdelay~for each AP in one interval, APs use the stale policy in firstly and then update their policy based on latest information in random order.
+Due to the different distributions of \brlatency~for each AP in one interval, APs use the stale policy in firstly and then update their policy based on latest information in random order.
 The joint policy of all APs is defined as follows.
 \accept{
     \begin{definition}[Joint Dispatching Policy]

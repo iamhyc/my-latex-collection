@@ -2,7 +2,7 @@
 In this section, we introduce a heuristic dispatching algorithm as the baseline policy, whose value function could be derived analytically.
 Then the right-hand side of Bellman's Equation turns into simple minimization problem over the control policy. The sub-optimal policy could be obtained by evaluation of approximated value function on right-hand side of Bellman's Equation with one-step iteration. And thus the approximated value function is the upper bound of the original optimal policy.
 
-Moreover, as the system state is partially presented as $\Obsv({t-1})$ and $\Obsv(t)$ separated by the \brdelay~$\mathcal{D}(t)$, different APs would have isolated acknowledge on the joint policy and transition function due to different $D_k(t)$ ($\forall k\in\apSet$).
+Moreover, as the system state is partially presented as $\Obsv({t-1})$ and $\Obsv(t)$ separated by the \brlatency~$\mathcal{D}(t)$, different APs would have isolated acknowledge on the joint policy and transition function due to different $D_k(t)$ ($\forall k\in\apSet$).
 Thus the joint optimization over the components of $\Policy(\Stat(t))$ is impossible.
 To overcome the gap, we leverage the above global problem structure, but solve it with iterative policy update algorithm.
 
@@ -94,6 +94,12 @@ It is assumed that each AP can only collect the LSI from the APs in its \emph{co
 
 \fixit{
     One AP will update its dispatching decision after the reception of its OSI.
+    We denote the individual dispatching policy of the $k$-th AP ($\forall k\in\apSet$) based on its OSI $\Obsv_{k}({t})$ as follows.
+    \begin{align}
+        &\Omega_{k}(\Obsv_{k}(t)) \define \set{\omega'_{k,j}(t)|\forall m\in\esSet, j\in\jSpace}.
+        \label{def_action}
+    \end{align}
+
     Hence, we only update the individual policy of the $k$-th AP ($\forall k\in\apSet$) at one time, and the Bellman's equation would reduce into the form as follows, where only the OSI (partial information) for the $k$-th AP matters.
     \begin{align}
         V_{k}\Paren{\Obsv_{k}({t})} =& g_{k}(\Obsv_{k}(t)) +
