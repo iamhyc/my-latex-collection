@@ -36,47 +36,40 @@ where $W^{\AP}_{\BaseLine(t)}(\cdot)$ and $W^{\ES}_{\BaseLine(t)}(\cdot)$ denote
         &\define \sum_{m\in\esSet}\sum_{j\in\jSpace}
         % \nonumber\\
         \mathbb{E}_{\{\BaseLine(t), Q_{m,j}(t)\}}\Bracket{
-            \sum_{i=0}^{\infty} \gamma^{i} l_{m,j}({t+i})
+            \sum_{i=0}^{\infty} \gamma^{i} Q_{m,j}({t+i})
         }.
 \end{align}
         
 The decoupled value functions for AP and ES nodes is obtained with an approximated form under the baseline policy. We use the same baseline policy to evaluate both low-complexity policy performance in Eqn. (\ref{eqn:sp_0}).
 
-The expected value function $W^{\AP}(\mathcal{R}(t+1))$ under baseline $\vecG{\Pi}(t)$ for AP nodes is easily obtained by calculating by the following equation:
-\begin{align}
-    &W^{\AP}_{\BaseLine(t)}\Paren{\mathcal{R}(t+1)} = \sum_{k\in\apSet}\sum_{m\in\esSet}\sum_{j\in\jSpace}
-    % \nonumber\\
-    \Inorm{
-        \Paren{1 - \gamma \hat{\Gamma}^{(k)}_{m,j}}^{-1}
-        \times \vecG{\Theta}^{(k)}_{m,j}(t+1)
-    },
-    \label{w_ap}
-\end{align}
-where $\hat{\Gamma}^{(k)}_{m,j} \define (\Gamma^{(k)}_{m,j})^{N}$, $\Inorm{\cdot}$ denotes the sum of absolute value of each entry of the vector.
-\delete{v4}{And the transition function $\Pr\{ \mathcal{R}(t+1)|\mathcal{R}(t) \}$ is embedded with its distributions $\vecG{\Theta}^{(k)}_{m,j}(t+1)$ in the equation.}
-
-The expected value function $W^{\ES}(\mathcal{Q}(t+1))$ under baseline $\vecG{\Pi}(t)$ for ES nodes is little more complex compared to Eqn. (\ref{w_ap}).
-The ES node transition is affected with both arrival process under dispatching policy and last queue state.
-However, we notice that the arrival process would be stationary after the maximum uploading time under the stationary baseline policy and the relationship between APs and edge server could be decoupled.
-\begin{align}
-    &W^{\ES}_{\BaseLine(t)}\Paren{\mathcal{Q}(t+1)}
-    \nonumber\\
-    =& \sum_{m,j}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ Q_{m,j}({t+i+1}) ]
-    \nonumber\\
-    &~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}',
-\end{align}
-where $\hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) \define \prod_{n=0,\dots,N-1} \mat{P}_{m,j}(\tilde{\beta}_{m,j})$;
-the probability distribution of $Q_{m,j}({t+i+1})$ is denoted by $\vecG{\nu}({t+i+1})$ which is obtained by calculation over equation Enq. (\ref{eqn_0}) - Eqn. (\ref{eqn_4}) ($\forall i=0,\dots,\frac{\Xi}{T}$);
-the $i$-th element of vector $\vec{g}$ denotes the cost of server as $l_{m,j}(t)$;
-$\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\Pi(t)$ (on $m$-th ES with $j$-type job), where:
-\begin{align}
-    \tilde{\beta}_{m,j} &\define \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j} \times \sum_{\xi=0,\dots,\Xi-1} \Pr\{ \xi<U_{k,m}\leq(\xi+1) \}
-        \nonumber\\
-    ~~~~&= \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j}
-\end{align}
+Thus the optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
+\begin{problem}[Approximated Optimization Problem]
+    \begin{align}
+        \min_{\BaseLine(t)} W^{\AP}_{\BaseLine(t)}\Paren{\mathcal{R}(t+1)} + W^{\ES}_{\BaseLine(t)}\Paren{\mathcal{Q}(t+1)}
+        \label{eqn_opt}
+    \end{align}
+    \label{approx_problem}
+\end{problem}
+% Moreover, the system state transition function could be rewrite in the following form.
+% \begin{align}
+%     & \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t)) }
+%     \nonumber\\
+%     =& \prod_{j\in\jSpace}\prod_{k\in\apSet}\prod_{m\in\esSet}
+%             \Pr\Brace{
+%                 \vec{R}^{(k)}_{m,j}(t+1) | \vec{R}^{(k)}_{m,j}(t),
+%                 \set{\omega_{k,j}(t), \omega_{k,j}(t+1)}
+%             }  
+%         \nonumber\\
+%         & \times \prod_{j\in\jSpace}\prod_{m\in\esSet}
+%             \Pr\Brace{
+%                 Q_{m,j}(t+1)|Q_{m,j}(t), \mathcal{R}(t),
+%                 \set{\omega_{k,j}(t), \omega_{k,j}(t+1)|\forall k\in\apSet}
+%             },
+% \end{align}
+% where the transition function is decoupled into two parts of state transition on APs and edge servers, respectively.
 %----------------------------------------------------------------------------------------%
 
-\subsection{Problem Decoupling with Partial Observed Information}
+\subsection{Problem Decoupling with Partially Observed Information}
 \fixit{
     The AP would update its policy once receive the \emph{Observed State Information} (OSI).
     And we redefine the following concepts (for the $k$-th AP):
@@ -94,13 +87,15 @@ $\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\Pi(t)$
 
 % It's still impossible to evaluate the above Bellman's equation due to the complexity would increase exponentially with respect to number of APs and edge servers.
 %NOTE: Conflict of AP set and partial information definition
-In \comments{an extensive edge computing network residing in MAN}, it may not be feasible for each AP to collect the LSI from all other APs and edge servers.
+In \accept{an extensive edge computing network residing in MAN}, it may not be feasible for each AP to collect the LSI from all other APs and edge servers.
 Hence, we first define the \emph{conflict AP set} as follows.
-\begin{align}
-    \ccSet_{k} \define \bigcup_{m\in\esSet_{k}} \apSet_{m}
-    % \ccSet_{k} \define \set{\forall k' \neq k\in\apSet|\esSet_{k'} \cap \esSet_{k} \neq \emptyset}
-\end{align}
-The \emph{conflict AP set} indicates that the subset of APs whose LSI could affect the decision making for the $k$-th AP.
+\begin{definition}[Conflict AP Set]
+    \begin{align}
+        \ccSet_{k} \define \bigcup_{m\in\esSet_{k}} \apSet_{m}.
+        % \ccSet_{k} \define \set{\forall k' \neq k\in\apSet|\esSet_{k'} \cap \esSet_{k} \neq \emptyset}
+    \end{align}
+    The \emph{conflict AP set} indicates that the subset of APs whose LSI could affect the decision making for the $k$-th AP.
+\end{definition}
 It is assumed that each AP can only collect the LSI from the APs in its \emph{conflict AP set} and edge servers from its \emph{candidate server set}.
 Hence, we refer to the reduced state information required as \emph{observed state information} (OSI) and the definition of the $k$-th AP is given as follows ($\forall k\in\apSet$).
 \begin{definition}[Observed State Information]
@@ -113,47 +108,67 @@ Hence, we refer to the reduced state information required as \emph{observed stat
 One AP will update its dispatching decision after the reception of its OSI, while the others will keep their previous policies.
 We denote the individual dispatching policy of the $k$-th AP ($\forall k\in\apSet$) based on its OSI $\Obsv_{k}(t)$ as follows.
 \begin{align}
-    &\Omega_{k}(\Obsv_{k}(t)) \define \set{\omega'_{k,j}(t)|\forall m\in\esSet, j\in\jSpace}.
+    &\Omega_{k}(\Obsv_{k}(t)) \define \set{\omega_{k,j}(t+1)|\forall m\in\esSet, j\in\jSpace}.
     \label{def_action}
 \end{align}
 
+Hence, we only update the individual policy of the $k$-th AP ($\forall k\in\apSet$) at one time, and the approximated optimization problem \ref{approx_problem} would reduce into the form as follows, where only the OSI (partial information) for the $k$-th AP matters.
+\begin{problem}
+    \begin{align}
+        \min_{\BaseLine(t)} W^{(k)}_{\BaseLine(t)}\Paren{\mathcal{R}(t+1)} + W^{(k)}_{\BaseLine(t)}\Paren{\mathcal{Q}(t+1)},
+        \label{eqn_partial}
+    \end{align}
+    where 
+    \begin{align}
+        W^{(k)}_{\BaseLine(t)}\Paren{\mathcal{R}(t)}
+            &\define \sum_{j\in\jSpace}\sum_{k\in\ccSet_{k}}\sum_{m\in\esSet_{k}}
+            % \nonumber\\
+            \mathbb{E}_{\{\BaseLine(t), \vec{R}^{(k)}_{m,j}(t)\}}\Bracket{
+                \sum_{i=0}^{\infty} \gamma^{i} \Inorm{\vec{R}^{(k)}_{m,j}({t+i})}
+            }
+        \\
+        W^{(k)}_{\BaseLine(t)}\Paren{\mathcal{Q}(t)}
+            &\define \sum_{j\in\jSpace}\sum_{m\in\esSet_{k}}
+            % \nonumber\\
+            \mathbb{E}_{\{\BaseLine(t), Q_{m,j}(t)\}}\Bracket{
+                \sum_{i=0}^{\infty} \gamma^{i} Q_{m,j}({t+i})
+            }.
+    \end{align}
+\end{problem}
+The expected value function $W^{(k)}(\mathcal{R}(t+1))$ under baseline $\vecG{\Pi}(t)$ for AP nodes is easily obtained by calculating by the following equation:
+\begin{align}
+    &W^{(k)}_{\BaseLine(t)}\Paren{\mathcal{R}(t+1)} = \sum_{j\in\jSpace}\sum_{k\in\ccSet_{k}}\sum_{m\in\esSet_{k}}
+    \Inorm{
+        \Paren{1 - \gamma \hat{\Gamma}^{(k)}_{m,j}}^{-1}
+        \times \vecG{\Theta}^{(k)}_{m,j}(t+1)
+    },
+    \label{w_ap}
+\end{align}
+where $\hat{\Gamma}^{(k)}_{m,j} \define (\Gamma^{(k)}_{m,j})^{N}$, and $\Inorm{\cdot}$ denotes the sum of absolute value of each entry of the vector.
+\delete{v4}{And the transition function $\Pr\{ \mathcal{R}(t+1)|\mathcal{R}(t) \}$ is embedded with its distributions $\vecG{\Theta}^{(k)}_{m,j}(t+1)$ in the equation.}
 
-\fixit{
-    Hence, we only update the individual policy of the $k$-th AP ($\forall k\in\apSet$) at one time, and the Bellman's equation would reduce into the form as follows, where only the OSI (partial information) for the $k$-th AP matters.
-    \begin{align}
-        V_{k}\Paren{\Obsv_{k}(t)} =& g_{k}(\Obsv_{k}(t)) +
-        \gamma\min_{\Omega_{k}(\Obsv_{k}(t))}
+The expected value function $W^{(k)}(\mathcal{Q}(t+1))$ under baseline $\vecG{\Pi}(t)$ for ES nodes is little more complex compared to Eqn. (\ref{w_ap}).
+The ES node transition is affected with both arrival process under dispatching policy and last queue state.
+However, we notice that the arrival process would be stationary after the maximum uploading time under the stationary baseline policy and the relationship between APs and edge server could be decoupled.
+\begin{align}
+    &W^{(k)}_{\BaseLine(t)}\Paren{\mathcal{Q}(t+1)}
+    \nonumber\\
+    =& \sum_{j\in\jSpace}\sum_{m\in\esSet_{k}}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ Q_{m,j}({t+i+1}) ]
+    \nonumber\\
+    &~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}',
+\end{align}
+where $\hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) \define \prod_{n=0,\dots,N-1} \mat{P}_{m,j}(\tilde{\beta}_{m,j})$;
+the probability distribution of $Q_{m,j}({t+i+1})$ is denoted by $\vecG{\nu}({t+i+1})$ which is obtained by calculating equation Enq. (\ref{eqn_0}) - Eqn. (\ref{eqn_4}) ($\forall i=0,\dots,\frac{\Xi}{T}$);
+the $i$-th element of vector $\vec{g}$ denotes the cost of server as $Q_{m,j}(t)$;
+$\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\Pi(t)$ (on $m$-th ES with $j$-type job), where:
+\begin{align}
+    \tilde{\beta}_{m,j} &\define \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j} \times \sum_{\xi=0,\dots,\Xi-1} \Pr\{ \xi<U_{k,m}\leq(\xi+1) \}
         \nonumber\\
-        &\sum_{\Obsv_{k}(t+1)} \Pr
-        \Brace{ 
-            \Obsv_{k}(t+1) | \Obsv_{k}(t), \Omega_{k}(\Obsv_{k}(t))
-        } \cdot V_{k}\Paren{\Obsv_{k}(t+1)},
-    \end{align}
-    where,
-    \begin{align}
-        g_{k}(\Obsv_{k}(t)) \define& \sum_{j\in\jSpace} \Brace{
-            \sum_{k\in\mathcal{X}_{k}} \sum_{m\in\esSet_{k}} \vec{R}^{(k)}_{m,j}(t) +
-            \sum_{m\in\esSet_{k}} \set{ L_{m,j}(t) + \beta \cdot \mat{I}[L_{m,j}(t)=L_{max}] }
-        }
-    \end{align}
-}
+    ~~~~&= \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j}
+\end{align}
 %----------------------------------------------------------------------------------------%
 
 \subsection{The Decentralized Algorithm}
-\fixit{
-    \begin{itemize}
-        \item We leverage the global optimization problem, while the presence of $\mathcal{D}(t)$ doesn't matter in our algorithm;
-        \item We propose one iterative update algorithm (elaboration needed);
-        \item The performance bound is guaranteed, and always better compared with last stage.
-    \end{itemize}
-}
-
-The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
-\begin{align}
-    \min_{\BaseLine(t)} W^{\AP}_{\BaseLine(t)}\Paren{\mathcal{R}(t+1)} + W^{\ES}_{\BaseLine(t)}\Paren{\mathcal{Q}(t+1)}
-    \label{eqn_opt}
-\end{align}
-
 Then we introduce the iterative policy update algorithm, which optimize the 
 with improved baseline policy in each interval as performance guarantee.
 \begin{itemize}
@@ -168,20 +183,21 @@ with improved baseline policy in each interval as performance guarantee.
     The optimized policy solved as $\BaseLine(t)$ (for next stage), is better than $\BaseLine(t-1), \dots, \BaseLine(1)$ when considering the \emph{approximated value function} defined above.
     \\
     Moreover, the performance of the series of the baseline policies is upper bounded by the optimal solution $\Policy^*$ when considering the original Bellman's equation.
+    $$
+        V_{\Omega^*}\Paren{\Stat(t)}
+        \leq W_{\BaseLine(t)}\Paren{\Stat(t)}
+        \leq W_{\BaseLine(t-1)}\Paren{\Stat(t)}
+        % \leq \dots \leq W_{\Pi(1)}\Paren{\Stat(t)}
+    $$
 \end{lemma}
 \begin{proof}
-    \fixit{
+    The proof is delete.
+    \delete{v7}{
         The proof is illustrated into two parts.
         \begin{itemize}
             \item $\BaseLine(t)$ is better than the previous baseline policy, \emph{with the latest start} $\Obsv(t+1)$; the other previous policies were determined from the different start state;
             \item Upper bound is easy to prove with one-step iteration that:
-            $$
-                V_{\Omega^*}\Paren{\Stat(t)}
-                    \leq W_{\BaseLine(t)}\Paren{\Stat(t)}
-                    \leq W_{\BaseLine(t-1)}\Paren{\Stat(t)}
-                    \leq \dots \leq W_{\Pi(1)}\Paren{\Stat(t)}
-            $$
-            but I doube this could not stand, cause the stationary policy is also affected by \emph{start state} and \emph{random broadcat delay}.
+            % but I doubt this could not stand, cause the stationary policy is also affected by \emph{start state} and \emph{random broadcat delay}.
         \end{itemize}
     }
 \end{proof}
@@ -227,16 +243,16 @@ with improved baseline policy in each interval as performance guarantee.
     %NOTE: small probability approximation
     For state transition of edge servers, we denote $\vecG{\mu}_{m,j}$ and $P_{m,j}$ as probability vector and transition matrix, respectively, for $Q_{m,j}$ of the $j$-th job processing on the $m$-th edge server ($\forall m\in\esSet, j\in\jSpace$). The definition of the probability vector $\vecG{\mu}_{m,j}(t,n)$ at the $n$-th time slot in the $t$-the interval is given as follows.
     \begin{align}
-        \vecG{\mu}_{m,j}(t,n) \define 
-        \begin{bmatrix}
-            &\Pr\{L_{m,j}(t,n)=0,   &        & \eta_{m,j}(t,n)=0\} \\
-            &\Pr\{L_{m,j}(t,n)=0,   &        & \eta_{m,j}(t,n)=1\} \\
-            &                       & \vdots & \\
-            &\Pr\{L_{m,j}(t,n)=0,   &        & \eta_{m,j}(t,n)=\mathcal{C}_{m,j}-1\} \\
-            &\Pr\{L_{m,j}(t,n)=1,   &        & \eta_{m,j}(t,n)=0\} \\
-            &                       & \vdots & \\
-            &\Pr\{L_{m,j}(t,n)=L_{max}, &        & \eta_{m,j}(t,n)=\mathcal{C}_{m,j}-1\}
-        \end{bmatrix}
+        \vecG{\mu}_{m,j}(t,n) \define [\Pr\{Q_{m,j}=0\}, \dots, \Pr\{Q_{m,j}=L_{max}\}]
+        % \begin{bmatrix}
+        %     &\Pr\{L_{m,j}(t,n)=0,   &        & \eta_{m,j}(t,n)=0\} \\
+        %     &\Pr\{L_{m,j}(t,n)=0,   &        & \eta_{m,j}(t,n)=1\} \\
+        %     &                       & \vdots & \\
+        %     &\Pr\{L_{m,j}(t,n)=0,   &        & \eta_{m,j}(t,n)=\mathcal{C}_{m,j}-1\} \\
+        %     &\Pr\{L_{m,j}(t,n)=1,   &        & \eta_{m,j}(t,n)=0\} \\
+        %     &                       & \vdots & \\
+        %     &\Pr\{L_{m,j}(t,n)=L_{max}, &        & \eta_{m,j}(t,n)=\mathcal{C}_{m,j}-1\}
+        % \end{bmatrix}
     \end{align}
     However, the expression of transition matrix $P_{m,j}$ is more complex. Firstly, we notice that in the transition function of edge server, the distribution of offloading number of jobs from all APs in the interval contributes to the job arrival process on edge server as $\mathcal{R}(t)$. We denote the offloading matrix $\bar{\Gamma}^{(k)}_{m,j}$ from each AP to the $m$-th edge server as follows.
     \begin{align}
@@ -288,13 +304,31 @@ with improved baseline policy in each interval as performance guarantee.
     %     \begin{algorithmic}[1]
     %         \STATE $t = 0$
     %         \FOR{$t = 1,2,\dots$}
-    %             \STATE Evaluate $\Omega_0$ in \textbf{P1} according to Eqn. \ref{sp1}
+    %             \STATE Evaluate $\Omega_0$ in \textbf{P1} according to Eqn. (\ref{sp1})
     %             \FOR{$k \in \mathcal{K}$}
     %                 \STATE fix policy $\vec{\Omega}^{(k)}(t) \forall k' < k$
-    %                 \STATE Evaluate $k$-th AP Local Policy $\tilde{\Omega}_k$ in \textbf{Pk} according to Eqn. \ref{sp2}
+    %                 \STATE Evaluate $k$-th AP Local Policy $\tilde{\Omega}_k$ in \textbf{Pk} according to Eqn. (\ref{sp2})
     %             \ENDFOR
     %         \ENDFOR
     %     \end{algorithmic}
     % \end{algorithm}
+}
+
+\delete{v7}{
+    \begin{align}
+        V_{k}\Paren{\Obsv_{k}(t)} =& g_{k}(\Obsv_{k}(t)) +
+        \gamma\min_{\Omega_{k}(\Obsv_{k}(t))}
+        \nonumber\\
+        &\sum_{\Obsv_{k}(t+1)} \Pr\Brace{
+            \Obsv_{k}(t+1) | \Obsv_{k}(t), \Omega_{k}(\Obsv_{k}(t))
+        } \cdot V_{k}\Paren{\Obsv_{k}(t+1)},
+    \end{align}
+    where,
+    \begin{align}
+        g_{k}(\Obsv_{k}(t)) \define& \sum_{j\in\jSpace} \Brace{
+            \sum_{k\in\mathcal{X}_{k}} \sum_{m\in\esSet_{k}} \vec{R}^{(k)}_{m,j}(t) +
+            \sum_{m\in\esSet_{k}} \set{ L_{m,j}(t) + \beta \cdot \mat{I}[L_{m,j}(t)=L_{max}] }
+        }
+    \end{align}
 }
 %----------------------------------------------------------------------------------------%
