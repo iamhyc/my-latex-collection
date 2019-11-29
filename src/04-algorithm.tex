@@ -14,16 +14,16 @@ The baseline dispatching policy is adopted to obtain an approximation of value f
 \begin{align}
     \BaseLine(t) \define \Bracket{\Pi_1(t), \Pi_2(t), \dots, \Pi_K(t)},
 \end{align}
-where $\Pi_k(t) \define \set{\pi^{(k)}_{m,j}(t) | \forall m\in\esSet,\forall j\in\jSpace}$ denotes ($\forall k\in\apSet$) the action set resembling the definition in Eqn. (\ref{def_action}).
-More specifically, $\BaseLine(t)$ is assumed as the stationary baseline policy adopted globally after the $t$-th broadcast and the baseline policies are different in each broadcast interval.
+where $\Pi_k(t) \define \set{\pi_{k,j}(t) | \forall j\in\jSpace}$ denotes ($\forall k\in\apSet$) the action set resembling the definition in Eqn. (\ref{def_action}).
+More specifically, $\BaseLine(t)$ is assumed as the stationary baseline policy adopted globally at the $t$-th broadcast time slot.
 
 According to the additive structure of cost function, we substitute the transition function plus value function in Eqn. (\ref{eqn:sp_0}) with two linearly sections as $W^{\AP}(\mathcal{R}(t+1))$ and $W^{\ES}(\mathcal{Q}(t+1))$ under baseline policy $\BaseLine(t)$:
 \begin{align}
     &V(\Stat(t)) = g(\Stat(t)) +
     \nonumber\\
-    &~~~~~~\gamma \min_{\BaseLine(t)} \Bracket{ W^{\AP}_{\BaseLine(t)}\Paren{\mathcal{R}(t+1)} + W^{\ES}_{\BaseLine({i})}\Paren{\mathcal{Q}(t+1)} },
+    &~~~~~~\gamma \min_{\BaseLine(t)} \Bracket{ W^{\AP}_{\BaseLine(t)}\Paren{\mathcal{R}(t+1)} + W^{\ES}_{\BaseLine(t)}\Paren{\mathcal{Q}(t+1)} },
 \end{align}
-where $W^{\AP}_{\BaseLine(t)}(\cdot)$ and $W^{\ES}_{\BaseLine(t)}(\cdot)$ denote the split \emph{expected value function} over AP nodes and ES nodes, respectively, $\Policy(\Stat(t)) = \tilde{\Omega}({t-1}), \BaseLine(t)$. The split expected value functions are defined as follows.
+where $W^{\AP}_{\BaseLine(t)}(\cdot)$ and $W^{\ES}_{\BaseLine(t)}(\cdot)$ denote the split \emph{expected value function} over AP nodes and ES nodes, respectively, $\Policy(\Stat(t)) = \tilde{\Omega}(t-1), \BaseLine(t)$. The split expected value functions are defined as follows.
 \begin{align}
     W^{\AP}_{\BaseLine(t)}\Paren{\mathcal{R}(t)}
         &\define \sum_{k\in\apSet}\sum_{m\in\esSet}\sum_{j\in\jSpace}
@@ -111,7 +111,7 @@ Hence, we refer to the reduced state information required as \emph{observed stat
 \end{definition}
 
 One AP will update its dispatching decision after the reception of its OSI, while the others will keep their previous policies.
-We denote the individual dispatching policy of the $k$-th AP ($\forall k\in\apSet$) based on its OSI $\Obsv_{k}({t})$ as follows.
+We denote the individual dispatching policy of the $k$-th AP ($\forall k\in\apSet$) based on its OSI $\Obsv_{k}(t)$ as follows.
 \begin{align}
     &\Omega_{k}(\Obsv_{k}(t)) \define \set{\omega'_{k,j}(t)|\forall m\in\esSet, j\in\jSpace}.
     \label{def_action}
@@ -121,13 +121,13 @@ We denote the individual dispatching policy of the $k$-th AP ($\forall k\in\apSe
 \fixit{
     Hence, we only update the individual policy of the $k$-th AP ($\forall k\in\apSet$) at one time, and the Bellman's equation would reduce into the form as follows, where only the OSI (partial information) for the $k$-th AP matters.
     \begin{align}
-        V_{k}\Paren{\Obsv_{k}({t})} =& g_{k}(\Obsv_{k}(t)) +
+        V_{k}\Paren{\Obsv_{k}(t)} =& g_{k}(\Obsv_{k}(t)) +
         \gamma\min_{\Omega_{k}(\Obsv_{k}(t))}
         \nonumber\\
         &\sum_{\Obsv_{k}(t+1)} \Pr
         \Brace{ 
             \Obsv_{k}(t+1) | \Obsv_{k}(t), \Omega_{k}(\Obsv_{k}(t))
-        } \cdot V_{k}\Paren{\Obsv_{k}({t+1})},
+        } \cdot V_{k}\Paren{\Obsv_{k}(t+1)},
     \end{align}
     where,
     \begin{align}
@@ -221,7 +221,7 @@ with improved baseline policy in each interval as performance guarantee.
     \begin{align}
         \vecG{\Theta}^{(k)}_{m,j}(t, D_{k}(t)) &= (\Gamma^{(k)}_{m,j})^{D_{k}(t)} \times \vecG{\Theta}^{(k)}_{m,j}(t),
         \nonumber\\
-        \vecG{\Theta}^{(k)}_{m,j}({t+1}) &= (\Gamma^{(k)}_{m,j})^{N-D_{k}(t)} \times \vecG{\Theta}^{(k)}_{m,j}(t, D_{k}(t)).
+        \vecG{\Theta}^{(k)}_{m,j}(t+1) &= (\Gamma^{(k)}_{m,j})^{N-D_{k}(t)} \times \vecG{\Theta}^{(k)}_{m,j}(t, D_{k}(t)).
     \end{align}
 
     %NOTE: small probability approximation
@@ -278,7 +278,7 @@ with improved baseline policy in each interval as performance guarantee.
         \vecG{\nu}({t,n+1}) &= P_{m,j}\Paren{\beta_{m,j}({t,n})} \vecG{\nu}({t,n})
         % \label{eqn_3}
         \\
-        \vecG{\nu}({t+1}) &= \prod_{n=0,\dots,N-1} P_{m,j}\Paren{\beta_{m,j}({t,n})} \vecG{\nu}(t),
+        \vecG{\nu}(t+1) &= \prod_{n=0,\dots,N-1} P_{m,j}\Paren{\beta_{m,j}({t,n})} \vecG{\nu}(t),
         \label{eqn_4}
     \end{align}
 

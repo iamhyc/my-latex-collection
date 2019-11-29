@@ -63,7 +63,7 @@ Hence, the online job dispatching problem from global perspective is given as fo
     \begin{align}
         \min_{\Policy^{\dagger}} \lim_{T \to \infty}
             \mathbb{E}_{\Policy^{\dagger}}
-                \Bracket{\sum_{t=1}^t \gamma^{t-1} g^{\dagger}\Paren{\Stat(t), \Policy^{\dagger}(\Stat(t))}|\Stat(1)},
+                \Bracket{\sum_{t=1}^t \gamma^{(t-1)} g^{\dagger}\Paren{\Stat(t), \Policy^{\dagger}(\Stat(t))}|\Stat(1)},
     \end{align}
     where the cost is collected with discount factor $\gamma$.
 \end{problem}
@@ -71,22 +71,22 @@ According to \cite{sutton1998introduction}, the above problem could be solved by
 \begin{align}
     V^{\dagger}\Paren{\Stat(t)} =~&g^{\dagger}\Paren{\Stat(t)} + \gamma \min_{\Policy(\Stat(t))}
         \nonumber\\
-        &\sum_{\Stat({t+1})} \Pr\Brace{ \Stat({t+1})|\Stat(t), \Policy(\Stat(t)) } \cdot V^{\dagger}\Paren{\Stat({t+1})}.
+        &\sum_{\Stat(t+1)} \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t)) } \cdot V^{\dagger}\Paren{\Stat(t+1)}.
     \label{eqn:sp_0}
 \end{align}
 Moreover, the system state transition function could be rewrite in the following form.
 \begin{align}
-    & \Pr\Brace{ \Stat({t+1})|\Stat(t), \Policy(\Stat(t)) }
+    & \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t)) }
     \nonumber\\
     =& \prod_{j\in\jSpace}\prod_{k\in\apSet}\prod_{m\in\esSet}
             \Pr\Brace{
-                \vec{R}^{(k)}_{m,j}({t+1}) | \vec{R}^{(k)}_{m,j}(t),
+                \vec{R}^{(k)}_{m,j}(t+1) | \vec{R}^{(k)}_{m,j}(t),
                 \set{\omega_{k,j}(t), \omega_{k,j}(t+1)}
             }  
         \nonumber\\
         & \times \prod_{j\in\jSpace}\prod_{m\in\esSet}
             \Pr\Brace{
-                Q_{m,j}({t+1})|Q_{m,j}(t), \mathcal{R}(t),
+                Q_{m,j}(t+1)|Q_{m,j}(t), \mathcal{R}(t),
                 \set{\omega_{k,j}(t), \omega_{k,j}(t+1)|\forall k\in\apSet}
             },
 \end{align}
