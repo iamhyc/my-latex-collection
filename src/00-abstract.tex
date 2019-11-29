@@ -1,37 +1,12 @@
 \begin{abstract}
-    \comments{
-        In this paper, we consider the scenario that edge servers are scattered into a Metropolitan Area Network (MAN).
-        The access points (APs) are deployed to collect jobs from the mobile users in its coverage, and then dispath the jobs to the feasible edge servers via MAN.
-        While existing literature 
-
-        In this paper, the cooperative job dispatching problem in an edge computing network with multiple access points (APs) and edge servers is considered.
-
-        Conventional low-complexity approximate solution of MDP is usually hard to predict the performance analytically.
-        In this paper, a novel approximate MDP solution framework is proposed via one-step policy iteration over a baseline policy, where the analytical performance bound can be obtained.
-        It is shown by simulations that the proposed low-complexity algorithm can effectively reduce the \emph{average job response time} per job of the considered edge computing network.
-
-        Since each job dispatching decision will affect the system state in the future, we formulate the joint optimization of job dispatching at all the APs and all the scheduling time slots as an infinite horizon Markov decision process (MDP) problem.
-        The minimization objective is a discounted measurement of \emph{average job response time}.
-        In this problem, the approximate MDP should be adopted to address the curse of dimensionality.
-    }
-
-    \delete{v6.2}{
-        \text{
-            decentrlized; decision making; stale information sharing;
-            propagation delay;
-            multiple agents; joint optimization; infinite horizon Markov decision process (MDP) problem;
-        }
-
-        \begin{itemize}
-            \item We consider edge computing network backed by Metropolitan Area Network (MAN); there are numbers of APs to collect jobs from mobile users in its coverage, and the jobs are then offloading to the edge servers in its support set.
-            \item Due to the cooperative APs in this system, the APs has to collect state information from other APs and edge servers to individually apply the job dispatching decision.
-            \item Due to the non-predictable transmission latency and network congestion with time-variant routing path, the information propagation time is not negligible.
-            Hence, the centralized dispatcher design is impractical.
-            Moreover, only a part of the edge servers are available to one AP due to the \fixit{maximum network hop limitation}.
-            \item Considering the information staleness is not negligible, 
-            
-            \item A periodic-broadcast information sharing scheme via broadcast is proposed, and the standard MDP framework is introduced to depict the stale-aware dispatching process;
-            \item Due to the uncertain traffic of the network between APs and edge servers, the job uploading latency is random and unpredictable; random job uploading delay, queueing delay at the edge servers and random job computing time are all considered in the optimization;
-        \end{itemize}
-    }
+    In this paper, we consider the cooperative job dispatching problem in an edge computing network residing in Metropolitan area network (MAN).
+    Multiple access points (APs) are deployed to collect jobs from the mobile users, and distributed make dispatching decisions on edge servers for each job.
+    The coordination in a multi-agent system (MAS) requires agents to share the same utility function via information sharing.
+    While existing literature seldomly consider the information sharing latency among multiple agents, the latency is actually not negligible in such extensive network.
+    And making decisions based on stale information may result into unbounded error estimation of the system status.
+    We address the impact of latency on future system performance, and formulate the optimization problem as an infinite horizon Markov decision process (MDP), where the randomness of job uploading, processing time is considered.
+    In this problem, the approximate MDP should be adopted to address the curse of dimensionality.
+    Conventional low-complexity approximate solution of MDP is usually hard to predict the performance analytically.
+    We then propose a novel approximate MDP solution framework via one-step policy iteration over baseline policy, where the analytical performance bound can be obtained.
+    It is shown by simulations that the proposed low-complexity algorithm can effectively reduce the \emph{average job response time} per job of the considered edge computing network.
 \end{abstract}
