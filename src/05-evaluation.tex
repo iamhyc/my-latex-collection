@@ -1,12 +1,21 @@
 \section{Performance Evaluation}
 
+
 \subsection{Parameter Settings}
-\begin{figure}[t]
+\begin{figure*}
     \centering
-    \includegraphics[width=0.80\textwidth]{images/535_ul_cmp_proc_LargeDelay_cdf.pdf}
-    \caption{An example with 5 APs and 3 edge servers, when the \brlatency~is large.}
-    \label{fig:eval_general}
-\end{figure}
+    \begin{tabular}{ccc}
+        \includegraphics[width=0.30\textwidth]{images/535_LowPressure_NoDelay.pdf}&
+        \includegraphics[width=0.30\textwidth]{images/535_LowPressure_LargeDelay_cdf.pdf}&
+        \includegraphics[width=0.30\textwidth]{images/535_LowPressure_FullDelay.pdf}
+        \\
+        {\small (a) No \brlatency} &
+        {\small (b) Large \brlatency} &
+        {\small (c) \brlatency~lags one interval}
+    \end{tabular}
+    \caption{Evaluation of Information Staleness on Algorithm Robustness}
+    \label{fig:eval_delay}
+\end{figure*}
 
 \begin{itemize}
     \item $K=5$ AP nodes, $M=3$ ES nodes, and $J=5$ types of jobs;
