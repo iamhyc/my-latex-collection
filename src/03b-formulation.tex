@@ -11,21 +11,14 @@ The centralized agent will determine the new policy of each AP based on GSI awar
 We could obtain optimal solution via Bellman's equation with the MDP problem formulation, and  a low-complexity solution is introduced to alleviate the curse of dimensionality.
 And in the next section, we will leverage the problem structure and propose the practical algorithm without centralized agent assumption.
 
-\delete{v7}{Reference list
+\delete{v8}{Reference list
     [1] "Sequential Optimality and Coordination in Multi-agent Systems", Craig Boutilie, 1999
     [2] "Taming Decentralized POMDPs: Towards Efficient Policy Computation for Multi-agent Settings", R.Nair, 2003
 }
 
 \subsection{System State and Dispatching Policy}
 We formulate the multi-agent MDP problem from a global perspective, where each AP adopts the dispatching policy mapping from the global broadcast information $\Obsv^{\dagger}$.
-
-\begin{definition}[System State]
-    The system state for the $t$-th broadcast interval is denoted as follows.
-    \begin{align}
-        \Stat(t) \define \Obsv^{\dagger}(t),
-    \end{align}
-    where $\Obsv^{\dagger}(t)$ is consisted of uploading jobs information and previous dispatching decisions of all APs, and queueing job information of all edge servers at the $t$-th broadcast time slot.
-\end{definition}
+\fixit{The defintion system state is exactly the GSI.}
 
 % the system evolves with the joint actions of all APs.
 And the joint policy of all APs is defined as follows.
@@ -85,12 +78,13 @@ Hence, a low-complexity sub-optimal solution is proposed in the next section who
 }
 
 %----------------------------------------------------------------------------------------%
-\delete{v7}{
-    \begin{figure}[htp]
-        \centering
-        \includegraphics[width=0.80\textwidth]{brd-trans.pdf}
-        \caption{Global System Transition with Partial Information-based Dispatching Decision}
-        \label{fig:brd-trans}
-    \end{figure}
+\delete{v8}{
+    \begin{definition}[System State]
+        The system state for the $t$-th broadcast interval is denoted as follows.
+        \begin{align}
+            \Stat(t) \define \Obsv^{\dagger}(t),
+        \end{align}
+        where $\Obsv^{\dagger}(t)$ is consisted of uploading jobs information and previous dispatching decisions of all APs, and queueing job information of all edge servers at the $t$-th broadcast time slot.
+    \end{definition}
 }
 %----------------------------------------------------------------------------------------%

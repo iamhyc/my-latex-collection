@@ -71,26 +71,29 @@ We shall refer to every $t_B$ time slots as a broadcast interval.
 At the beginning of each broadcast interval (say the $t$-th broadcast interval), the LSI for AP and edge server is defined as follows, respectively.
 
 %NOTE: State and Broadcast Information for AP
-\begin{definition}[Local State Information for AP]
-    One AP shall maintain LSI about the number of jobs in uploading, and the dispatching choice on edge server for each job type.
-    Specifically, at the $n$-th time slot in the $t$-th interval, the number of the $j$-th type job being uploaded to the $m$-th edge server $\xi$ time slots ago from $k$-th AP is denoted as $R^{(k)}_{m,j,\xi}({t,n})$;
-    The dispatching choice of the $k$-th AP for processing of the $j$-th job type is denoted as $\omega_{k,j}(t,n) \in \esSet_{k}$ ($\forall k\in\apSet, m\in\esSet, j\in\jSpace, \xi\in(0,\Xi]$).
+\begin{definition}[Local State Information of AP]
+    One AP shall maintain LSI about the number of jobs in uploading, and the dispatching choice on edge servers for each job type.
+    Specifically, at the $n$-th time slot in the $t$-th interval, the number of the $j$-th type job being uploaded $\xi$ time slots ago from the $k$-th AP to the $m$-th edge server is denoted as
+    $R^{(k)}_{m,j,\xi}({t,n})$ ($\forall k\in\apSet, m\in\esSet, j\in\jSpace, \xi\in(0,\Xi]$).
+    The dispatching choice of the $k$-th AP for processing of the $j$-th job type is denoted as
+    $\omega_{k,j}(t,n) \in \esSet_{k}$.
     Hence, the LSI of the $k$-th AP at the $t$-th broadcast is given as follows.
     \begin{align}
-        \mathcal{R}_{k}(t) \define \set{\vec{R}^{(k)}_{m,j}(t), \set{\omega_{k,j}(t)|\forall j\in\jSpace} | \forall m\in\esSet, j\in\jSpace},
+        \mathcal{R}_{k}(t) \define \set{\vec{R}^{(k)}_{m,j}(t,0), \set{\omega_{k,j}(t,0)|\forall j\in\jSpace} | \forall m\in\esSet, j\in\jSpace},
     \end{align}
-    where $\vec{R}^{(k)}_{m,j} \define ( R^{(k)}_{m,j,0},\dots,R^{(k)}_{m,j,\Xi} )$ denotes the vector of random variables for convenience; and we have index $t$ short for $(t, 0)$, i.e. the beginning time slot of the $t$-th broadcast interval.
+    where
+    $\vec{R}^{(k)}_{m,j}(t,0) \define ( R^{(k)}_{m,j,0}(t,0), \dots, R^{(k)}_{m,j,\Xi}(t,0) )$
+    denotes the vector of random variables for convenience.
 \end{definition}
 
 %NOTE: State and Broadcast Information for ES
-\begin{definition}[Local State Information for Edge Servers]
+\begin{definition}[Local State Information of Edge Servers]
     One edge server shall maintain LSI about the computing queue status for each VM.
     Specifically, at the $n$ time slot in the $t$-th interval, the $m$-th edge server have $Q_{m,j}({t,n})$ denote the pending number of the $j$-th type job ($\forall m\in\esSet, j\in\jSpace$).
     Hence, the LSI of the $m$-th edge server at the $t$-th broadcast is defined as follows.
     \begin{align}
-        \mathcal{Q}_{m}(t) \define \set{Q_{m,j}(t) | \forall j\in\jSpace},
+        \mathcal{Q}_{m}(t) \define \set{Q_{m,j}(t, 0) | \forall j\in\jSpace}.
     \end{align}
-    where we have index $t$ short for $(t, 0)$, i.e. the beginning time slot of the $t$-th broadcast interval.
 \end{definition}
 
 We refer to \emph{global state information} (GSI) as the composition of all the broadcast information from all APs and edge servers in one broadcast and the definition is given as follows.
