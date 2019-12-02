@@ -74,16 +74,16 @@ At the beginning of each broadcast interval (say the $t$-th broadcast interval),
 \begin{definition}[Local State Information of AP]
     One AP shall maintain LSI about the number of jobs in uploading, and the dispatching choice on edge servers for each job type.
     Specifically, at the $n$-th time slot in the $t$-th interval, the number of the $j$-th type job being uploaded $\xi$ time slots ago from the $k$-th AP to the $m$-th edge server is denoted as
-    $R^{(k)}_{m,j,\xi}({t,n})$ ($\forall k\in\apSet, m\in\esSet, j\in\jSpace, \xi\in(0,\Xi]$).
-    The dispatching choice of the $k$-th AP for processing of the $j$-th job type is denoted as
-    $\omega_{k,j}(t,n) \in \esSet_{k}$.
+    $R^{(k)}_{m,j,\xi}({t,n})$;
+    at the $t$-th broadcast time slot, the dispatching choice of the $k$-th AP for proceesing of the $j$-th job type is denoted as
+    $\omega_{k,j}(t) \in \esSet_{k}$ ($\forall k\in\apSet, m\in\esSet, j\in\jSpace, \xi\in(0,\Xi]$).
     Hence, the LSI of the $k$-th AP at the $t$-th broadcast is given as follows.
     \begin{align}
-        \mathcal{R}_{k}(t) \define \set{\vec{R}^{(k)}_{m,j}(t,0), \set{\omega_{k,j}(t,0)|\forall j\in\jSpace} | \forall m\in\esSet, j\in\jSpace},
+        \mathcal{R}_{k}(t) \define \set{\vec{R}^{(k)}_{m,j}(t,0), \set{\omega_{k,j}(t)|\forall j\in\jSpace} | \forall m\in\esSet, j\in\jSpace},
     \end{align}
     where
     $\vec{R}^{(k)}_{m,j}(t,0) \define ( R^{(k)}_{m,j,0}(t,0), \dots, R^{(k)}_{m,j,\Xi}(t,0) )$
-    denotes the vector of random variables for convenience.
+    denotes the vector of random variables.
 \end{definition}
 
 %NOTE: State and Broadcast Information for ES
@@ -104,36 +104,25 @@ We refer to \emph{global state information} (GSI) as the composition of all the 
                 \mathcal{R}_{k}(t), \mathcal{Q}_{m}(t) | \forall k\in\apSet, m\in\esSet
             },
     \end{align}
-    which is composed of all the broadcast information from all APs and edge servers at the $t$-th broadcast.
+    which is composed of all the broadcast information from all APs and edge servers at the $t$-th broadcast time slot.
 \end{definition}
 
-As the edge computing network resides in MAN, the transmission latency of LSI is not negligible.
-It is assumed that the $k$-th AP is able to collect the GSI $D_{k}(t)$ time slots later after the broadcast of the $t$-th broadcast interval, where $D_{k}(t)$ is a random variable follows some distribution.
-We refer to $D_{k}(t)$ as the \brlatency of the $k$-th AP for the $t$-th broadcast, which is always smaller compared with the broadcast interval, i.e. $t_B > \hat{D}_{k}$ where $\hat{D}_{k}$ is the upper bound for $D_{k}(t)$ ($\forall k\in\apSet$).
-Hence, $D_{k}(t)$ follows some distribution with support $\set{1,\dots,t_B}$, i.e. the broadcast interval $t_B$ is set that the $k$-th AP ($\forall k\in\apSet$) could receive the complete OSI before the start of next broadcast interval.
+\fixit{
+    As the edge computing network resides in MAN, the transmission latency of LSI is not negligible.
+    It is assumed that the $k$-th AP is able to collect the GSI $D_{k}(t)$ time slots later after the broadcast of the $t$-th broadcast interval, where $D_{k}(t)$ is a random variable follows some distribution.
+    We refer to $D_{k}(t)$ as the \brlatency of the $k$-th AP for the $t$-th broadcast, which is always smaller compared with the broadcast interval, i.e. $t_B > \hat{D}_{k}$ where $\hat{D}_{k}$ is the upper bound for $D_{k}(t)$ ($\forall k\in\apSet$).
+    Hence, $D_{k}(t)$ follows some distribution with support $\set{1,\dots,t_B}$, i.e. the broadcast interval $t_B$ is set that the $k$-th AP ($\forall k\in\apSet$) could receive the complete OSI before the start of next broadcast interval.
 
-One AP could update its dispatching decision after reception of the GSI.
-Specifically, let $\omega_{k,j}(t)$ denote the edge server choice of the $k$-th AP at first in the $t$-th broadcast interval, and then it should determine the new policy $\omega_{k,j}(t+1)$ in the $D_{k}(t)$ time slot.
-The new policy is denoted as $\omega_{k,j}(t+1)$ because the $k$-th AP would broadcast it at the $(t+1)$-th broadcast.
-Hence, we denote the individual dispatching policy of the $k$-th AP based on the GSI $\Obsv^{\dagger}(t)$ as follows.
-\begin{align}
-    &\Omega^{\dagger}_{k}(\Obsv^{\dagger}(t)) \define \set{\omega_{k,j}(t+1)|\forall j\in\jSpace}.
-    \label{def_action}
-\end{align}
-We note that the $k$-th AP would always adopt two phases of polices in the $t$-th broadcast interval, i.e. $\Omega_{k}(\Obsv_{k}(t-1))$ with $\omega_{k,j}(t)$ before receiving $\Obsv^{\dagger}(t)$ and $\Omega_{k}(\Obsv_{k}(t))$ with $\omega_{k,j}(t+1)$ afterwards ($\forall k\in\apSet, j\in\jSpace$).
-% The two phases policy of APs in one together determine the transition of $\Obsv(t+1)$ in the next interval.
+    However, due to the randomness of \brlatency~which follows independent distribution of each AP, it's impossible to for any AP to obtain timely \brlatency~information of other APs in one broadcast interval.
+    Thus, the $k$-th AP could not determine the new policy in a fully cooperative way, while other APs also change their policies at their time slots receiving the GSI.
 
-However, due to the randomness of \brlatency~which follows independent distribution of each AP, it's impossible to for any AP to obtain timely \brlatency~information of other APs in one broadcast interval.
-Thus, the $k$-th AP could not determine the new policy in a fully cooperative way, while other APs also change their policies at their time slots receiving the GSI.
-
-In the next section, we will first formulate the joint optimization of dispatching decisions of all APs under standard MDP framework.
-From the global perspective of the edge computing system, the \brlatency~$D_{k}$(t) ($\forall k\in\apSet$) is always available to a centralized agent.
-Then we leverage the Bellman's equation in this problem formulation, and come up with a practical decentralized solution in the algorithm section. 
-Furthermore, with the help of algorithm design we could prove that our improved new policy is with analytical performance bound under MDP framework.
+    In the next section, we will first formulate the joint optimization of dispatching decisions of all APs under standard MDP framework.
+    From the global perspective of the edge computing system, the \brlatency~$D_{k}$(t) ($\forall k\in\apSet$) is always available to a centralized agent.
+    Then we leverage the Bellman's equation in this problem formulation, and come up with a practical decentralized solution in the algorithm section. 
+    Furthermore, with the help of algorithm design we could prove that our improved new policy is with analytical performance bound under MDP framework.
+}
 
 \delete{v7}{
-    As a high frequency broadcast design would always result into \emph{broadcast storm} and block the normal network traffic \needref{broadcast-storm article}, we introduce a slow enough broadcast interval selection in the system.
-
     \begin{figure}[htp]
         \centering
         \includegraphics[width=0.80\textwidth]{images/draft-conflict.png}

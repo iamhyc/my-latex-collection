@@ -1,4 +1,4 @@
-\section{Problem Formulation from Global Perspective}
+\section{POMDP-based Problem Formulation}
 %----------------------------------------------------------------------------------------%
 In this section, we formulate the optimization problem which aims at online joint optimizing job dispatching decisions of all APs.
 This kind of optimization problem falls into multi-agent planning problem, which considers a fully cooperative multi-agent system (MAS) and each agent shares the same utility function \needref{Craig Boutilie, 1999}.
@@ -18,19 +18,29 @@ And in the next section, we will leverage the problem structure and propose the 
 
 \subsection{System State and Dispatching Policy}
 We formulate the multi-agent MDP problem from a global perspective, where each AP adopts the dispatching policy mapping from the global broadcast information $\Obsv^{\dagger}$.
-\fixit{The defintion system state is exactly the GSI.}
+\accept{
+    We refer to $\Stat(t)$ as the \emph{system state} of the $t$-th broadcast interval whose definition is exactly the definition of GSI, i.e. $\Stat(t) \equiv \Obsv^{\dagger}(t)$.
+    And the dispatching policy definition is given as follows for individual policy for each AP and joint policy of all APs, respectively.
+    % the system evolves with the joint actions of all APs.
+}
+\begin{definition}[Individual Dispatching Policy of the $k$-th AP]
+    One AP could update its dispatching decision after the reception of its OSI:
+    \begin{align}
+        &\Omega_{k}(\Obsv_{k}(t)) \define \set{\omega_{k,j}(t+1)|\forall j\in\jSpace}.
+        \label{def_action}
+    \end{align}
+    We note that the $k$-th AP would always adopt two phases of polices in the $t$-th broadcast interval, i.e. $\Omega_{k}(\Obsv_{k}(t-1))$ with $\omega_{k,j}(t)$ before receiving $\Obsv_{k}(t)$ and $\Omega_{k}(\Obsv_{k}(t))$ with $\omega_{k,j}(t+1)$ afterwards ($\forall k\in\apSet, j\in\jSpace$).
+    % The two phases policy of APs in one together determine the transition of $\Obsv(t+1)$ in the next interval.
+\end{definition}
 
-% the system evolves with the joint actions of all APs.
-And the joint policy of all APs is defined as follows.
+Thus the joint policy of all APs is defined as follows.
 \begin{definition}[Joint Dispatching Policy]
     The joint dispatching policy $\Policy(\Stat(t))$ over system state $\Stat(t)$ is defined as follows.
     \begin{align}
         \Policy^{\dagger}(\Stat(t)) \define \Brace{
-            \Omega^{\dagger}_{1}(\Stat(t)), \dots, \Omega^{\dagger}_{K}(\Stat(t))
-        },
+            \Omega_{1}(\Stat(t)), \dots, \Omega_{K}(\Stat(t))
+        }.
     \end{align}
-    where $\Omega^{\dagger}_{k}(\Stat(t)) \equiv \Omega^{\dagger}_{k}(\Obsv^{\dagger}(t))$
-    is the individual policy of the $k$-th AP ($\forall k\in\apSet$).
 \end{definition}
 %----------------------------------------------------------------------------------------%
 
@@ -40,16 +50,26 @@ We propose the job dispatching optimization problem with the target to minimize 
 The \emph{average response time} is composed of uploading time, waiting time and processing time on edge server.
 According to \emph{Little's Law}, to minimize the average response time of all jobs is equal to minimize the average number of jobs in the system.
 
-Due to the periodic information broadcasting, we collect the cost for counting numbers each interval, which could be seen as a uniform sampling at times slot scale.
-Besides the cost for job response time, we further add penalty on job discarded when the queue is full.
-The definition of the cost function is given as follows.
-\begin{align}
-    g^{\dagger}\Paren{\Stat(t), \Policy^{\dagger}(\Stat(t))} \define
-        &\sum_{k\in\apSet} \sum_{m\in\esSet} \sum_{j\in\jSpace} \vec{R}^{(k)}_{m,j}(t)~+
-        \nonumber\\
-        &\sum_{m\in\esSet} \sum_{j\in\jSpace} \Brace{Q_{m,j}(t) + \beta \cdot \mat{I}[Q_{m,j}(t)=L_{max}]},
-\end{align}
-where $\beta$ is the weight factor for discard penalty ($\beta \in (0,1)$).
+\fixit{
+    Due to the periodic information broadcasting, we collect the cost for counting numbers each interval, which could be seen as a uniform sampling at times slot scale.
+    Besides the cost for job response time, we further add penalty on job discarded when the queue is full.
+    The definition of the cost function is given as follows.
+
+    \begin{definition}[Per-Interval Cost]
+        ?
+    \end{definition}
+    
+    The system cost is defined as follows.
+    \begin{definition}[System Cost]
+        \begin{align}
+            g^{\dagger}\Paren{\Stat(t), \Policy^{\dagger}(\Stat(t))} \define
+                &\sum_{k\in\apSet} \sum_{m\in\esSet} \sum_{j\in\jSpace} \vec{R}^{(k)}_{m,j}(t)~+
+                \nonumber\\
+                &\sum_{m\in\esSet} \sum_{j\in\jSpace} \Brace{Q_{m,j}(t) + \beta \cdot \mat{I}[Q_{m,j}(t)=L_{max}]},
+        \end{align}
+        where $\beta$ is the weight factor for discard penalty ($\beta \in (0,1)$).
+    \end{definition}
+}
 
 Hence, the online job dispatching problem from global perspective is given as follows.
 \begin{problem}[Centralized Job Dispatching Problem]
