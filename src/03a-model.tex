@@ -8,12 +8,9 @@ Each AP collects the computation jobs from the mobile users within its coverage,
 It is assumed that the $k$-th AP only dispatches the computation jobs to the feasible edge servers, e.g. the edge servers within a certain number of hops.
 Let $\esSet_{k} \subseteq \esSet$ be the set of edge servers, which can compute the jobs from the $k$-th AP and $\apSet_{m}$ be the set of APs, which may upload jobs to the $m$-th edge server.
 We refer to $\esSet_{k}$ as the \emph{candidate server set} of the $k$-th AP, and $\apSet_{m}$ as the \emph{candidate AP set} of the $m$-th edge server ($\forall k\in\apSet, m\in\esSet$).
-% As illustrated in Fig.\ref{fig:conflict},
 Different APs may have different candidate servers according to their locations in the network.
 For example, it is possible that $\esSet_{k} \neq \esSet_{k'}$ and $\esSet_{k} \cap \esSet_{k'} \neq \emptyset$ when $k \neq k' \in \apSet$.
-\accept{
-    In this edge computing network, each AP decentralized makes job dispatching decision faciliated by inforamtion sharing from other APs and edge servers.
-}
+In this edge computing network, each AP decentralized makes job dispatching decision faciliated by information sharing from other APs and edge servers.
 Specifically, each AP and edge server periodically broadcast their state information (e.g. edge server dispatching choice for each job type, list of jobs being uploaded from APs to edge servers, computing queue length and etc.), and one AP updates its strategy on job dispatching when receiving the broadcast state information.
 In this paper, we shall optimize the job dispatching strategy at APs with part of the broadcast information and random broadcast latency.
 
@@ -69,6 +66,7 @@ At the beginning of each broadcast interval (say the $t$-th broadcast interval),
     $R^{(k)}_{m,j,\xi}({t,n})$;
     at the $t$-th broadcast time slot, the dispatching choice of the $k$-th AP for proceesing of the $j$-th job type is denoted as
     $\omega_{k,j}(t) \in \esSet_{k}$ ($\forall k\in\apSet, m\in\esSet, j\in\jSpace, \xi\in(0,\Xi]$).
+    
     Hence, the LSI of the $k$-th AP at the $t$-th broadcast is given as follows.
     \begin{align}
         \mathcal{R}_{k}(t) \define \set{\vec{R}^{(k)}_{m,j}(t,0), \set{\omega_{k,j}(t)|\forall j\in\jSpace} | \forall m\in\esSet_{k}, j\in\jSpace},
@@ -82,6 +80,7 @@ At the beginning of each broadcast interval (say the $t$-th broadcast interval),
 \begin{definition}[Local State Information of Edge Servers]
     One edge server shall maintain LSI about the computing queue status for each VM.
     Specifically, at the $n$ time slot in the $t$-th interval, the $m$-th edge server have $Q_{m,j}({t,n})$ denote the pending number of the $j$-th type job ($\forall m\in\esSet, j\in\jSpace$).
+
     Hence, the LSI of the $m$-th edge server at the $t$-th broadcast is defined as follows.
     \begin{align}
         \mathcal{Q}_{m}(t) \define \set{Q_{m,j}(t, 0) | \forall j\in\jSpace}.
@@ -99,19 +98,19 @@ We refer to \emph{global state information} (GSI) as the composition of all the 
     which is composed of all the broadcast information from all APs and edge servers at the $t$-th broadcast time slot.
 \end{definition}
 
-\fixit{
-    \begin{figure}[tp]
-        \centering
-        \includegraphics[width=0.80\textwidth]{images/conflict.pdf}
-        \caption{The Example Illustration of Conflict Set and Partial Broadcast Information}
-        \label{fig:conflict}
-    \end{figure}
-    As the edge computing network resides in MAN, the transmission latency of LSI is not negligible.
-    In an extensive edge computing network residing in MAN, it may not be feasible for each AP to collect the LSI from all other APs and edge servers.
-    % to improve the system efficiency, we adapt OSI; (why it's enough for AP to make decision only with OSI?)
-}
+\begin{figure}[tp]
+    \centering
+    \includegraphics[width=0.80\textwidth]{images/conflict.pdf}
+    \caption{The Example Illustration of Conflict Set and Partial Broadcast Information}
+    \label{fig:conflict}
+\end{figure}
 
 %NOTE: Conflict of AP set and partial information definition
+\comments{
+    As the edge computing network resides in MAN, the propagation delay of LSI in such extensive network is not negligible.
+    Thus for the $k$-th AP ($\forall k\in\apSet$), the reception latency of the LSI from the edge servers out of its \emph{candidate server set} $\esSet_{k}$ may be not acceptable.
+    To alleviate the impact of information reception latency on decision making, we should leverage the definition of \emph{candidate server set} and \emph{candidate AP set}, and only use partial information from GSI for decision making for each AP.
+}
 Hence, we first define the \emph{conflict AP set} as follows.
 \begin{definition}[Conflict AP Set]
     \begin{align}
@@ -124,54 +123,42 @@ Hence, we first define the \emph{conflict AP set} as follows.
 \begin{figure}[t]
     \centering
     \includegraphics[width=0.80\textwidth]{brd-timeline.pdf}
-    \caption{The timeline illustration of LSI broadcast with 2 APs and 1 edge server.}
+    \caption{The timeline illustration of reception of OSI for the $1^{st}$ AP with the system setting in Fig.\ref{fig:conflict}.}
     \label{fig:brd-timeline}
 \end{figure}
 
-It is assumed that each AP can only collect the LSI from the APs in its \emph{conflict AP set} and edge servers from its \emph{candidate server set}.
-Hence, we refer to the reduced state information required as \emph{observed state information} (OSI) and the definition of the $k$-th AP is given as follows ($\forall k\in\apSet$).
+It is assumed that each AP only collect the LSI from the APs in its \emph{conflict AP set} and edge servers from its \emph{candidate server set}.
+For a simple example given in Fig.\ref{fig:conflict}, the $1^{st}$ AP only receives LSI from the $2^{nd}$ AP who is in its \emph{conflict AP set}, and LSI from the $1^{st}$ edge server who is in its \emph{candidate server set}.
+Hence, we refer to the partial state information as \emph{observed state information} (OSI) and the definition is given as follows.
 \begin{definition}[Observed State Information]
+    The OSI for the $k$-th AP ($\forall k\in\apSet$) is defined as:
     \begin{align}
         \Obsv_{k} &= \set{\mathcal{R}_{k'} | \forall k'\in\ccSet_{k}}
-                        \cup \set{\mathcal{Q}_{m} | \forall m\in\esSet_{k}},
+                        \cup \set{\mathcal{Q}_{m} | \forall m\in\esSet_{k}}.
     \end{align}
 \end{definition}
 
-One AP will update its dispatching decision after the reception of its OSI, while the others will keep their previous policies.
-We denote the individual dispatching policy of the $k$-th AP ($\forall k\in\apSet$) based on its OSI $\Obsv_{k}(t)$ as follows.
-\begin{align}
-    &\Omega_{k}(\Obsv_{k}(t)) \define \set{\omega_{k,j}(t+1)|\forall m\in\esSet, j\in\jSpace}.
-    \label{def_action}
-\end{align}
-
-It is assumed that the $k$-th AP is able to collect the GSI $D_{k}(t)$ time slots later after the broadcast of the $t$-th broadcast interval, where $D_{k}(t)$ is a random variable follows some distribution.
-We refer to $D_{k}(t)$ as the \brlatency of the $k$-th AP for the $t$-th broadcast, which is always smaller compared with the broadcast interval, i.e. $t_B > \hat{D}_{k}$ where $\hat{D}_{k}$ is the upper bound for $D_{k}(t)$ ($\forall k\in\apSet$).
+It is assumed that the $k$-th AP is able to collect its OSI $D_{k}(t)$ time slots later after the $t$-th broadcast time slot, where $D_{k}(t)$ is a random variable follows some distribution.
+We refer to $D_{k}(t)$ as the \brlatency of the $k$-th AP for the $t$-th broadcast, which is upper bounded by the broadcast interval length $t_B$, i.e. $t_B > \hat{D}_{k}$ where $\hat{D}_{k}$ is the upper bound for $D_{k}(t)$ ($\forall k\in\apSet$).
 Hence, $D_{k}(t)$ follows some distribution with support $\set{1,\dots,t_B}$, i.e. the broadcast interval $t_B$ is set that the $k$-th AP ($\forall k\in\apSet$) could receive the complete OSI before the start of next broadcast interval.
 
-\fixit{
-    However, due to the randomness of \brlatency~which follows independent distribution of each AP, it's impossible to for any AP to obtain timely \brlatency~information of other APs in one broadcast interval.
-    Thus, the $k$-th AP could not determine the new policy in a fully cooperative way, while other APs also change their policies at their time slots receiving the GSI.
-
-    In the next section, we will first formulate the joint optimization of dispatching decisions of all APs under standard MDP framework.
-    From the global perspective of the edge computing system, the \brlatency~$D_{k}$(t) ($\forall k\in\apSet$) is always available to a centralized agent.
-    Then we leverage the Bellman's equation in this problem formulation, and come up with a practical decentralized solution in the algorithm section. 
-    Furthermore, with the help of algorithm design we could prove that our improved new policy is with analytical performance bound under MDP framework.
-}
+One AP shall update its dispatching decision immediately after the reception of its OSI.
+An example is given to elaborate the decision as follows.
+\begin{example}
+    According to Fig.\ref{fig:brd-timeline}, we only consider the decisions update for the $1^{st}$ AP.
+    In the first broadcast interval, it updates its dispatching decisions for all the job type $D_{1}(t)$ time slots later after the $t$-th broadcast, which is denoted as $\set{\omega_{1,j}(t+1) | \forall j\in\jSpace}$.
+    At the start of the second broadcast interval, it will firstly keep the the previous decisions unchanged, and then updates the decisions immediately $D_{1}(t+1)$ time slots later which is denoted as $\set{\omega_{1,j}(t+2) | \forall j\in\jSpace}$.
+    And then it repeats the process for the remaining of the time.
+\end{example}
 
 %----------------------------------------------------------------------------------------%
-\delete{v7}{
-    One simple example is given as follows.
-    \begin{example}
-        As depicted in \ref{fig:conflict}, there are 3 APs and 3 edge servers in the system.
-        The \emph{candidate set} for each AP is denoted as: $\esSet_{1}=\set{1}, \esSet_{2}=\set{1,2}, \esSet_{3}=\set{2,3}$, respectively.
-        The \emph{conflict set} for each AP is denoted as: $\ccSet_{1}=\set{1,2}, \ccSet_{2}=\set{1,2,3}, \ccSet_{3}=\set{2,3}$.
-        And the partial information required for each AP is denoted as follows.
-        \begin{align*}
-            \Obsv_{1} &= \set{ \mathcal{R}_{2} } \cup \set{ \mathcal{Q}_{1} }
-            \\
-            \Obsv_{3} &= \set{ \mathcal{R}_{2} } \cup \set{ \mathcal{Q}_{2}, \mathcal{Q}_{3} }
-        \end{align*}
-        % And we note that
-    \end{example}
+\delete{v8}{
+    % However, due to the randomness of \brlatency~which follows independent distribution of each AP, it's impossible to for any AP to obtain timely \brlatency~information of other APs in one broadcast interval.
+    % Thus, the $k$-th AP could not determine a new policy in a fully cooperative way, while other APs also change their policies at their time slots receiving the GSI.
+
+    % In the next section, we will first formulate the joint optimization of dispatching decisions of all APs under standard MDP framework.
+    % From the global perspective of the edge computing system, the \brlatency~$D_{k}$(t) ($\forall k\in\apSet$) is always available to a centralized agent.
+    % Then we leverage the Bellman's equation in this problem formulation, and come up with a practical decentralized solution in the algorithm section. 
+    % Furthermore, with the help of algorithm design we could prove that our improved new policy is with analytical performance bound under MDP framework.
 }
 %----------------------------------------------------------------------------------------%
