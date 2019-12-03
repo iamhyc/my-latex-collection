@@ -48,7 +48,8 @@ We propose the job dispatching optimization problem with the target to minimize 
 The \emph{average response time} is composed of uploading time, waiting time and processing time on edge server.
 According to \emph{Little's Law}, to minimize the average response time of all jobs is equal to minimize the average number of jobs in the system.
 Hence, the cost function in each time slot is defined as follows.
-\begin{definition}[Per Time-slot Cost]
+\begin{definition}[Per Time-slot Cost Function]
+    At the $n$-th time slot in the $t$-th broadcast interval, the cost function is defined as:
     \begin{align}
         g(t,n) \define & \sum_{j\in\jSpace}\Brace{
             \sum_{k\in\apSet}\sum_{m\in\esSet} \vec{R}^{(k)}_{m,j}(t,n) + \sum_{m\in\esSet}\sum_{j\in\jSpace} Q_{m,j}(t,n)
@@ -59,7 +60,7 @@ Hence, the cost function in each time slot is defined as follows.
 Due to the periodic information broadcasting, we collect the cost for counting numbers each interval, which could be considered as a uniform sampling at time-slot scale.
 Besides the cost for job response time, we further add penalty on job discarded when the queue is full.
 The definition of the system cost function is given as follows.
-\begin{definition}[System Cost]
+\begin{definition}[System Cost Function]
     \begin{align}
         g^{\dagger}\Paren{\Stat(t), \Policy^{\dagger}(\Stat(t))} \define
             &\sum_{k\in\apSet} \sum_{m\in\esSet} \sum_{j\in\jSpace} \vec{R}^{(k)}_{m,j}(t,0)~+
@@ -88,10 +89,7 @@ The online job dispatching problem from global perspective is given as follows.
             &\sum_{\Stat(t+1)} \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t)) } \cdot V^{\dagger}\Paren{\Stat(t+1)}.
         \label{eqn:sp_0}
     \end{align}
-    Generally speaking, the optimal policy could be obtained by solving the minimization problem on the right-hand-side of the above Bellman's equation Eqn. (\ref{eqn:sp_0}).
-    In our problem, however, the conventional value iteration algorithm is intractable due to the tremendous state space.
-    The number of system states and action space would grow exponentially with respect to the number of APs and edge servers.
-    Hence, a low-complexity sub-optimal solution is proposed in the next section whose performance is analytically bounded.
+    
     \accept{
         Moreover, we remove the assumption on centralized agent by using partial information observed from each AP.
         Then we leverage the low-complexity solution to the global optimization problem and come up with decentralized algorithm.
