@@ -35,7 +35,7 @@ Hence,
 Each AP then immediately dispatches each type of received jobs to one edge server.
 Different types of jobs may have different distributions on the input data size.
 Moreover, due to the random traffic in the network, the job uploading from one AP to one edge server consumes a random number of time slots.
-It's assumed that the distributions of uploading time are independent between any two uploading jobs.
+It is assumed that the distributions of uploading time are independent between any two uploading jobs.
 Hence, we denote $\mathcal{U}_{k,m,j}$ as the uploading time for the $j$-th job type uploading from the $k$-th AP to the $m$-th edge server following some distribution with support $\set{1, \dots, \Xi}$, where $\Xi$ denotes the maximum uploading time ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
 In practice, the distribution of uploading latency may not be known to the APs or edge servers in advance.
 

@@ -11,9 +11,9 @@
         \\
         {\small (a) No \brlatency} &
         {\small (b) Large \brlatency} &
-        {\small (c) \brlatency~lags one interval}
+        {\small (c) Whole-interval \brlatency}
     \end{tabular}
-    \caption{Evaluation of Information Staleness on Algorithm Robustness}
+    \caption{Evaluation of Information Staleness Impact on Algorithm Robustness under Low Back Pressure.}
     \label{fig:eval_delay}
 \end{figure*}
 
@@ -26,24 +26,24 @@
     \item Each queue on ES with maximum 10 jobs.
 \end{itemize}
 
-We compare the proposed algorithm with other 3 heuristic algorithms.
+We compare the proposed algorithm with other three heuristic algorithms.
 Compared Algorithm:
 \begin{itemize}
     \item \textbf{Random Dispatching Policy}:
             randomly dispatch jobs to edge servers;
-    \item \textbf{Local Greedy Algorithm (baseline policy)}:
-            always choose the minimum processing time server for the job, and not queue-aware; this policy is taken as initial baseline policy as the start of our proposed algorithm;
+    \item \textbf{Local Selfish Algorithm (baseline policy)}:
+            always choose the edge server with the minimum expected uploading time plus the expected processing time for each job type; this policy is also taken as the initial fixed policy of our proposed algorithm;
     \item \textbf{Local Queue-aware Greedy Algorithm}:
             always choose the queue with minimum queue length while the obtained queue state is stale;
-    \item \textbf{Mixed Queue-aware Greedy Algorithm}:
-            mixed the above two algorithm with weight factor $\alpha = 0.5$;
+    % \item \textbf{Mixed Queue-aware Greedy Algorithm}:
+    %         mixed the above two algorithm with weight factor $\alpha = 0.5$;
 \end{itemize}
 
 % [abandon, cause useless]
 % \subsection{Estimation Error Analysis}
 % (If these graphs are not good, they are not going to appear on final draft.)
 % \begin{itemize}
-%     \item Two curves, one for real cost against time slot, one for expected sampling cost against time intervals; (if the accumulate area within the latter one has little/bounded error with real cost, then it's okay and the correctness is support by simulation)
+%     \item Two curves, one for real cost against time slot, one for expected sampling cost against time intervals; (if the accumulate area within the latter one has little/bounded error with real cost, then it is okay and the correctness is support by simulation)
 %     \item 
 % \end{itemize}
 

@@ -41,7 +41,7 @@ And the global-wise joint policy is defined as follows.
     \end{align}
 \end{definition}
 %----------------------------------------------------------------------------------------%
-
+\subsection{Centralized Optimization Problem}
 %NOTE: The Cost Function Definition
 In the edge computing system, each AP individually performs job dispatching decision, and coordinates in a fully cooperative manner by sharing the same utility function.
 We propose the job dispatching optimization problem with the target to minimize \emph{average response time} of all offloaded jobs in MEC system.
@@ -79,27 +79,26 @@ The online job dispatching problem from global perspective is given as follows.
                 \Bracket{\sum_{t=1}^t \gamma^{(t-1)} g^{\dagger}\Paren{\Stat(t), \Policy^{\dagger}(\Stat(t))}|\Stat(1)},
     \end{align}
     where the cost is collected with discount factor $\gamma$.
+    \label{problem_1}
 \end{problem}
+According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
+\begin{align}
+    V^{\dagger}\Paren{\Stat(t)} =~&g^{\dagger}\Paren{\Stat(t)} + \gamma \min_{\Policy(\Stat(t))}
+        \nonumber\\
+        &\sum_{\Stat(t+1)} \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t)) } \cdot V^{\dagger}\Paren{\Stat(t+1)}.
+    \label{eqn:sp_0}
+\end{align}
 
-\fixit{
-    According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
-    \begin{align}
-        V^{\dagger}\Paren{\Stat(t)} =~&g^{\dagger}\Paren{\Stat(t)} + \gamma \min_{\Policy(\Stat(t))}
-            \nonumber\\
-            &\sum_{\Stat(t+1)} \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t)) } \cdot V^{\dagger}\Paren{\Stat(t+1)}.
-        \label{eqn:sp_0}
-    \end{align}
-    
-    \accept{
-        Moreover, we remove the assumption on centralized agent by using partial information observed from each AP.
-        Then we leverage the low-complexity solution to the global optimization problem and come up with decentralized algorithm.
-    }
-}
+In practice, however, the GSI is not available for all APs as the reception latency of GSI may be unacceptable.
+Moreover, due to the randomness of \brlatency, it is also impossible for any AP to obtain or predict other APs' LSI without knowning their \brlatency~information in the interval.
+Thus, we leverage the problem structure of the global perspective problem but decouple it into $K$-sub problems
+with OSI.
+In the next section, we propose the low-complexity solution scheme where each AP could update its dispatching policy decentralized in an iterative manner.
+Frther, the low-complexity solution is introduced to alleviate the curse of dimensionality when evaluation the Bellman's equation.
+Withe help of the algorithm design, we could prove that our improved new policy is with analytical performance bound under MDP framework.
 
-\fixit{
-    However, due to the randomness of \brlatency~, it's impossible for any AP to obtain the \brlatency~information of other APs in on interval, and thus a centralized agent is impractical.
-    
-    However, due to the randomness of \brlatency~which follows independent distribution of each AP, it's impossible for any AP to obtain timely \brlatency~information of other APs in one broadcast interval.
+%----------------------------------------------------------------------------------------%
+\delete{v8}{
     % Thus, the $k$-th AP could not determine a new policy in a fully cooperative way, while other APs also change their policies at their time slots receiving the GSI.
     and a low-complexity solution is introduced to alleviate the curse of dimensionality.
     And in the next section, we will leverage the problem structure and propose the practical algorithm without centralized agent assumption.
@@ -108,16 +107,5 @@ The online job dispatching problem from global perspective is given as follows.
     From the global perspective of the edge computing system, the \brlatency~$D_{k}$(t) ($\forall k\in\apSet$) is always available to a centralized agent.
     % Then we leverage the Bellman's equation in this problem formulation, and come up with a practical decentralized solution in the algorithm section. 
     Furthermore, with the help of algorithm design we could prove that our improved new policy is with analytical performance bound under MDP framework.
-}
-
-%----------------------------------------------------------------------------------------%
-\delete{v8}{
-    \begin{definition}[System State]
-        The system state for the $t$-th broadcast interval is denoted as follows.
-        \begin{align}
-            \Stat(t) \define \Obsv^{\dagger}(t),
-        \end{align}
-        where $\Obsv^{\dagger}(t)$ is consisted of uploading jobs information and previous dispatching decisions of all APs, and queueing job information of all edge servers at the $t$-th broadcast time slot.
-    \end{definition}
 }
 %----------------------------------------------------------------------------------------%
