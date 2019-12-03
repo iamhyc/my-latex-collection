@@ -23,8 +23,9 @@ We formulate the multi-agent MDP problem from a global perspective, where each A
     And the dispatching policy definition is given as follows for individual policy for each AP and joint policy of all APs, respectively.
     % the system evolves with the joint actions of all APs.
 }
-\begin{definition}[Individual Dispatching Policy of the $k$-th AP]
-    One AP could update its dispatching decision after the reception of its OSI:
+\begin{definition}[Individual Dispatching Policy of AP]
+    One AP could update its dispatching decision after the reception of its OSI.
+    The individual policy of the $k$-th AP ($\forall k \in\apSet$) is defined as follows.
     \begin{align}
         &\Omega_{k}(\Obsv_{k}(t)) \define \set{\omega_{k,j}(t+1)|\forall j\in\jSpace}.
         \label{def_action}
@@ -33,9 +34,9 @@ We formulate the multi-agent MDP problem from a global perspective, where each A
     % The two phases policy of APs in one together determine the transition of $\Obsv(t+1)$ in the next interval.
 \end{definition}
 
-Thus the joint policy of all APs is defined as follows.
+And the joint policy of all APs is defined as follows.
 \begin{definition}[Joint Dispatching Policy]
-    The joint dispatching policy $\Policy(\Stat(t))$ over system state $\Stat(t)$ is defined as follows.
+    The joint dispatching policy $\Policy(\Stat(t))$ mapping over system state $\Stat(t)$ is defined as follows.
     \begin{align}
         \Policy^{\dagger}(\Stat(t)) \define \Brace{
             \Omega_{1}(\Stat(t)), \dots, \Omega_{K}(\Stat(t))
@@ -80,21 +81,23 @@ Hence, the online job dispatching problem from global perspective is given as fo
     \end{align}
     where the cost is collected with discount factor $\gamma$.
 \end{problem}
-According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
-\begin{align}
-    V^{\dagger}\Paren{\Stat(t)} =~&g^{\dagger}\Paren{\Stat(t)} + \gamma \min_{\Policy(\Stat(t))}
-        \nonumber\\
-        &\sum_{\Stat(t+1)} \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t)) } \cdot V^{\dagger}\Paren{\Stat(t+1)}.
-    \label{eqn:sp_0}
-\end{align}
 
-Generally speaking, the optimal policy could be obtained by solving the minimization problem on the right-hand-side of the above Bellman's equation Eqn. (\ref{eqn:sp_0}).
-In our problem, however, the conventional value iteration algorithm is intractable due to the tremendous state space.
-The number of system states and action space would grow exponentially with respect to the number of APs and edge servers.
-Hence, a low-complexity sub-optimal solution is proposed in the next section whose performance is analytically bounded.
-\comments{
-    Moreover, we remove the assumption on centralized agent by using partial information observed from each AP.
-    Then we leverage the low-complexity solution to the global optimization problem and come up with decentralized algorithm.
+\fixit{
+    According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
+    \begin{align}
+        V^{\dagger}\Paren{\Stat(t)} =~&g^{\dagger}\Paren{\Stat(t)} + \gamma \min_{\Policy(\Stat(t))}
+            \nonumber\\
+            &\sum_{\Stat(t+1)} \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t)) } \cdot V^{\dagger}\Paren{\Stat(t+1)}.
+        \label{eqn:sp_0}
+    \end{align}
+    Generally speaking, the optimal policy could be obtained by solving the minimization problem on the right-hand-side of the above Bellman's equation Eqn. (\ref{eqn:sp_0}).
+    In our problem, however, the conventional value iteration algorithm is intractable due to the tremendous state space.
+    The number of system states and action space would grow exponentially with respect to the number of APs and edge servers.
+    Hence, a low-complexity sub-optimal solution is proposed in the next section whose performance is analytically bounded.
+    \accept{
+        Moreover, we remove the assumption on centralized agent by using partial information observed from each AP.
+        Then we leverage the low-complexity solution to the global optimization problem and come up with decentralized algorithm.
+    }
 }
 
 %----------------------------------------------------------------------------------------%

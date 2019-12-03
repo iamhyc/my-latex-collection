@@ -57,16 +57,8 @@ Hence, the probability mass function (PMF) of $C_{m,j}$ is given by:
 %----------------------------------------------------------------------------------------%
 
 \subsection{Periodic Broadcast of State Information}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.80\textwidth]{brd-timeline.pdf}
-    \caption{The timeline illustration of LSI broadcast with 2 APs and 1 edge server.}
-    \label{fig:brd-timeline}
-\end{figure}
-
-%NOTE: Periodic Broadcast is Indispensable
-In order to facilitate cooperative dispatching for the APs, it is assumed that all the APs and edge servers will broadcast their \emph{local state information} (LSI) every $t_B$ time slots as depicted in Fig.\ref{fig:brd-timeline}.
+In order to facilitate cooperative dispatching for the APs, it is assumed that all the APs and edge servers will broadcast their \emph{local state information} (LSI) every $t_B$ time slots.
+% as depicted in Fig.\ref{fig:brd-timeline}.
 We shall refer to every $t_B$ time slots as a broadcast interval.
 At the beginning of each broadcast interval (say the $t$-th broadcast interval), the LSI for AP and edge server is defined as follows, respectively.
 
@@ -79,7 +71,7 @@ At the beginning of each broadcast interval (say the $t$-th broadcast interval),
     $\omega_{k,j}(t) \in \esSet_{k}$ ($\forall k\in\apSet, m\in\esSet, j\in\jSpace, \xi\in(0,\Xi]$).
     Hence, the LSI of the $k$-th AP at the $t$-th broadcast is given as follows.
     \begin{align}
-        \mathcal{R}_{k}(t) \define \set{\vec{R}^{(k)}_{m,j}(t,0), \set{\omega_{k,j}(t)|\forall j\in\jSpace} | \forall m\in\esSet, j\in\jSpace},
+        \mathcal{R}_{k}(t) \define \set{\vec{R}^{(k)}_{m,j}(t,0), \set{\omega_{k,j}(t)|\forall j\in\jSpace} | \forall m\in\esSet_{k}, j\in\jSpace},
     \end{align}
     where
     $\vec{R}^{(k)}_{m,j}(t,0) \define ( R^{(k)}_{m,j,0}(t,0), \dots, R^{(k)}_{m,j,\Xi}(t,0) )$
@@ -108,11 +100,55 @@ We refer to \emph{global state information} (GSI) as the composition of all the 
 \end{definition}
 
 \fixit{
+    \begin{figure}[tp]
+        \centering
+        \includegraphics[width=0.80\textwidth]{images/conflict.pdf}
+        \caption{The Example Illustration of Conflict Set and Partial Broadcast Information}
+        \label{fig:conflict}
+    \end{figure}
     As the edge computing network resides in MAN, the transmission latency of LSI is not negligible.
-    It is assumed that the $k$-th AP is able to collect the GSI $D_{k}(t)$ time slots later after the broadcast of the $t$-th broadcast interval, where $D_{k}(t)$ is a random variable follows some distribution.
-    We refer to $D_{k}(t)$ as the \brlatency of the $k$-th AP for the $t$-th broadcast, which is always smaller compared with the broadcast interval, i.e. $t_B > \hat{D}_{k}$ where $\hat{D}_{k}$ is the upper bound for $D_{k}(t)$ ($\forall k\in\apSet$).
-    Hence, $D_{k}(t)$ follows some distribution with support $\set{1,\dots,t_B}$, i.e. the broadcast interval $t_B$ is set that the $k$-th AP ($\forall k\in\apSet$) could receive the complete OSI before the start of next broadcast interval.
+    In an extensive edge computing network residing in MAN, it may not be feasible for each AP to collect the LSI from all other APs and edge servers.
+    % to improve the system efficiency, we adapt OSI; (why it's enough for AP to make decision only with OSI?)
+}
 
+%NOTE: Conflict of AP set and partial information definition
+Hence, we first define the \emph{conflict AP set} as follows.
+\begin{definition}[Conflict AP Set]
+    \begin{align}
+        \ccSet_{k} \define \bigcup_{m\in\esSet_{k}} \apSet_{m}.
+        % \ccSet_{k} \define \set{\forall k' \neq k\in\apSet|\esSet_{k'} \cap \esSet_{k} \neq \emptyset}
+    \end{align}
+    The \emph{conflict AP set} indicates that the subset of APs whose LSI could affect the decision making for the $k$-th AP.
+\end{definition}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.80\textwidth]{brd-timeline.pdf}
+    \caption{The timeline illustration of LSI broadcast with 2 APs and 1 edge server.}
+    \label{fig:brd-timeline}
+\end{figure}
+
+It is assumed that each AP can only collect the LSI from the APs in its \emph{conflict AP set} and edge servers from its \emph{candidate server set}.
+Hence, we refer to the reduced state information required as \emph{observed state information} (OSI) and the definition of the $k$-th AP is given as follows ($\forall k\in\apSet$).
+\begin{definition}[Observed State Information]
+    \begin{align}
+        \Obsv_{k} &= \set{\mathcal{R}_{k'} | \forall k'\in\ccSet_{k}}
+                        \cup \set{\mathcal{Q}_{m} | \forall m\in\esSet_{k}},
+    \end{align}
+\end{definition}
+
+One AP will update its dispatching decision after the reception of its OSI, while the others will keep their previous policies.
+We denote the individual dispatching policy of the $k$-th AP ($\forall k\in\apSet$) based on its OSI $\Obsv_{k}(t)$ as follows.
+\begin{align}
+    &\Omega_{k}(\Obsv_{k}(t)) \define \set{\omega_{k,j}(t+1)|\forall m\in\esSet, j\in\jSpace}.
+    \label{def_action}
+\end{align}
+
+It is assumed that the $k$-th AP is able to collect the GSI $D_{k}(t)$ time slots later after the broadcast of the $t$-th broadcast interval, where $D_{k}(t)$ is a random variable follows some distribution.
+We refer to $D_{k}(t)$ as the \brlatency of the $k$-th AP for the $t$-th broadcast, which is always smaller compared with the broadcast interval, i.e. $t_B > \hat{D}_{k}$ where $\hat{D}_{k}$ is the upper bound for $D_{k}(t)$ ($\forall k\in\apSet$).
+Hence, $D_{k}(t)$ follows some distribution with support $\set{1,\dots,t_B}$, i.e. the broadcast interval $t_B$ is set that the $k$-th AP ($\forall k\in\apSet$) could receive the complete OSI before the start of next broadcast interval.
+
+\fixit{
     However, due to the randomness of \brlatency~which follows independent distribution of each AP, it's impossible to for any AP to obtain timely \brlatency~information of other APs in one broadcast interval.
     Thus, the $k$-th AP could not determine the new policy in a fully cooperative way, while other APs also change their policies at their time slots receiving the GSI.
 
@@ -122,14 +158,8 @@ We refer to \emph{global state information} (GSI) as the composition of all the 
     Furthermore, with the help of algorithm design we could prove that our improved new policy is with analytical performance bound under MDP framework.
 }
 
+%----------------------------------------------------------------------------------------%
 \delete{v7}{
-    \begin{figure}[htp]
-        \centering
-        \includegraphics[width=0.80\textwidth]{images/draft-conflict.png}
-        \caption{The Example Illustration of Conflict Set and Partial Broadcast Information}
-        \label{fig:conflict}
-    \end{figure}
-
     One simple example is given as follows.
     \begin{example}
         As depicted in \ref{fig:conflict}, there are 3 APs and 3 edge servers in the system.

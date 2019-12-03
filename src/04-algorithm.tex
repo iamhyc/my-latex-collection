@@ -86,32 +86,6 @@ Thus the optimization problem at right-hand side of approximate Bellman's Equati
 }
 
 % It's still impossible to evaluate the above Bellman's equation due to the complexity would increase exponentially with respect to number of APs and edge servers.
-%NOTE: Conflict of AP set and partial information definition
-In \accept{an extensive edge computing network residing in MAN}, it may not be feasible for each AP to collect the LSI from all other APs and edge servers.
-Hence, we first define the \emph{conflict AP set} as follows.
-\begin{definition}[Conflict AP Set]
-    \begin{align}
-        \ccSet_{k} \define \bigcup_{m\in\esSet_{k}} \apSet_{m}.
-        % \ccSet_{k} \define \set{\forall k' \neq k\in\apSet|\esSet_{k'} \cap \esSet_{k} \neq \emptyset}
-    \end{align}
-    The \emph{conflict AP set} indicates that the subset of APs whose LSI could affect the decision making for the $k$-th AP.
-\end{definition}
-It is assumed that each AP can only collect the LSI from the APs in its \emph{conflict AP set} and edge servers from its \emph{candidate server set}.
-Hence, we refer to the reduced state information required as \emph{observed state information} (OSI) and the definition of the $k$-th AP is given as follows ($\forall k\in\apSet$).
-\begin{definition}[Observed State Information]
-    \begin{align}
-        \Obsv_{k} &= \set{\mathcal{R}_{k'} | \forall k'\in\ccSet_{k}}
-                        \cup \set{\mathcal{Q}_{m} | \forall m\in\esSet_{k}},
-    \end{align}
-\end{definition}
-
-One AP will update its dispatching decision after the reception of its OSI, while the others will keep their previous policies.
-We denote the individual dispatching policy of the $k$-th AP ($\forall k\in\apSet$) based on its OSI $\Obsv_{k}(t)$ as follows.
-\begin{align}
-    &\Omega_{k}(\Obsv_{k}(t)) \define \set{\omega_{k,j}(t+1)|\forall m\in\esSet, j\in\jSpace}.
-    \label{def_action}
-\end{align}
-
 Hence, we only update the individual policy of the $k$-th AP ($\forall k\in\apSet$) at one time, and the approximated optimization problem \ref{approx_problem} would reduce into the form as follows, where only the OSI (partial information) for the $k$-th AP matters.
 \begin{problem}
     \begin{align}
