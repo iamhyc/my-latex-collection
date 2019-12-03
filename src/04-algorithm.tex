@@ -9,7 +9,7 @@ Under this scheme, we could further reduce the state information required for on
 Then we leverage the sub-optimal solution obtained above, and replace the expression with reduced state information.
 % The whole solution procedure is as illustrated in Fig.\ref{fig:solution}.
 
-\subsection{Low-Complexity Solution}
+\subsection{Low-Complexity Solution Framework}
 The baseline dispatching policy is adopted to obtain an approximation of value function. The policy on each AP nodes is state-invariant, which is denoted as:
 \begin{align}
     \BaseLine(t) \define \Bracket{\Pi_1(t), \Pi_2(t), \dots, \Pi_K(t)},
@@ -69,7 +69,7 @@ Thus the optimization problem at right-hand side of approximate Bellman's Equati
 % where the transition function is decoupled into two parts of state transition on APs and edge servers, respectively.
 %----------------------------------------------------------------------------------------%
 
-\subsection{Problem Decoupling with Partially Observed Information}
+\subsection{Value Function Approximation}
 \fixit{
     The AP would update its policy once receive the \emph{Observed State Information} (OSI).
     And we redefine the following concepts (for the $k$-th AP):
