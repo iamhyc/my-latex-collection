@@ -14,12 +14,12 @@ In this edge computing network, each AP decentralized makes job dispatching deci
 Specifically, each AP and edge server periodically broadcast their state information (e.g. edge server dispatching choice for each job type, list of jobs being uploaded from APs to edge servers, computing queue length and etc.), and one AP updates its strategy on job dispatching when receiving the broadcast state information.
 In this paper, we shall optimize the job dispatching strategy at APs with part of the broadcast information and random broadcast latency.
 
-\begin{figure}[ht]
+\begin{figure*}[ht]
     \centering
     \includegraphics[width=0.80\textwidth]{system-model.pdf}
     \caption{The Illustration of MEC System Model}
     \label{fig:system}
-\end{figure}
+\end{figure*}
 
 %NOTE: [job space support and arrival process]
 The time axis is organized by time slots.
@@ -100,7 +100,7 @@ We refer to \emph{global state information} (GSI) as the composition of all the 
 
 \begin{figure}[tp]
     \centering
-    \includegraphics[width=0.80\textwidth]{images/conflict.pdf}
+    \includegraphics[width=0.45\textwidth]{images/conflict.pdf}
     \caption{The Example Illustration of Conflict Set and Partial Broadcast Information}
     \label{fig:conflict}
 \end{figure}

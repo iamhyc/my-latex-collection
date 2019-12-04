@@ -1,15 +1,13 @@
-% \documentclass[10pt, conference]{IEEEtran} %INFOCOM 19'
-\documentclass[journal, 12pt, onecolumn, draftclsnofoot]{IEEEtran} %JSAC 20'
-% \documentclass[sigconf]{acmart} %ACM Mobihoc 20'
-\usepackage{cite}
-\usepackage{xcolor,soul,framed}
-\usepackage{amsmath,amsthm,amssymb,amsfonts}
-\usepackage{algorithmic}
-\usepackage{graphicx}
-\usepackage{color, soul}
+% \documentclass[journal, 12pt, onecolumn, draftclsnofoot]{IEEEtran} %JSAC 20'
+\documentclass[sigconf]{acmart} %ACM Mobihoc 20'
 \usepackage[linesnumbered,vlined,ruled]{algorithm2e}
+\usepackage{algorithmic}
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{color}
+\usepackage{dcolumn}
+\usepackage{graphicx}
 \usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
+\usepackage{soul}
 \usepackage{mathtools}
 \graphicspath{ {./images/} }
 %---------------------------------------------------------------%
@@ -69,12 +67,39 @@
 \newcommand{\brlatency}{\emph{broadcast latency}}
 % \newcommand{\brpoint}{\emph{broadcast point}}
 
+%---------------------------------------------------------------%
+%%
+%% \BibTeX command to typeset BibTeX logo in the docs
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+
+%% Rights management information.  This information is sent to you
+%% when you complete the rights form.  These commands have SAMPLE
+%% values in them; it is your responsibility as an author to replace
+%% the commands and values with those provided to you when you
+%% complete the rights form.
+% \setcopyright{acmcopyright}
+% \copyrightyear{2018}
+% \acmYear{2018}
+% \acmDOI{10.1145/1122445.1122456}
+%---------------------------------------------------------------%
+
 \begin{document}
     \title{Stale Information-based Cooperative Jobs Dispatching in Edge Computing System}
+
     \author{HONG Yuncong}
-    \maketitle
+    % \affiliation{
+    %     \institution{The University of Hong Kong}
+    %     \streetaddress{Pokfulam Rd}
+    %     \city{Hong Kong}
+    %     \state{Hong Kong}
+    %     \country{China}
+    % }
+    % \email{ychong@cs.hku.hk}
 
     \input{src/00-abstract}
+    \maketitle
 
     \input{src/01-intro}
     % \input{src/02a-background}

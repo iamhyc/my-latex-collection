@@ -1,11 +1,4 @@
 \section{Decentralized Algorithm with Partial Information}
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.80\textwidth]{images/solution-framework.pdf}
-    \caption{The illustration of how low-complexity solution framework works over timeline.}
-    \label{fig:solution}
-\end{figure}
-
 Generally speaking, the optimal policy could be obtained by solving the minimization problem on the right-hand-side of the above Bellman's equation Eqn. (\ref{eqn:sp_0}).
 In our problem, however, the GSI is not available and the centralized agent design is impractical due to randomness of \brlatency.
 On the other side, conventional value iteration algorithm is intractable due to the tremendous state space.
@@ -13,6 +6,12 @@ The number of system states and action space would grow exponentially with respe
 In this section, we propose a low-complexity solution scheme where each AP updates its dispatching policy according to its OSI in an iterative manner.
 
 \subsection{Low-Complexity Solution Framework}
+\begin{figure}[htp!]
+    \centering
+    \includegraphics[width=0.45\textwidth]{images/solution-framework.pdf}
+    \caption{The illustration of how low-complexity solution framework works over timeline.}
+    \label{fig:solution}
+\end{figure}
 The whole picture of our low-complexity solution scheme is depicted in Fig.\ref{fig:solution}.
 
 We firstly show that the right-hand-side of the original Bellman's equation could be approximated by introducing \emph{fixed policy}.

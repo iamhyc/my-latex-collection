@@ -4,9 +4,17 @@
     The coordination in a multi-agent system (MAS) requires agents to share the same utility function via information sharing.
     While existing literature seldomly consider the information sharing latency among multiple agents, the latency is actually not negligible in such extensive network.
     And making decisions based on stale information may result into irremediable estimation error of the system status.
+
     We address the impact of latency on future system performance, and formulate the optimization problem as an infinite horizon Markov decision process (MDP), where the randomness of job uploading, processing time is considered.
     In this problem, the approximate MDP should be adopted to address the curse of dimensionality.
     Conventional low-complexity approximate solution of MDP is usually hard to predict the performance analytically.
     We then propose a novel approximate MDP solution framework via one-step policy iteration over baseline policy, where the analytical performance bound can be obtained.
     It is shown by simulations that the proposed low-complexity algorithm can effectively reduce the \emph{average job response time} per job of the considered edge computing network.
 \end{abstract}
+
+% \ccsdesc[500]{Computer systems organization~Embedded systems}
+% \ccsdesc[300]{Computer systems organization~Redundancy}
+% \ccsdesc{Computer systems organization~Robotics}
+% \ccsdesc[100]{Networks~Network reliability}
+
+% \keywords{datasets, neural networks, gaze detection, text tagging}
