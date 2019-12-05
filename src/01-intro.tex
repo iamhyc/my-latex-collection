@@ -7,33 +7,6 @@
     The edge servers are always with limited computation resources standalone, and efficient cooperation is indispensable among distributed servers.
 }
 
-\delete{v6.2}{
-    A number of emerging mobile applications, such as face recofnition, speech recognition and high-definition video rendering, are computation-intensive and delay-sensitive.
-    Because of the limited computation resource and battery capacity, it is promising for the mobile devices to upload their computational0intensive jobs to edge servers with much more powerful computation capability.
-    In this paper, we focus on the job dispatching optimization between multiple access points (APs) and edge servers via a network with random jobs uploading delay.
-    Unlike cellular comunications, the delivery delay between APs and edge servers is hard to control due to unpredictable traffics (except for job uploading) in the network.
-    We shall address the dispatching optimization in this scenario via a novel approximation Markov decision process (MDP) method, whose performance ca by analytically bounded.
-
-    The scheduling algorithm design for edge computing systems has attracted tremendous research attentions.
-    There have been a number of works considering the radio resource management for mobile edge computing systems.
-    For example, the authors in \text{[1]} minimized the average energy consumption in a single-user system via Lyapunov optimization approach.
-    In \text{[2]}, the authors derived the closed-form expressions of job uploading decisions and the allocation of computation and radio resources in a single-user system powered by wireless energy transfer.
-    There are also a significant number of works considering the edge computing scenarios with multiple mobile users and single edge server.
-        For example, the radio and computation resources allocation to guarantee user fairness and delay constraint in a multi-user system was considered in \text{[3]}.
-        The authors in \text{[4]} proposed an optimal threshold-based uploading algorithm for mobile users.
-        In order to minimize a weighted summation of total energy consumption and uploading delay, the authors in \text{[5]} proposed a distributed job uploading algorithm based on game theory.
-        \hl{All these works considered the scheduling algorithm design in a wireless cell with single edge server.}
-    Moreover, the authors considered joint optimization of service of caching and job uploading with multiple edge servers in \text{[6]}. Due to the limited storage space, edge servers can not process all job types.
-    An online and decentralized scheduling algorithm is proposed to minimized the computation delay under total computation energy constraint.
-    All the above works consider the scheduling of wireless transmission from mobile users to APs. In fact, there is also dispatching issue between APs and edge servers.
-    For example, in a computer network, the job uploading delay from APs to edge servers is usually unpredictable, as it may be jammed by other traffics.
-
-    There are also some works on the job dispatching design in computer networks.
-    For example, without any job arrival information, the authors in \text{[7]} designed an online algorithm for job dispatching in edge computing systems to achieve a good competitive ratio.
-    Given a predetermined network transmission delay, the edge server placement and static job dispatching are jointly optimized in \text{[8]} to minimize overall job uploading delay. The uploading delay and job computation time are predetermined in \text{[7,8]}.
-    In practice, however, the network traffic between APs and edge servers is usually complicated.
-}
-
 \delete{v9}{
     Edge Computation is believed to be a promising technology for solving increasingly communication congestion in backbone network.
     (Rich-media tasks are delay-sensitive).
