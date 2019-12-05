@@ -6,13 +6,15 @@ The number of system states and action space would grow exponentially with respe
 In this section, we propose a low-complexity solution scheme where each AP updates its dispatching policy according to its OSI in an iterative manner.
 
 \subsection{Low-Complexity Solution Framework}
-\begin{figure}[htp!]
-    \centering
-    \includegraphics[width=0.45\textwidth]{images/solution-framework.pdf}
-    \caption{The illustration of how low-complexity solution framework works over timeline.}
-    \label{fig:solution}
-\end{figure}
-The whole picture of our low-complexity solution scheme is depicted in Fig.\ref{fig:solution}.
+% \begin{figure}[htp!]
+%     \centering
+%     \includegraphics[width=0.45\textwidth]{images/solution-framework.pdf}
+%     \caption{The illustration of how low-complexity solution framework works over timeline.}
+%     \label{fig:solution}
+% \end{figure}
+% The whole picture of our low-complexity solution scheme is depicted in Fig.\ref{fig:solution}.
+
+
 
 We firstly show that the right-hand-side of the original Bellman's equation could be approximated by introducing \emph{fixed policy}.
 The \emph{fixed policy} is state-invariant and thus we could solve the minimization problem on right-hand-side directly.
@@ -31,7 +33,7 @@ Specifically, we have a heuristic selfish policy as the initial policy $\Baselin
     \begin{align}
         \Baseline^{\dagger} &\define \Bracket{ \Pi^{\dagger}_{1}, \dots, \Pi^{\dagger}_{K} }
         \\
-        \pi^{\dagger}_{k,j} \define \arg\min_{m} \mathbb{E}[U_{k,m,j}] + \mathbb{E}[C_{m,j}]
+        \pi^{\dagger}_{k,j} &\define \arg\min_{m} \mathbb{E}[U_{k,m,j}] + \mathbb{E}[C_{m,j}]
     \end{align}
 \end{definition}
 
@@ -64,7 +66,7 @@ The explicit definition of the function $\algname$ is given in the following sec
 %----------------------------------------------------------------------------------------%
 
 \subsection{Value Function Analysis and Approximation}
-In this sub-section, we elaborate the method to approximate the original Bellman's equation.
+In this subsection, we elaborate the method to approximate the original Bellman's equation.
 
 Firstly, we notice that the transition function in Eqn.(\ref{eqn:sp_0}) could be rewrite in the following form.
 \begin{align}
@@ -210,7 +212,7 @@ According to the additive structure of cost function, we substitute the transiti
 
 %----------------------------------------------------------------------------------------%
 \subsection{The Decentralized Optimization Problem}
-In this sub-section, we give the definition of sub-problem for each AP with OSI.
+In this subsection, we give the definition of sub-problem for each AP with OSI.
 % The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
 \begin{problem}[Decentralized Approximated Optimization Problem]
     \begin{align}

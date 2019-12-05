@@ -17,26 +17,23 @@ The optimal solution to this problem is obtainable via Bellman's equation.
 %----------------------------------------------------------------------------------------%
 
 \subsection{System State and Dispatching Policy}
-We refer to $\Stat(t)$ as the \emph{system state} of the $t$-th broadcast interval whose definition is exactly the same as GSI, i.e. $\Stat(t) \equiv \Obsv^{\dagger}(t)$.
+We refer to GSI $\Stat(t)$ as the \emph{system state} of the $t$-th broadcast interval.
 The definition of job dispatching policy is given as follows for individual policy of each AP and joint policy of all APs, respectively.
-We formulate the multi-agent MDP problem from a global perspective, where each AP adopts the dispatching policy mapping from the global broadcast information $\Obsv^{\dagger}$.
+We formulate the multi-agent MDP problem from a global perspective, where each AP adopts the dispatching policy mapping from its corresponding OSI.
 \begin{definition}[Individual Dispatching Policy of AP]
-    % We denote the individual dispatching policy of the $k$-th AP ($\forall k\in\apSet$) based on its OSI $\Obsv_{k}(t)$ as follows.
-    % One AP could update its dispatching decision after the reception of its OSI.
     The individual policy of the $k$-th AP ($\forall k \in\apSet$) maps from its OSI to the dispatching decision on edge servers for each job type.
     \begin{align}
-        &\Omega_{k}(\Obsv_{k}(t)) \define \set{\omega_{k,j}(t+1)|\forall j\in\jSpace}.
+        &\Omega_{k}(\Stat_{k}(t)) \define \set{\omega_{k,j}(t+1)|\forall j\in\jSpace}.
         \label{def_action}
     \end{align}
-    % We note that the $k$-th AP would always adopt two phases of polices in the $t$-th broadcast interval, i.e. $\Omega_{k}(\Obsv_{k}(t-1))$ with $\omega_{k,j}(t)$ before receiving $\Obsv_{k}(t)$ and $\Omega_{k}(\Obsv_{k}(t))$ with $\omega_{k,j}(t+1)$ afterwards ($\forall k\in\apSet, j\in\jSpace$).
 \end{definition}
 
 And the global-wise joint policy is defined as follows.
-\begin{definition}[Joint Dispatching Policy]
+\begin{definition}[System Dispatching Policy]
     The joint dispatching policy $\Policy(\Stat(t))$ of all APs is a map from system state $\Stat(t)$, which is composed of individual policies at the $t$-th broadcast time slot.
     \begin{align}
-        \Policy^{\dagger}(\Stat(t)) \define \Brace{
-            \Omega_{1}(\Obsv_{1}(t)), \dots, \Omega_{K}(\Obsv_{K}(t))
+        \Policy(\Stat(t)) \define \Brace{
+            \Omega_{1}(\Stat_{1}(t)), \dots, \Omega_{K}(\Stat_{K}(t))
         }.
     \end{align}
 \end{definition}
@@ -52,7 +49,7 @@ Hence, the cost function in each time slot is defined as follows.
     At the $n$-th time slot in the $t$-th broadcast interval, the cost function is defined as:
     \begin{align}
         g(t,n) \define & \sum_{j\in\jSpace}\Brace{
-            \sum_{k\in\apSet}\sum_{m\in\esSet} \vec{R}^{(k)}_{m,j}(t,n) + \sum_{m\in\esSet}\sum_{j\in\jSpace} Q_{m,j}(t,n)
+            \sum_{k\in\apSet}\sum_{m\in\esSet} \Inorm{\vec{R}^{(k)}_{m,j}(t,n)} + \sum_{m\in\esSet}\sum_{j\in\jSpace} Q_{m,j}(t,n)
         }.
     \end{align}
 \end{definition}
@@ -62,10 +59,12 @@ Besides the cost for job response time, we further add penalty on job discarded 
 The definition of the system cost function is given as follows.
 \begin{definition}[System Cost Function]
     \begin{align}
-        g^{\dagger}\Paren{\Stat(t), \Policy^{\dagger}(\Stat(t))} \define
-            &\sum_{k\in\apSet} \sum_{m\in\esSet} \sum_{j\in\jSpace} \vec{R}^{(k)}_{m,j}(t,0)~+
-            \nonumber\\
-            &\sum_{m\in\esSet} \sum_{j\in\jSpace} \Brace{Q_{m,j}(t,0) + \beta \cdot \mat{I}[Q_{m,j}(t,0)=L_{max}]},
+        g\Paren{\Stat(t), \Policy(\Stat(t))} \define
+            &\sum_{j\in\jSpace} \Brace{
+                \sum_{k\in\apSet} \sum_{m\in\esSet} \Inorm{\vec{R}^{(k)}_{m,j}(t,0)}~+
+                \nonumber\\
+                &\sum_{m\in\esSet} \{ Q_{m,j}(t,0) + \beta \cdot \mat{I}[Q_{m,j}(t,0)=L_{max}] \}
+            },
     \end{align}
     where $\beta$ is the weight factor for discard penalty ($\beta \in (0,1)$).
 \end{definition}
@@ -74,18 +73,18 @@ The definition of the system cost function is given as follows.
 The online job dispatching problem from global perspective is given as follows.
 \begin{problem}[Centralized Job Dispatching Problem]
     \begin{align}
-        \min_{\Policy^{\dagger}} \lim_{T \to \infty}
-            \mathbb{E}_{\Policy^{\dagger}}
-                \Bracket{\sum_{t=1}^t \gamma^{(t-1)} g^{\dagger}\Paren{\Stat(t), \Policy^{\dagger}(\Stat(t))}|\Stat(1)},
+        \min_{\Policy} \lim_{T \to \infty}
+            \mathbb{E}_{\Policy}
+                \Bracket{ \sum_{t=1}^t \gamma^{(t-1)} g\Paren{\Stat(t), \Policy(\Stat(t))} | \Stat(1) },
     \end{align}
     where the cost is collected with discount factor $\gamma$.
     \label{problem_1}
 \end{problem}
 According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
 \begin{align}
-    V^{\dagger}\Paren{\Stat(t)} =~&g^{\dagger}\Paren{\Stat(t)} + \gamma \min_{\Policy(\Stat(t))}
+    V\Paren{\Stat(t)} =~&g\Paren{\Stat(t)} + \gamma \min_{\Policy(\Stat(t))}
         \nonumber\\
-        &\sum_{\Stat(t+1)} \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t)) } \cdot V^{\dagger}\Paren{\Stat(t+1)}.
+        &\sum_{\Stat(t+1)} \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t)) } \cdot V\Paren{\Stat(t+1)}.
     \label{eqn:sp_0}
 \end{align}
 
