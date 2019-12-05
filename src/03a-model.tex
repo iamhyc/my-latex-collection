@@ -1,6 +1,13 @@
 \section{System Model}
 %----------------------------------------------------------------------------------------%
 \subsection{Network Model}
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=0.80\textwidth]{system-model.pdf}
+    \caption{The Illustration of MEC System Model}
+    \label{fig:system}
+\end{figure*}
+
 We consider an edge computing system with $K$ Access Points (APs) and $M$ edge servers, which are connected in a network as illustrated in Fig.\ref{fig:system}.
 The sets of APs and edge servers are denoted as $\apSet \define \set{1,\dots,K}$ and $\esSet \define \set{1,\dots,M}$, respectively.
 Without loss of generality, it is assumed that there are $J$ types of computation jobs supported in this system, which are denoted via the set $\mathcal{J} \define \set{1,\dots,J}$.
@@ -13,13 +20,6 @@ We refer to $\esSet_{k}$ as the \emph{candidate server set} of the $k$-th AP, an
 }
 In this edge computing network, each AP and edge server periodically broadcast their state information (the state information is defined in the following subsection), and one AP updates its strategy of job dispatching when receiving part of the broadcast state information.
 In this paper, we shall optimize the job dispatching strategy at APs with partially observed broadcast information and random broadcast latency.
-
-\begin{figure*}[ht]
-    \centering
-    \includegraphics[width=0.80\textwidth]{system-model.pdf}
-    \caption{The Illustration of MEC System Model}
-    \label{fig:system}
-\end{figure*}
 
 %NOTE: [job space support and arrival process]
 The time axis is organized by time slots.
@@ -127,10 +127,11 @@ It is assumed that each AP only collect the LSI from the APs in its \emph{confli
 For a simple example given in Fig.\ref{fig:conflict}, the $1^{st}$ AP only receives LSI from the $2^{nd}$ AP who is in its \emph{conflict AP set}, and LSI from the $1^{st}$ edge server who is in its \emph{candidate server set}.
 Hence, we refer to the partial state information as \emph{observed state information} (OSI) and the definition is given as follows.
 \begin{definition}[Observed State Information]
-    The OSI for the $k$-th AP ($\forall k\in\apSet$) is defined as:
+    The OSI for the $k$-th AP ($\forall k\in\apSet$) at the $t$-th broadcast is defined as:
     \begin{align}
-        \Stat_{k} &\define \set{\mathcal{R}_{k'} | \forall k'\in\ccSet_{k}}
-                        \cup \set{\mathcal{Q}_{m} | \forall m\in\esSet_{k}}.
+        \Stat_{k}(t) &\define \set{\mathcal{R}_{k'}(t) | \forall k'\in\ccSet_{k}}
+                         \cup \set{\mathcal{Q}_{m}(t) | \forall m\in\esSet_{k}}.
+        \label{def:OSI}
     \end{align}
 \end{definition}
 

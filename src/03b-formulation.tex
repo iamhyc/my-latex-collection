@@ -24,7 +24,7 @@ We formulate the multi-agent MDP problem from a global perspective, where each A
     The individual policy of the $k$-th AP ($\forall k \in\apSet$) maps from its OSI to the dispatching decision on edge servers for each job type.
     \begin{align}
         &\Omega_{k}(\Stat_{k}(t)) \define \set{\omega_{k,j}(t+1)|\forall j\in\jSpace}.
-        \label{def_action}
+        \label{def:action}
     \end{align}
 \end{definition}
 
@@ -75,19 +75,21 @@ The online job dispatching problem from global perspective is given as follows.
     \begin{align}
         \min_{\Policy} \lim_{T \to \infty}
             \mathbb{E}_{\Policy}
-                \Bracket{ \sum_{t=1}^t \gamma^{(t-1)} g\Paren{\Stat(t), \Policy(\Stat(t))} | \Stat(1) },
+                \Bracket{ \sum_{t=1}^T \gamma^{(t-1)} g\Paren{\Stat(t), \Policy(\Stat(t))} | \Stat(1) },
     \end{align}
     where the cost is collected with discount factor $\gamma$.
     \label{problem_1}
 \end{problem}
-According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
-\begin{align}
-    V\Paren{\Stat(t)} =~&g\Paren{\Stat(t)} + \gamma \min_{\Policy(\Stat(t))}
-        \nonumber\\
-        &\sum_{\Stat(t+1)} \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t)) } \cdot V\Paren{\Stat(t+1)}.
-    \label{eqn:sp_0}
-\end{align}
 
+% According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
+% \begin{align}
+%     V\Paren{\Stat(t)} =~&g\Paren{\Stat(t)} + \gamma \min_{\Policy(\Stat(t))}
+%         \nonumber\\
+%         &\sum_{\Stat(t+1)} \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t)) } \cdot V\Paren{\Stat(t+1)}.
+%     \label{eqn:sp_0}
+% \end{align}
+
+According to \cite{sutton1998introduction}, the above problem could be solved by \emph{Bellman's equation}.
 In practice, however, the GSI is not available for all APs as the reception latency of GSI may be unacceptable.
 Moreover, due to the randomness of \brlatency, it is also impossible for any AP to obtain or predict other APs' LSI without knowning their \brlatency~information in the interval.
 Thus, we leverage the problem structure of the global perspective problem but decouple it into $K$-sub problems

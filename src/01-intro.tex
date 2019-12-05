@@ -32,10 +32,9 @@
     For example, without any job arrival information, the authors in \text{[7]} designed an online algorithm for job dispatching in edge computing systems to achieve a good competitive ratio.
     Given a predetermined network transmission delay, the edge server placement and static job dispatching are jointly optimized in \text{[8]} to minimize overall job uploading delay. The uploading delay and job computation time are predetermined in \text{[7,8]}.
     In practice, however, the network traffic between APs and edge servers is usually complicated.
-
 }
 
-\fixit{
+\delete{v9}{
     Edge Computation is believed to be a promising technology for solving increasingly communication congestion in backbone network.
     (Rich-media tasks are delay-sensitive).
     \cite{Naha2018} is a survey about fog computing in delay-aware computing in IoT, and investigate numerous proposed computing architecture.
@@ -54,7 +53,7 @@ Due to frequent jobs releasing from users and uncertainty of jobs uploading time
 This information sharing delay would cause severe mis-estimate for job dispatching decision making, and thus it will be hard to guarantee the cooperation among individual agents.
 Moreover, the information sharing delay is often un-deterministic due to shared under-laid network topology, and offensively sharing strategy would cause network congestion to other normal functions.
 
-\fixit{
+\delete{v9}{
     As what we have learned for now, there are very limited discussions on this topic:
     \begin{itemize}
         \item The earliest works entangling with out-of-dated information we could find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing limited information. The agent considers communication as extra action to synchronize the states and thus incurs extra cost (However, the communication is without delay, thus converted into POMDP problem; criticize with impractical);
@@ -67,7 +66,7 @@ Moreover, the information sharing delay is often un-deterministic due to shared 
     \end{itemize}
 }
 
-\fixit{
+\accept{
     In this article, we consider there are Access Points (APs) in this network to connect the mobile users and edge servers.
     The edge computing network resided in Metropolitan area network (MAN).
     The computation jobs would be released from UEs and the dispatching decisions are determined distributed on each AP nodes as depicted in Fig.\ref{fig:system}.

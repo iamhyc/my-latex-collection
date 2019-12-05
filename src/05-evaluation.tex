@@ -1,6 +1,5 @@
 \section{Performance Evaluation}
 
-
 \subsection{Parameter Settings}
 \begin{figure*}[htp!]
     \centering
@@ -25,6 +24,15 @@
     \item job processing time distribution generated from real data trace;
     \item Each queue on ES with maximum 10 jobs.
 \end{itemize}
+
+Specifically, we choose a heuristic selfish policy as the start and the definition is given as follows.
+\begin{definition}[Selfish Policy]
+    \begin{align}
+        \Baseline &\define \Bracket{ \Pi_{1}, \dots, \Pi_{K} }
+        \\
+        \pi_{k,j} &\define \arg\min_{m} \mathbb{E}[U_{k,m,j}] + \mathbb{E}[C_{m,j}]
+    \end{align}
+\end{definition}
 
 We compare the proposed algorithm with other three heuristic algorithms.
 Compared Algorithm:
