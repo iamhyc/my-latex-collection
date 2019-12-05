@@ -6,16 +6,15 @@ The number of system states and action space would grow exponentially with respe
 In this section, we propose a low-complexity solution scheme where each AP updates its dispatching policy according to its OSI in an iterative manner.
 
 \subsection{Low-Complexity Solution Framework}
-
 The solution frame work is elaborated firstly in this subsection.
 
-\fixit{
-    Due to the limit of OSI, we update the policy of each AP independently.
-    Specifically, there is always one and only one AP updating the policy in one interval, while the other APs keep the policy fixed as broadcast information for the AP in updating.
-    The $k$-th AP would update its policy only with it OSI required.
-    We consider the broadcast and define the new problem for the $k$-th AP as follows.
-    Hence we define the problem as follows.
+\comments{
+    Due to the limit of OSI, each AP updates its policy independently from its corresponding ODI.
+    Specifically, the $k$-th AP would update its policy once reception of the OSI, while considering other APs keep the policies fixed as the them in the OSI ($\forall k\in\apSet$).
+    One AP updates the policy in one interval, while the other APs keep the policy fixed as broadcast information for the AP in updating.
+    Hence we define the optimization problem for one AP as follows.
 }
+
 \begin{problem}[Decentralized Job Dispatching Problem]
     The disptaching optimization problem for the $k$-th AP ($\forall k\in\apSet$) is formulated, while the other APs follows the policy in the set $\set{ \mathcal{R}_{k'}(t) | \forall k'\in\ccSet_{k} }$ of $\Stat_{k}(t)$.
     \begin{align}
@@ -43,7 +42,7 @@ According to \cite{sutton1998introduction}, the above problem for the $k$-th AP 
     \label{eqn:sp_1}
 \end{align}
 
-\fixit{
+\comments{
     In Eqn.(\ref{eqn:sp_1}), the transition function is not only determined by $\Omega_{k}(\Stat_{k}(t))$ but also the other APs' policy as part of OSI.
     Then, we update the individual policy of the $k$-th AP ($\forall k\in\apSet$) at one time in an iterative manner, where the policy adapted in the previous interval is taken as \emph{fixed policy} input of the next interval.
     % The $k$-th AP would be able to update its policy every $K$ broadcast interval for fairness.   
@@ -122,9 +121,9 @@ To efficiently express the state transition, we further elaborate the distributi
     Let $\hat{\vecG{\Theta}}^{(k)}_{m,j}(t)$ denote the probability vector at the first time slot of the $t$-th broadcast interval.
     Hence, the state transition between adjacent interval from $\hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1)$ to $\hat{\vecG{\Theta}}^{(k)}_{m,j}(t)$ is composed of two-phase policy separated by $D_k(t)$, which could be expressed as follows.
     \begin{align}
-        \vecG{\Theta}^{(k)}_{m,j}(t, D_{k}(t)) &= (\Gamma^{(k)}_{m,j})^{D_{k}(t)} \times \hat{\vecG{\Theta}}_{m,j}(t),
+        \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)) &= (\Gamma^{(k)}_{m,j})^{\mathcal{D}_{k}(t)} \times \hat{\vecG{\Theta}}_{m,j}(t),
         \nonumber\\
-        \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1) &= (\Gamma^{(k)}_{m,j})^{N-D_{k}(t)} \times \vecG{\Theta}^{(k)}_{m,j}(t, D_{k}(t)).
+        \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1) &= (\Gamma^{(k)}_{m,j})^{N-\mathcal{D}_{k}(t)} \times \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)).
     \end{align}
 \end{definition}
 
@@ -155,7 +154,7 @@ The explicit definition of the approximate arriving probability $\beta_{m,j}({t,
     The probability distribution of $\sum_{k\in\apSet} \vecG{\rho}^{(k,+)}_{m,j}({t,n})$ could be approximated with a Bernoulli arrival process who is with the expected arrival rate denoted as ${\beta}_{m,j}({t,n})$.
 \end{lemma}
 \begin{proof}
-    \fixit{
+    \delete{v9}{
         We notice that the job arrival distribution ${\beta}_{m,j}(t)$ is given by $\mathcal{R}(t)$, and the departure rate in one slot is deterministic as $1/N$.
         Thus the expectation of ${\beta}$ would be always far more smaller than $1$ as composed of all $K$ AP nodes.
         We take approximation on ${\beta}$ as Bernoulli distribution in each time slot.

@@ -102,7 +102,7 @@ We refer to \emph{global state information} (GSI) as the aggregation of LSI of a
 \end{figure}
 
 %NOTE: Conflict of AP set and partial information definition
-\comments{
+\accept{
     As the edge computing network resides in MAN, the propagation delay of LSI in such extensive network is not negligible.
     Thus for the $k$-th AP ($\forall k\in\apSet$), the reception latency of the LSI from the edge servers out of its \emph{candidate server set} $\esSet_{k}$ may be not acceptable.
     To alleviate the impact of information reception latency on decision making, we should leverage the definition of \emph{candidate server set} and \emph{potential AP set}, and only use partial information from GSI for decision making for each AP.
@@ -135,15 +135,15 @@ Hence, we refer to the partial state information as \emph{observed state informa
     \end{align}
 \end{definition}
 
-It is assumed that the $k$-th AP is able to collect its OSI $D_{k}(t)$ time slots later after the $t$-th broadcast time slot, where $D_{k}(t)$ is a random variable follows some distribution.
-We refer to $D_{k}(t) \sim \mathbb{D}_{k}(t)$ as the \brlatency~of the $k$-th AP for the $t$-th broadcast with support $\set{1,\dots,t_B}$, i.e. the broadcast interval $t_B$ is set that the $k$-th AP ($\forall k\in\apSet$) could receive the complete OSI before the start of next broadcast interval.
+It is assumed that the $k$-th AP is able to collect its OSI $\mathcal{D}_{k}(t)$ time slots later after the $t$-th broadcast time slot, where $\mathcal{D}_{k}(t)$ is a random variable.
+We refer to $\mathcal{D}_{k}(t) \sim \mathbb{D}_{k}(t)$ as the \brlatency~of the $k$-th AP for the $t$-th broadcast with support $\set{1,\dots,t_B}$, i.e. the broadcast interval $t_B$ is set that the $k$-th AP ($\forall k\in\apSet$) could receive the complete OSI before the start of next broadcast interval.
 
 One AP shall update its dispatching decision immediately after the reception of its OSI.
 An example is given to elaborate the decision as follows.
 \begin{example}
     According to Fig.\ref{fig:brd-timeline}, we only consider the decisions update for the $1^{st}$ AP.
-    In the first broadcast interval, it updates its dispatching decisions for all the job type $D_{1}(t)$ time slots later after the $t$-th broadcast, which is denoted as $\set{\omega_{1,j}(t+1) | \forall j\in\jSpace}$.
-    At the start of the second broadcast interval, it will firstly keep the the previous decisions unchanged, and then updates the decisions immediately $D_{1}(t+1)$ time slots later which is denoted as $\set{\omega_{1,j}(t+2) | \forall j\in\jSpace}$.
+    In the first broadcast interval, it updates its dispatching decisions for all the job type $\mathcal{D}_{1}(t)$ time slots later after the $t$-th broadcast, which is denoted as $\set{\omega_{1,j}(t+1) | \forall j\in\jSpace}$.
+    At the start of the second broadcast interval, it will firstly keep the the previous decisions unchanged, and then updates the decisions immediately $\mathcal{D}_{1}(t+1)$ time slots later which is denoted as $\set{\omega_{1,j}(t+2) | \forall j\in\jSpace}$.
     And then it repeats the process for the remaining of the time.
 \end{example}
 
