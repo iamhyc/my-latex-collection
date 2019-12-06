@@ -34,13 +34,6 @@ The solution frame work is elaborated firstly in this subsection.
     \end{align}
     \label{problem_2}
 \end{problem}
-According to \cite{sutton1998introduction}, the above problem for the $k$-th AP could be solved by the following \emph{Bellman's equation}:
-\begin{align}
-    V_{k}\Paren{\Stat_{k}(t)} &= g_{k}\Paren{ \Stat_{k}(t) } + \gamma\min_{\Omega_{k}(\Stat_{k}(t))}
-    \nonumber\\
-    &\sum_{\Stat_{k}(t+1)} \Pr\Brace{ \Stat_{k}(t+1) | \Stat_{k}(t), \Omega_{k}(\Stat_{k}(t)) } \cdot V_{k}\Paren{\Stat_{k}(t+1)}.
-    \label{eqn:sp_1}
-\end{align}
 
 \comments{
     In Eqn.(\ref{eqn:sp_1}), the transition function is not only determined by $\Omega_{k}(\Stat_{k}(t))$ but also the other APs' policy as part of OSI.
@@ -268,27 +261,21 @@ where $\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\
     The proof is delete.
 \end{proof}
 %----------------------------------------------------------------------------------------%
-\delete{v8}{
+\delete{v10}{
     We introduce a heuristic dispatching algorithm as the baseline policy, whose value function could be derived analytically.
     Then the right-hand-side of Bellman's Equation is replaced with the above approximated Bellman's equation, and the sub-optimal solution can be obtained with one-step policy iteration.
     Hence, the derived approximated value function of the baseline policy becomes the cost upper bound of the proposed sub-optimal policy.
 
-    Moreover, we remove the assumption on centralized agent in the problem formulation by using partial information observed from each AP, and APs iteratively apply policy update.
-    Under this scheme, we could further reduce the state information required for one AP and alleviate the impact of \brlatency.
-    Then we leverage the sub-optimal solution obtained above, and replace the expression with reduced state information.
-}
+    We use the same baseline policy to evaluate both low-complexity policy performance in Eqn. (\ref{eqn:sp_0}).
+    To better analyze the structure of the optimization problem, we decouple the transition function.
 
-\delete{v9}{
-    % \begin{figure}[htp!]
-    %     \centering
-    %     \includegraphics[width=0.45\textwidth]{images/solution-framework.pdf}
-    %     \caption{The illustration of how low-complexity solution framework works over timeline.}
-    %     \label{fig:solution}
-    % \end{figure}
-    % The whole picture of our low-complexity solution scheme is depicted in Fig.\ref{fig:solution}.
-
-    % We use the same baseline policy to evaluate both low-complexity policy performance in Eqn. (\ref{eqn:sp_0}).
-    % To better analyze the structure of the optimization problem, we decouple the transition function.
+    According to \cite{sutton1998introduction}, the above problem for the $k$-th AP could be solved by the following \emph{Bellman's equation}:
+    \begin{align}
+        V_{k}\Paren{\Stat_{k}(t)} &= g_{k}\Paren{ \Stat_{k}(t) } + \gamma\min_{\Omega_{k}(\Stat_{k}(t))}
+        \nonumber\\
+        &\sum_{\Stat_{k}(t+1)} \Pr\Brace{ \Stat_{k}(t+1) | \Stat_{k}(t), \Omega_{k}(\Stat_{k}(t)) } \cdot V_{k}\Paren{\Stat_{k}(t+1)}.
+        \label{eqn:sp_1}
+    \end{align}
 
     % [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
     % \begin{algorithm}[H]

@@ -81,15 +81,17 @@ The online job dispatching problem from global perspective is given as follows.
     \label{problem_1}
 \end{problem}
 
-% According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
-% \begin{align}
-%     V\Paren{\Stat(t)} =~&g\Paren{\Stat(t)} + \gamma \min_{\Policy(\Stat(t))}
-%         \nonumber\\
-%         &\sum_{\Stat(t+1)} \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t)) } \cdot V\Paren{\Stat(t+1)}.
-%     \label{eqn:sp_0}
-% \end{align}
+According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
+\begin{align}
+    V\Paren{\Stat(t)} =~&g\Paren{\Stat(t)} + \gamma \min_{\Policy(\Stat(t))}
+        \nonumber\\
+        &\sum_{\Stat(t+1)} \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t)) } \cdot V\Paren{\Stat(t+1)},
+    \label{eqn:sp_0}
+\end{align}
+\fixit{
+    where the 
+}
 
-According to \cite{sutton1998introduction}, the above problem could be solved by \emph{Bellman's equation}.
 In practice, however, the GSI is not available for all APs as the reception latency of GSI may be unacceptable.
 Moreover, due to the randomness of \brlatency, it is also impossible for any AP to obtain or predict other APs' LSI without knowning their \brlatency~information in the interval.
 Thus, we leverage the problem structure of the global perspective problem but decouple it into $K$-sub problems
