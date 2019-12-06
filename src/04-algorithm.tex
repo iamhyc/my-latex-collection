@@ -6,15 +6,43 @@ The number of system states and action space would grow exponentially with respe
 In this section, we propose a low-complexity solution scheme where each AP updates its dispatching policy according to its OSI in an iterative manner.
 
 \subsection{Low-Complexity Solution Framework}
-In this part, we firs introduce an approximation of value function.
+In this part, we first introduce an approximation of value function.
+Based on it, the optimization of the right-hand-side of the Bellman's equations in Eqn.(\ref{eqn:sp_0}) can be decoupled.
+Specifically, the value function of the optimal policy is approximated as follows.
+\begin{align}
+    V\Paren{\Stat(t)} \approx&
+        W^{\AP}_{\Baseline}\Paren{\mathcal{R}(t+1)} + W^{\ES}_{\Baseline}\Paren{\mathcal{Q}(t+1)}
+    \nonumber\\
+    =& \sum_{j\in\jSpace}\sum_{k\in\apSet}\sum_{m\in\esSet} \Bracket{
+        \sum_{i=0}^{\infty} \gamma^{i+1} \Inorm{ \vecG{R}^{(k)}_{m,j}(t+i+1) }
+    }
+    \nonumber\\
+    & + \sum_{j\in\jSpace}\sum_{m\in\esSet} \Bracket{
+        \sum_{i=0}^{\infty} \gamma^{i+1} Q_{m,j}(t+i+1)
+    },
+\end{align}
+where $\Baseline$ denotes the following baseline policy.
+\begin{definition}[Baseline Policy]
+    \begin{align}
+        \Baseline &\define \Bracket{ \Pi_{1}, \dots, \Pi_{K} }
+        \\
+        \Pi_{k} &\define \Brace{\pi_{k,j}\in\esSet|\forall j\in\jSpace}, \forall k\in\apSet
+    \end{align}
+\end{definition}
 
-
+However, with the approximate value function, it is still infeasible to solve the right-hand-side of the Bellman's equations.
+On the one hand, the GSI is not available and each AP updates its policy independently from its corresponding OSI.
+On the other hand, 
 \fixit{
-    Due to the limit of OSI, each AP updates its policy independently from its corresponding ODI.
+    Due to the limit of OSI, each AP updates its policy independently from its corresponding OSI.
     Specifically, the $k$-th AP would update its policy once reception of the OSI, while considering other APs keep the policies fixed as the them in the OSI ($\forall k\in\apSet$).
     One AP updates the policy in one interval, while the other APs keep the policy fixed as broadcast information for the AP in updating.
     Hence we define the optimization problem for one AP as follows.
 }
+
+Hence, we propose a novel alternative policy update framework to address the issue of incomplete system state information.
+Specifically, we first introduce the following periodic AP update sequence.
+
 
 \begin{problem}[Decentralized Job Dispatching Problem]
     The disptaching optimization problem for the $k$-th AP ($\forall k\in\apSet$) is formulated, while the other APs follows the policy in the set $\set{ \mathcal{R}_{k'}(t) | \forall k'\in\ccSet_{k} }$ of $\Stat_{k}(t)$.
