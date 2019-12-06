@@ -121,6 +121,17 @@ where $\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\
     ~~~~&= \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j}
 \end{align}
 
+The details of the procedure is elaborated as follows.
+\begin{itemize}
+    \item Choose the initial \emph{system dispatching policy} start with some heuristic policy.
+    \item At the first broadcast time slot when $t=0$, the APs and edge servers in \emph{conflict AP set} and \emph{candidate server set}, respectively, of the $1$-st AP would broadcast their LSI (including the heuristic policies);
+    \item The $1$-st AP would receive the OSI at the $D_1(1)$ time slots in the first broadcast interval, and then it updates its policy $\Omega_{1}(\Stat_{1}(1))$ by solving Eqn.(\ref{eqn:sp_0}) for the $1$-st AP.
+    The $1$-st AP would keep with this policy until it receives the OSI again.
+    \item At the second broadcast time slot when $t=1$, the OSI of the $2$-nd AP would be broadcast;
+    the $1$-st AP would broadcast $\Omega_{1}(\Stat_{1}(1))$ if it's in the \emph{conflict AP set} of the $2$-nd AP;
+    \item Similarly, in the $t$-th broadcast interval the AP indexed with $k' \equiv (t + 1)\mod{K}$ would receive the OSI $D_{k'}(t)$ time slots later, and then it updates its policy $\Omega_{k'}(t+1)$ by solving Eqn.(\ref{eqn:sp_0}) for the $k'$-th AP.
+\end{itemize}
+
 \begin{lemma}
     The optimized policy solved as $\Baseline(t)$ for next stage, is better than $\Baseline(t-1), \dots, \Baseline(1)$ when considering the \emph{approximated value function} defined above.
     \\
@@ -134,17 +145,6 @@ where $\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\
 \begin{proof}
     The proof is delete.
 \end{proof}
-
-The details of the procedure is elaborated as follows.
-\begin{itemize}
-    \item Choose the initial \emph{system dispatching policy} start with some heuristic policy.
-    \item At the first broadcast time slot when $t=0$, the APs and edge servers in \emph{conflict AP set} and \emph{candidate server set}, respectively, of the $1$-st AP would broadcast their LSI (including the heuristic policies);
-    \item The $1$-st AP would receive the OSI at the $D_1(1)$ time slots in the first broadcast interval, and then it updates its policy $\Omega_{1}(\Stat_{1}(1))$ by solving Eqn.(\ref{eqn:sp_0}) for the $1$-st AP.
-    The $1$-st AP would keep with this policy until it receives the OSI again.
-    \item At the second broadcast time slot when $t=1$, the OSI of the $2$-nd AP would be broadcast;
-    the $1$-st AP would broadcast $\Omega_{1}(\Stat_{1}(1))$ if it's in the \emph{conflict AP set} of the $2$-nd AP;
-    \item Similarly, in the $t$-th broadcast interval the AP indexed with $k' \equiv (t + 1)\mod{K}$ would receive the OSI $D_{k'}(t)$ time slots later, and then it updates its policy $\Omega_{k'}(t+1)$ by solving Eqn.(\ref{eqn:sp_0}) for the $k'$-th AP.
-\end{itemize}
 
 %----------------------------------------------------------------------------------------%
 \delete{v10}{
