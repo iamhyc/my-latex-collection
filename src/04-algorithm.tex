@@ -6,9 +6,10 @@ The number of system states and action space would grow exponentially with respe
 In this section, we propose a low-complexity solution scheme where each AP updates its dispatching policy according to its OSI in an iterative manner.
 
 \subsection{Low-Complexity Solution Framework}
-The solution frame work is elaborated firstly in this subsection.
+In this part, we firs introduce an approximation of value function.
 
-\comments{
+
+\fixit{
     Due to the limit of OSI, each AP updates its policy independently from its corresponding ODI.
     Specifically, the $k$-th AP would update its policy once reception of the OSI, while considering other APs keep the policies fixed as the them in the OSI ($\forall k\in\apSet$).
     One AP updates the policy in one interval, while the other APs keep the policy fixed as broadcast information for the AP in updating.
@@ -36,32 +37,32 @@ The solution frame work is elaborated firstly in this subsection.
 \end{problem}
 
 \comments{
-    In Eqn.(\ref{eqn:sp_1}), the transition function is not only determined by $\Omega_{k}(\Stat_{k}(t))$ but also the other APs' policy as part of OSI.
+    In Eqn.(\ref{eqn:sp_0}), the transition function is not only determined by $\Omega_{k}(\Stat_{k}(t))$ but also the other APs' policy as part of OSI.
     Then, we update the individual policy of the $k$-th AP ($\forall k\in\apSet$) at one time in an iterative manner, where the policy adapted in the previous interval is taken as \emph{fixed policy} input of the next interval.
-    % The $k$-th AP would be able to update its policy every $K$ broadcast interval for fairness.   
+    % The $k$-th AP would be able to update its policy every $K$ broadcast interval for fairness.
 }
 Specifically, we update the policy of each AP iteratively by solving the Problem \ref{problem_2}.
 The details of the procedure is elaborated as follows.
 \begin{itemize}
     \item Choose the initial \emph{system dispatching policy} start with some heuristic policy.
     \item At the first broadcast time slot when $t=0$, the APs and edge servers in \emph{conflict AP set} and \emph{candidate server set}, respectively, of the $1$-st AP would broadcast their LSI (including the heuristic policies);
-    \item The $1$-st AP would receive the OSI at the $D_1(1)$ time slots in the first broadcast interval, and then it updates its policy $\Omega_{1}(\Stat_{1}(1))$ by solving Eqn.(\ref{eqn:sp_1}) for the $1$-st AP.
+    \item The $1$-st AP would receive the OSI at the $D_1(1)$ time slots in the first broadcast interval, and then it updates its policy $\Omega_{1}(\Stat_{1}(1))$ by solving Eqn.(\ref{eqn:sp_0}) for the $1$-st AP.
     The $1$-st AP would keep with this policy until it receives the OSI again.
     \item At the second broadcast time slot when $t=1$, the OSI of the $2$-nd AP would be broadcast;
     the $1$-st AP would broadcast $\Omega_{1}(\Stat_{1}(1))$ if it's in the \emph{conflict AP set} of the $2$-nd AP;
-    \item Similarly, in the $t$-th broadcast interval the AP indexed with $k' \equiv (t + 1)\mod{K}$ would receive the OSI $D_{k'}(t)$ time slots later, and then it updates its policy $\Omega_{k'}(t+1)$ by solving Eqn.(\ref{eqn:sp_1}) for the $k'$-th AP.
+    \item Similarly, in the $t$-th broadcast interval the AP indexed with $k' \equiv (t + 1)\mod{K}$ would receive the OSI $D_{k'}(t)$ time slots later, and then it updates its policy $\Omega_{k'}(t+1)$ by solving Eqn.(\ref{eqn:sp_0}) for the $k'$-th AP.
 \end{itemize}
 
-However, solving Eqn.(\ref{eqn:sp_1}) with conventional value iteration algorithm is intractable due to the tremendous state space.
+However, solving Eqn.(\ref{eqn:sp_0}) with conventional value iteration algorithm is intractable due to the tremendous state space.
 The number of system states and action space would grow exponentially with respect to the number of APs and edge servers.
 In the following subsection, we will introduce a method to approximate the right-hand-side of the \emph{Bellman's equation} with one-step policy iteration.
 %----------------------------------------------------------------------------------------%
 
 \subsection{Value Function Analysis and Approximation}
 
-In this subsection, we elaborate the method to approximate the Bellman's equation in Eqn.(\ref{eqn:sp_1}).
+In this subsection, we elaborate the method to approximate the Bellman's equation in Eqn.(\ref{eqn:sp_0}).
 
-Firstly, we notice that the transition function in Eqn.(\ref{eqn:sp_1}) could be rewrite in the following form.
+Firstly, we notice that the transition function in Eqn.(\ref{eqn:sp_0}) could be rewrite in the following form.
 \begin{align}
     & \Pr\Brace{ \Stat_{k}(t+1)|\Stat_{k}(t), \Omega_{k}(\Stat_{k}(t)) }
     \nonumber\\
@@ -109,7 +110,7 @@ To efficiently express the state transition, we further elaborate the distributi
         \\
         \bar{p}^{(k)}_{m,j,\xi} &= 1 - p^{(k)}_{m,j,\xi}.
     \end{align}
-    And we note that $\theta^{(k)}_{m,j,0}(t,n)$ is purely determined by the arrival process and dispatching policy of the $j$-th type of job on the $k$-th AP, i.e. $\theta^{(k)}_{m,j,0}(t,n) = \lambda_{k,j} I[\omega_{k,j}(t,n) = m]$, where $I[\cdot]$ is the indicator function.
+    And we note that $\theta^{(k)}_{m,j,0}(t,n)$ is purely determined by the arrival process and dispatching policy of the $j$-th type of job on the $k$-th AP, i.e. $\theta^{(k)}_{m,j,0}(t,n) = \lambda_{k,j} I[\omega_{k,j}(t) = m]$, where $I[\cdot]$ is the indicator function.
 
     Let $\hat{\vecG{\Theta}}^{(k)}_{m,j}(t)$ denote the probability vector at the first time slot of the $t$-th broadcast interval.
     Hence, the state transition between adjacent interval from $\hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1)$ to $\hat{\vecG{\Theta}}^{(k)}_{m,j}(t)$ is composed of two-phase policy separated by $D_k(t)$, which could be expressed as follows.
@@ -147,11 +148,9 @@ The explicit definition of the approximate arriving probability $\beta_{m,j}({t,
     The probability distribution of $\sum_{k\in\apSet} \vecG{\rho}^{(k,+)}_{m,j}({t,n})$ could be approximated with a Bernoulli arrival process who is with the expected arrival rate denoted as ${\beta}_{m,j}({t,n})$.
 \end{lemma}
 \begin{proof}
-    \delete{v9}{
-        We notice that the job arrival distribution ${\beta}_{m,j}(t)$ is given by $\mathcal{R}(t)$, and the departure rate in one slot is deterministic as $1/N$.
-        Thus the expectation of ${\beta}$ would be always far more smaller than $1$ as composed of all $K$ AP nodes.
-        We take approximation on ${\beta}$ as Bernoulli distribution in each time slot.
-    }
+    % We notice that the job arrival distribution ${\beta}_{m,j}(t)$ is given by $\mathcal{R}(t)$, and the departure rate in one slot is deterministic as $1/N$.
+    % Thus the expectation of ${\beta}$ would be always far more smaller than $1$ as composed of all $K$ AP nodes.
+    % We take approximation on ${\beta}$ as Bernoulli distribution in each time slot.
 \end{proof}
 
 %NOTE: transition matrix and vector for Edge Server
@@ -173,7 +172,7 @@ Thus we could obtain the denotation of transition matrix and probability vector 
     \end{align}
 \end{definition}
 
-According to the additive structure of cost function, we substitute the transition function plus value function in Eqn. (\ref{eqn:sp_1}) under some \emph{fixed policy} $\Pi_{k}$ with two linearly sections as $W^{\AP}_{\Pi_{k}}(\mathcal{R}(t+1))$ and $W^{\ES}_{\Pi_{k}}(\mathcal{Q}(t+1))$ for APs and edge servers, respectively.
+According to the additive structure of cost function, we substitute the transition function plus value function in Eqn. (\ref{eqn:sp_0}) under some \emph{fixed policy} $\Pi_{k}$ with two linearly sections as $W^{\AP}_{\Pi_{k}}(\mathcal{R}(t+1))$ and $W^{\ES}_{\Pi_{k}}(\mathcal{Q}(t+1))$ for APs and edge servers, respectively.
 \begin{definition}[Low-complexity Bellman's Euqation]
     \begin{align}
         V_{k}(\Stat_{k}(t)) = g_{k}(\Stat_{k}(t)) + \gamma \min_{\Baseline_{k}} \Bracket{
@@ -204,7 +203,7 @@ Hence, the optimization problem \ref{problem_2} could be further simplified with
 
 %----------------------------------------------------------------------------------------%
 \subsection{The Decentralized Optimization Problem}
-In this subsection, we formulate the optimization problem with approximated Bellman's equation, which could solve Eqn.(\ref{eqn:sp_1}) more efficiently with analytical performance guarantee.
+In this subsection, we formulate the optimization problem with approximated Bellman's equation, which could solve Eqn.(\ref{eqn:sp_0}) more efficiently with analytical performance guarantee.
 % The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
 \begin{problem}[Decentralized Approximated Optimization Problem]
     The problem \ref{problem_2} is reduced to the following form under \emph{fixed policy} $\Pi_{k}$ for the $k$-th AP.
