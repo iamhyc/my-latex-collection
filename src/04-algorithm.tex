@@ -20,6 +20,7 @@ Specifically, the value function of the optimal policy is approximated as follow
     & + \sum_{j\in\jSpace}\sum_{m\in\esSet} \Bracket{
         \sum_{i=0}^{\infty} \gamma^{i+1} Q_{m,j}(t+i+1)
     },
+    \label{eqn:approx}
 \end{align}
 where $\Baseline$ denotes the following baseline policy.
 \begin{definition}[Baseline Policy]
@@ -28,48 +29,114 @@ where $\Baseline$ denotes the following baseline policy.
         \\
         \Pi_{k} &\define \Brace{\pi_{k,j}\in\esSet|\forall j\in\jSpace}, \forall k\in\apSet
     \end{align}
+    The baseline policy is chosen as fixed policy which is invariant of system state.
 \end{definition}
 
 However, with the approximate value function, it is still infeasible to solve the right-hand-side of the Bellman's equations.
 On the one hand, the GSI is not available and each AP updates its policy independently from its corresponding OSI.
-On the other hand, 
-\fixit{
-    Due to the limit of OSI, each AP updates its policy independently from its corresponding OSI.
-    Specifically, the $k$-th AP would update its policy once reception of the OSI, while considering other APs keep the policies fixed as the them in the OSI ($\forall k\in\apSet$).
-    One AP updates the policy in one interval, while the other APs keep the policy fixed as broadcast information for the AP in updating.
-    Hence we define the optimization problem for one AP as follows.
-}
+On the other hand, the centralized agent design is impractical due to randomness of \brlatency.
 
 Hence, we propose a novel alternative policy update framework to address the issue of incomplete system state information.
 Specifically, we first introduce the following periodic AP update sequence.
-
-
-\begin{problem}[Decentralized Job Dispatching Problem]
-    The disptaching optimization problem for the $k$-th AP ($\forall k\in\apSet$) is formulated, while the other APs follows the policy in the set $\set{ \mathcal{R}_{k'}(t) | \forall k'\in\ccSet_{k} }$ of $\Stat_{k}(t)$.
+The APs shall update their polices iteratively based on OSI following the order of index of set $apSet$ and then repeat the procedure with the period $K$.
+Based on it, we propose the following \emph{alternative dispatching policy}.
+\begin{definition}[Alternative Dispatching Policy]
     \begin{align}
-        \min_{\Omega_{k}} \lim_{T \to \infty}
-            \mathbb{E}_{\Omega_{k}} \Bracket{
-                \sum_{t=1}^{T} \gamma^{(t-1)} g_{k}\Paren{\Stat_{k}(t), \Omega_{k}(\Stat_{k}(t)) | \Stat_{k}(1)}
-            },
+        \tilde{\Policy}\Paren{ k, \Stat(t), \Delay(t) } \define \Brace{
+            \Omega_{k}( \Stat_{k}(t), \mathcal{D}_{k}(t) )
+        },
     \end{align}
-    where the \emph{system cost function} $g_{k}(\cdot)$ is define below.
+    where $k \equiv t \pmod{K}$.
+\end{definition}
+
+Based on the proposed policy update framework, we further formulate the optimization problem as follows.
+\begin{problem}[Alternative Optimization Problem]
     \begin{align}
-        g_{k}\Paren{\Stat_{k}(t), \Omega_{k}(\Stat_{k}(t))} \define
-            &\sum_{j\in\jSpace} \sum_{m\in\esSet_{\apSet}} \Brace{
-                \Inorm{\vec{R}^{(k)}_{m,j}(t,0)}~+
-                \nonumber\\
-                &\{ Q_{m,j}(t,0) + \beta \cdot \mat{I}[Q_{m,j}(t,0)=L_{max}] \}
-            }.
+        \min_{\tilde{\Policy}} \lim_{T\to\infty} \mathbb{E}_{\tilde{\Policy}} \Bracket{
+            \sum_{t=1}^{T} \gamma^{(t-1)} g\Paren{
+                \Stat(t), \tilde{\Policy}(\Stat(t), \Delay(t))
+            } | \Stat(1)
+        }.
     \end{align}
     \label{problem_2}
 \end{problem}
 
-\comments{
-    In Eqn.(\ref{eqn:sp_0}), the transition function is not only determined by $\Omega_{k}(\Stat_{k}(t))$ but also the other APs' policy as part of OSI.
-    Then, we update the individual policy of the $k$-th AP ($\forall k\in\apSet$) at one time in an iterative manner, where the policy adapted in the previous interval is taken as \emph{fixed policy} input of the next interval.
-    % The $k$-th AP would be able to update its policy every $K$ broadcast interval for fairness.
-}
-Specifically, we update the policy of each AP iteratively by solving the Problem \ref{problem_2}.
+\begin{lemma}
+    With the \emph{alternative dispatching policy} framework, the approximated value function Eqn.(\ref{eqn:approx}) can be decoupled onto each AP in the following form.
+    \begin{align}
+        V_{k}(\Stat_{k}(t)) &\define W^{\AP}_{\Pi_{k}}\Paren{\mathcal{R}(t+1)} + W^{\ES}_{\Pi_{k}}\Paren{\mathcal{Q}(t+1)}
+        \nonumber\\
+        =& \sum_{j\in\jSpace}\sum_{k\in\ccSet_{k}}\sum_{m\in\esSet_{k}} \Bracket{
+            \sum_{i=0}^{\infty} \gamma^{i+1} \Inorm{ \vecG{R}^{(k')}_{m,j}(t+i+1) }
+        }
+        \nonumber\\
+        & + \sum_{j\in\jSpace}\sum_{m\in\esSet_{k}} \Bracket{
+            \sum_{i=0}^{\infty} \gamma^{i+1} Q_{m,j}(t+i+1)
+        },
+    \end{align}
+\end{lemma}
+Then, we could propose the algorithm to solve the decentralized problem for each AP.
+
+\subsection{The Decentralized Algorithm}
+The decentralized problem for AP is defined as follows.
+In this subsection, we formulate the optimization problem with approximated Bellman's equation, which could solve Eqn.(\ref{eqn:sp_0}) more efficiently with analytical performance guarantee.
+% The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
+\begin{problem}[Decentralized Approximated Optimization Problem for AP]
+    For the $k$-th AP with baseline policy $\Pi_{k}$:
+    \begin{align}
+        \min_{\Pi_{k}} W^{\AP}_{\Pi_{k}}\Paren{\mathcal{R}(t+1)} + W^{\ES}_{\Pi_{k}}\Paren{\mathcal{Q}(t+1)}.
+        \label{eqn:partial}
+    \end{align}
+\end{problem}
+
+The expected value function $W^{\AP}_{\Pi_{k}}(\mathcal{R}(t+1))$ is easily obtained by calculating the following equation.
+\begin{align}
+    W^{\AP}_{\Pi_{k}}\Paren{\mathcal{R}(t+1)} = \sum_{j\in\jSpace}&\sum_{k\in\ccSet_{k}}\sum_{m\in\esSet_{k}}
+    \nonumber\\
+    &\Inorm{
+        \Paren{ 1 - \gamma ({\Gamma}^{(k)}_{m,j})^{N} }^{-1} \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1)
+    }.
+    \label{w_ap}
+\end{align}
+% where $\hat{\Gamma}^{(k)}_{m,j} \define (\Gamma^{(k)}_{m,j})^{N}$.
+
+The expression for expected value function $W^{\ES}_{\Pi_{k}}(\mathcal{Q}(t+1))$ is little more complex compared to Eqn.(\ref{w_ap}).
+It is affected with both arrival process under dispatching policy and last queue state.
+However, we notice that the arrival process would be stationary after the maximum uploading time under the stationary baseline policy and the relationship between APs and edge server could be decoupled.
+\begin{align}
+    W^{(k)}_{\Baseline(t)}\Paren{\mathcal{Q}(t+1)}
+    =& \sum_{j\in\jSpace}\sum_{m\in\esSet_{k}}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ Q_{m,j}({t+i+1}) ]
+    \nonumber\\
+    &~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}',
+\end{align}
+where the $i$-th element of vector $\vec{g}$ denotes the cost of server as $Q_{m,j}(t)$;
+\begin{align}
+    \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) \define \prod_{n=0,\dots,N-1} \mat{P}_{m,j}(\tilde{\beta}_{m,j})
+\end{align}
+% the probability distribution of $Q_{m,j}({t+i+1})$ is denoted by $\vecG{\nu}({t+i+1})$ which is obtained by calculating equation Enq. (\ref{eqn_0}) - Eqn. (\ref{eqn_4}) ($\forall i=0,\dots,\frac{\Xi}{T}$);
+where $\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\Pi(t)$ (on $m$-th ES with $j$-type job)
+\begin{align}
+    \tilde{\beta}_{m,j} &\define \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j} \times \sum_{\xi=0,\dots,\Xi-1} \Pr\{ \xi<U_{k,m}\leq(\xi+1) \}
+        \nonumber\\
+    ~~~~&= \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j}
+\end{align}
+
+\begin{lemma}
+    The optimized policy solved as $\Baseline(t)$ for next stage, is better than $\Baseline(t-1), \dots, \Baseline(1)$ when considering the \emph{approximated value function} defined above.
+    \\
+    Moreover, the performance of the series of the baseline policies is upper bounded by the optimal solution $\Policy^*$ when considering the original Bellman's equation.
+    $$
+        V_{\Omega^*}\Paren{\Stat(t)}
+        \leq W_{\Baseline(t)}\Paren{\Stat(t)}
+        \leq W_{\Baseline(t-1)}\Paren{\Stat(t)}
+        % \leq \dots \leq W_{\Pi(1)}\Paren{\Stat(t)}
+    $$
+\end{lemma}
+\begin{proof}
+    The proof is delete.
+\end{proof}
+
+% Specifically, we update the policy of each AP iteratively by solving the Problem \ref{problem_3}.
 The details of the procedure is elaborated as follows.
 \begin{itemize}
     \item Choose the initial \emph{system dispatching policy} start with some heuristic policy.
@@ -81,13 +148,9 @@ The details of the procedure is elaborated as follows.
     \item Similarly, in the $t$-th broadcast interval the AP indexed with $k' \equiv (t + 1)\mod{K}$ would receive the OSI $D_{k'}(t)$ time slots later, and then it updates its policy $\Omega_{k'}(t+1)$ by solving Eqn.(\ref{eqn:sp_0}) for the $k'$-th AP.
 \end{itemize}
 
-However, solving Eqn.(\ref{eqn:sp_0}) with conventional value iteration algorithm is intractable due to the tremendous state space.
-The number of system states and action space would grow exponentially with respect to the number of APs and edge servers.
-In the following subsection, we will introduce a method to approximate the right-hand-side of the \emph{Bellman's equation} with one-step policy iteration.
 %----------------------------------------------------------------------------------------%
 
 \subsection{Value Function Analysis and Approximation}
-
 In this subsection, we elaborate the method to approximate the Bellman's equation in Eqn.(\ref{eqn:sp_0}).
 
 Firstly, we notice that the transition function in Eqn.(\ref{eqn:sp_0}) could be rewrite in the following form.
@@ -201,109 +264,9 @@ Thus we could obtain the denotation of transition matrix and probability vector 
 \end{definition}
 
 According to the additive structure of cost function, we substitute the transition function plus value function in Eqn. (\ref{eqn:sp_0}) under some \emph{fixed policy} $\Pi_{k}$ with two linearly sections as $W^{\AP}_{\Pi_{k}}(\mathcal{R}(t+1))$ and $W^{\ES}_{\Pi_{k}}(\mathcal{Q}(t+1))$ for APs and edge servers, respectively.
-\begin{definition}[Low-complexity Bellman's Euqation]
-    \begin{align}
-        V_{k}(\Stat_{k}(t)) = g_{k}(\Stat_{k}(t)) + \gamma \min_{\Baseline_{k}} \Bracket{
-            W^{\AP}_{\Pi_{k}}\Paren{\mathcal{R}(t+1)} + W^{\ES}_{\Pi_{k}}\Paren{\mathcal{Q}(t+1)}
-        },
-        % &V_{k}(\Stat_{k}(t)) = g_{k}(\Stat_{k}(t)) +
-        % \nonumber\\
-        % &~~~~~~\gamma \min_{\Baseline(t)} \Bracket{ W^{\AP}_{\Baseline(t)}\Paren{\mathcal{R}(t+1)} + W^{\ES}_{\Baseline(t)}\Paren{\mathcal{Q}(t+1)} },
-    \end{align}
-    where $W^{\AP}_{\Pi_{k}}(\cdot)$ and $W^{\ES}_{\Pi_{k}}(\cdot)$ are defined as follows, respectively.
-    \begin{align}
-        W^{\AP}_{\Pi_{k}}\Paren{\mathcal{R}(t)}
-            &\define \sum_{j\in\jSpace}\sum_{k'\in\ccSet_{k}}\sum_{m\in\esSet_{k}}
-            \nonumber\\
-            &\mathbb{E}_{\{\Baseline(t), \vec{R}^{(k')}_{m,j}(t)\}}\Bracket{
-                \sum_{i=0}^{\infty} \gamma^{i} \Inorm{\vec{R}^{(k')}_{m,j}({t+i})}
-            }
-        \\
-        W^{\ES}_{\Pi_{k}}\Paren{\mathcal{Q}(t)}
-            &\define \sum_{j\in\jSpace}\sum_{m\in\esSet_{k}}
-            % \nonumber\\
-            \mathbb{E}_{\{\Pi_{k}, Q_{m,j}(t)\}}\Bracket{
-                \sum_{i=0}^{\infty} \gamma^{i} Q_{m,j}({t+i})
-            }.
-    \end{align}
-\end{definition}
-Hence, the optimization problem \ref{problem_2} could be further simplified with a efficient form.
 
-%----------------------------------------------------------------------------------------%
-\subsection{The Decentralized Optimization Problem}
-In this subsection, we formulate the optimization problem with approximated Bellman's equation, which could solve Eqn.(\ref{eqn:sp_0}) more efficiently with analytical performance guarantee.
-% The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
-\begin{problem}[Decentralized Approximated Optimization Problem]
-    The problem \ref{problem_2} is reduced to the following form under \emph{fixed policy} $\Pi_{k}$ for the $k$-th AP.
-    \begin{align}
-        \min_{\Pi_{k}} W^{\AP}_{\Pi_{k}}\Paren{\mathcal{R}(t+1)} + W^{\ES}_{\Pi_{k}}\Paren{\mathcal{Q}(t+1)}.
-        \label{eqn:partial}
-    \end{align}
-\end{problem}
-
-The expected value function $W^{\AP}_{\Pi_{k}}(\mathcal{R}(t+1))$ is easily obtained by calculating the following equation.
-\begin{align}
-    W^{\AP}_{\Pi_{k}}\Paren{\mathcal{R}(t+1)} = \sum_{j\in\jSpace}&\sum_{k\in\ccSet_{k}}\sum_{m\in\esSet_{k}}
-    \nonumber\\
-    &\Inorm{
-        \Paren{ 1 - \gamma ({\Gamma}^{(k)}_{m,j})^{N} }^{-1} \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1)
-    }.
-    \label{w_ap}
-\end{align}
-% where $\hat{\Gamma}^{(k)}_{m,j} \define (\Gamma^{(k)}_{m,j})^{N}$.
-
-The expression for expected value function $W^{\ES}_{\Pi_{k}}(\mathcal{Q}(t+1))$ is little more complex compared to Eqn.(\ref{w_ap}).
-It is affected with both arrival process under dispatching policy and last queue state.
-However, we notice that the arrival process would be stationary after the maximum uploading time under the stationary baseline policy and the relationship between APs and edge server could be decoupled.
-\begin{align}
-    W^{(k)}_{\Baseline(t)}\Paren{\mathcal{Q}(t+1)}
-    =& \sum_{j\in\jSpace}\sum_{m\in\esSet_{k}}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ Q_{m,j}({t+i+1}) ]
-    \nonumber\\
-    &~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}',
-\end{align}
-where the $i$-th element of vector $\vec{g}$ denotes the cost of server as $Q_{m,j}(t)$;
-\begin{align}
-    \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) \define \prod_{n=0,\dots,N-1} \mat{P}_{m,j}(\tilde{\beta}_{m,j})
-\end{align}
-% the probability distribution of $Q_{m,j}({t+i+1})$ is denoted by $\vecG{\nu}({t+i+1})$ which is obtained by calculating equation Enq. (\ref{eqn_0}) - Eqn. (\ref{eqn_4}) ($\forall i=0,\dots,\frac{\Xi}{T}$);
-where $\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\Pi(t)$ (on $m$-th ES with $j$-type job)
-\begin{align}
-    \tilde{\beta}_{m,j} &\define \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j} \times \sum_{\xi=0,\dots,\Xi-1} \Pr\{ \xi<U_{k,m}\leq(\xi+1) \}
-        \nonumber\\
-    ~~~~&= \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j}
-\end{align}
-
-\begin{lemma}
-    The optimized policy solved as $\Baseline(t)$ for next stage, is better than $\Baseline(t-1), \dots, \Baseline(1)$ when considering the \emph{approximated value function} defined above.
-    \\
-    Moreover, the performance of the series of the baseline policies is upper bounded by the optimal solution $\Policy^*$ when considering the original Bellman's equation.
-    $$
-        V_{\Omega^*}\Paren{\Stat(t)}
-        \leq W_{\Baseline(t)}\Paren{\Stat(t)}
-        \leq W_{\Baseline(t-1)}\Paren{\Stat(t)}
-        % \leq \dots \leq W_{\Pi(1)}\Paren{\Stat(t)}
-    $$
-\end{lemma}
-\begin{proof}
-    The proof is delete.
-\end{proof}
 %----------------------------------------------------------------------------------------%
 \delete{v10}{
-    We introduce a heuristic dispatching algorithm as the baseline policy, whose value function could be derived analytically.
-    Then the right-hand-side of Bellman's Equation is replaced with the above approximated Bellman's equation, and the sub-optimal solution can be obtained with one-step policy iteration.
-    Hence, the derived approximated value function of the baseline policy becomes the cost upper bound of the proposed sub-optimal policy.
-
-    We use the same baseline policy to evaluate both low-complexity policy performance in Eqn. (\ref{eqn:sp_0}).
-    To better analyze the structure of the optimization problem, we decouple the transition function.
-
-    According to \cite{sutton1998introduction}, the above problem for the $k$-th AP could be solved by the following \emph{Bellman's equation}:
-    \begin{align}
-        V_{k}\Paren{\Stat_{k}(t)} &= g_{k}\Paren{ \Stat_{k}(t) } + \gamma\min_{\Omega_{k}(\Stat_{k}(t))}
-        \nonumber\\
-        &\sum_{\Stat_{k}(t+1)} \Pr\Brace{ \Stat_{k}(t+1) | \Stat_{k}(t), \Omega_{k}(\Stat_{k}(t)) } \cdot V_{k}\Paren{\Stat_{k}(t+1)}.
-        \label{eqn:sp_1}
-    \end{align}
-
     % [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
     % \begin{algorithm}[H]
     %     \caption{Online Iterative Policy Improvement Algorithm}
