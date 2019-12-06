@@ -23,7 +23,8 @@ We formulate the multi-agent MDP problem from a global perspective, where each A
 \begin{definition}[Individual Dispatching Policy of AP]
     The individual policy of the $k$-th AP ($\forall k \in\apSet$) maps from its OSI to the dispatching decision on edge servers for each job type.
     \begin{align}
-        &\Omega_{k}(\Stat_{k}(t)) \define \set{\omega_{k,j}(t)|\forall j\in\jSpace}.
+        &\Omega_{k} \Paren{ \Stat_{k}(t), \mathcal{D}_{k}(t) }
+        \define \set{\omega_{k,j}(t)|\forall j\in\jSpace}.
         \label{def:action}
     \end{align}
 \end{definition}
@@ -32,10 +33,11 @@ And the global-wise joint policy is defined as follows.
 \begin{definition}[System Dispatching Policy]
     The joint dispatching policy $\Policy(\Stat(t))$ of all APs is a map from system state $\Stat(t)$, which is composed of individual policies at the $t$-th broadcast time slot.
     \begin{align}
-        \Policy(\Stat(t)) \define \Brace{
-            \Omega_{1}(\Stat_{1}(t)), \dots, \Omega_{K}(\Stat_{K}(t))
-        }.
+        \Policy\Paren{ \Stat(t), \Delay(t) } \define \Brace{
+            \Omega_{1}(\Stat_{1}(t), \mathcal{D}_{1}(t)), \dots, \Omega_{K}(\Stat_{K}(t),\mathcal{D}_{K}(t))
+        },
     \end{align}
+    where $\Delay(t) \define \set{ \mathcal{D}_{1}(t), \dots, \mathcal{D}_{K}(t) }$.
 \end{definition}
 %----------------------------------------------------------------------------------------%
 \subsection{Centralized Optimization Problem}
@@ -75,7 +77,7 @@ The online job dispatching problem from global perspective is given as follows.
     \begin{align}
         \min_{\Policy} \lim_{T \to \infty}
             \mathbb{E}_{\Policy}
-                \Bracket{ \sum_{t=1}^T \gamma^{(t-1)} g\Paren{\Stat(t), \Policy(\Stat(t))} | \Stat(1) },
+                \Bracket{ \sum_{t=1}^T \gamma^{(t-1)} g\Paren{\Stat(t), \Policy(\Stat(t), \Delay(t))} | \Stat(1) },
     \end{align}
     where the cost is collected with discount factor $\gamma$.
     \label{problem_1}
@@ -83,14 +85,18 @@ The online job dispatching problem from global perspective is given as follows.
 
 According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
 \begin{align}
-    V\Paren{\Stat(t)} =~&g\Paren{\Stat(t)} + \gamma \min_{\Policy(\Stat(t))}
+    V\Paren{\Stat(t)} &=g\Paren{\Stat(t), \Policy(\Stat(t), \Delay(t))}
+        + \gamma \min_{\Policy(\Stat(t))}
         \nonumber\\
-        &\sum_{\Stat(t+1)} \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t)) } \cdot V\Paren{\Stat(t+1)},
+        &\sum_{\Stat(t+1)} \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t), \Delay(t)) } \cdot V\Paren{\Stat(t+1)},
     \label{eqn:sp_0}
 \end{align}
-\fixit{
-    where the 
-}
+where the value function $V(\Stat(t))$ of the optimal policy $\Policy^{*}(\Stat(t), \Delay(t))$ is defined as follows.
+\begin{align}
+    V\Paren{\Stat(t)} \define \lim_{T\to\infty} \sum_{t=0}^{T} \gamma^{T} \mathbb{E}_{\Policy, \Delay} \Bracket{
+        g\Paren{ \Stat(t), \Policy(\Stat(t), \Delay(t)) }
+    }.
+\end{align}
 
 In practice, however, the GSI is not available for all APs as the reception latency of GSI may be unacceptable.
 Moreover, due to the randomness of \brlatency, it is also impossible for any AP to obtain or predict other APs' LSI without knowning their \brlatency~information in the interval.
