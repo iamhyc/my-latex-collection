@@ -1,13 +1,30 @@
 
 \section{Introduction}
-
-\comments{
+\delete{v10}{
+    \begin{itemize}
+        \item ~~What's the general background of edge computing~~
+        \item Why we consider edge computing in MAN?
+        \item What's the new challenges in MAN?
+        \item What dose the existing literature consider?
+    \end{itemize}
+}
+%NOTE: General Background of MEC and Motivation
+\fixit{
     Edge computing is believed to be the solid solution for increasing computation-intensive and energy-hungry applications on mobile devices.
     The edge server clusters are deployed in closer proximity to mobile devices than cloud infrastructure, which alleviates the communication overhead and enables {time-sensitive} and {deadline-aware} tasks offloading.
     The edge servers are always with limited computation resources standalone, and efficient cooperation is indispensable among distributed servers.
 }
 
-\delete{v9}{
+%NOTE: Motivation with MAN
+\fixit{
+    Nowadays, the edge computing system always presences in a distributed formation \needref{no-centralized-agent}.
+    How is the network formulated? backed by MAN with 
+
+    What's the new challenges? The 
+}
+
+%NOTE: Existing Literature 
+\fixit{
     Edge Computation is believed to be a promising technology for solving increasingly communication congestion in backbone network.
     (Rich-media tasks are delay-sensitive).
     \cite{Naha2018} is a survey about fog computing in delay-aware computing in IoT, and investigate numerous proposed computing architecture.
@@ -19,14 +36,12 @@
         \item \cite{Alameddine2019} is a work considering task offloading, scheduling and resource allocation joint optimization with Benders Decomposition (However, delay information is previous defined);
         \item \cite{Fan2017} considers cooperation of multiple MEC-BSs of computation offloading to other MEC-BSs (However, it doesn't consider the offloading utility impact on other MEC-BSs, i.e. only optimize for one BSs in the cluster).
     \end{itemize}
-}
 
-Different from the previous referred works, which only consider optimization for one agent in system or using centralized agent for decision making, we focus on the impact of out-of-dated information on decision making in multiple agents distributed cooperation.
-Due to frequent jobs releasing from users and uncertainty of jobs uploading time to servers, the obsolete information is inevitable in a purely distributed system.
-This information sharing delay would cause severe mis-estimate for job dispatching decision making, and thus it will be hard to guarantee the cooperation among individual agents.
-Moreover, the information sharing delay is often un-deterministic due to shared under-laid network topology, and offensively sharing strategy would cause network congestion to other normal functions.
+    Different from the previous referred works, which only consider optimization for one agent in system or using centralized agent for decision making, we focus on the impact of out-of-dated information on decision making in multiple agents distributed cooperation.
+    Due to frequent jobs releasing from users and uncertainty of jobs uploading time to servers, the obsolete information is inevitable in a purely distributed system.
+    This information sharing delay would cause severe mis-estimate for job dispatching decision making, and thus it will be hard to guarantee the cooperation among individual agents.
+    Moreover, the information sharing delay is often un-deterministic due to shared under-laid network topology, and offensively sharing strategy would cause network congestion to other normal functions.
 
-\delete{v9}{
     As what we have learned for now, there are very limited discussions on this topic:
     \begin{itemize}
         \item The earliest works entangling with out-of-dated information we could find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing limited information. The agent considers communication as extra action to synchronize the states and thus incurs extra cost (However, the communication is without delay, thus converted into POMDP problem; criticize with impractical);
@@ -39,7 +54,8 @@ Moreover, the information sharing delay is often un-deterministic due to shared 
     \end{itemize}
 }
 
-\accept{
+%NOTE: Our contributions
+\fixit{
     In this article, we consider there are Access Points (APs) in this network to connect the mobile users and edge servers.
     The edge computing network resided in Metropolitan area network (MAN).
     The computation jobs would be released from UEs and the dispatching decisions are determined distributed on each AP nodes as depicted in Fig.\ref{fig:system}.
