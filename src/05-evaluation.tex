@@ -1,5 +1,5 @@
 \section{Performance Evaluation}
-
+\label{sec:evaluation}
 \subsection{Parameter Settings}
 \begin{figure*}[htp!]
     \centering
@@ -17,7 +17,7 @@
 \end{figure*}
 
 \begin{itemize}
-    \item $K=5$ APs, $M=3$ edge servers, and $J=5$ types of jobs;
+    \item \comments{Small scale setting with fully-connected APs and edge server with:} $K=5$ APs, $M=3$ edge servers, and $J=5$ types of jobs;
     \item Each time slot with $\tau=0.05$ s (a.k.a $50$ ms), and broadcast interval $T=N \cdot \tau$ with $N=30$;
     \item The maximum uploading time is $\Xi = 3 T$, and the \brlatency is shorter than $t_B$;
     \item (arrival rate is random generated as $\lambda_{k,j} \ll 1/N$)

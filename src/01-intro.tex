@@ -2,34 +2,24 @@
 \section{Introduction}
 %NOTE: General Background of MEC and Motivation
 Edge computing is believed to be the solid solution for increasing computation-intensive and energy-hungry applications on mobile devices.
-The edge server clusters are deployed in closer proximity to mobile devices than cloud infrastructure, which alleviates the communication overhead and enables {time-sensitive} and {deadline-aware} tasks offloading.
-\fixit{
-    Although such job offloading could significantly expand the capability of mobile devices, a long communication delay gets in the way inevitably since the remote clouds are usually far away from the mobile users.
-}
-\comments{
-    Edge Computation is believed to be a promising technology for solving increasingly communication congestion in backbone network.
-    (large amount of mobile users wireless connected to the edge servers cluster, often in cooperation) \cite{MEC-SURVEY}.
-    The edge servers are always with limited computation resources standalone, and efficient cooperation is indispensable among distributed servers.
-}
+The edge servers are deployed in closer proximity to mobile devices than cloud infrastructure, which alleviates the communication overhead and enables {time-sensitive} and {deadline-aware} tasks offloading.
+Large amount of mobile devices can connect to the access points (APs) which functions as gateway to aggregate and offload jobs to the edge servers \cite{MEC-SURVEY}.
+However, the edge servers are always deployed with limited computation resources standalone, and the establish of efficient cooperation is indispensable among the distributed servers.
 
 %NOTE: Motivation with MAN
-In this paper, we consider the edge computing network residing in Metropolitan Area Network (MAN), or called a city WAN \cite{MOBIHOC19-ZhouZ,tan-online,IOTJ18-FanQ}.
-\comments{
-    Due to frequent jobs releasing from users and uncertainty of jobs uploading time to servers, the obsolete information is inevitable in a purely distributed system.
-    This information sharing delay would cause severe mis-estimate for job dispatching decision making, and thus it will be hard to guarantee the cooperation among individual agents.
-    Moreover, the information sharing delay is often un-deterministic due to shared under-laid network topology, and offensively sharing strategy would cause network congestion to other normal functions.
-
-    The new challenges exist that:
-    1) the network traffic is random \needref{from-some-white-paper} while most existing literature only considers fixed environment \needref{the-fixed-environment};
-    2) the centralized design is not possible in extensive network like MAN, while most existing literature considers the impractical centralized agent design without information exchange \needref{the-centralized-design};
-    3) moreover, the staleness of information sharing is not negligible, and the information exchange over shared communication channel interfere with normal network traffic, so that: a) latency varies; b) broadcast storm \needref{elaboration-from-wiki}
-}
+We consider the edge computing network with APs and edge servers residing in the Metropolitan Area Network (MAN), where the edge servers could reach each others with unpredictable network latency\cite{MOBIHOC19-ZhouZ,tan-online,IOTJ18-FanQ}.
+The APs shall collect jobs uploaded from the mobile users in its range and then make dispatching decisions for each job on the edge servers.
+While the most of the existing literature consider the fixed or negligible communication latency in the edge computing network\cite{TOC19-LiuC,JSAC19-AlameddineHA,ACCESS19-ZhengX,tan-online}, it's infeasible to have this assumption in the MAN\needref{from-some-white-paper}.
+This brings new challenges to the job dispatcher design in the edge computing network which relies on the observation of system status.
+Firstly, the propagation latency of small control information may vary a lot due to congestion, and thus the centralized scheduler is discouraged without timely interaction with APs or edge servers.
+Secondly, the stalesness of information is not negligible and the information exchange would cause misestimate for disaptching decision making.
+Last but not the least, the fully-cooperation of decentralized agents requires sharing utility function according to \cite{IJCAI03-NairR} and the partially observed information from different dispatchers is not identical all the time.
 
 %NOTE: Our contributions
-In this article, we consider there are Access Points (APs) in this network to connect the mobile users and edge servers.
-The edge computing network resided in Metropolitan area network (MAN).
-The computation jobs would be released from UEs and the dispatching decisions are determined distributed on each AP nodes as depicted in Fig.\ref{fig:system}.
-The information sharing scheme is proposed in this article with synchronized broadcast design. With the help of this scheme, we could immediately apply the job dispatching decision based on obsolete information, with some prior stochastic knowledge of global system.
+In this paper, we focus on the decentralized cooperative dispatcher design at APs with stale information in the edge computing network.
+% The computation jobs would be released from UEs and the dispatching decisions are determined distributed on each AP nodes as depicted in Fig.\ref{fig:system}.
+The information sharing scheme is proposed in this article with periodic broadcast design.
+With the help of MDP problem formulation, we could optimize the job dispatching decisions at APs with partially observed broadcast information under random communication latency.
 Our contributions are summarized as follows.
 \begin{itemize}
     \item To our best knowledge, this is the first work trying to address the fully-cooperative decentralized multi-agent optimization problem under standard MDP framework.
@@ -43,13 +33,16 @@ Our contributions are summarized as follows.
 \end{itemize}
 
 The remainder of this paper is organized as follows.
-In Sec.II, we illustrate the system model and broadcast information sharing design.
-In Sec.III, we formulate the global optimization problem of joint optimization on dispatching decisions of all APs.
-In Sec.IV, we argue that the global joint optimization of all APs is impractical and then decouple the problem into optimization over individual APs.
-We introduce a low-complexity algorithm in Sec.V and then show the numerical analysis in Sec.VI.
-In Sec.VII, the conclusion is given.
+In Sec.\ref{sec:review}, we review on the related works.
+In Sec.\ref{sec:model}, we illustrate the system model and broadcast information sharing design.
+In Sec.\ref{sec:formulation}, we formulate the global optimization problem of joint optimization on dispatching decisions of all APs.
+In Sec.\ref{sec:algorithm}, we argue that the global joint optimization of all APs is impractical and then decouple the problem into optimization over individual APs.
+We introduce a low-complexity algorithm in Sec.V and then show the numerical analysis in Sec.\ref{sec:evaluation}.
+In Sec.\ref{sec:conclusion}, the conclusion is given.
 
 \section{Related Works}
+\label{sec:review}
+% \cite{TOC18-LyuX,TOC17-DinhTQ}.
 There are mainly three categories of problems in edge computing: resource allocation, job offloading, and service migration.
 Specifically, the joint optimization problem is often addressed into consideration
 %NOTE: resource allocation/placement (cache-like problem), service migration (impractical, \needref)

@@ -6,5 +6,6 @@
 *.bbl
 *.log
 *.synctex.gz
+*.out
 main.pdf
 draft*.pdf

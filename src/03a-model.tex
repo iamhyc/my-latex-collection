@@ -1,7 +1,8 @@
 \section{System Model}
+\label{sec:model}
 %----------------------------------------------------------------------------------------%
 \subsection{Network Model}
-\begin{figure*}[ht]
+\begin{figure*}[htp!]
     \centering
     \includegraphics[width=0.80\textwidth]{system-model.pdf}
     \caption{The Illustration of MEC System Model}
@@ -47,7 +48,7 @@ For each job type, the uploaded jobs are computed in a First-Come-First-Serve (F
 Hence, a processing queue with maximum $L_{max}$ jobs is established for each VM.
 The arrival jobs will be discarded when the processing queue is full.
 Furthermore, we adopt the \emph{unrelated machines assumption} in \cite{tan-online} for job processing on edge servers.
-Specifically, it is assumed that the computation time of different job types on different edge servers follows the memory-less Geometric distribution (with the unit of time slot) with different expectations.
+Specifically, it is assumed that the computation time of different job types on different edge servers follows the memory-less Geometric distribution (with the unit of time slot) with different expectations \cite{TOWC18-HuangKb}.
 Let $C_{m,j} \sim \mathbb{G}(1/c_{m,j})$ be the computation time distribution of the $j$-th job type on the $m$-th edge server, where $c_{m,j}$ is the expectation.
 Hence, the probability mass function (PMF) of $C_{m,j}$ is given by:
 \begin{align}
@@ -94,6 +95,13 @@ We refer to \emph{global state information} (GSI) as the aggregation of LSI of a
     \end{align}
 \end{definition}
 
+%NOTE: Conflict of AP set and partial information definition
+\accept{
+    As the edge computing network resides in MAN, the propagation delay of LSI in such extensive network is not negligible.
+    Thus for the $k$-th AP ($\forall k\in\apSet$), the reception latency of the LSI from the edge servers out of its \emph{candidate server set} $\esSet_{k}$ may be not acceptable.
+    To alleviate the impact of information reception latency on decision making, we should leverage the definition of \emph{candidate server set} and \emph{potential AP set}, and only use partial information from GSI for decision making for each AP.
+}
+
 \begin{figure}[tp]
     \centering
     \includegraphics[width=0.45\textwidth]{images/conflict.pdf}
@@ -101,12 +109,6 @@ We refer to \emph{global state information} (GSI) as the aggregation of LSI of a
     \label{fig:conflict}
 \end{figure}
 
-%NOTE: Conflict of AP set and partial information definition
-\accept{
-    As the edge computing network resides in MAN, the propagation delay of LSI in such extensive network is not negligible.
-    Thus for the $k$-th AP ($\forall k\in\apSet$), the reception latency of the LSI from the edge servers out of its \emph{candidate server set} $\esSet_{k}$ may be not acceptable.
-    To alleviate the impact of information reception latency on decision making, we should leverage the definition of \emph{candidate server set} and \emph{potential AP set}, and only use partial information from GSI for decision making for each AP.
-}
 Hence, we first define the \emph{conflict AP set} as follows.
 \begin{definition}[Conflict AP Set]
     \begin{align}
