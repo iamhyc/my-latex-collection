@@ -42,9 +42,7 @@ Compared Algorithm:
     \item \textbf{Local Selfish Algorithm (baseline policy)}:
             always choose the edge server with the minimum expected uploading time plus the expected processing time for each job type; this policy is also taken as the initial fixed policy of our proposed algorithm;
     \item \textbf{Local Queue-aware Greedy Algorithm}:
-            \fixit{
-                selfish policy, plus, always choose the queue with minimum queue length while the obtained queue state is stale;
-            }
+            always choose the edge server with the minimum expected uploading time, plus the expected queueing time based on the observation of stale queue state.
 \end{itemize}
 
 % [abandon, cause useless]
