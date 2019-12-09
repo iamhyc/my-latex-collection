@@ -16,7 +16,7 @@ Each AP collects the computation jobs from the mobile users within its coverage,
 It is assumed that the $k$-th AP only dispatches the computation jobs to the edge servers within a certain number of hops.
 Let $\esSet_{k} \subseteq \esSet$ be the set of edge servers which can compute the jobs from the $k$-th AP and $\apSet_{m}$ be the set of APs, which may upload jobs to the $m$-th edge server.
 We refer to $\esSet_{k}$ as the \emph{candidate server set} of the $k$-th AP, and $\apSet_{m}$ as the \emph{potential AP set} of the $m$-th edge server ($\forall k\in\apSet, m\in\esSet$).
-\comments{
+\accept{
     Different APs may have different candidate servers according to their locations in the network, as illustrated in Fig.\ref{fig:system}.
 }
 In this edge computing network, each AP and edge server periodically broadcast their state information (the state information is defined in the following subsection), and one AP updates its strategy of job dispatching when receiving part of the broadcast state information.
@@ -37,7 +37,7 @@ Each AP then immediately dispatches each type of received jobs to one edge serve
 Different types of jobs may have different distributions on the input data size.
 Moreover, due to the random traffic in the network, the job uploading from one AP to one edge server consumes a random number of time slots.
 It is assumed that the distributions of uploading time are independent between any two uploading jobs.
-\comments{
+\accept{
     Let $\mathcal{U}_{k,m,j} \sim \mathbb{U}_{k,m,j}$ be the uploading time distribution for the $j$-th job type uploading from the $k$-th AP to the $m$-th edge server with support $\set{1, \dots, \Xi}$, where $\Xi$ denotes the maximum uploading time ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
 }
 In practice, the distribution of uploading latency may not be known to the APs or edge servers in advance.
@@ -102,13 +102,6 @@ We refer to \emph{global state information} (GSI) as the aggregation of LSI of a
     To alleviate the impact of information reception latency on decision making, we should leverage the definition of \emph{candidate server set} and \emph{potential AP set}, and only use partial information from GSI for decision making for each AP.
 }
 
-\begin{figure}[tp]
-    \centering
-    \includegraphics[width=0.45\textwidth]{images/conflict.pdf}
-    \caption{The Example Illustration of Conflict Set and Partial Broadcast Information}
-    \label{fig:conflict}
-\end{figure}
-
 Hence, we first define the \emph{conflict AP set} as follows.
 \begin{definition}[Conflict AP Set]
     \begin{align}
@@ -118,12 +111,12 @@ Hence, we first define the \emph{conflict AP set} as follows.
     The \emph{conflict AP set} indicates that the subset of APs whose LSI could affect the decision making for the $k$-th AP.
 \end{definition}
 
-\begin{figure*}[t]
+\begin{figure}[tp]
     \centering
-    \includegraphics[width=0.80\textwidth]{brd-timeline.pdf}
-    \caption{The timeline illustration of reception of OSI for the $1$-st AP with the system setting in Fig.\ref{fig:conflict}.}
-    \label{fig:brd-timeline}
-\end{figure*}
+    \includegraphics[width=0.45\textwidth]{images/conflict.pdf}
+    \caption{The Example Illustration of Conflict Set and Partial Broadcast Information}
+    \label{fig:conflict}
+\end{figure}
 
 It is assumed that each AP only collect the LSI from the APs in its \emph{conflict AP set} and edge servers from its \emph{candidate server set}.
 For a simple example given in Fig.\ref{fig:conflict}, the $1$-st AP only receives LSI from the $2$-nd AP who is in its \emph{conflict AP set}, and LSI from the $1$-st edge server who is in its \emph{candidate server set}.
@@ -136,6 +129,13 @@ Hence, we refer to the partial state information as \emph{observed state informa
         \label{def:OSI}
     \end{align}
 \end{definition}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.80\textwidth]{brd-timeline.pdf}
+    \caption{The timeline illustration of reception of OSI for the $1$-st AP with the system setting in Fig.\ref{fig:conflict}.}
+    \label{fig:brd-timeline}
+\end{figure*}
 
 It is assumed that the $k$-th AP is able to collect its OSI $\mathcal{D}_{k}(t)$ time slots later after the $t$-th broadcast time slot, where $\mathcal{D}_{k}(t)$ is a random variable.
 We refer to $\mathcal{D}_{k}(t) \sim \mathbb{D}_{k}(t)$ as the \brlatency~of the $k$-th AP for the $t$-th broadcast with support $\set{1,\dots,t_B}$, i.e. the broadcast interval $t_B$ is set that the $k$-th AP ($\forall k\in\apSet$) could receive the complete OSI before the start of next broadcast interval.

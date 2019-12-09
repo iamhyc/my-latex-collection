@@ -42,37 +42,47 @@ In Sec.\ref{sec:conclusion}, the conclusion is given.
 
 \section{Related Works}
 \label{sec:review}
-% \cite{TOC18-LyuX,TOC17-DinhTQ}.
-There are mainly three categories of problems in edge computing: resource allocation, job offloading, and service migration.
-Specifically, the joint optimization problem is often addressed into consideration
-%NOTE: resource allocation/placement (cache-like problem), service migration (impractical, \needref)
-
-In this paper, we highlight the job dispatching problem which is NP-hard.
+%NOTE: resource placement (cache-like problem), service migration
+The recent academic researches focus on the scheduling problem in edge computing system like job offloading, resource allocation, service migration and etc.
+% Specifically, the joint optimization problem is often addressed into consideration to extend the scheduling dimensions.
+The service migration problem is addressed that the submitted jobs could be migrated to the new edge servers according to users' mobility traces.
+The work in \cite{TON19-WangSq} formulate the migration problem considering single user's trace and solve it via MDP framework.
+However, according to the recent research \cite{INFOCOM19-WuC}, the dynamic adjustment of resource allocation for running jobs on servers is hard to implement in practice.
+Hence, it's more important to determine which edge server to dispatch the jobs at the arrival time.
 
 %NOTE: single-agent dispatching, single UE/server
-Some work on job dispatching only with single user or single edge server available in the system.
-% In \cite{TOC18-LyuX}, only one MEC is considered.
+The resource allocation problem is always joint optimization together with job offload problem, including bandwidth resources, computation resources, and etc.
+The work \cite{TOC17-DinhTQ,TOC18-LyuX} consider job dispatching only with single agent in the system.
+Specifically, \cite{TOC17-DinhTQ} considers jointly energy and latency optimization with one Mobile Device (MD) by offloading the tasks to multiple servers, 
+However, the solution to single-user problem could not be easily extended to multi-user when interaction considered.
+% Some work on job dispatching only with single user or single edge server available in the system.
 
 %NOTE: centralized multi-agent related works
-Some work on job dispatching on scheduling in edge computing, mostly with centralized agent to apply action and seldom take delayed information impact into consideration.
-\cite{ACCESS19-ZhengX} is a work considering maximizing the long-term utility in MEC offloading policy, and formulating the problem with MDP solved with Q-learning (However, it is applied with a centralized controller which would suffer from communication overhead, and without performance guarantee).
-\cite{JSAC19-AlameddineHA} is a work considering task offloading, scheduling and resource allocation joint optimization with Benders Decomposition (However, delay information is previous defined).
-\cite{Fan2017} considers cooperation of multiple MEC-BSs of computation offloading to other MEC-BSs (However, it doesn't consider the offloading utility impact on other MEC-BSs, i.e. only optimize for one BSs in the cluster).
+There are also some works considering multi-agent scheduling where the implementation of information exchange scheme matters.
+\cite{Fan2017} considers cooperation of multiple MEC-BSs of computation offloading to other MEC-BSs. However, it doesn't consider the offloading utility impact on other MEC-BSs, i.e. only optimize for one BSs in the cluster.
+\cite{MOBIHOC19-LiuQ} is a work with centralized controller which determine the radio resources and computing resources for network slices on edge servers.
+The information exchange is implement via query and the authors evaluate how the query interval affects the convergence of the algorithm.
+\cite{JSAC19-AlameddineHA} is a work considering task offloading, scheduling and resource allocation joint optimization with Benders Decomposition.
+However the delay information in the system is known as fix constant, and the information exchange latency is ignored.
+\cite{ACCESS18-ZhangJ,TON18-YangL} are two works using game theory to decentralized optimize the offloading by establish the Nash equilibrium. The information exchange design is ignored in both two work.
+\cite{ACCESS19-ZhengX} is a work considering maximizing the long-term utility in MEC offloading policy, and formulating the problem with MDP solved with Q-learning.
+However, it is applied with a centralized controller which is assumed without communication overhead the Q-learning method could not guarantee the performance before its convergence.
 
 %NOTE: decentralized multi-agent related works
-Different from the previous referred works, which only consider optimization for one agent in system or using centralized agent for decision making, we focus on the impact of out-of-dated information on decision making in multiple agents distributed cooperation.
-As what we have learned for now, there are very limited discussions on this topic.
+% mostly with centralized agent to apply action and seldom take delayed information impact into consideration.
+Different from the previous referred works which merely considers the information exchange latency in the system, we focus on the impact of information staleness on decision making in distributed multi-agent cooperation.
+As what we have learned, there are very limited discussions on this topic.
 % The earliest works entangling with out-of-dated information we could find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing limited information. The agent considers communication as extra action to synchronize the states and thus incurs extra cost (However, the communication is without delay, thus converted into POMDP problem; criticize with impractical);
 One researcher group has published a series of paper on this topic \cite{JSAC17-LyuX,TOC18-LyuX,TWC18-LyuX}.
 In \cite{JSAC17-LyuX}, the authors firstly consider applying optimization in IoT scenario based on \emph{partial out-of-date knowledge}.
 However, the definition of partial knowledge is actually partiall observed at one time, and the whole information will be learned at last.
 Due to the Lyapunov optimization method adopted, the solution is actually not related to the information exchange process but converges to a stationary solution.
-In \cite{TWC18-LyuX}, the authors consideres the information exchange scenario in distributed optimization scenario, but only selfish devices considered.
+In \cite{TOC18-LyuX}, the authors optimize the task admission with partial observed information to assure the asymptotic optimality while the staleness is eliminated.
+In \cite{TWC18-LyuX}, the authors considere the information exchange scenario in distributed optimization scenario, but only selfish devices considered.
 The out-of-date information is thus blamed for optimality gap but proved to be asymptotically diminish with the proposed algorithm.
 However, the staleness of information gap could not be eliminated in complex fully-cooperative scenario, where all the agents share the same utility function to optimize.
 
 %----------------------------------------------------------------------------------------%
-
 \delete{v11}{
     \cite{Naha2018} is a survey about fog computing in delay-aware computing in IoT, and investigate numerous proposed computing architecture.
 
