@@ -1,19 +1,14 @@
 \section{POMDP-based Problem Formulation}
 %----------------------------------------------------------------------------------------%
 In this section, we formulate the optimization problem which aims at online joint optimizing job dispatching decisions of all APs.
-This kind of optimization problem falls into multi-agent planning problem, which considers a fully cooperative multi-agent system (MAS) and each agent shares the same utility function \needref{Craig Boutilie, 1999}.
+This kind of optimization problem falls into multi-agent planning problem, which considers a fully cooperative multi-agent system (MAS) and each agent shares the same utility function \cite{IJCAI99-BoutilierC}.
 In an extensive edge computing network, the transmission latency of information is not negligible and the observed system state information is always stale due to periodic broadcast and \brlatency.
 The stale system state observation is characterized as \emph{partial-observed information} in a branch of MDP problem called Decentralized Partially-Observed MDP (DEC-POMDP).
-In \needref{R.Nair, 2003}, the author describes a general multi-agent coordination problem using DEC-POMDP framework. The solution to its problem is of high complexity and requires extra information of \emph{belief states}.
+In \cite{IJCAI03-NairR}, the author describes a general multi-agent coordination problem using DEC-POMDP framework. The solution to its problem is of high complexity and requires extra information of \emph{belief states}.
 
 Hence, we formulate our problem from global perspective with a centralized agent, which could determine the new polices for each AP aware of the \brlatency.
 Specifically, we assume that the centralized agent could obtain the \brlatency~information of all APs in advance, and then apply the new policy for each AP at the corresponding \brlatency~time slot in the broadcast interval.
 The optimal solution to this problem is obtainable via Bellman's equation.
-
-\delete{v8}{Reference list
-    [1] "Sequential Optimality and Coordination in Multi-agent Systems", Craig Boutilie, 1999
-    [2] "Taming Decentralized POMDPs: Towards Efficient Policy Computation for Multi-agent Settings", R.Nair, 2003
-}
 %----------------------------------------------------------------------------------------%
 
 \subsection{System State and Dispatching Policy}
@@ -83,7 +78,7 @@ The online job dispatching problem from global perspective is given as follows.
     \label{problem_1}
 \end{problem}
 
-According to \cite{sutton1998introduction}, the above problem could be solved by the following \emph{Bellman's equation}:
+According to \cite{sutton1998}, the above problem could be solved by the following \emph{Bellman's equation}:
 \begin{align}
     V\Paren{\Stat(t)} &=g\Paren{\Stat(t), \Policy(\Stat(t), \Delay(t))}
         + \gamma \min_{\Policy(\Stat(t))}

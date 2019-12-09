@@ -1,53 +1,21 @@
 
 \section{Introduction}
+
 %NOTE: General Background of MEC and Motivation
-\fixit{
-    Edge computing is believed to be the solid solution for increasing computation-intensive and energy-hungry applications on mobile devices.
-    The edge server clusters are deployed in closer proximity to mobile devices than cloud infrastructure, which alleviates the communication overhead and enables {time-sensitive} and {deadline-aware} tasks offloading.
+Edge computing is believed to be the solid solution for increasing computation-intensive and energy-hungry applications on mobile devices.
+The edge server clusters are deployed in closer proximity to mobile devices than cloud infrastructure, which alleviates the communication overhead and enables {time-sensitive} and {deadline-aware} tasks offloading.
+\comments{
+    (large amount of mobile users wireless connected to the edge servers cluster, often in cooperation) \cite{MEC-SURVEY}.
     The edge servers are always with limited computation resources standalone, and efficient cooperation is indispensable among distributed servers.
-
-    Some works on resource allocation for jobs (cache-alike).
-
-    Some works on job dispatching or offloading, in edge or edg-cloud.
 }
 
 %NOTE: Motivation with MAN
-\fixit{
-    Nowadays, the edge computing system always presences in a distributed formation \needref{no-centralized-agent}.
-    How is the network formulated? backed by MAN with 
-
-    What's the new challenges? The 
-}
-
-%NOTE: Existing Literature 
-\fixit{
-    Edge Computation is believed to be a promising technology for solving increasingly communication congestion in backbone network.
-    (Rich-media tasks are delay-sensitive).
-    \cite{Naha2018} is a survey about fog computing in delay-aware computing in IoT, and investigate numerous proposed computing architecture.
-    Related works on job dispatching on scheduling in edge computing, mostly with centralized agent to apply action and seldom take delayed information impact into consideration.
-    There are some previous works on jobs scheduling strategies under the scenario of edge computation, together with joint optimization job dispatching and resource allocation:
-    \begin{itemize}
-        \item \cite{Zheng2019} is a work considering maximizing the long-term utility in MEC offloading policy, and formulating the problem with MDP solved with Q-learning (However, it is applied with a centralized controller which would suffer from communication overhead, and without performance guarantee);
-        \item \cite{Du2018} propose an offline algorithm with MINLP (Mixed-Integer Nonlinear Programming) problem formulation, considering min-max fairness guarantee in computation offloading and computation resource allocation in fog/edge computing scenario (However, with only one edge and one cloud node considered);
-        \item \cite{Alameddine2019} is a work considering task offloading, scheduling and resource allocation joint optimization with Benders Decomposition (However, delay information is previous defined);
-        \item \cite{Fan2017} considers cooperation of multiple MEC-BSs of computation offloading to other MEC-BSs (However, it doesn't consider the offloading utility impact on other MEC-BSs, i.e. only optimize for one BSs in the cluster).
-    \end{itemize}
-
-    Different from the previous referred works, which only consider optimization for one agent in system or using centralized agent for decision making, we focus on the impact of out-of-dated information on decision making in multiple agents distributed cooperation.
-    Due to frequent jobs releasing from users and uncertainty of jobs uploading time to servers, the obsolete information is inevitable in a purely distributed system.
-    This information sharing delay would cause severe mis-estimate for job dispatching decision making, and thus it will be hard to guarantee the cooperation among individual agents.
-    Moreover, the information sharing delay is often un-deterministic due to shared under-laid network topology, and offensively sharing strategy would cause network congestion to other normal functions.
-
-    As what we have learned for now, there are very limited discussions on this topic:
-    \begin{itemize}
-        \item The earliest works entangling with out-of-dated information we could find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing limited information. The agent considers communication as extra action to synchronize the states and thus incurs extra cost (However, the communication is without delay, thus converted into POMDP problem; criticize with impractical);
-        \item The other work \cite{ref-02} considers continuous state observation with constant or stochastic delay with single agent;
-        \item One researcher published a series of paper on this topic \cite{Lyu2017,Lyu2018,Lyu2018a,Lyu2018b}.
-            \cite{Lyu2017} is work considering \emph{partial out-of-date knowledge} optimization in IoT computing scenario, with Lyapunov optimization;
-            \text{[delay-sensitive, ToC]} \cite{Lyu2018} identify that task admission is critical to delay-sensitive applications in mobile edge computing, and proposes an (1-$\epsilon$)-approximation algorithm
-            \text{[foggy, fully distributed online]} \cite{Lyu2018a} is a work fully distributed online optimization to minimize the time-average cost and achieve asymptotic optimality over infinite time;
-            \cite{Lyu2018b} try to establish cooperation among selfish devices in fog computing, and out-of-date information is blamed for optimality gap but proved to asymptotically diminish with the proposed algorithm (However, the out-dated information is considered with limited effect);
-    \end{itemize}
+In this paper, we consider the edge computing network residing in Metropolitan Area Network (MAN), or called a city WAN \cite{MOBIHOC19-ZhouZ,tan-online,IOTJ18-FanQ}.
+\comments{
+    The new challenges exist that:
+    1) the network traffic is random \needref{from-some-white-paper} while most existing literature only considers fixed environment \needref{the-fixed-environment};
+    2) the centralized design is not possible in extensive network like MAN, while most existing literature considers the impractical centralized agent design without information exchange \needref{the-centralized-design};
+    3) moreover, the staleness of information sharing is not negligible, and the information exchange over shared communication channel interfere with normal network traffic, so that: a) latency varies; b) broadcast storm \needref{elaboration-from-wiki}
 }
 
 %NOTE: Our contributions
@@ -71,6 +39,49 @@ In Sec.III, we formulate the global optimization problem of joint optimization o
 In Sec.IV, we argue that the global joint optimization of all APs is impractical and then decouple the problem into optimization over individual APs.
 We introduce a low-complexity algorithm in Sec.V and then show the numerical analysis in Sec.VI.
 In Sec.VII, the conclusion is given.
+
+\section{Related Works}
+%NOTE: resource allocation/placement (cache-like problem), service migration (impractical, \needref)
+%NOTE: single-agent dispatching, single UE/server
+%NOTE: wired-network 
+%NOTE: multi-agent related works
+
+\fixit{
+    How is the network formulated? backed by MAN with 
+
+    What's the new challenges? The 
+}
+
+%NOTE: Existing Literature 
+\delete{v10}{
+    Edge Computation is believed to be a promising technology for solving increasingly communication congestion in backbone network.
+
+    \cite{Naha2018} is a survey about fog computing in delay-aware computing in IoT, and investigate numerous proposed computing architecture.
+    Related works on job dispatching on scheduling in edge computing, mostly with centralized agent to apply action and seldom take delayed information impact into consideration.
+    There are some previous works on jobs scheduling strategies under the scenario of edge computation, together with joint optimization job dispatching and resource allocation:
+    \begin{itemize}
+        \item \cite{Zheng2019} is a work considering maximizing the long-term utility in MEC offloading policy, and formulating the problem with MDP solved with Q-learning (However, it is applied with a centralized controller which would suffer from communication overhead, and without performance guarantee);
+        \item \cite{Du2018} propose an offline algorithm with MINLP (Mixed-Integer Nonlinear Programming) problem formulation, considering min-max fairness guarantee in computation offloading and computation resource allocation in fog/edge computing scenario (However, with only one edge and one cloud node considered);
+        \item \cite{Alameddine2019} is a work considering task offloading, scheduling and resource allocation joint optimization with Benders Decomposition (However, delay information is previous defined);
+        \item \cite{Fan2017} considers cooperation of multiple MEC-BSs of computation offloading to other MEC-BSs (However, it doesn't consider the offloading utility impact on other MEC-BSs, i.e. only optimize for one BSs in the cluster).
+    \end{itemize}
+
+    Different from the previous referred works, which only consider optimization for one agent in system or using centralized agent for decision making, we focus on the impact of out-of-dated information on decision making in multiple agents distributed cooperation.
+    Due to frequent jobs releasing from users and uncertainty of jobs uploading time to servers, the obsolete information is inevitable in a purely distributed system.
+    This information sharing delay would cause severe mis-estimate for job dispatching decision making, and thus it will be hard to guarantee the cooperation among individual agents.
+    Moreover, the information sharing delay is often un-deterministic due to shared under-laid network topology, and offensively sharing strategy would cause network congestion to other normal functions.
+
+    As what we have learned for now, there are very limited discussions on this topic:
+    \begin{itemize}
+        % \item The earliest works entangling with out-of-dated information we could find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing limited information. The agent considers communication as extra action to synchronize the states and thus incurs extra cost (However, the communication is without delay, thus converted into POMDP problem; criticize with impractical);
+        \item One researcher published a series of paper on this topic \cite{Lyu2017,Lyu2018,Lyu2018a,Lyu2018b}.
+            \cite{Lyu2017} is work considering \emph{partial out-of-date knowledge} optimization in IoT computing scenario, with Lyapunov optimization;
+            \text{[delay-sensitive, ToC]} \cite{Lyu2018} identify that task admission is critical to delay-sensitive applications in mobile edge computing, and proposes an (1-$\epsilon$)-approximation algorithm
+            \text{[foggy, fully distributed online]} \cite{Lyu2018a} is a work fully distributed online optimization to minimize the time-average cost and achieve asymptotic optimality over infinite time;
+            \cite{Lyu2018b} try to establish cooperation among selfish devices in fog computing, and out-of-date information is blamed for optimality gap but proved to asymptotically diminish with the proposed algorithm (However, the out-dated information is considered with limited effect);
+    \end{itemize}
+}
+
 %----------------------------------------------------------------------------------------%
 
 \delete{v7}{
