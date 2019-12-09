@@ -3,6 +3,9 @@
 %NOTE: General Background of MEC and Motivation
 Edge computing is believed to be the solid solution for increasing computation-intensive and energy-hungry applications on mobile devices.
 The edge server clusters are deployed in closer proximity to mobile devices than cloud infrastructure, which alleviates the communication overhead and enables {time-sensitive} and {deadline-aware} tasks offloading.
+\fixit{
+    Although such job offloading could significantly expand the capability of mobile devices, a long communication delay gets in the way inevitably since the remote clouds are usually far away from the mobile users.
+}
 \comments{
     Edge Computation is believed to be a promising technology for solving increasingly communication congestion in backbone network.
     (large amount of mobile users wireless connected to the edge servers cluster, often in cooperation) \cite{MEC-SURVEY}.
@@ -29,10 +32,14 @@ The computation jobs would be released from UEs and the dispatching decisions ar
 The information sharing scheme is proposed in this article with synchronized broadcast design. With the help of this scheme, we could immediately apply the job dispatching decision based on obsolete information, with some prior stochastic knowledge of global system.
 Our contributions are summarized as follows.
 \begin{itemize}
-    \item To our best knowledge, this is the first work to propose a global standard MDP framework to characterize the stale information in edge computing network.
-    With the broadcast information sharing scheme, the APs cooperatively dispatch the jobs;
-    \item We propose a global state MDP formulation to characterize the multiple-agent problem, i.e. single agent would consider multiple-agent decision optimality to achieve cooperation.
+    \item To our best knowledge, this is the first work trying to address the fully-cooperative decentralized multi-agent optimization problem under standard MDP framework.
     We with adopt value function approximation to reduce the traditional algorithm complexity, and come up with performance guarantee performance bound.
+
+    \item We consider the uploading time and processing time on AP and edge servers, respectively, both being stochastic.
+    With the undetermined job arrival processes on edge servers under non-stationary dispatching decisions of APs, we are capable to evaluate the long-term queueing time under the dispatching decisions to be optimized.
+
+    \item The iterative policy update algorithm is proposed with information staless-aware, and alleviates the impact of latency by leveraging the partially observed information in the system.
+    Moreover, an innovative low-complexity solution is introduced to alleviate the curse of dimensionality in the conventional policy iteration algorithm.
 \end{itemize}
 
 The remainder of this paper is organized as follows.
