@@ -13,13 +13,13 @@ While the most of the existing literature consider the fixed or negligible commu
 This brings new challenges to the job dispatcher design in the edge computing network which relies on the observation of system status.
 Firstly, the propagation latency of small control information may vary a lot due to congestion, and thus the centralized scheduler is discouraged without timely interaction with APs or edge servers.
 Secondly, the stalesness of information is not negligible and the information exchange would cause misestimate for disaptching decision making.
-Last but not the least, the fully-cooperation of decentralized agents requires sharing utility function according to \cite{IJCAI03-NairR} and the partially observed information from different dispatchers is not identical all the time.
+Last but not the least, the fully-cooperation of decentralized agents requires sharing utility function according to \cite{IJCAI03-NairR} and the observed information from different dispatchers is not identical all the time.
 
 %NOTE: Our contributions
 In this paper, we focus on the decentralized cooperative dispatcher design at APs with stale information in the edge computing network.
 % The computation jobs would be released from UEs and the dispatching decisions are determined distributed on each AP nodes as depicted in Fig.\ref{fig:system}.
 The information sharing scheme is proposed in this article with periodic broadcast design.
-With the help of MDP problem formulation, we could optimize the job dispatching decisions at APs with partially observed broadcast information under random communication latency.
+With the help of MDP problem formulation, we could optimize the job dispatching decisions at APs with partially collected broadcast information under random communication latency.
 Our contributions are summarized as follows.
 \begin{itemize}
     \item To our best knowledge, this is the first work trying to address the fully-cooperative decentralized multi-agent optimization problem under standard MDP framework.
@@ -28,7 +28,7 @@ Our contributions are summarized as follows.
     \item We consider the uploading time and processing time on AP and edge servers, respectively, both being stochastic.
     With the undetermined job arrival processes on edge servers under non-stationary dispatching decisions of APs, we are capable to evaluate the long-term queueing time under the dispatching decisions to be optimized.
 
-    \item The iterative policy update algorithm is proposed with information staless-aware, and alleviates the impact of latency by leveraging the partially observed information in the system.
+    \item The iterative policy update algorithm is proposed with information staless-aware, and alleviates the impact of latency by leveraging the partially collected information in the system.
     Moreover, an innovative low-complexity solution is introduced to alleviate the curse of dimensionality in the conventional policy iteration algorithm.
 \end{itemize}
 

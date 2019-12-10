@@ -11,53 +11,52 @@
 
 We consider an edge computing system with $K$ Access Points (APs) and $M$ edge servers, which are connected in a network as illustrated in Fig.\ref{fig:system}.
 The sets of APs and edge servers are denoted as $\apSet \define \set{1,\dots,K}$ and $\esSet \define \set{1,\dots,M}$, respectively.
-Without loss of generality, it is assumed that there are $J$ types of computation jobs supported in this system, which are denoted via the set $\mathcal{J} \define \set{1,\dots,J}$.
-Each AP collects the computation jobs from the mobile users within its coverage, and makes decision on the processing edge servers for each job type from the set $\esSet$.
-It is assumed that the $k$-th AP only dispatches the computation jobs to the edge servers within a certain number of hops.
-Let $\esSet_{k} \subseteq \esSet$ be the set of edge servers which can compute the jobs from the $k$-th AP and $\apSet_{m}$ be the set of APs, which may upload jobs to the $m$-th edge server.
-We refer to $\esSet_{k}$ as the \emph{candidate server set} of the $k$-th AP, and $\apSet_{m}$ as the \emph{potential AP set} of the $m$-th edge server ($\forall k\in\apSet, m\in\esSet$).
-\accept{
-    Different APs may have different candidate servers according to their locations in the network, as illustrated in Fig.\ref{fig:system}.
+\comments{
+    The communication latency among these APs and edge servers is random.
 }
-In this edge computing network, each AP and edge server periodically broadcast their state information (the state information is defined in the following subsection), and one AP updates its strategy of job dispatching when receiving part of the broadcast state information.
-In this paper, we shall optimize the job dispatching strategy at APs with partially observed broadcast information and random broadcast latency.
+Without loss of generality, it is assumed that there are $J$ types of jobs computed in this system, which are denoted via the set $\mathcal{J} \define \set{1,\dots,J}$.
+Each AP collects the computation jobs from the mobile users within its coverage, and makes decision on the processing edge servers for each job type.
+It is assumed that the $k$-th AP only dispatches the computation jobs to the edge servers within a certain number of hops.
+Let $\esSet_{k} \subseteq \esSet$ be the set of edge servers which can compute the jobs from the $k$-th AP, and $\apSet_{m}$ be the set of APs, which may upload jobs to the $m$-th edge server.
+We refer to $\esSet_{k}$ as the \emph{candidate server set} of the $k$-th AP, and $\apSet_{m}$ as the \emph{potential AP set} of the $m$-th edge server ($\forall k\in\apSet, m\in\esSet$).
+Different APs may have different candidate servers according to their locations in the network, as illustrated in Fig.\ref{fig:system}.
+In this edge computing network, each AP and edge server periodically broadcast their state information (the state information is defined in the Section \ref{subsec:broadcast}), and one AP updates its strategy of job dispatching when receiving the broadcast state information.
+In this paper, we shall optimize the job dispatching strategy distributively at APs with partially collected broadcast state information and random broadcast latency.
 
 %NOTE: [job space support and arrival process]
 The time axis is organized by time slots.
-The job arrivals in each time slot on each AP are modelled via independent Bernoulli distributions.
-Specifically, the arrivals of the $j$-th job type at the $k$-th AP in different time slots are independent and identically distributed (i.i.d) Bernoulli random variables, and the arrival probability is denoted as $\lambda_{k,j}$ ($\forall k\in\apSet, j\in\jSpace$).
-Let $A_{k,j}(t) \in \set{0,1}$ represents the event of job arrival, where $A_{k,j}(t)=1$ means one job of the $j$-th job type arrives on the $k$-th at the $t$-th time slot, and $A_{k,j}(t)=0$ means other wise.
+The job arrivals of the $j$-th job type at the $k$-th AP ($\forall k\in\apSet,j\in\jSpace$) in different time slots are assumed to be independent and identically distributed (i.i.d.) Bernoulli random variables, and the arrival probability is denoted as $\lambda_{k,j}$.
+Let $A_{k,j}(t) \in \set{0,1}$ represents the event of job arrival, where $A_{k,j}(t)=1$ means one job of the $j$-th job type arrives at the $k$-th AP in the $t$-th time slot, and $A_{k,j}(t)=0$ means other wise.
 Hence,
 \begin{align}
-    \Pr\{ A_{k,j}(t) = 1 \} = \lambda_{k,j}, \forall t,k\in\apSet,j\in\jSpace
+    \Pr\{ A_{k,j}(t) = 1 \} = \lambda_{k,j}, \forall t,k\in\apSet,j\in\jSpace.
 \end{align}
 
 %NOTE: [uploading process]
-Each AP then immediately dispatches each type of received jobs to one edge server.
-Different types of jobs may have different distributions on the input data size.
+Each AP immediately dispatches each type of received jobs to one edge server.
+Different types of jobs may have different distributions of the input data size.
 Moreover, due to the random traffic in the network, the job uploading from one AP to one edge server consumes a random number of time slots.
-It is assumed that the distributions of uploading time are independent between any two uploading jobs.
-\accept{
-    Let $\mathcal{U}_{k,m,j} \sim \mathbb{U}_{k,m,j}$ be the uploading time distribution for the $j$-th job type uploading from the $k$-th AP to the $m$-th edge server with support $\set{1, \dots, \Xi}$, where $\Xi$ denotes the maximum uploading time ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
-}
-In practice, the distribution of uploading latency may not be known to the APs or edge servers in advance.
+It is assumed that the distributions of uploading time are independent for each job.
+Specifically, let $\mathbb{U}_{k,m,j}(\Xi)$ be the uploading latency distribution of the $j$-th job type from the $k$-th AP to the $m$-th edge server with support $\set{1, \dots, \Xi}$ ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
+% In practice, the distribution of uploading latency may not be known to the APs or edge servers in advance.
 
 %NOTE: [processing process]
-There are $J$ virtual machines (VMs) running parallel on each edge server for the computation of $J$ job types, respectively.
+There are $J$ parallel virtual machines (VMs) running on each edge server for processing the $J$ job types, respectively.
 For each job type, the uploaded jobs are computed in a First-Come-First-Serve (FCFS) manner.
-Hence, a processing queue with maximum $L_{max}$ jobs is established for each VM.
+Hence, a processing queue with a maximum job number $L_{max}$ is established for each VM.
 The arrival jobs will be discarded when the processing queue is full.
-Furthermore, we adopt the \emph{unrelated machines assumption} in \cite{tan-online} for job processing on edge servers.
-Specifically, it is assumed that the computation time of different job types on different edge servers follows the memory-less Geometric distribution (with the unit of time slot) with different expectations \cite{TOWC18-HuangKb}.
-Let $C_{m,j} \sim \mathbb{G}(1/c_{m,j})$ be the computation time distribution of the $j$-th job type on the $m$-th edge server, where $c_{m,j}$ is the expectation.
-Hence, the probability mass function (PMF) of $C_{m,j}$ is given by:
+Furthermore, we adopt the \emph{unrelated machines assumption} as in \cite{tan-online}.
+Specifically, it is assumed that the computation time of different job types on different edge servers follows independent memory-less Geometric distribution with different expectations \cite{TOWC18-HuangKb}.
+Let $\mathbb{G}(1/c_{m,j})$ be the distribution of the computation time slots for the $j$-th job type on the $m$-th edge server, where $\mathbb{G}$ denotes the Geometric distribution, and $c_{m,j}$ is the expectation.
+Let $f_{m,j}$ be its probability mass function (PMF) and we have:
 \begin{align}
     f_{m,j}(k) \define (1-\frac{1}{c_{m,j}})^{k-1} \frac{1}{c_{m,j}}.
 \end{align}
 %----------------------------------------------------------------------------------------%
 
 \subsection{Periodic Broadcast of State Information}
-In order to facilitate cooperative dispatching for the APs, it is assumed that all the APs and edge servers will broadcast their \emph{local state information} (LSI) every $t_B$ time slots.
+\label{subsec:broadcast}
+In order to facilitate distributive dispatching for the APs, it is assumed that all the APs and edge servers will broadcast their \emph{local state information} (LSI) every $t_B$ time slots.
 % as depicted in Fig.\ref{fig:brd-timeline}.
 We shall refer to every $t_B$ time slots as a broadcast interval.
 At the beginning of each broadcast interval (say the $t$-th broadcast interval), the LSI for AP and edge server is defined as follows, respectively.
