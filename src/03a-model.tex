@@ -141,6 +141,10 @@ Specifically, the \emph{conflict AP sets} and the \emph{observed state informati
 
 The $k$-th AP is able to collect its OSI at the $\mathcal{D}_{k}(t)$-th time slots of the $t$-th broadcast time slot, where the broadcast latency $\mathcal{D}_{k}(t)$ is a random variable.
 It is assumed that $\mathcal{D}_{k}(t)$ follows identical and independent distribution in different broadcast interval.
+\comments{
+    We refer to $\mathcal{D}_{k}(t)$ as the \brlatency~of the $k$-th AP in the $t$-th broadcast interval.
+    An example is given below to demonstrate how the \brlatency~affects the reception of OSI and the update of the dispatching strategy.
+}
 % We refer to $\mathcal{D}_{k}(t) \sim \mathbb{D}_{k}(t)$ as the \brlatency~of the $k$-th AP for the $t$-th broadcast with support $\set{1,\dots,t_B}$, i.e. the broadcast interval $t_B$ is set that the $k$-th AP ($\forall k\in\apSet$) could receive the complete OSI before the start of next broadcast interval.
 % One AP shall update its dispatching decision immediately after the reception of its OSI.
 % An example is given below to demonstrate the decision changes.
