@@ -60,7 +60,7 @@ In order to facilitate distributive dispatching for the APs, it is assumed that 
 We shall refer to every $t_B$ time slots as a broadcast interval.
 \comments{
     At the beginning of each broadcast interval, the LSIs of APs and edge servers defined as follows are broadcast, and each AP updates its policy of job dispatching when receives part of the broadcast LSIs.
-    Let $\omega_{k,j}(t)$ be the target processing edge server for the type $j$ jobs of the $k$-th AP at the very beginning of the $t$-th broadcast interval, and the job dispatching strategy will be updated to $\omega_{k,j}(t+1)$ when the $k$-th AP collect part of the broadcast LSIs of the $(t+1)$-th broadcast interval (which is referred to as \emph{observed state information} in definition \ref{def:OSI})
+    Let $\omega_{k,j}(t)$ be the target processing edge server for the type $j$ jobs of the $k$-th AP at the very beginning of the $t$-th broadcast interval, and the job dispatching strategy will be updated to $\omega_{k,j}(t+1)$ when the $k$-th AP collect part of the broadcast LSIs of the $t$-th broadcast interval (which is referred to as \emph{observed state information} in definition \ref{def:OSI})
 }
 
 %NOTE: State and Broadcast Information for AP
@@ -154,6 +154,3 @@ It is assumed that $\mathcal{D}_{k}(t)$ follows identical and independent distri
     At the start of the second broadcast interval, it will firstly keep the the previous decisions unchanged, and then updates the decisions immediately $\mathcal{D}_{1}(t+1)$ time slots later which is denoted as $\set{\omega_{1,j}(t+1) | \forall j\in\jSpace}$.
     And then it repeats the process for the remaining of the time.
 \end{example}
-
-%----------------------------------------------------------------------------------------%
-%----------------------------------------------------------------------------------------%

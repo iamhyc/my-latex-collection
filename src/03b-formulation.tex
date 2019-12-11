@@ -1,31 +1,18 @@
 \section{POMDP-based Problem Formulation}
 \label{sec:formulation}
 %----------------------------------------------------------------------------------------%
-In this section, we formulate the optimization problem which aims at online joint optimizing job dispatching decisions of all APs.
-This kind of optimization problem falls into multi-agent planning problem, which considers a fully cooperative multi-agent system (MAS) and each agent shares the same utility function \cite{IJCAI99-BoutilierC}.
-In an extensive edge computing network, the transmission latency of information is not negligible and the observed system state information is always stale due to periodic broadcast and \brlatency.
-The stale system state observation is characterized as \emph{partial-observed information} in a branch of MDP problem called Decentralized Partially-Observed MDP (DEC-POMDP).
-In \cite{IJCAI03-NairR}, the author describes a general multi-agent coordination problem using DEC-POMDP framework. The solution to its problem is of high complexity and requires extra information of \emph{belief states}.
+In this section, we formulate the optimization of job dispatching at all APs as a Markov decision process (MDP) problem.
+The individual dispatching policy of one AP, the system dispatching policy, and the cost function are first defined below.
 
-Hence, we formulate our problem from global perspective with a centralized agent, which could determine the new polices for each AP aware of the \brlatency.
-Specifically, we assume that the centralized agent could obtain the \brlatency~information of all APs in advance, and then apply the new policy for each AP at the corresponding \brlatency~time slot in the broadcast interval.
-The optimal solution to this problem is obtainable via Bellman's equation.
-%----------------------------------------------------------------------------------------%
-
-\subsection{System State and Dispatching Policy}
-We refer to GSI $\Stat(t)$ as the \emph{system state} of the $t$-th broadcast interval.
-The definition of job dispatching policy is given as follows for individual policy of each AP and joint policy of all APs, respectively.
-We formulate the multi-agent MDP problem from a global perspective, where each AP adopts the dispatching policy mapping from its corresponding OSI.
-\begin{definition}[Individual Dispatching Policy of AP]
+\begin{definition}[Individual Dispatching Policy of APs]
     The individual policy of the $k$-th AP ($\forall k \in\apSet$) maps from its OSI to the dispatching decision on edge servers for each job type.
     \begin{align}
         &\Omega_{k} \Paren{ \Stat_{k}(t), \mathcal{D}_{k}(t) }
-        \define \set{\omega_{k,j}(t)|\forall j\in\jSpace}.
+        \define \set{\omega_{k,j}(t+1)|\forall j\in\jSpace}.
         \label{def:action}
     \end{align}
 \end{definition}
 
-And the global-wise joint policy is defined as follows.
 \begin{definition}[System Dispatching Policy]
     The joint dispatching policy $\Policy(\Stat(t))$ of all APs is a map from system state $\Stat(t)$, which is composed of individual policies at the $t$-th broadcast time slot.
     \begin{align}
@@ -35,27 +22,13 @@ And the global-wise joint policy is defined as follows.
     \end{align}
     where $\Delay(t) \define \set{ \mathcal{D}_{1}(t), \dots, \mathcal{D}_{K}(t) }$.
 \end{definition}
-%----------------------------------------------------------------------------------------%
-\subsection{Centralized Optimization Problem}
-%NOTE: The Cost Function Definition
-In the edge computing system, each AP individually performs job dispatching decision, and coordinates in a fully cooperative manner by sharing the same utility function.
-We propose the job dispatching optimization problem with the target to minimize \emph{average response time} of all offloaded jobs in MEC system.
-The \emph{average response time} is composed of uploading time, waiting time and processing time on edge server.
-According to \emph{Little's Law}, to minimize the average response time of all jobs is equal to minimize the average number of jobs in the system.
-Hence, the cost function in each time slot is defined as follows.
-\begin{definition}[Per Time-slot Cost Function]
-    At the $n$-th time slot in the $t$-th broadcast interval, the cost function is defined as:
-    \begin{align}
-        g(t,n) \define & \sum_{j\in\jSpace}\Brace{
-            \sum_{k\in\apSet}\sum_{m\in\esSet} \Inorm{\vec{R}^{(k)}_{m,j}(t,n)} + \sum_{m\in\esSet}\sum_{j\in\jSpace} Q_{m,j}(t,n)
-        }.
-    \end{align}
-\end{definition}
 
-Due to the periodic information broadcasting, we collect the cost for counting numbers each interval, which could be considered as a uniform sampling at time-slot scale.
-Besides the cost for job response time, we further add penalty on job discarded when the queue is full.
-The definition of the system cost function is given as follows.
-\begin{definition}[System Cost Function]
+% In the edge computing system, each AP individually performs job idspatching decision, and coordinates in a fully cooperative manner by sharing the same utility function.
+We propose the job dispatching optimization problem with the target to minimize the \emph{average response time}, which consists of the uploading time, waiting time and processing time, of all offloaded jobs in MEC system.
+According to the Little's law, the average response time per job (number of time slots from job arrival to the completeness of computation) is proportional to the number of jobs in the system.
+% We define the following weighted sum of the job number and job overflow penalty as the system cost at the $t$-th broadcast interval.
+
+\begin{definition}[Cost Function Per Broadcast Interval]
     \begin{align}
         g\Paren{\Stat(t), \Policy(\Stat(t))} \define
             &\sum_{j\in\jSpace} \Brace{
@@ -64,22 +37,29 @@ The definition of the system cost function is given as follows.
                 &\sum_{m\in\esSet} \{ Q_{m,j}(t,0) + \beta \cdot \mat{I}[Q_{m,j}(t,0)=L_{max}] \}
             },
     \end{align}
-    where $\beta$ is the weight factor for discard penalty ($\beta \in (0,1)$).
+    where $\Inorm{\vec{x}}$ denotes the $L^1$-norm of the vector $\vec{x}$, and $\beta$ is the weight factor for discard penalty ($\beta \in (0,1)$).
+\end{definition}
+
+\begin{definition}[Discounted Summation Cost]
+    \begin{align}
+        \bar{G}(\Stat, \Policy) \define \lim_{T \to \infty} \mathbb{E}^{\Policy}_{\set{\Stat(t)|\forall t}} \Bracket{
+            \sum_{t=1}^{T} \gamma^{t-1} g\Paren{
+                \Stat(t), \Policy(\Stat(t), \Delay(t)) | \Stat(1)
+            }
+        },
+    \end{align}
+    where $\mathbb{E}^{\Policy}_{\set{\Stat(t)|\forall t}}[\cdot]$ denotes the expectation with respect to all possible system state in the furture given scheduling policy $\Policy$, and $\gamma \in (0,1)$ is the discount factor.
 \end{definition}
 %----------------------------------------------------------------------------------------%
-
 The online job dispatching problem from global perspective is given as follows.
 \begin{problem}[Centralized Job Dispatching Problem]
     \begin{align}
-        \min_{\Policy} \lim_{T \to \infty}
-            \mathbb{E}_{\Policy}
-                \Bracket{ \sum_{t=1}^T \gamma^{(t-1)} g\Paren{\Stat(t), \Policy(\Stat(t), \Delay(t))} | \Stat(1) },
+        \Omega^{*} \define \arg\min_{\Policy} \bar{G}(\Stat, \Policy).
     \end{align}
-    where the cost is collected with discount factor $\gamma$.
     \label{problem_1}
 \end{problem}
 
-According to \cite{sutton1998}, the above problem could be solved by the following \emph{Bellman's equation}:
+If the GSI and \brlatency~are known to all the APs, the MDP inf Problem \ref{problem_1} can be solved via the following Bellman's equations as in \cite{sutton1998}.
 \begin{align}
     V\Paren{\Stat(t)} &=g\Paren{\Stat(t), \Policy(\Stat(t), \Delay(t))}
         + \gamma \min_{\Policy(\Stat(t))}
@@ -87,30 +67,19 @@ According to \cite{sutton1998}, the above problem could be solved by the followi
         &\sum_{\Stat(t+1)} \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t), \Delay(t)) } \cdot V\Paren{\Stat(t+1)},
     \label{eqn:sp_0}
 \end{align}
-where the value function $V(\Stat(t))$ of the optimal policy $\Policy^{*}(\Stat(t), \Delay(t))$ is defined as follows.
+where the value function $V(\Stat(t))$ of the optimal policy $\Policy^{*}$ is defined as follows.
 \begin{align}
-    V\Paren{\Stat(t)} \define \lim_{T\to\infty} \sum_{t=0}^{T} \gamma^{T} \mathbb{E}_{\Policy, \Delay} \Bracket{
-        g\Paren{ \Stat(t), \Policy(\Stat(t), \Delay(t)) }
+    V\Paren{\Stat(t)} \define \lim_{T\to\infty} \sum_{t=0}^{T} \gamma^{T}
+    \mathbb{E}^{\Policy^*}_{\set{\Stat(t)|\forall t}, \Delay} \Bracket{
+        g\Paren{ \Stat(t), \Policy^{*}(\Stat(t), \Delay(t)) }
     }.
 \end{align}
+% where $\mathcal{A} \define \set{A_{k,j}|\forall k\in\apSet,j\in\jSpace}$.
 
-In practice, however, the GSI is not available for all APs as the reception latency of GSI may be unacceptable.
-Moreover, due to the randomness of \brlatency, it is also impossible for any AP to obtain or predict other APs' LSI without knowning their \brlatency~information in the interval.
-Thus, we leverage the problem structure of the global perspective problem but decouple it into $K$-sub problems
-with OSI.
-In the next section, we propose the low-complexity solution scheme where each AP could update its dispatching policy decentralized in an iterative manner.
-Frther, the low-complexity solution is introduced to alleviate the curse of dimensionality when evaluation the Bellman's equation.
-Withe help of the algorithm design, we could prove that our improved new policy is with analytical performance bound under MDP framework.
-
-%----------------------------------------------------------------------------------------%
-\delete{v8}{
-    % Thus, the $k$-th AP could not determine a new policy in a fully cooperative way, while other APs also change their policies at their time slots receiving the GSI.
-    and a low-complexity solution is introduced to alleviate the curse of dimensionality.
-    And in the next section, we will leverage the problem structure and propose the practical algorithm without centralized agent assumption.
-
-    In the next section, we will first formulate the joint optimization of dispatching decisions of all APs under standard MDP framework.
-    From the global perspective of the edge computing system, the \brlatency~$\mathcal{D}_{k}$(t) ($\forall k\in\apSet$) is always available to a centralized agent.
-    % Then we leverage the Bellman's equation in this problem formulation, and come up with a practical decentralized solution in the algorithm section. 
-    Furthermore, with the help of algorithm design we could prove that our improved new policy is with analytical performance bound under MDP framework.
+\comments{
+    However, it is infeasible to solve the above Bellman's equations in our problem.
+    This is because each AP can only obtain the OSI which is a partial of GSI, and the \brlatency~$\mathcal{D}_{k'}$ shall not be known to the $k$-th AP ($\forall k \neq k' \in\apSet$).
 }
+The general solution of POMDP is of huge complexity \cite{IJCAI03-NairR,IJCAI99-BoutilierC}.
+In this paper, we shall propose a low-complexity solution based on an analytical approximation of the value function, where the optimization on the right-hand-side of the Ballman's equations can be decoupled to each AP and solved locally.
 %----------------------------------------------------------------------------------------%
