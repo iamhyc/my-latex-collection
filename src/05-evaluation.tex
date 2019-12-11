@@ -1,23 +1,21 @@
 \section{Performance Evaluation}
 \label{sec:evaluation}
-\subsection{Parameter Settings}
-\begin{figure*}[htp!]
-    \centering
-    \begin{tabular}{ccc}
-        \includegraphics[width=0.30\textwidth]{images/535_LowPressure_NoDelay.pdf}&
-        \includegraphics[width=0.30\textwidth]{images/535_LowPressure_LargeDelay_cdf.pdf}&
-        \includegraphics[width=0.30\textwidth]{images/535_LowPressure_FullDelay.pdf}
-        \\
-        {\small (a) No \brlatency} &
-        {\small (b) Large \brlatency} &
-        {\small (c) Whole-interval \brlatency}
-    \end{tabular}
-    \caption{Evaluation of Information Staleness Impact on Algorithm Robustness under Low Back Pressure.}
-    \label{fig:eval_delay}
-\end{figure*}
+
+
+\subsection{Experimental Setups}
+
+\textbf{Data Trace Extraction:}
+We use the Google data trace for cloud computing\needref{google-data-trace}.
+There is no broadcast latency, uploading time, and processing distriburtion information specified in the data trace.
+Hence, we extract the arrival and instead of using the original data trace for fairness.
+And we manipulate the original data with random generated latency distribution.
+
+\textbf{System Parameters Setup:}
+We implement the system in a small scale setting where fully-accessible APs and edge servers are considered.
+specifically, there are $K=8$ APs, $M=5$ edge servers, and $J=5$ type of jobs in the system corresponding to the manipulated data trace.
+Each time slot is taken as $\tau = 0.05$ i.e. 50ms, and the broadcast interval is taken as $25$ time slots.
 
 \begin{itemize}
-    \item \comments{Small scale setting with fully-connected APs and edge server with:} $K=5$ APs, $M=3$ edge servers, and $J=5$ types of jobs;
     \item Each time slot with $\tau=0.05$ s (a.k.a $50$ ms), and broadcast interval $T=N \cdot \tau$ with $N=30$;
     \item The maximum uploading time is $\Xi = 3 T$, and the \brlatency is shorter than $t_B$;
     \item (arrival rate is random generated as $\lambda_{k,j} \ll 1/N$)
@@ -54,7 +52,25 @@ Compared Algorithm:
 % \end{itemize}
 
 \subsection{Performance Analysis}
-Compared with different parameter settings:
+
+%NOTE: delay information on 
+\textbf{Compared with different \brlatency.}
+\begin{figure*}[htp!]
+    \centering
+    \begin{tabular}{ccc}
+        \includegraphics[width=0.30\textwidth]{images/535_LowPressure_NoDelay.pdf}&
+        \includegraphics[width=0.30\textwidth]{images/535_LowPressure_LargeDelay_cdf.pdf}&
+        \includegraphics[width=0.30\textwidth]{images/535_LowPressure_FullDelay.pdf}
+        \\
+        {\small (a) No \brlatency} &
+        {\small (b) Large \brlatency} &
+        {\small (c) Whole-interval \brlatency}
+    \end{tabular}
+    \caption{Evaluation of Information Staleness Impact on Algorithm Robustness under Low Back Pressure.}
+    \label{fig:eval_delay}
+\end{figure*}
+In 
+
 \begin{itemize}
     \item CDF of cost (Average JCT), with different broadcast $t_B$ setting;
     \item CDF of cost (Average JCT), with different \brlatency $D_{i,k}$ setting;
