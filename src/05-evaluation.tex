@@ -1,6 +1,55 @@
 \section{Performance Evaluation}
 \label{sec:evaluation}
-\subsection{Parameter Settings}
+
+
+\subsection{Experimental Setups}
+
+\textbf{Data Trace Extraction:}
+We use the Google data trace for cloud computing\needref{google-data-trace}.
+There is no broadcast latency, uploading time, and processing distriburtion information specified in the data trace.
+Hence, we extract and scale the arrival and processing time in the original data trace.
+And we manipulate the original data with random generated latency distribution.
+
+\textbf{System Parameters Setup:}
+We implement the system in a small scale setting where fully-accessible APs and edge servers are considered.
+specifically, there are $K=8$ APs, $M=5$ edge servers, and $J=5$ type of jobs in the system corresponding to the manipulated data trace.
+Each time slot is taken as $\tau = 0.05$ i.e. 50ms, and the broadcast interval is taken as $25$ time slots.
+\fixit{
+    The maximum uploading time is $\Xi = 3 T$, and the \brlatency is shorter than $t_B$;
+    The arrival rate is taken as samll probability with enough APs in the system, and correspondingly enough edge servers for the processing.
+    Each queue on edge server with maximum 10 jobs because our algorithm is strong enough to predict the overflowto ensure a reliable system.
+}
+
+\textbf{Compared Algorithms:}
+We compare the proposed algorithm with other three heuristic algorithms.
+Compared Algorithm:
+\begin{itemize}
+    \item \textbf{Random Dispatching Policy}:
+            randomly dispatch jobs to edge servers;
+    \item \textbf{Local Selfish Algorithm (baseline policy)}:
+            always choose the edge server with the minimum expected uploading time plus the expected processing time for each job type; this policy is also taken as the initial fixed policy of our proposed algorithm;
+    \item \textbf{Local Queue-aware Greedy Algorithm}:
+            always choose the edge server with the minimum expected uploading time, plus the expected queueing time based on the observation of stale queue state.
+\end{itemize}
+Specifically, we choose a heuristic selfish policy as the start and the definition is given as follows.
+\begin{definition}[Selfish Policy]
+    \begin{align}
+        \Baseline &\define \Bracket{ \Pi_{1}, \dots, \Pi_{K} }
+        \\
+        \pi_{k,j} &\define \arg\min_{m} \mathbb{E}[U_{k,m,j}] + \mathbb{E}[C_{m,j}]
+    \end{align}
+\end{definition}
+
+\subsection{Performance Analysis}
+
+\begin{figure*}[htp!]
+    \centering
+    \includegraphics[width=0.80\textwidth]{images/Figure_1.pdf}
+    \caption{Timeline illustration.}
+    \label{fig:general_timeline}
+\end{figure*}
+
+\textbf{Compared with different \brlatency.}
 \begin{figure*}[htp!]
     \centering
     \begin{tabular}{ccc}
@@ -15,54 +64,18 @@
     \caption{Evaluation of Information Staleness Impact on Algorithm Robustness under Low Back Pressure.}
     \label{fig:eval_delay}
 \end{figure*}
+In 
 
+%FIXME: [abandon, cause useless]
+\textbf{Estimation Error Analysis.}
+(If these graphs are not good, they are not going to appear on final draft.)
 \begin{itemize}
-    \item \comments{Small scale setting with fully-connected APs and edge server with:} $K=5$ APs, $M=3$ edge servers, and $J=5$ types of jobs;
-    \item Each time slot with $\tau=0.05$ s (a.k.a $50$ ms), and broadcast interval $T=N \cdot \tau$ with $N=30$;
-    \item The maximum uploading time is $\Xi = 3 T$, and the \brlatency is shorter than $t_B$;
-    \item (arrival rate is random generated as $\lambda_{k,j} \ll 1/N$)
-    \item job processing time distribution generated from real data trace;
-    \item Each queue on edge server with maximum 10 jobs.
+    \item Two curves, one for real cost against time slot, one for expected sampling cost against time intervals; (if the accumulate area within the latter one has little/bounded error with real cost, then it is okay and the correctness is support by simulation)
+    \item 
 \end{itemize}
 
-Specifically, we choose a heuristic selfish policy as the start and the definition is given as follows.
-\begin{definition}[Selfish Policy]
-    \begin{align}
-        \Baseline &\define \Bracket{ \Pi_{1}, \dots, \Pi_{K} }
-        \\
-        \pi_{k,j} &\define \arg\min_{m} \mathbb{E}[U_{k,m,j}] + \mathbb{E}[C_{m,j}]
-    \end{align}
-\end{definition}
+\textbf{Different $t_B$ setting.}
+    average cost (Average JCT) v.s. different broadcast $t_B$ setting;
 
-We compare the proposed algorithm with other three heuristic algorithms.
-Compared Algorithm:
-\begin{itemize}
-    \item \textbf{Random Dispatching Policy}:
-            randomly dispatch jobs to edge servers;
-    \item \textbf{Local Selfish Algorithm (baseline policy)}:
-            always choose the edge server with the minimum expected uploading time plus the expected processing time for each job type; this policy is also taken as the initial fixed policy of our proposed algorithm;
-    \item \textbf{Local Queue-aware Greedy Algorithm}:
-            always choose the edge server with the minimum expected uploading time, plus the expected queueing time based on the observation of stale queue state.
-\end{itemize}
-
-% [abandon, cause useless]
-% \subsection{Estimation Error Analysis}
-% (If these graphs are not good, they are not going to appear on final draft.)
-% \begin{itemize}
-%     \item Two curves, one for real cost against time slot, one for expected sampling cost against time intervals; (if the accumulate area within the latter one has little/bounded error with real cost, then it is okay and the correctness is support by simulation)
-%     \item 
-% \end{itemize}
-
-\subsection{Performance Analysis}
-Compared with different parameter settings:
-\begin{itemize}
-    \item CDF of cost (Average JCT), with different broadcast $t_B$ setting;
-    \item CDF of cost (Average JCT), with different \brlatency $D_{i,k}$ setting;
-\end{itemize}
-
-Compared with other algorithms:
-\begin{itemize}
-    \item CDF of cost (Average JCT);
-    \item CDF of queue length;
-    \item CDF of \# of dropped jobs (over the queue limit);
-\end{itemize}
+\textbf{Different Penalty Factors.}
+CDF of \# of dropped jobs (over the queue limit); CDF of queue length;
