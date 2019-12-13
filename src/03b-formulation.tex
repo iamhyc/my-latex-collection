@@ -2,19 +2,19 @@
 \label{sec:formulation}
 %----------------------------------------------------------------------------------------%
 In this section, we formulate the optimization of job dispatching at all APs as a Markov decision process (MDP) problem.
+Since each AP update the job dispatching strategy according to OSI instead of GSI, the MDP problem is a partially observable MDP (POMDP).
 The individual dispatching policy of one AP, the system dispatching policy, and the cost function are first defined below.
 
-\begin{definition}[Individual Dispatching Policy of APs]
-    The individual policy of the $k$-th AP ($\forall k \in\apSet$) maps from its OSI to the dispatching decision on edge servers for each job type.
+\begin{definition}[Dispatching Policy]
+    The individual policy of the $k$-th AP $\Omega_{k}$ ($\forall k \in\apSet$) maps from its OSI $\Stat_{k}$ and its \emph{delivery latency} $\Delay_{k}$ to the dispatching strategy for each job type, i.e.,
     \begin{align}
         &\Omega_{k} \Paren{ \Stat_{k}(t), \mathcal{D}_{k}(t) }
         \define \set{\omega_{k,j}(t+1)|\forall j\in\jSpace}.
         \label{def:action}
     \end{align}
-\end{definition}
 
-\begin{definition}[System Dispatching Policy]
-    The joint dispatching policy $\Policy(\Stat(t))$ of all APs is a map from system state $\Stat(t)$, which is composed of individual policies at the $t$-th broadcast time slot.
+    The aggregation of individual policy of all APs is referred to as the system dispatch policy $\Policy$.
+    Thus,
     \begin{align}
         \Policy\Paren{ \Stat(t), \Delay(t) } \define \Brace{
             \Omega_{1}(\Stat_{1}(t), \mathcal{D}_{1}(t)), \dots, \Omega_{K}(\Stat_{K}(t),\mathcal{D}_{K}(t))
@@ -24,11 +24,12 @@ The individual dispatching policy of one AP, the system dispatching policy, and 
 \end{definition}
 
 % In the edge computing system, each AP individually performs job idspatching decision, and coordinates in a fully cooperative manner by sharing the same utility function.
-We propose the job dispatching optimization problem with the target to minimize the \emph{average response time}, which consists of the uploading time, waiting time and processing time, of all offloaded jobs in MEC system.
-According to the Little's law, the average response time per job (number of time slots from job arrival to the completeness of computation) is proportional to the number of jobs in the system.
-% We define the following weighted sum of the job number and job overflow penalty as the system cost at the $t$-th broadcast interval.
+% We propose the job dispatching optimization problem with the target to minimize the \emph{average response time}, which consists of the uploading time, waiting time and processing time, of all offloaded jobs in MEC system.
+According to the Little's law \needref{little-law}, the average response time per job, counting the number of broadcast intervals from job arrival to the accomplishments of computing, is proportional to the number of jobs in the system, given the job arrival rates at all the APs.
+Hence, we define the cost function per broadcast interval as follows.
 
 \begin{definition}[Cost Function Per Broadcast Interval]
+    The cost function of the $t$-th broadcast interval ($\forall t$) is defined as
     \begin{align}
         g\Paren{\Stat(t), \Policy(\Stat(t))} \define
             &\sum_{j\in\jSpace} \Brace{
@@ -37,29 +38,30 @@ According to the Little's law, the average response time per job (number of time
                 &\sum_{m\in\esSet} \{ Q_{m,j}(t,0) + \beta \cdot \mat{I}[Q_{m,j}(t,0)=L_{max}] \}
             },
     \end{align}
-    where $\Inorm{\vec{x}}$ denotes the $L^1$-norm of the vector $\vec{x}$, and $\beta$ is the weight factor for discard penalty ($\beta \in (0,1)$).
+    where $\Inorm{\vec{x}}$ denotes the $L^1$-norm of the vector $\vec{x}$, and $\beta$ is the weight factor of overflow penalty.
 \end{definition}
 
-\begin{definition}[Discounted Summation Cost]
+Since the job dispatching in one broadcast interval will affect the GSI of the following broadcast intervals, we consider the joint minimization of the costs of all the broadcast intervals.
+Specifically, we consider the following discounted summation of the costs of all the broadcast intervals as the system objective.
+\begin{align}
+    \bar{G}(\Stat, \Policy) \define \lim_{T \to \infty} \mathbb{E}^{\Policy}_{\set{\Stat(t)|\forall t}} \Bracket{
+        \sum_{t=1}^{T} \gamma^{t-1} g\Paren{
+            \Stat(t), \Policy(\Stat(t), \Delay(t)) | \Stat(1)
+        }
+    },
+\end{align}
+where $\mathbb{E}^{\Policy}_{\set{\Stat(t)|\forall t}}[\cdot]$ denotes the expectation with respect to all possible system state in the future given scheduling policy $\Policy$, and $\gamma \in (0,1)$ is the discount factor.
+Hence, the optimization of job dispatching policy can be formulated as the following minimization problem.
+
+\begin{problem}[System Job Dispatching Problem]
     \begin{align}
-        \bar{G}(\Stat, \Policy) \define \lim_{T \to \infty} \mathbb{E}^{\Policy}_{\set{\Stat(t)|\forall t}} \Bracket{
-            \sum_{t=1}^{T} \gamma^{t-1} g\Paren{
-                \Stat(t), \Policy(\Stat(t), \Delay(t)) | \Stat(1)
-            }
-        },
+        \arg\min_{\Policy} \bar{G}(\Stat, \Policy),
     \end{align}
-    where $\mathbb{E}^{\Policy}_{\set{\Stat(t)|\forall t}}[\cdot]$ denotes the expectation with respect to all possible system state in the furture given scheduling policy $\Policy$, and $\gamma \in (0,1)$ is the discount factor.
-\end{definition}
-%----------------------------------------------------------------------------------------%
-The online job dispatching problem from global perspective is given as follows.
-\begin{problem}[Centralized Job Dispatching Problem]
-    \begin{align}
-        \Omega^{*} \define \arg\min_{\Policy} \bar{G}(\Stat, \Policy).
-    \end{align}
+    where $\Policy^{*}$ is denoted as the optimal system policy.
     \label{problem_1}
 \end{problem}
 
-If the GSI and \brlatency~are known to all the APs, the MDP inf Problem \ref{problem_1} can be solved via the following Bellman's equations as in \cite{sutton1998}.
+If the GSI $\Stat(t)$ and \brlatency~$\Delay(t)$ are known to all the APs, the MDP inf Problem \ref{problem_1} can be solved via the following Bellman's equations as in \cite{sutton1998}.
 \begin{align}
     V\Paren{\Stat(t)} &=g\Paren{\Stat(t), \Policy(\Stat(t), \Delay(t))}
         + \gamma \min_{\Policy(\Stat(t))}
@@ -67,7 +69,7 @@ If the GSI and \brlatency~are known to all the APs, the MDP inf Problem \ref{pro
         &\sum_{\Stat(t+1)} \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t), \Delay(t)) } \cdot V\Paren{\Stat(t+1)},
     \label{eqn:sp_0}
 \end{align}
-where the value function $V(\Stat(t))$ of the optimal policy $\Policy^{*}$ is defined as follows.
+where the value function $V(\Stat(t))$ of the optimal policy $\Policy^{*}$ (if OSI and \brlatency~are known to all the APs) is defined as follows.
 \begin{align}
     V\Paren{\Stat(t)} \define \lim_{T\to\infty} \sum_{t=0}^{T} \gamma^{T}
     \mathbb{E}^{\Policy^*}_{\set{\Stat(t)|\forall t}, \Delay} \Bracket{
@@ -76,10 +78,9 @@ where the value function $V(\Stat(t))$ of the optimal policy $\Policy^{*}$ is de
 \end{align}
 % where $\mathcal{A} \define \set{A_{k,j}|\forall k\in\apSet,j\in\jSpace}$.
 
-\comments{
-    However, it is infeasible to solve the above Bellman's equations in our problem.
-    This is because each AP can only obtain the OSI which is a partial of GSI, and the \brlatency~$\mathcal{D}_{k'}$ shall not be known to the $k$-th AP ($\forall k \neq k' \in\apSet$).
-}
-The general solution of POMDP is of huge complexity \cite{IJCAI03-NairR,IJCAI99-BoutilierC}.
+Moreover, the optimal policy $\Omega^{*}$ can be obtained by solving the right-hand-side of the above Bellman's equations.
+However, it is infeasible to solve the above Bellman's equations in our problem.
+This is because each AP (say the $k$-th AP) only has the knowledge of, and the local \brlatency~$\mathcal{D}_{k}$.
+In fact, the general solution of POMDP is of huge complexity \cite{IJCAI03-NairR,IJCAI99-BoutilierC}.
 In this paper, we shall propose a low-complexity solution based on an analytical approximation of the value function, where the optimization on the right-hand-side of the Ballman's equations can be decoupled to each AP and solved locally.
 %----------------------------------------------------------------------------------------%
