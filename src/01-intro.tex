@@ -63,19 +63,21 @@ However, in practice, it's important to specify whether the \emph{agent} is impl
 % Here, we only stress the problem happended between APs and edge servers which is connected via wired network.
 % When the disaptching decisions of multiple users/APs are considered, the information exchange scheme should be designed.
 
-%NOTE: centralized multi-agent related works  
+%NOTE: centralized and decentralized multi-agent related works
+There are some work considering a centralized agent is implemented to apply dispatching decisions for multiple APs.
+In \cite{IOTJ19-CaoJ}, the authors
+In \cite{Fan2017}, the authors consider the cooperation of multiple MEC-BSs of computation offloading to other MEC-BSs. However, it doesn't consider the offloading utility impact on other MEC-BSs, i.e. only optimize for one BSs in the cluster.
+In \cite{JSAC19-AlameddineHA}, the authors consider the task offloading, scheduling and resource allocation joint optimization with Benders Decomposition.
+However, in the above works, the delay information in the system is known as fix constant, and the information exchange latency is ignored.
+
 There are also some works considering multi-agent scheduling where the implementation of information exchange scheme matters.
 \fixit{
-    In \cite{IOTJ19-CaoJ}, the authors
-    In \cite{Fan2017}, the authors consider the cooperation of multiple MEC-BSs of computation offloading to other MEC-BSs. However, it doesn't consider the offloading utility impact on other MEC-BSs, i.e. only optimize for one BSs in the cluster.
-    In \cite{JSAC19-AlameddineHA}, the authors consider the task offloading, scheduling and resource allocation joint optimization with Benders Decomposition.
-    However the delay information in the system is known as fix constant, and the information exchange latency is ignored.
     In \cite{MASS18-MengZ},
     In \cite{TVT19-WangY},
     In \cite{CloudCom18-Cicconetti},
 }
 
-%NOTE: decentralized multi-agent related works
+%NOTE: stale-information based multi-agent related works
 Different from the previous referred works which merely consider the information exchange latency in the system, the staleness of exchanged information sharing among agents also have impacts on decision making in distributed system.
 As what we have learned, there are very limited discussions on this topic.
 % The earliest works entangling with out-of-dated information we could find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing limited information. The agent considers communication as extra action to synchronize the states and thus incurs extra cost (However, the communication is without delay, thus converted into POMDP problem; criticize with impractical);
