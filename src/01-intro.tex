@@ -65,18 +65,16 @@ However, in practice, it's important to specify whether the \emph{agent} is impl
 
 %NOTE: centralized and decentralized multi-agent related works
 There are some work considering a centralized agent is implemented to apply dispatching decisions for multiple APs.
-In \cite{IOTJ19-CaoJ}, the authors have one extra dispatch server in the system to queue the offloading jobs and then dispatch to the edge servers.
+In \cite{IOTJ19-CaoJ}, the authors have one extra dispatch server in the system to queue the offloading jobs and then dispatch them to the edge servers.
 It's obvious that the extra dispatcher design introduces unnecessary transmission latency.
 In \cite{Fan2017}, the authors consider the cooperation of multiple MEC-BSs of computation offloading to other MEC-BSs. However, it doesn't consider the offloading utility impact on other MEC-BSs, i.e. only optimize for one BSs in the cluster.
 In \cite{JSAC19-AlameddineHA}, the authors consider edge server is one-to-one bind to eNB  in smart city wide area network (WAN), and centralized make decision with SDN controllers which has a global view of the network.
+In \cite{TVT19-WangY}, the authors propose full cooperation of the edge servers and the cloud server as mixed integer nonlinear optimization problem (MINLP).
+The authors proposed a parallel optimization scheme where a master computation unit is utilized to collect the global variables from the edge servers and the cloud server without delay. 
 However, in the above works, the delay information in the system is known as fix constant, and the information exchange latency is ignored.
 
-There are also some works considering multi-agent scheduling where the implementation of information exchange scheme matters.
-\fixit{
-    In \cite{MASS18-MengZ},
-    In \cite{TVT19-WangY},
-    In \cite{CloudCom18-Cicconetti},
-}
+% There are also some works considering decentralized multi-agent scheduling where the information exchange scheme matters.
+% In \cite{CloudCom18-Cicconetti},
 
 %NOTE: stale-information based multi-agent related works
 Different from the previous referred works which merely consider the information exchange latency in the system, the staleness of exchanged information sharing among agents also have impacts on decision making in distributed system.
