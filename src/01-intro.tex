@@ -43,17 +43,20 @@ In Sec.\ref{sec:conclusion}, the conclusion is given.
 \section{Related Works}
 \label{sec:review}
 %NOTE: resource placement (cache-like problem), service migration
-The recent academic researches focus on the scheduling problem in edge computing system like job offloading, resource allocation, service migration and etc.
-% Specifically, the joint optimization problem is often addressed into consideration to extend the scheduling dimensions.
-The service migration problem is addressed that the submitted jobs could be migrated to the new edge servers according to users' mobility traces.
-The authors in \cite{TON19-WangSq} formulate the migration problem considering single user's trace and solve it via MDP framework.
-However, according to the recent research \cite{INFOCOM19-WuC}, the dynamic adjustment of resource allocation for running jobs on servers is hard to implement in practice.
-Hence, it's more important to determine which edge server to dispatch the jobs at the arrival time.
+The recent academic works of scheduling problem in edge computing system focus on the resource allocation, job dispatching, service migration and etc.
+The service migration problem is addressed that the jobs submitted to the edge server could be further migrate to other edge servers if the QoS of the job could not be satisfied.
+For example, the authors in \cite{TON19-WangSq} consider the edge server is one-to-one bind to the base station (BS), and the job migration could be applied according to users' mobility traces via the backhaul network connecting the base stations.
+However, according to a recent research \cite{INFOCOM19-WuC}, the resource re-allocation for running jobs on servers is hard to implement in practice, and thus it's hard for jobs migration among heterogeneous edge servers with different resource configurations.
+Hence, it's more important to determine the job dispatching strategy at the arrival time.
 
 %NOTE: single-agent dispatching, single UE/server
-The resource allocation problem is always joint optimization together with job offload problem, including bandwidth resources, computation resources, and etc.
-The authors in \cite{TOC17-DinhTQ} consider job dispatching only with single agent in the system.
-Specifically, the authors consider jointly energy and latency optimization with one Mobile Device (MD) by offloading the tasks to multiple servers in \cite{TOC17-DinhTQ}
+% The resource allocation problem is always joint optimization together with job offload problem, including bandwidth resources, computation resources, and etc.
+\fixit{
+    The job disaptching problem is consists of components like: mobile users (MU), access points (APs), edge servers, cloud servers.
+    Here, we only stress the problem happended between APs and edge servers which is connected via wired network.
+}
+% The authors in \cite{TOC17-DinhTQ} consider job dispatching only with single MU in the system.
+% Specifically, the authors consider jointly energy and latency optimization with one Mobile Device (MD) by offloading the tasks to multiple servers in \cite{TOC17-DinhTQ}
 However, the solution to single-user problem could not be easily extended to multi-user.
 When the disaptching decisions of multiple users/APs are considered, the information exchange scheme should be designed.
 
