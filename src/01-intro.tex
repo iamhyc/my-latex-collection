@@ -65,9 +65,10 @@ However, in practice, it's important to specify whether the \emph{agent} is impl
 
 %NOTE: centralized and decentralized multi-agent related works
 There are some work considering a centralized agent is implemented to apply dispatching decisions for multiple APs.
-In \cite{IOTJ19-CaoJ}, the authors
+In \cite{IOTJ19-CaoJ}, the authors have one extra dispatch server in the system to queue the offloading jobs and then dispatch to the edge servers.
+It's obvious that the extra dispatcher design introduces unnecessary transmission latency.
 In \cite{Fan2017}, the authors consider the cooperation of multiple MEC-BSs of computation offloading to other MEC-BSs. However, it doesn't consider the offloading utility impact on other MEC-BSs, i.e. only optimize for one BSs in the cluster.
-In \cite{JSAC19-AlameddineHA}, the authors consider the task offloading, scheduling and resource allocation joint optimization with Benders Decomposition.
+In \cite{JSAC19-AlameddineHA}, the authors consider edge server is one-to-one bind to eNB  in smart city wide area network (WAN), and centralized make decision with SDN controllers which has a global view of the network.
 However, in the above works, the delay information in the system is known as fix constant, and the information exchange latency is ignored.
 
 There are also some works considering multi-agent scheduling where the implementation of information exchange scheme matters.
