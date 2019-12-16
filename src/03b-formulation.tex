@@ -23,7 +23,7 @@ The individual dispatching policy of one AP, the system dispatching policy, and 
     where $\Delay(t) \define \set{ \mathcal{D}_{1}(t), \dots, \mathcal{D}_{K}(t) }$.
 \end{definition}
 
-% In the edge computing system, each AP individually performs job idspatching decision, and coordinates in a fully cooperative manner by sharing the same utility function.
+% In the edge computing system, each AP individually performs job dispatching decision, and coordinates in a fully cooperative manner by sharing the same utility function.
 % We propose the job dispatching optimization problem with the target to minimize the \emph{average response time}, which consists of the uploading time, waiting time and processing time, of all offloaded jobs in MEC system.
 According to the Little's law \cite{Little1961}, the average response time per job, counting the number of broadcast intervals from job arrival to the accomplishments of computing, is proportional to the number of jobs in the system, given the job arrival rates at all the APs.
 Hence, we define the cost function per broadcast interval as follows.
@@ -82,5 +82,5 @@ Moreover, the optimal policy $\Omega^{*}$ can be obtained by solving the right-h
 However, it is infeasible to solve the above Bellman's equations in our problem.
 This is because each AP (say the $k$-th AP) only has the knowledge of, and the local \brlatency~$\mathcal{D}_{k}$.
 In fact, the general solution of POMDP is of huge complexity \cite{IJCAI03-NairR,IJCAI99-BoutilierC}.
-In this paper, we shall propose a low-complexity solution based on an analytical approximation of the value function, where the optimization on the right-hand-side of the Ballman's equations can be decoupled to each AP and solved locally.
+In this paper, we shall propose a low-complexity solution based on an analytical approximation of the value function, where the optimization on the right-hand-side of the Bellman's equations can be decoupled to each AP and solved locally.
 %----------------------------------------------------------------------------------------%

@@ -9,10 +9,10 @@ However, the edge servers are always deployed with limited computation resources
 %NOTE: Motivation with MAN
 We consider the edge computing network with APs and edge servers residing in the Metropolitan Area Network (MAN), where the edge servers could reach each others with unpredictable network latency\cite{MOBIHOC19-ZhouZ,tan-online,IOTJ18-FanQ}.
 The APs shall collect jobs uploaded from the mobile users in its range and then make dispatching decisions for each job on the edge servers.
-While the most of the existing literature consider the fixed or negligible communication latency in the edge computing network\cite{TOC19-LiuC,JSAC19-AlameddineHA,tan-online}, it's infeasible to have this assumption in the MAN \cite{MAN-LATENCY}.
+While most of the existing literature consider the fixed or negligible communication latency in the edge computing network\cite{TOC19-LiuC,JSAC19-AlameddineHA,tan-online}, it's infeasible to have this assumption in the MAN \cite{MAN-LATENCY}.
 This brings new challenges to the job dispatcher design in the edge computing network which relies on the observation of system status.
 Firstly, the propagation latency of small control information may vary a lot due to congestion, and thus the centralized scheduler is discouraged without timely interaction with APs or edge servers.
-Secondly, the stalesness of information is not negligible and the information exchange would cause misestimate for disaptching decision making.
+Secondly, the staleness of information is not negligible and the information exchange would cause misestimate for dispatching decision making.
 Last but not the least, the fully-cooperation of decentralized agents requires sharing utility function according to \cite{IJCAI03-NairR} and the observed information from different dispatchers is not identical all the time.
 
 %NOTE: Our contributions
@@ -28,7 +28,7 @@ Our contributions are summarized as follows.
     \item We consider the uploading time and processing time on AP and edge servers, respectively, both being stochastic.
     With the undetermined job arrival processes on edge servers under non-stationary dispatching decisions of APs, we are capable to evaluate the long-term queueing time under the dispatching decisions to be optimized.
 
-    \item The iterative policy update algorithm is proposed with information staless-aware, and alleviates the impact of latency by leveraging the partially collected information in the system.
+    \item The iterative policy update algorithm is proposed with information staleness-aware, and alleviates the impact of latency by leveraging the partially collected information in the system.
     Moreover, an innovative low-complexity solution is introduced to alleviate the curse of dimensionality in the conventional policy iteration algorithm.
 \end{itemize}
 
@@ -60,15 +60,15 @@ In \cite{MASS18-MengZ}, the authors formulate the offloading problem considering
 The above works all considered the optimization problem from jobs' perspective, and did not specify the \emph{agent} to apply the dispatching decisions by solving the problem.
 However, in practice, it's important to specify whether the \emph{agent} is implemented in a centralized or decentralized form.
 
-% Here, we only stress the problem happended between APs and edge servers which is connected via wired network.
-% When the disaptching decisions of multiple users/APs are considered, the information exchange scheme should be designed.
+% Here, we only stress the problem happened between APs and edge servers which is connected via wired network.
+% When the dispatching decisions of multiple users/APs are considered, the information exchange scheme should be designed.
 
 %NOTE: centralized and decentralized multi-agent related works
 There are some work considering a centralized agent is implemented to apply dispatching decisions for multiple APs.
 In \cite{IOTJ19-CaoJ}, the authors have one extra dispatch server in the system to queue the offloading jobs and then dispatch them to the edge servers.
 It's obvious that the extra dispatcher design introduces unnecessary transmission latency.
 In \cite{Fan2017}, the authors consider the cooperation of multiple MEC-BSs of computation offloading to other MEC-BSs. However, it doesn't consider the offloading utility impact on other MEC-BSs, i.e. only optimize for one BSs in the cluster.
-In \cite{JSAC19-AlameddineHA}, the authors consider edge server is one-to-one bind to eNB  in smart city wide area network (WAN), and centralized make decision with SDN controllers which has a global view of the network.
+In \cite{JSAC19-AlameddineHA}, the authors consider edge server is one-to-one bind to eNB in smart city wide area network (WAN), and centralized make decision with SDN controllers which has a global view of the network.
 In \cite{TVT19-WangY}, the authors propose full cooperation of the edge servers and the cloud server as mixed integer nonlinear optimization problem (MINLP).
 The authors proposed a parallel optimization scheme where a master computation unit is utilized to collect the global variables from the edge servers and the cloud server without delay. 
 However, in the above works, the delay information in the system is known as fix constant, and the information exchange latency is ignored.
@@ -82,10 +82,10 @@ As what we have learned, there are very limited discussions on this topic.
 % The earliest works entangling with out-of-dated information we could find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing limited information. The agent considers communication as extra action to synchronize the states and thus incurs extra cost (However, the communication is without delay, thus converted into POMDP problem; criticize with impractical);
 In \cite{JSAC17-LyuX}, the authors consider maximizing the number of admitted jobs where jobs offloading via base stations with stochastic offloading latency with general time-division multiple-access (TDMA) model assumption.W
 The \emph{partial out-of-date knowledge} is introduced that the agents share the backlog information continuously in each time slot but some are missing in the transmission which is taken as \emph{out-of-date knowledge}.
-The author leverage Lyapunov optimization to obtain a randomized fixed policy which could eliminate the staleness introduced, while the stability of the queues on edge servers is gauranteed. 
+The author leverage Lyapunov optimization to obtain a randomized fixed policy which could eliminate the staleness introduced, while the stability of the queues on edge servers is guaranteed. 
 In \cite{TWC18-LyuX}, the authors move on considering selfish devices offloading jobs with stale information.
 The problem is formulated to minimize the overall energy consumption while stabilizing the queues.
-% The optimality loss due to the information staleness is proved bounded and can diminish to preseve the asymptotic optimality.
+% The optimality loss due to the information staleness is proved bounded and can diminish to preserve the asymptotic optimality.
 However, in the above two works, the queueing process on edge servers is not analyzed.
 Due to the chosen objectives with only queue-stability guarantee, the upper bound of queue length could be very loose and could not guarantee the real-time performance of offloaded jobs.
 Hence, in our problem, we target at optimizing the average job response time while analyzing the queueing process on edge servers under random uploading distribution and dispatching decisions to be optimized.
