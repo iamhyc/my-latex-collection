@@ -1,5 +1,8 @@
 % \documentclass[journal, 12pt, onecolumn, draftclsnofoot]{IEEEtran} %JSAC 20'
-\documentclass[sigconf]{acmart} %ACM Mobihoc 20'
+% \documentclass[sigconf]{acmart} %ACM Mobihoc 20'
+\documentclass[conference]{IEEEtran}
+% \IEEEoverridecommandlockouts
+
 \usepackage[linesnumbered,vlined,ruled]{algorithm2e}
 \usepackage{algorithmic}
 \usepackage{amsmath,amsthm,amssymb,amsfonts}
@@ -69,47 +72,31 @@
 % \newcommand{\brpoint}{\emph{broadcast point}}
 
 %---------------------------------------------------------------%
-%%
-%% \BibTeX command to typeset BibTeX logo in the docs
-\AtBeginDocument{%
-  \providecommand\BibTeX{{%
-    \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
-%% Rights management information.  This information is sent to you
-%% when you complete the rights form.  These commands have SAMPLE
-%% values in them; it is your responsibility as an author to replace
-%% the commands and values with those provided to you when you
-%% complete the rights form.
-\setcopyright{acmcopyright}
-\copyrightyear{2020}
-\acmYear{2020}
-% \acmDOI{10.1145/1122445.1122456}
-
-%% These commands are for a PROCEEDINGS abstract or paper.
-\acmConference[Mobihoc '20]{Mobihoc '20: ACM International Symposium on Mobile Ad Hoc Netwokring and Computing}{2020}{Mobihoc, Shanghai}
-\acmBooktitle{Mobihoc '20: ACM International Symposium on Mobile Ad Hoc Netwokring and Computing, 2020, Mobihoc, Shanghai}
-% \acmConference[Woodstock '18]{Woodstock '18: ACM Symposium on Neural Gaze Detection}{June 03--05, 2018}{Woodstock, NY}
-% \acmBooktitle{Woodstock '18: ACM Symposium on Neural Gaze Detection, June 03--05, 2018, Woodstock, NY}
-% \acmPrice{15.00}
-% \acmISBN{978-1-4503-XXXX-X/18/06}
 %---------------------------------------------------------------%
 
 \begin{document}
     \title{Distributive Job Dispatching in Edge Computing Networks with Random Uploading Delay: A Low-Complexity POMDP Approach}
 
-    \author{HONG Yuncong}
-    % \affiliation{
-    %     \institution{The University of Hong Kong}
-    %     \streetaddress{Pokfulam Rd}
-    %     \city{Hong Kong}
-    %     \state{Hong Kong}
-    %     \country{China}
-    % }
-    % \email{ychong@cs.hku.hk}
+    \author{
+      Yuncong Hong
+      % \IEEEauthorblockN{
+      %   1\textsuperscript{st} Yuncong Hong
+      % }
+      % \IEEEauthorblockA{
+      %   \textit{Department of Computer Science} \\
+      %   \textit{The University of Hong Kong} \\
+      %   Hong Kong, China \\
+      %   ychong@cs.hku.hk
+      % }
+    }
+    % \and
 
-    \input{src/00-abstract}
     \maketitle
 
+    \input{src/00-abstract}
     \input{src/01-intro}
     % \input{src/02a-background}
     % \input{src/02b-motivation}
@@ -122,9 +109,8 @@
     \input{src/06-conclusion}
 
     \clearpage
-    \bibliographystyle{ACM-Reference-Format}
+    \bibliographystyle{IEEEtrans}
     \bibliography{references/final}
-    % \bibliographystyle{IEEEtrans}
     % \bibliography{references/main.bib,references/related.bib}
 
     \input{src/99-appendix}
