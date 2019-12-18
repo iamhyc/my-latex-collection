@@ -24,7 +24,9 @@ First of all, the baseline policy is defined as follows.
 
 Thus, we shall approximate the value function of the optimal policy as
 \begin{align}
-    V\Paren{\Stat(t+1)} \approx& W^{\dagger}_{\Baseline(\Stat(t))} \Paren{\mathcal{R}(t+1)} + W^{\ddagger}_{\Baseline(\Stat(t))}\Paren{\mathcal{Q}(t+1)}
+    &V\Paren{\Stat(t+1)} 
+    \nonumber\\
+    \approx&~ W^{\dagger}_{\Baseline(\Stat(t))} \Paren{\mathcal{R}(t+1)} + W^{\ddagger}_{\Baseline(\Stat(t))}\Paren{\mathcal{Q}(t+1)}
     \nonumber\\
     =& \sum_{j\in\jSpace}\Brace{
         \sum_{k\in\apSet}\sum_{m\in\esSet}\Bracket{ \sum_{i=0}^{\infty} \gamma^{i+1} \Inorm{\vec{R}^{(k)}_{m,j}(t+i+1)} }
@@ -55,8 +57,10 @@ Hence, the proposed dispatching policy, based on the one-step policy iteration o
 
 \begin{problem}
     In the $t$-th broadcast interval, the $y$-th AP in the set $\mathcal{Y}_{n}$ ($n \equiv t \pmod{N} + 1$) shall solve the following problem to update its policy.
+    {\tiny
     \begin{align}
-        &\min_{ \Omega_{y}(\Stat_{y}(t), \Delay_{y}(t)) } \sum_{\Stat(t+1)} \Bracket{
+        &\min_{ \Omega_{y}(\Stat_{y}(t), \Delay_{y}(t)) }
+        \sum_{\Stat(t+1)} \Bracket{
             W^{\dagger}_{\Baseline(\Stat(t))} \Paren{\mathcal{R}(t+1)} + W^{\ddagger}_{\Baseline(\Stat(t))}\Paren{\mathcal{Q}(t+1)}
         } \times
         \nonumber\\
@@ -64,6 +68,7 @@ Hence, the proposed dispatching policy, based on the one-step policy iteration o
             \Stat(t+1) | \Stat(t), \Omega_{y}(\Stat_{y}(t), \Delay_{y}(t)), \set{\omega_{y',j}(t)|\forall y' \neq y \in\apSet, j\in\jSpace}
         }
     \end{align}
+    }
     \label{problem_2}
 \end{problem}
 
@@ -73,17 +78,19 @@ The decentralized problem for the AP is defined as follows.
 % The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
 \begin{problem}[Decentralized Approximated Optimization Problem for AP]
     For the $k$-th AP with baseline policy $\Pi_{k}(t)$:
+    {\small
     \begin{align}
         \min_{\Pi_{k}(t)} \mathbb{E}_{\set{ \Stat(t+1), \Pi_{k}(t) }} \Bracket{
             W^{\AP}_{\Pi_{k}(t)}\Paren{\mathcal{R}(t+1)} + W^{\ES}_{\Pi_{k}(t)}\Paren{\mathcal{Q}(t+1)}
         }.
         \label{eqn:partial}
     \end{align}
+    }
 \end{problem}
 
 The expected value function $W^{\AP}_{\Pi_{k}(t)}(\mathcal{R}(t+1))$ is easily obtained by calculating the following equation.
 \begin{align}
-    W^{\AP}_{\Pi_{k}(t)}\Paren{\mathcal{R}(t+1)} = \sum_{j\in\jSpace}&\sum_{k\in\ccSet_{k}}\sum_{m\in\esSet_{k}}
+    W^{\AP}_{\Pi_{k}(t)}\Paren{\mathcal{R}(t+1)} &= \sum_{j\in\jSpace}\sum_{k\in\ccSet_{k}}\sum_{m\in\esSet_{k}}
     \nonumber\\
     &\Inorm{
         \Paren{ 1 - \gamma ({\Gamma}^{(k)}_{m,j})^{N} }^{-1} \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1)
@@ -96,10 +103,10 @@ The expression for expected value function $W^{\ES}_{\Pi_{k}(t)}(\mathcal{Q}(t+1
 It is affected with both arrival process under dispatching policy and last queue state.
 However, we notice that the arrival process would be stationary after the maximum uploading time under the stationary baseline policy and the relationship between APs and edge server could be decoupled.
 \begin{align}
-    W^{(k)}_{\Baseline(t)}\Paren{\mathcal{Q}(t+1)}
-    =& \sum_{j\in\jSpace}\sum_{m\in\esSet_{k}}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ Q_{m,j}({t+i+1}) ]
+    &W^{(k)}_{\Baseline(t)}\Paren{\mathcal{Q}(t+1)}
+    = \sum_{j\in\jSpace}\sum_{m\in\esSet_{k}}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ Q_{m,j}({t+i+1}) ]
     \nonumber\\
-    &~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}',
+    &~~~~~~~~~~~~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}',
 \end{align}
 where the $i$-th element of vector $\vec{g}$ denotes the cost of server as $Q_{m,j}(t)$;
 \begin{align}

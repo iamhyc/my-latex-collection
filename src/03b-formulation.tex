@@ -31,11 +31,11 @@ Hence, we define the cost function per broadcast interval as follows.
 \begin{definition}[Cost Function Per Broadcast Interval]
     The cost function of the $t$-th broadcast interval ($\forall t$) is defined as
     \begin{align}
-        g\Paren{\Stat(t), \Policy(\Stat(t))} \define
-            &\sum_{j\in\jSpace} \Brace{
-                \sum_{k\in\apSet} \sum_{m\in\esSet} \Inorm{\vec{R}^{(k)}_{m,j}(t,0)}~+
+        g\Paren{\Stat(t),& \Policy(\Stat(t))} \define
+            \sum_{j\in\jSpace} \Brace{
+                \sum_{k\in\apSet} \sum_{m\in\esSet} \Inorm{\vec{R}^{(k)}_{m,j}(t,0)}
                 \nonumber\\
-                &\sum_{m\in\esSet} \{ Q_{m,j}(t,0) + \beta \cdot \mat{I}[Q_{m,j}(t,0)=L_{max}] \}
+                &+ \sum_{m\in\esSet} \{ Q_{m,j}(t,0) + \beta \cdot \mat{I}[Q_{m,j}(t,0)=L_{max}] \}
             },
     \end{align}
     where $\Inorm{\vec{x}}$ denotes the $L^1$-norm of the vector $\vec{x}$, and $\beta$ is the weight factor of overflow penalty.
@@ -44,7 +44,10 @@ Hence, we define the cost function per broadcast interval as follows.
 Since the job dispatching in one broadcast interval will affect the GSI of the following broadcast intervals, we consider the joint minimization of the costs of all the broadcast intervals.
 Specifically, we consider the following discounted summation of the costs of all the broadcast intervals as the system objective.
 \begin{align}
-    \bar{G}(\Stat, \Policy) \define \lim_{T \to \infty} \mathbb{E}^{\Policy}_{\set{\Stat(t)|\forall t}} \Bracket{
+    &\bar{G}(\Stat, \Policy) \define
+    \nonumber\\
+    & \lim_{T \to \infty} \mathbb{E}^{\Policy}_{\set{\Stat(t)|\forall t}}
+    \Bracket{
         \sum_{t=1}^{T} \gamma^{t-1} g\Paren{
             \Stat(t), \Policy(\Stat(t), \Delay(t)) | \Stat(1)
         }
@@ -63,7 +66,7 @@ Hence, the optimization of job dispatching policy can be formulated as the follo
 
 If the GSI $\Stat(t)$ and \brlatency~$\Delay(t)$ are known to all the APs, the MDP inf Problem \ref{problem_1} can be solved via the following Bellman's equations as in \cite{sutton1998}.
 \begin{align}
-    V\Paren{\Stat(t)} &=g\Paren{\Stat(t), \Policy(\Stat(t), \Delay(t))}
+    &V\Paren{\Stat(t)} =g\Paren{\Stat(t), \Policy(\Stat(t), \Delay(t))}
         + \gamma \min_{\Policy(\Stat(t))}
         \nonumber\\
         &\sum_{\Stat(t+1)} \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t), \Delay(t)) } \cdot V\Paren{\Stat(t+1)},
@@ -71,12 +74,13 @@ If the GSI $\Stat(t)$ and \brlatency~$\Delay(t)$ are known to all the APs, the M
 \end{align}
 where the value function $V(\Stat(t))$ of the optimal policy $\Policy^{*}$ (if OSI and \brlatency~are known to all the APs) is defined as follows.
 \begin{align}
-    V\Paren{\Stat(t)} \define \lim_{T\to\infty} \sum_{t=0}^{T} \gamma^{T}
+    &V\Paren{\Stat(t)} \define
+    \nonumber\\
+    &\lim_{T\to\infty} \sum_{t=0}^{T} \gamma^{T}
     \mathbb{E}^{\Policy^*}_{\set{\Stat(t)|\forall t}, \Delay} \Bracket{
         g\Paren{ \Stat(t), \Policy^{*}(\Stat(t), \Delay(t)) }
     }.
 \end{align}
-% where $\mathcal{A} \define \set{A_{k,j}|\forall k\in\apSet,j\in\jSpace}$.
 
 Moreover, the optimal policy $\Omega^{*}$ can be obtained by solving the right-hand-side of the above Bellman's equations.
 However, it is infeasible to solve the above Bellman's equations in our problem.
