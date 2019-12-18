@@ -1,20 +1,12 @@
 \section{Performance Evaluation}
 \label{sec:evaluation}
 
-
-\subsection{Experimental Setups}
-
-\textbf{Data Trace Extraction:}
-We use the Google data trace for cloud computing\needref{google-data-trace}.
-There is no broadcast latency, uploading time, and processing distribution information specified in the data trace.
-Hence, we extract and scale the arrival and processing time in the original data trace.
-And we manipulate the original data with random generated latency distribution.
-
+\subsection{Experimental Setup}
 \textbf{System Parameters Setup:}
 We implement the system in a small scale setting where fully-accessible APs and edge servers are considered.
 specifically, there are $K=8$ APs, $M=5$ edge servers, and $J=5$ type of jobs in the system corresponding to the manipulated data trace.
 Each time slot is taken as $\tau = 0.05$ i.e. 50ms, and the broadcast interval is taken as $25$ time slots.
-\comments{
+\fixit{
     The maximum uploading time is $\Xi = 3 T$, and the \brlatency is shorter than $t_B$;
     The arrival rate is taken as samll probability with enough APs in the system, and correspondingly enough edge servers for the processing.
     Each queue on edge server with maximum 10 jobs because our algorithm is strong enough to predict the overflowto ensure a reliable system.
@@ -39,8 +31,31 @@ Specifically, we choose a heuristic selfish policy as the start and the definiti
         \pi_{k,j} &\define \arg\min_{m} \mathbb{E}[U_{k,m,j}] + \mathbb{E}[C_{m,j}]
     \end{align} 
 \end{definition}
+%----------------------------------------------------------------------------------------%
 
 \subsection{Performance Analysis}
+    \subsubsection{Basic Performance}
+    Here we measure some basic metrics concerning in edge computing system, compared with different algorithms.
+    \begin{itemize}
+        \item Bar graph: Cost v.s. Algorithms;
+        \item Bar graph: JCT v.s. Algorithms;
+        \item Bar graph: Total Departure Rate v.s. Algorithms. 
+    \end{itemize}
+
+    \subsection{Fine-grained Analysis}
+    \begin{itemize}
+        \item Timeline graph: 
+    \end{itemize}
+
+    \subsubsection{Sensitivity Study}
+    \begin{itemize}
+        \item \textbf{Compared with different \brlatency.}
+        \item \textbf{Different $t_B$ setting.}
+        \item \textbf{Different Penalty Factors.}
+        \item \textbf{Different number of APs.}
+    \end{itemize}
+    % CDF of \# of dropped jobs (over the queue limit); CDF of queue length;
+%----------------------------------------------------------------------------------------%
 
 \begin{figure*}[htp!]
     \centering
@@ -49,7 +64,6 @@ Specifically, we choose a heuristic selfish policy as the start and the definiti
     \label{fig:general_timeline}
 \end{figure*}
 
-\textbf{Compared with different \brlatency.}
 \begin{figure*}[htp!]
     \centering
     \begin{tabular}{ccc}
@@ -64,18 +78,19 @@ Specifically, we choose a heuristic selfish policy as the start and the definiti
     \caption{Evaluation of Information Staleness Impact on Algorithm Robustness under Low Back Pressure.}
     \label{fig:eval_delay}
 \end{figure*}
-In 
 
-%FIXME: [abandon, cause useless]
-\textbf{Estimation Error Analysis.}
-(If these graphs are not good, they are not going to appear on final draft.)
-\begin{itemize}
-    \item Two curves, one for real cost against time slot, one for expected sampling cost against time intervals; (if the accumulate area within the latter one has little/bounded error with real cost, then it is okay and the correctness is support by simulation)
-    \item 
-\end{itemize}
+\delete{v12.2}{
+    \textbf{Data Trace Extraction:}
+    We use the Google data trace for cloud computing\needref{google-data-trace}.
+    There is no broadcast latency, uploading time, and processing distribution information specified in the data trace.
+    Hence, we extract and scale the arrival and processing time in the original data trace.
+    And we manipulate the original data with random generated latency distribution.
 
-\textbf{Different $t_B$ setting.}
-    average cost (Average JCT) v.s. different broadcast $t_B$ setting;
-
-\textbf{Different Penalty Factors.}
-CDF of \# of dropped jobs (over the queue limit); CDF of queue length;
+    % [abandon, cause useless]
+    \textbf{Estimation Error Analysis.}
+    (If these graphs are not good, they are not going to appear on final draft.)
+    \begin{itemize}
+        \item Two curves, one for real cost against time slot, one for expected sampling cost against time intervals; (if the accumulate area within the latter one has little/bounded error with real cost, then it is okay and the correctness is support by simulation)
+        \item 
+    \end{itemize}
+}
