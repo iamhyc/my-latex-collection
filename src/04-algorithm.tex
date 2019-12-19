@@ -88,7 +88,7 @@ The decentralized problem for the AP is defined as follows.
     }
 \end{problem}
 
-The expected value function $W^{\AP}_{\Pi_{k}(t)}(\mathcal{R}(t+1))$ is easily obtained by calculating the following equation.
+The expected value function $W^{\AP}_{\Pi_{k}(t)}(\mathcal{R}(t+1))$ is easily obtained by the following equation.
 \begin{align}
     W^{\AP}_{\Pi_{k}(t)}\Paren{\mathcal{R}(t+1)} &= \sum_{j\in\jSpace}\sum_{k\in\ccSet_{k}}\sum_{m\in\esSet_{k}}
     \nonumber\\
@@ -102,8 +102,9 @@ The expected value function $W^{\AP}_{\Pi_{k}(t)}(\mathcal{R}(t+1))$ is easily o
 The expression for expected value function $W^{\ES}_{\Pi_{k}(t)}(\mathcal{Q}(t+1))$ is little more complex compared to Eqn.(\ref{w_ap}).
 It is affected with both arrival process under dispatching policy and last queue state.
 However, we notice that the arrival process would be stationary after the maximum uploading time under the stationary baseline policy and the relationship between APs and edge server could be decoupled.
+Hence, the expected value function $W^{\ES}_{\Pi_{k}(t)}(\mathcal{Q}(t+1))$ is obtained by the folowing equation.
 \begin{align}
-    &W^{(k)}_{\Baseline(t)}\Paren{\mathcal{Q}(t+1)}
+    &W^{\ES}_{\Pi_{k}(t)}\Paren{\mathcal{Q}(t+1)}
     = \sum_{j\in\jSpace}\sum_{m\in\esSet_{k}}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ Q_{m,j}({t+i+1}) ]
     \nonumber\\
     &~~~~~~~~~~~~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}',
@@ -122,13 +123,12 @@ where $\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\
 
 The details of the procedure is elaborated as follows.
 \begin{itemize}
-    \item Choose the initial \emph{system dispatching policy} start with some heuristic policy.
-    \item At the first broadcast time slot when $t=0$, the APs and edge servers in \emph{conflict AP set} and \emph{candidate server set}, respectively, of the $1$-st AP would broadcast their LSI (including the heuristic policies);
-    \item The $1$-st AP would receive the OSI at the $D_1(1)$ time slots in the first broadcast interval, and then it updates its policy $\Omega_{1}(\Stat_{1}(1))$ by solving Eqn.(\ref{eqn:sp_0}) for the $1$-st AP.
-    The $1$-st AP would keep with this policy until it receives the OSI again.
-    \item At the second broadcast time slot when $t=1$, the OSI of the $2$-nd AP would be broadcast;
-    the $1$-st AP would broadcast $\Omega_{1}(\Stat_{1}(1))$ if it's in the \emph{conflict AP set} of the $2$-nd AP;
-    \item Similarly, in the $t$-th broadcast interval the AP indexed with $k' \equiv (t + 1)\mod{K}$ would receive the OSI $D_{k'}(t)$ time slots later, and then it updates its policy $\Omega_{k'}(t+1)$ by solving Eqn.(\ref{eqn:sp_0}) for the $k'$-th AP.
+    \item Initialize the system dispatching policy $\Policy(\Stat(0))$ start with some heuristic policy;
+    \item At the $1$-st broadcast time slot when $t=0$, the APs in set $\mathcal{Y}_{1}$ and the edge servers in the corresponding \emph{candidate server set} of APs in $\mathcal{Y}_{1}$, shall broadcast their LSI (including the heuristic policies);
+    \item Each AP (say the $y_1$-th AP) in set $\mathcal{Y}_{1}$ would receive the OSI at the $D_{y_1}(1)$ time slots in the $1$-st broadcast interval, and then it updates its policy $\Omega_{y_1}(\Stat_{y_1}(1))$ by solving Eqn.(\ref{eqn:partial}); The APs in set $\mathcal{Y}_{1}$ would keep with this policy until they receive the OSI again;
+    \item At the $2$-nd broadcast time slot when $t=1$, the APs in set $\mathcal{Y}_{2}$ would receive the  broadcast OSI;
+    % the $1$-st AP would broadcast $\Omega_{1}(\Stat_{1}(1))$ if it's in the \emph{conflict AP set} of the $2$-nd AP;
+    \item Similarly, in the $t$-th broadcast interval the APs in subset indexed with $n \equiv (t + 1)\mod{N}$ would receive the OSI, and then update their policy $\Omega_{y_n}(t+1)$ ($\forall y_n\in\mathcal{Y}_{n}$) by solving Eqn.(\ref{eqn:partial}).
 \end{itemize}
 
 % \begin{lemma}

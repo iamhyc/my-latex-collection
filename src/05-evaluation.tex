@@ -5,12 +5,12 @@
 \textbf{System Parameters Setup:}
 We implement the system in a small scale setting where fully-accessible APs and edge servers are considered.
 specifically, there are $K=8$ APs, $M=5$ edge servers, and $J=5$ type of jobs in the system corresponding to the manipulated data trace.
-Each time slot is taken as $\tau = 0.05$ i.e. 50ms, and the broadcast interval is taken as $25$ time slots.
-\fixit{
-    The maximum uploading time is $\Xi = 3 T$, and the \brlatency is shorter than $t_B$;
-    The arrival rate is taken as samll probability with enough APs in the system, and correspondingly enough edge servers for the processing.
-    Each queue on edge server with maximum 10 jobs because our algorithm is strong enough to predict the overflowto ensure a reliable system.
-}
+Each time slot is taken as $\tau = 0.05$ i.e. 50ms, and the broadcast interval is taken as $20$ time slots, i.e. $1$ second.
+The maximum uploading time is set as $3$ times the broadcast interval, i.e. $\Xi = 3T$.
+The distributions of arrival rate, uploading time and processing time are generated randomly.
+Each queue for VMs on edge server is set with maximum queue length $L_{max}=20$.
+% The arrival rate is taken as small probability with enough APs in the system, and correspondingly enough edge servers for the processing.
+% Each queue on edge server with maximum 20 jobs because our algorithm is strong enough to predict the overflow to ensure a reliable system.
 
 \textbf{Compared Algorithms:}
 We compare the proposed algorithm with other three heuristic algorithms.
@@ -44,15 +44,18 @@ Specifically, we choose a heuristic selfish policy as the start and the definiti
 
     \subsection{Fine-grained Analysis}
     \begin{itemize}
-        \item Timeline graph: 
+        \item Timeline graph: our proposed algorithm is better than compared algorithms all the time in Fig.\ref{fig:general_timeline};
+        \item CDF of Cost (with different algorithms);
+        \item CDF of JCT (with different algorithms);
     \end{itemize}
 
     \subsubsection{Sensitivity Study}
     \begin{itemize}
-        \item \textbf{Compared with different \brlatency.}
+        \item \textbf{Different number of APs.} (a.k.a arrival rate)
+        \item \textbf{Uploading time domains/Processing time domains.}
+        \item \textbf{Compared with different \brlatency.} Fig.\ref{fig:eval_delay}
         \item \textbf{Different $t_B$ setting.}
         \item \textbf{Different Penalty Factors.}
-        \item \textbf{Different number of APs.}
     \end{itemize}
     % CDF of \# of dropped jobs (over the queue limit); CDF of queue length;
 %----------------------------------------------------------------------------------------%
