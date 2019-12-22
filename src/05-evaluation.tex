@@ -13,17 +13,17 @@ Each queue for VMs on edge server is set with maximum queue length $L_{max}=20$.
 % Each queue on edge server with maximum 20 jobs because our algorithm is strong enough to predict the overflow to ensure a reliable system.
 
 \textbf{Compared Algorithms:}
-We compare the proposed algorithm with other three heuristic algorithms.
-Compared Algorithm:
+We compare the proposed algorithm with other three heuristic algorithms which are listed as folows.
 \begin{itemize}
     \item \textbf{Random Dispatching Policy}:
-            randomly dispatch jobs to edge servers;
-    \item \textbf{Local Selfish Algorithm (baseline policy)}:
-            always choose the edge server with the minimum expected uploading time plus the expected processing time for each job type; this policy is also taken as the initial fixed policy of our proposed algorithm;
-    \item \textbf{Local Queue-aware Greedy Algorithm}:
-            always choose the edge server with the minimum expected uploading time, plus the expected queueing time based on the observation of stale queue state.
+            for each job type, randomly choose the dispatching edge server in each time slot; 
+    \item \textbf{Selfish Algorithm}:
+            for each job type, always choose the edge server with the minimum expected uploading time, plus the expected processing time;
+    \item \textbf{Queue-aware Selfish Algorithm}:
+            for each job type, always choose the edge server with the minimum expected uploading time, plus the expected processing time and queueing time based on the observation of out-of-date queue states.
 \end{itemize}
-Specifically, we choose a heuristic selfish policy as the start and the definition is given as follows.
+Specifically, we choose the \emph{Local Selfish Algorithm} which is state-invariant as the initial fixed policy for our proposed algorithm.
+The explicit definition is given as follows.
 \begin{definition}[Selfish Policy]
     \begin{align}
         \Baseline &\define \Bracket{ \Pi_{1}, \dots, \Pi_{K} }
@@ -37,16 +37,16 @@ Specifically, we choose a heuristic selfish policy as the start and the definiti
     \subsubsection{Basic Performance}
     Here we measure some basic metrics concerning in edge computing system, compared with different algorithms.
     \begin{itemize}
-        \item Bar graph: Cost v.s. Algorithms;
-        \item Bar graph: JCT v.s. Algorithms;
-        \item Bar graph: Total Departure Rate v.s. Algorithms. 
+        \item Bar graph: Average Cost v.s. Algorithms;
+        \item Bar graph: Average JCT (job completion time) v.s. Algorithms;
+        \item Bar graph: Average Departure Rate v.s. Algorithms. 
     \end{itemize}
 
     \subsubsection{Fine-grained Analysis}
     \begin{itemize}
         \item Timeline graph: our proposed algorithm is better than compared algorithms all the time in Fig.\ref{fig:general_timeline};
-        \item CDF of Cost (with different algorithms);
-        \item CDF of JCT (with different algorithms);
+        \item CDF graph of Cost (with different algorithms);
+        \item CDF graph of JCT (with different algorithms);
     \end{itemize}
 
     \subsubsection{Sensitivity Study}
