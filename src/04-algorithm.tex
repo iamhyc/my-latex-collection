@@ -39,6 +39,7 @@ Thus, we shall approximate the value function of the optimal policy as
     + W^{\ddagger}_{\Baseline(\Stat(t))}\Paren{\mathcal{Q}(t+1)},
 \end{align}
 where
+%FIXME: no baseline in the definition!
 \begin{align}
     &W^{\dagger}_{\Baseline(\Stat(t))} \Paren{\mathcal{R}(t+1)} \define
     \nonumber\\
@@ -48,18 +49,18 @@ where
     \\    
     &W^{\ddagger}_{\Baseline(\Stat(t))}\Paren{\mathcal{Q}(t+1)} \define
     \nonumber\\
-    &~~~~~~~~~~\sum_{m\in\esSet}\sum_{j\in\jSpace}\Bracket{
+    &~~~~~~~~~~~~~~~~\sum_{m\in\esSet}\sum_{j\in\jSpace}\Bracket{
         \sum_{i=0}^{\infty} \gamma^{i+1} Q_{m,j}(t+i+1)
     }.
 \end{align}
-
 \comments{
-    However, the LSI is not available 
+    However, the OSI is not always available to all the APs, and the reception of OSI may result into unacceptable latency.
+    Hence, we leverage the nature of 
 }
 
 \subsection{The Decentralized Algorithm}
 \label{subsec:ap_alg}
-Moreover, we define the following sequence of AP subsets, where APs of each subset are selected to update dispatching strategy periodically.
+We define the following sequence of AP subsets, where APs of each subset are selected to update dispatching strategy periodically.
 \begin{definition}[Subsets of Periodic Strategy Update]
     Let $\mathcal{Y}_{1}, \dots, \mathcal{Y}_{N} \subseteq \ccSet$ be a sequence of subset, where each subset (say the $n$-th subset) satisfies the following constraints
     \begin{align}
@@ -70,14 +71,14 @@ Moreover, we define the following sequence of AP subsets, where APs of each subs
 \end{definition}
 
 Hence, the proposed dispatching policy, based on the one-step policy iteration on the baseline policy, is defined as follows.
-\begin{definition}[The Dispatching Policy]
+\fixit{
     In the $t$-th broadcast, the AP subset indexed with $n \equiv t \pmod{N} + 2$ shall update their policies.
     Specifically, the dispatching policies of the APs outside the subset $\mathcal{Y}_{n}$ is given by
     \begin{align}
         \Omega_{y}( \Stat_{y}(t),\Delay_{y}(t) ) \define \set{ \omega_{k,j}(t) | \forall j\in\jSpace }, \forall y\notin\mathcal{Y}_{n}.
     \end{align}
     Moreover, the dispatching policies of the APs in the subset $\mathcal{Y}_{n}$ is given by solving the following Problem \ref{problem_2}.
-\end{definition}
+}
 
 \begin{problem}
     In the $t$-th broadcast interval, the $y$-th AP in the set $\mathcal{Y}_{n}$ ($n \equiv t \pmod{N} + 1$) shall solve the following problem to update its policy.
@@ -96,21 +97,30 @@ Hence, the proposed dispatching policy, based on the one-step policy iteration o
     \label{problem_2}
 \end{problem}
 
-Then, we could propose the algorithm to solve the decentralized problem for each AP.
-The decentralized problem for the AP is defined as follows.
-% The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
-\begin{problem}[Decentralized Approximated Optimization Problem for AP]
-    For the $k$-th AP with baseline policy $\Pi_{k}(t)$:
-    {\small
-    \begin{align}
-        \min_{\Pi_{k}(t)} \mathbb{E}_{\set{ \Stat(t+1), \Pi_{k}(t) }} \Bracket{
-            W^{\AP}_{\Pi_{k}(t)}\Paren{\mathcal{R}(t+1)} + W^{\ES}_{\Pi_{k}(t)}\Paren{\mathcal{Q}(t+1)}
-        }.
-        \label{eqn:partial}
-    \end{align}
-    }
-\end{problem}
+\comments{
+    Then, we could propose the algorithm to solve the decentralized problem for each AP.
+    The decentralized problem for the AP is defined as follows.
+    % The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
 
+    \begin{problem}[Decentralized Approximated Optimization Problem for AP]
+        For the $k$-th AP with baseline policy $\Pi_{k}(t)$:
+        {\small
+        \begin{align}
+            \min_{\Pi_{k}(t)} \mathbb{E}_{\set{ \Stat(t+1), \Pi_{k}(t) }} \Bracket{
+                W^{\AP}_{\Pi_{k}(t)}\Paren{\mathcal{R}(t+1)} + W^{\ES}_{\Pi_{k}(t)}\Paren{\mathcal{Q}(t+1)}
+            }.
+            \label{eqn:partial}
+        \end{align}
+        }
+        \label{problem_3}
+    \end{problem}
+    
+    \begin{lemma}[Decouple Problem \ref{problem_2}]
+        The equivalence of solving Problem \ref{problem_2} and \ref{problem_3}.
+    \end{lemma}
+}
+
+Specifically, the calculation of \ref{eqn:partial} is elaborated below.
 The expected value function $W^{\AP}_{\Pi_{k}(t)}(\mathcal{R}(t+1))$ is easily obtained by the following equation.
 \begin{align}
     W^{\AP}_{\Pi_{k}(t)}\Paren{\mathcal{R}(t+1)} &= \sum_{j\in\jSpace}\sum_{k\in\ccSet_{k}}\sum_{m\in\esSet_{k}}
