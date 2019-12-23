@@ -4,7 +4,7 @@
 \subsection{Experimental Setup}
 \textbf{System Parameters Setup:}
 We implement the system in a small scale setting where fully-accessible APs and edge servers are considered.
-specifically, there are $K=8$ APs, $M=5$ edge servers, and $J=5$ type of jobs in the system corresponding to the manipulated data trace.
+specifically, there are $K=5$ APs, $M=3$ edge servers, and $J=5$ type of jobs in the system corresponding to the manipulated data trace.
 Each time slot is taken as $\tau = 0.05$ i.e. 50ms, and the broadcast interval is taken as $20$ time slots, i.e. $1$ second.
 The maximum uploading time is set as $3$ times the broadcast interval, i.e. $\Xi = 3T$.
 The distributions of arrival rate, uploading time and processing time are generated randomly.
@@ -13,7 +13,7 @@ Each queue for VMs on edge server is set with maximum queue length $L_{max}=20$.
 % Each queue on edge server with maximum 20 jobs because our algorithm is strong enough to predict the overflow to ensure a reliable system.
 
 \textbf{Compared Algorithms:}
-We compare the proposed algorithm with other three heuristic algorithms which are listed as folows.
+We compare the proposed algorithm with other three heuristic algorithms which are listed as follows.
 \begin{itemize}
     \item \textbf{Random Dispatching Policy}:
             for each job type, randomly choose the dispatching edge server in each time slot; 
@@ -93,7 +93,6 @@ The explicit definition is given as follows.
     \textbf{Estimation Error Analysis.}
     (If these graphs are not good, they are not going to appear on final draft.)
     \begin{itemize}
-        \item Two curves, one for real cost against time slot, one for expected sampling cost against time intervals; (if the accumulate area within the latter one has little/bounded error with real cost, then it is okay and the correctness is support by simulation)
-        \item 
+        \item Two curves, one for real cost against time slot, one for expected sampling cost against time intervals; (if the accumulate area within the latter one has little/bounded error with real cost, then it is okay and the correctness is support by simulation) 
     \end{itemize}
 }

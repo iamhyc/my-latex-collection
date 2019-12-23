@@ -1,14 +1,21 @@
 \section{Decentralized Algorithm with Partial Information}
 \label{sec:algorithm}
 
-\subsection{Low-Complexity Solution Framework}
 In this part, we shall introduce a novel approximation method to decouple the optimization on the right-hand-side of the Bellman's equations for arbitrary system state.
 Specifically, the decoupling can be achieved via the following two steps:
 \begin{enumerate}
     \item we first introduce a baseline policy and use its value function to approximate the value function of the optimal policy;
     \item based on the approximate value function, only a {subset of APs} are scheduled for update the dispatching action in each broadcast interval.
 \end{enumerate}
-First of all, the baseline policy is defined as follows.
+\comments{
+    More specifically, step 1 will be introduced in subsection \ref{subsec:baseline} and step 2 will be introduced in subsection \ref{subsec:ap_alg}.
+}
+
+\subsection{Baseline Police and Approximate Value Function}
+\label{subsec:baseline}
+\comments{
+    The baseline policy is defined as follows.
+}
 \begin{definition}[Baseline Policy]
     In the baseline policy $\Baseline$, each AP fixes the target processing edge server for each job type as the previous broadcast interval. Specifically,
     \begin{align}
@@ -35,6 +42,8 @@ Thus, we shall approximate the value function of the optimal policy as
     }.
 \end{align}
 
+\subsection{The Decentralized Algorithm}
+\label{subsec:ap_alg}
 Moreover, we define the following sequence of AP subsets, where APs of each subset are selected to update dispatching strategy periodically.
 \begin{definition}[Subsets of Periodic Strategy Update]
     Let $\mathcal{Y}_{1}, \dots, \mathcal{Y}_{N} \subseteq \ccSet$ be a sequence of subset, where each subset (say the $n$-th subset) satisfies the following constraints
@@ -72,7 +81,6 @@ Hence, the proposed dispatching policy, based on the one-step policy iteration o
     \label{problem_2}
 \end{problem}
 
-\subsection{The Decentralized Algorithm}
 Then, we could propose the algorithm to solve the decentralized problem for each AP.
 The decentralized problem for the AP is defined as follows.
 % The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
