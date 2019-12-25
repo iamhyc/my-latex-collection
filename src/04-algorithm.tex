@@ -8,14 +8,14 @@ Specifically, the decoupling can be achieved via the following two steps:
     \item based on the approximate value function, only a {subset of APs} are scheduled for update the dispatching action in each broadcast interval, \comments{and the decentralized algorithm is proposed}.
 \end{enumerate}
 \comments{
-    More specifically, step 1 will be introduced in subsection \ref{subsec:baseline} and step 2 will be introduced in subsection \ref{subsec:ap_alg}.
+    Step 1 shall be introduced in subsection \ref{subsec:baseline}, and then step 2 shall be introduced in subsection \ref{subsec:ap_alg}.
 }
 
 \subsection{Baseline Police and Approximate Value Function}
 \label{subsec:baseline}
-\comments{
+\accept{
     To alleviate the curse of dimensiionality, we use fixed policy to approximate the right-hand-side of the Bellman's equations.
-    Specifically, the baseline policy used in $\Stat(t+1)$ is the policy taken in the last interval, i.e. $\Omega(\Stat(t), \Delay(t))$.
+    Specifically, the baseline policy used in $\Stat(t+1)$ is the policy taken in the $t$-th interval. %i.e. $\Omega(\Stat(t), \Delay(t))$.
     The explicit definition of baseline policy is given below.
 }
 \begin{definition}[Baseline Policy]
@@ -54,13 +54,14 @@ where
     }.
 \end{align}
 \comments{
-    However, the OSI is not always available to all the APs, and the reception of OSI may result into unacceptable latency.
-    Hence, we leverage the nature of 
+    However, since the GSI and the global \brlatency~ is not obtainable in the edge computing system, we need to further decouple Problem \ref{problem_1} onto individual APs where only local OSI and \brlatency~is required to update the dispatching policy.
+    Hence, in the following subsection \ref{subsec:ap_alg}, we propose a decentralized algorithm where the APs shall update their policies simultaneously in the form of disjoint clusters.
+    The performance guarantee of the algorithm is also provided.
 }
 
 \subsection{The Decentralized Algorithm}
 \label{subsec:ap_alg}
-We define the following sequence of AP subsets, where APs of each subset are selected to update dispatching strategy periodically.
+We firstly define the following sequence of AP subsets, where APs of each subset are selected to update dispatching strategy periodically.
 \begin{definition}[Subsets of Periodic Strategy Update]
     Let $\mathcal{Y}_{1}, \dots, \mathcal{Y}_{N} \subseteq \ccSet$ be a sequence of subset, where each subset (say the $n$-th subset) satisfies the following constraints
     \begin{align}
@@ -70,34 +71,34 @@ We define the following sequence of AP subsets, where APs of each subset are sel
     \end{align}
 \end{definition}
 
-Hence, the proposed dispatching policy, based on the one-step policy iteration on the baseline policy, is defined as follows.
-\fixit{
-    In the $t$-th broadcast, the AP subset indexed with $n \equiv t \pmod{N} + 2$ shall update their policies.
-    Specifically, the dispatching policies of the APs outside the subset $\mathcal{Y}_{n}$ is given by
-    \begin{align}
-        \Omega_{y}( \Stat_{y}(t),\Delay_{y}(t) ) \define \set{ \omega_{k,j}(t) | \forall j\in\jSpace }, \forall y\notin\mathcal{Y}_{n}.
-    \end{align}
-    Moreover, the dispatching policies of the APs in the subset $\mathcal{Y}_{n}$ is given by solving the following Problem \ref{problem_2}.
-}
+% Hence, the proposed dispatching policy, based on the one-step policy iteration on the baseline policy, is defined as follows.
+Hence, in the $t$-th broadcast, the APs in the subset indexed with $n \equiv t \pmod{N} + 1$, i.e. $\mathcal{Y}_{n}$ shall update their policies.
+Specifically, the dispatching policies of the APs outside the subset $\mathcal{Y}_{n}$ is given by
+\begin{align}
+    \Omega_{y}( \Stat_{y}(t),\Delay_{y}(t) ) \define \set{ \omega_{k,j}(t) | \forall j\in\jSpace }, \forall y\notin\mathcal{Y}_{n}.
+\end{align}
+And the dispatching policies of the APs in the subset $\mathcal{Y}_{n}$ is given by solving the following Problem \ref{problem_2}.
 
-\begin{problem}
+\begin{problem}[]
     In the $t$-th broadcast interval, the $y$-th AP in the set $\mathcal{Y}_{n}$ ($n \equiv t \pmod{N} + 1$) shall solve the following problem to update its policy.
-    {\tiny
+    {\small
     \begin{align}
         &\min_{ \Omega_{y}(\Stat_{y}(t), \Delay_{y}(t)) }
-        \sum_{\Stat(t+1)} \Bracket{
-            W^{\dagger}_{\Baseline(\Stat(t))} \Paren{\mathcal{R}(t+1)} + W^{\ddagger}_{\Baseline(\Stat(t))}\Paren{\mathcal{Q}(t+1)}
+        \sum_{\Stat(t+1)} \Pr\Brace{
+            \Stat(t+1) | \Stat(t), \Omega_{y}(\Stat_{y}(t), \Delay_{y}(t))
         } \times
         \nonumber\\
-        &\Pr\Brace{
-            \Stat(t+1) | \Stat(t), \Omega_{y}(\Stat_{y}(t), \Delay_{y}(t)), \set{\omega_{y',j}(t)|\forall y' \neq y \in\apSet, j\in\jSpace}
+        &~~~~~~~~~~~~~~~~~~\Bracket{
+            W^{\dagger}_{\Baseline(\Stat(t))} \Paren{\mathcal{R}(t+1)} + W^{\ddagger}_{\Baseline(\Stat(t))}\Paren{\mathcal{Q}(t+1)}
         }
+        % \nonumber\\
     \end{align}
     }
     \label{problem_2}
 \end{problem}
 
 \comments{
+    Moreover, we notice that the cost function could be further decoupled onto the 
     Then, we could propose the algorithm to solve the decentralized problem for each AP.
     The decentralized problem for the AP is defined as follows.
     % The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
@@ -115,10 +116,11 @@ Hence, the proposed dispatching policy, based on the one-step policy iteration o
         \label{problem_3}
     \end{problem}
     
-    \begin{lemma}[Decouple Problem \ref{problem_2}]
-        The equivalence of solving Problem \ref{problem_2} and \ref{problem_3}.
-    \end{lemma}
+    
 }
+\begin{lemma}[Decouple Problem \ref{problem_2}]
+    The equivalence of solving Problem \ref{problem_2} and \ref{problem_3}.
+\end{lemma}
 
 Specifically, the calculation of \ref{eqn:partial} is elaborated below.
 The expected value function $W^{\AP}_{\Pi_{k}(t)}(\mathcal{R}(t+1))$ is easily obtained by the following equation.
@@ -155,14 +157,19 @@ where $\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\
 \end{align}
 
 The details of the procedure is elaborated as follows.
-\begin{itemize}
+\begin{enumerate}
     \item Initialize the system dispatching policy $\Policy(\Stat(0))$ start with some heuristic policy;
     \item At the $1$-st broadcast time slot when $t=0$, the APs in set $\mathcal{Y}_{1}$ and the edge servers in the corresponding \emph{candidate server set} of APs in $\mathcal{Y}_{1}$, shall broadcast their LSI (including the heuristic policies);
     \item Each AP (say the $y_1$-th AP) in set $\mathcal{Y}_{1}$ would receive the OSI at the $D_{y_1}(1)$ time slots in the $1$-st broadcast interval, and then it updates its policy $\Omega_{y_1}(\Stat_{y_1}(1))$ by solving Eqn.(\ref{eqn:partial}); The APs in set $\mathcal{Y}_{1}$ would keep with this policy until they receive the OSI again;
     \item At the $2$-nd broadcast time slot when $t=1$, the APs in set $\mathcal{Y}_{2}$ would receive the  broadcast OSI;
     % the $1$-st AP would broadcast $\Omega_{1}(\Stat_{1}(1))$ if it's in the \emph{conflict AP set} of the $2$-nd AP;
     \item Similarly, in the $t$-th broadcast interval the APs in subset indexed with $n \equiv (t + 1)\mod{N}$ would receive the OSI, and then update their policy $\Omega_{y_n}(t+1)$ ($\forall y_n\in\mathcal{Y}_{n}$) by solving Eqn.(\ref{eqn:partial}).
-\end{itemize}
+\end{enumerate}
+
+\begin{lemma}[Complexity Analysis]
+    The computation complexity of solving Problem \ref{problem_3} is $O(J(c_kM+M))$ where $c_k$ is the number of APs in the \emph{conflict AP set} of the $k$-th AP.
+    Overall, the computation complexity of the 
+\end{lemma}
 
 % \begin{lemma}
 %     The optimized policy solved as $\Baseline(t)$ for next stage, is better than $\Baseline(t-1), \dots, \Baseline(1)$ when considering the \emph{approximated value function} defined above.
