@@ -1,8 +1,9 @@
 \appendix
 \section{Value Function Analysis and Approximation}
-In this section, we elaborate the method to approximate the Bellman's equation in Eqn.(\ref{eqn:sp_0}).
+\label{apped_1}
+In this section, we elaborate the method to approximate the Bellman's equation in Eqn (\ref{eqn:sp_0}).
 
-Firstly, we notice that the transition function in Eqn.(\ref{eqn:sp_0}) could be rewrite in the following form.
+Firstly, we notice that the transition function in Eqn (\ref{eqn:sp_0}) could be rewrite in the following form.
 \begin{align}
     & \Pr\Brace{ \Stat_{k}(t+1)|\Stat_{k}(t), \Omega_{k}(\Stat_{k}(t)) }
     \nonumber\\
@@ -112,4 +113,4 @@ Thus we could obtain the denotation of transition matrix and probability vector 
     \end{align}
 \end{definition}
 
-According to the additive structure of cost function, we substitute the transition function plus value function in Eqn. (\ref{eqn:sp_0}) under some \emph{fixed policy} $\Pi_{k}$ with two linearly sections as $W^{\AP}_{\Pi_{k}}(\mathcal{R}(t+1))$ and $W^{\ES}_{\Pi_{k}}(\mathcal{Q}(t+1))$ for APs and edge servers, respectively.
+According to the additive structure of cost function, we substitute the transition function plus value function in Eqn (\ref{eqn:sp_0}) under some \emph{fixed policy} $\Pi_{k}$ with two linearly sections as $W^{\AP}_{\Pi_{k}}(\mathcal{R}(t+1))$ and $W^{\ES}_{\Pi_{k}}(\mathcal{Q}(t+1))$ for APs and edge servers, respectively.

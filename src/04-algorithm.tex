@@ -45,7 +45,7 @@ where
     \nonumber\\
     &~~~~~~~~~~~\sum_{k\in\apSet}\sum_{m\in\esSet}\sum_{j\in\jSpace}\Bracket{
         \sum_{i=0}^{\infty} \gamma^{i+1} \Inorm{\vec{R}^{(k)}_{m,j}(t+i+1)}
-    }
+    },
     \\    
     &W^{\ddagger}_{\Baseline(\Stat(t))}\Paren{\mathcal{Q}(t+1)} \define
     \nonumber\\
@@ -75,7 +75,7 @@ We firstly define the following sequence of AP subsets, where APs of each subset
 Hence, in the $t$-th broadcast, the APs in the subset indexed with $n \equiv t \pmod{N} + 1$, i.e. $\mathcal{Y}_{n}$ shall update their policies.
 Specifically, the dispatching policies of the APs outside the subset $\mathcal{Y}_{n}$ is given by
 \begin{align}
-    \Omega_{y}( \Stat_{y}(t),\Delay_{y}(t) ) \define \set{ \omega_{k,j}(t) | \forall j\in\jSpace }, \forall y\notin\mathcal{Y}_{n}.
+    \tilde{\Omega}_{y'}( \Stat_{y'}(t) ) \define \set{ \omega_{k,j}(t) | \forall j\in\jSpace }, \forall y'\notin\mathcal{Y}_{n}.
 \end{align}
 And the dispatching policies of the APs in the subset $\mathcal{Y}_{n}$ is given by solving the following Problem \ref{problem_2}.
 
@@ -83,49 +83,46 @@ And the dispatching policies of the APs in the subset $\mathcal{Y}_{n}$ is given
     In the $t$-th broadcast interval, the $y$-th AP in the set $\mathcal{Y}_{n}$ ($n \equiv t \pmod{N} + 1$) shall solve the following problem to update its policy.
     {\small
     \begin{align}
-        &\min_{ \Omega_{y}(\Stat_{y}(t), \Delay_{y}(t)) }
+        &\min_{ \tilde{\Omega}_{y}(\Stat_{y}(t)) }
         \sum_{\Stat(t+1)} \Pr\Brace{
-            \Stat(t+1) | \Stat(t), \Omega_{y}(\Stat_{y}(t), \Delay_{y}(t))
+            \Stat(t+1) | \Stat(t), \tilde{\Omega}_{y}(\Stat_{y}(t))
         } \times
         \nonumber\\
-        &~~~~~~~~~~~~~~~~~~\Bracket{
+        &~~~~~~~~~~~\Bracket{
             W^{\dagger}_{\Baseline(\Stat(t))} \Paren{\mathcal{R}(t+1)} + W^{\ddagger}_{\Baseline(\Stat(t))}\Paren{\mathcal{Q}(t+1)}
-        }
-        % \nonumber\\
+        }.
     \end{align}
     }
     \label{problem_2}
 \end{problem}
+Moreover, we notice that the system information in $\Stat(t)$ and $\Stat(t+1)$ is not obtainable and also useless when solving Problem \ref{problem_2}.
+Hence, we could further rewrite the problem in the following reduced form.
+% The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
+\begin{problem}[]
+    In the $t$-th broadcast interval, the $y$-th AP in the set $\mathcal{Y}_{n}$ ($n \equiv t \pmod{N} + 1$) shall solve the following problem based on its OSI and local \brlatency
+    {\small
+    \begin{align}
+        \min_{\tilde{\Omega}_{y}(\Stat_{y}(t))}
+        &\mathbb{E}_{\set{\Stat(t+1), \tilde{\Omega}_{y}(\Stat_{y}(t))}}
+        \nonumber\\
+        &\Bracket{
+            W^{\AP}_{ \tilde{\Omega}_{y}(\Stat_{y}(t)) }\Paren{\mathcal{R}(t+1)} +
+            W^{\ES}_{ \tilde{\Omega}_{y}(\Stat_{y}(t)) }\Paren{\mathcal{Q}(t+1)}
+        }.
+        \label{eqn:partial}
+    \end{align}
+    }
+    \label{problem_3}
+\end{problem}
 
-\comments{
-    Moreover, we notice that the cost function could be further decoupled onto the 
-    Then, we could propose the algorithm to solve the decentralized problem for each AP.
-    The decentralized problem for the AP is defined as follows.
-    % The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
-
-    \begin{problem}[Decentralized Approximated Optimization Problem for AP]
-        For the $k$-th AP with baseline policy $\Pi_{k}(t)$:
-        {\small
-        \begin{align}
-            \min_{\Pi_{k}(t)} \mathbb{E}_{\set{ \Stat(t+1), \Pi_{k}(t) }} \Bracket{
-                W^{\AP}_{\Pi_{k}(t)}\Paren{\mathcal{R}(t+1)} + W^{\ES}_{\Pi_{k}(t)}\Paren{\mathcal{Q}(t+1)}
-            }.
-            \label{eqn:partial}
-        \end{align}
-        }
-        \label{problem_3}
-    \end{problem}
-    
-    
-}
-\begin{lemma}[Decouple Problem \ref{problem_2}]
-    The equivalence of solving Problem \ref{problem_2} and \ref{problem_3}.
+\begin{lemma}[]
+    The optimal solution to Problem \ref{problem_2} and Problem \ref{problem_3} is same.
 \end{lemma}
 
-Specifically, the calculation of \ref{eqn:partial} is elaborated below.
-The expected value function $W^{\AP}_{\Pi_{k}(t)}(\mathcal{R}(t+1))$ is easily obtained by the following equation.
+Specifically, the definitions of symbols in the remaining parts is given in the Appendix \ref{apped_1} and the calculation of Eqn (\ref{eqn:partial}) is elaborated below.
+The expected value function $W^{\AP}_{\tilde{\Omega}_{y}(\Stat_{y}(t))}(\mathcal{R}(t+1))$ is easily obtained by evaluating the following equation
 \begin{align}
-    W^{\AP}_{\Pi_{k}(t)}\Paren{\mathcal{R}(t+1)} &= \sum_{j\in\jSpace}\sum_{k\in\ccSet_{k}}\sum_{m\in\esSet_{k}}
+    W^{\AP}_{\tilde{\Omega}_{y}(\Stat_{y}(t))}\Paren{\mathcal{R}(t+1)} &= \sum_{j\in\jSpace}\sum_{k\in\ccSet_{k}}\sum_{m\in\esSet_{k}}
     \nonumber\\
     &\Inorm{
         \Paren{ 1 - \gamma ({\Gamma}^{(k)}_{m,j})^{N} }^{-1} \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1)
@@ -134,21 +131,23 @@ The expected value function $W^{\AP}_{\Pi_{k}(t)}(\mathcal{R}(t+1))$ is easily o
 \end{align}
 % where $\hat{\Gamma}^{(k)}_{m,j} \define (\Gamma^{(k)}_{m,j})^{N}$.
 
-The expression for expected value function $W^{\ES}_{\Pi_{k}(t)}(\mathcal{Q}(t+1))$ is little more complex compared to Eqn.(\ref{w_ap}).
+The expression for expected value function is little more complex compared to Eqn (\ref{w_ap}).
 It is affected with both arrival process under dispatching policy and last queue state.
 However, we notice that the arrival process would be stationary after the maximum uploading time under the stationary baseline policy and the relationship between APs and edge server could be decoupled.
-Hence, the expected value function $W^{\ES}_{\Pi_{k}(t)}(\mathcal{Q}(t+1))$ is obtained by the following equation.
+Hence, the expected value function $W^{\ES}_{\tilde{\Omega}_{y}(\Stat_{y}(t))}(\mathcal{Q}(t+1))$ is obtained by the following equation.
+{\small
 \begin{align}
-    &W^{\ES}_{\Pi_{k}(t)}\Paren{\mathcal{Q}(t+1)}
+    &W^{\ES}_{\tilde{\Omega}_{y}(\Stat_{y}(t))}\Paren{\mathcal{Q}(t+1)}
     = \sum_{j\in\jSpace}\sum_{m\in\esSet_{k}}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ Q_{m,j}({t+i+1}) ]
     \nonumber\\
     &~~~~~~~~~~~~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}',
-\end{align}
-where the $i$-th element of vector $\vec{g}$ denotes the cost of server as $Q_{m,j}(t)$;
+\end{align}   
+}
+where the $i$-th element of vector $\vec{g}$ denotes the cost of server as $Q_{m,j}(t)$, and
 \begin{align}
-    \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) \define \prod_{n=0,\dots,N-1} \mat{P}_{m,j}(\tilde{\beta}_{m,j})
+    \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) \define \prod_{n=0,\dots,N-1} \mat{P}_{m,j}(\tilde{\beta}_{m,j}),
 \end{align}
-% the probability distribution of $Q_{m,j}({t+i+1})$ is denoted by $\vecG{\nu}({t+i+1})$ which is obtained by calculating equation Enq. (\ref{eqn_0}) - Eqn. (\ref{eqn_4}) ($\forall i=0,\dots,\frac{\Xi}{T}$);
+% the probability distribution of $Q_{m,j}({t+i+1})$ is denoted by $\vecG{\nu}({t+i+1})$ which is obtained by calculating equation Enq. (\ref{eqn_0}) - Eqn (\ref{eqn_4}) ($\forall i=0,\dots,\frac{\Xi}{T}$);
 where $\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\Pi(t)$ (on $m$-th ES with type $j$ jobs)
 \begin{align}
     \tilde{\beta}_{m,j} &\define \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j} \times \sum_{\xi=0,\dots,\Xi-1} \Pr\{ \xi<U_{k,m}\leq(\xi+1) \}
@@ -160,30 +159,30 @@ The details of the procedure is elaborated as follows.
 \begin{enumerate}
     \item Initialize the system dispatching policy $\Policy(\Stat(0))$ start with some heuristic policy;
     \item At the $1$-st broadcast time slot when $t=0$, the APs in set $\mathcal{Y}_{1}$ and the edge servers in the corresponding \emph{candidate server set} of APs in $\mathcal{Y}_{1}$, shall broadcast their LSI (including the heuristic policies);
-    \item Each AP (say the $y_1$-th AP) in set $\mathcal{Y}_{1}$ would receive the OSI at the $D_{y_1}(1)$ time slots in the $1$-st broadcast interval, and then it updates its policy $\Omega_{y_1}(\Stat_{y_1}(1))$ by solving Eqn.(\ref{eqn:partial}); The APs in set $\mathcal{Y}_{1}$ would keep with this policy until they receive the OSI again;
+    \item Each AP (say the $y_1$-th AP) in set $\mathcal{Y}_{1}$ would receive the OSI at the $D_{y_1}(1)$ time slots in the $1$-st broadcast interval, and then it updates its policy $\Omega_{y_1}(\Stat_{y_1}(1))$ by solving Eqn (\ref{eqn:partial}); The APs in set $\mathcal{Y}_{1}$ would keep with this policy until they receive the OSI again;
     \item At the $2$-nd broadcast time slot when $t=1$, the APs in set $\mathcal{Y}_{2}$ would receive the  broadcast OSI;
     % the $1$-st AP would broadcast $\Omega_{1}(\Stat_{1}(1))$ if it's in the \emph{conflict AP set} of the $2$-nd AP;
-    \item Similarly, in the $t$-th broadcast interval the APs in subset indexed with $n \equiv (t + 1)\mod{N}$ would receive the OSI, and then update their policy $\Omega_{y_n}(t+1)$ ($\forall y_n\in\mathcal{Y}_{n}$) by solving Eqn.(\ref{eqn:partial}).
+    \item Similarly, in the $t$-th broadcast interval the APs in subset indexed with $n \equiv (t + 1)\mod{N}$ would receive the OSI, and then update their policy $\Omega_{y_n}(t+1)$ ($\forall y_n\in\mathcal{Y}_{n}$) by solving Eqn (\ref{eqn:partial}).
 \end{enumerate}
 
 \begin{lemma}[Complexity Analysis]
-    The computation complexity of solving Problem \ref{problem_3} is $O(J(c_kM+M))$ where $c_k$ is the number of APs in the \emph{conflict AP set} of the $k$-th AP.
-    Overall, the computation complexity of the 
+    The computation complexity of solving Problem \ref{problem_3} is $O(J(c_k M_k+M_k))$ where $c_k, M_k$ is the number of APs in the \emph{conflict AP set} and number of edge servers in the \emph{potential server set} of the $k$-th AP, respectively.
+    Overall, the computation complexity of the algorithm in one period is $O(J(KM+M))$.
 \end{lemma}
 
-% \begin{lemma}
-%     The optimized policy solved as $\Baseline(t)$ for next stage, is better than $\Baseline(t-1), \dots, \Baseline(1)$ when considering the \emph{approximated value function} defined above.
-%     \\
-%     Moreover, the performance of the series of the baseline policies is upper bounded by the optimal solution $\Policy^*$ when considering the original Bellman's equation.
-%     $$
-%         V_{\Omega^*}\Paren{\Stat(t)}
-%         \leq W_{\tilde{\Policy}(t)}\Paren{\Stat(t)}
-%         \leq W_{\tilde{\Policy}(t-1)}\Paren{\Stat(t)}
-%     $$
-% \end{lemma}
-% \begin{proof}
+\begin{lemma}[Performance Guarantee]
+    % The optimized policy solved as $\Baseline(t)$ for next stage, is better than $\Baseline(t-1), \dots, \Baseline(1)$ when considering the \emph{approximated value function} defined above.
+    The performance of the series of the baseline policies is upper bounded by the optimal solution $\Policy^*$ when considering the original Bellman's equation.
+    $$
+        V_{\Omega^*}\Paren{\Stat(t)}
+        \leq W_{\tilde{\Policy}(\Stat(t))}\Paren{\Stat(t)}
+        \leq W_{\tilde{\Policy}(\Stat(t-1))}\Paren{\Stat(t)},
+        \forall \Stat(t)
+    $$
+\end{lemma}
+\begin{proof}
     
-% \end{proof}
+\end{proof}
 
 %----------------------------------------------------------------------------------------%
 \delete{v11}{
@@ -193,10 +192,10 @@ The details of the procedure is elaborated as follows.
     %     \begin{algorithmic}[1]
     %         \STATE $t = 0$
     %         \FOR{$t = 1,2,\dots$}
-    %             \STATE Evaluate $\Omega_0$ in \textbf{P1} according to Eqn. (\ref{sp1})
+    %             \STATE Evaluate $\Omega_0$ in \textbf{P1} according to Eqn (\ref{sp1})
     %             \FOR{$k \in \mathcal{K}$}
     %                 \STATE fix policy $\vec{\Omega}^{(k)}(t) \forall k' < k$
-    %                 \STATE Evaluate $k$-th AP Local Policy $\tilde{\Omega}_k$ in \textbf{Pk} according to Eqn. (\ref{sp2})
+    %                 \STATE Evaluate $k$-th AP Local Policy $\tilde{\Omega}_k$ in \textbf{Pk} according to Eqn (\ref{sp2})
     %             \ENDFOR
     %         \ENDFOR
     %     \end{algorithmic}
