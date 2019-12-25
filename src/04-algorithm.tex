@@ -35,19 +35,19 @@ Thus, we shall approximate the value function of the optimal policy as
 \begin{align}
     &V\Paren{\Stat(t+1)} \approx
     \nonumber\\
-    &~~~~~~W^{\dagger}_{\Baseline(\Stat(t))} \Paren{\mathcal{R}(t+1)}
-    + W^{\ddagger}_{\Baseline(\Stat(t))}\Paren{\mathcal{Q}(t+1)},
+    &~~~~W^{\dagger}_{\Baseline(\Stat(t))} \Paren{\Stat(t+1)}
+    + W^{\ddagger}_{\Baseline(\Stat(t))}\Paren{\Stat(t+1)},
 \end{align}
 where
 %FIXME: no baseline in the definition!
 \begin{align}
-    &W^{\dagger}_{\Baseline(\Stat(t))} \Paren{\mathcal{R}(t+1)} \define
+    &W^{\dagger}_{\Baseline(\Stat(t))} \Paren{\Stat(t+1)} \define
     \nonumber\\
     &~~~~~~~~~~~\sum_{k\in\apSet}\sum_{m\in\esSet}\sum_{j\in\jSpace}\Bracket{
         \sum_{i=0}^{\infty} \gamma^{i+1} \Inorm{\vec{R}^{(k)}_{m,j}(t+i+1)}
     },
     \\    
-    &W^{\ddagger}_{\Baseline(\Stat(t))}\Paren{\mathcal{Q}(t+1)} \define
+    &W^{\ddagger}_{\Baseline(\Stat(t))}\Paren{\Stat(t+1)} \define
     \nonumber\\
     &~~~~~~~~~~~~~~~~\sum_{m\in\esSet}\sum_{j\in\jSpace}\Bracket{
         \sum_{i=0}^{\infty} \gamma^{i+1} Q_{m,j}(t+i+1)
@@ -96,8 +96,8 @@ And the dispatching policies of the APs in the subset $\mathcal{Y}_{n}$ is given
     }
     \label{problem_2}
 \end{problem}
-Moreover, we notice that the system information in $\Stat(t)$ and $\Stat(t+1)$ is not obtainable and also useless when solving Problem \ref{problem_2}.
-Hence, we could further rewrite the problem in the following reduced form.
+We notice that the GSI $\Stat(t)$ and $\Stat(t+1)$ is not obtainable and also not necessary in solving Problem \ref{problem_2}.
+Hence, we could further rewrite the problem in the following reduced form with OSI.
 % The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
 \begin{problem}[]
     In the $t$-th broadcast interval, the $y$-th AP in the set $\mathcal{Y}_{n}$ ($n \equiv t \pmod{N} + 1$) shall solve the following problem based on its OSI and local \brlatency~information
@@ -166,10 +166,12 @@ The details of the procedure is elaborated as follows.
     \item Step 4) is periodically repeated with respect to the broadcast interval.
 \end{enumerate}
 
-\begin{lemma}[Complexity Analysis]
-    The computation complexity of solving Problem \ref{problem_3} is $O(J(c_k M_k+M_k))$ where $c_k, M_k$ is the number of APs in the \emph{conflict AP set} and number of edge servers in the \emph{potential server set} of the $k$-th AP, respectively.
-    Overall, the computation complexity of the algorithm in one period is $O(J(KM+M))$.
-\end{lemma}
+% \begin{remark}[Complexity Analysis]
+%     The computation complexity of solving Problem \ref{problem_3} is $O(J())$
+
+%     % The computation complexity of solving Problem \ref{problem_3} is $O(J(c_k M_k+M_k))$ where $c_k, M_k$ is the number of APs in the \emph{conflict AP set} and number of edge servers in the \emph{potential server set} of the $k$-th AP, respectively.
+%     Overall, the computation complexity of the algorithm in one period is $O(J(KM+M))$.
+% \end{remark}
 
 \begin{lemma}[Performance Guarantee]
     % The optimized policy solved as $\Baseline(t)$ for next stage, is better than $\Baseline(t-1), \dots, \Baseline(1)$ when considering the \emph{approximated value function} defined above.
