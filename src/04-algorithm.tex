@@ -75,7 +75,7 @@ We firstly define the following sequence of AP subsets, where APs of each subset
 Hence, in the $t$-th broadcast, the APs in the subset indexed with $n \equiv t \pmod{N} + 1$, i.e. $\mathcal{Y}_{n}$ shall update their policies.
 Specifically, the dispatching policies of the APs outside the subset $\mathcal{Y}_{n}$ is given by
 \begin{align}
-    \tilde{\Omega}_{y'}( \Stat_{y'}(t) ) \define \set{ \omega_{k,j}(t) | \forall j\in\jSpace }, \forall y'\notin\mathcal{Y}_{n}.
+    \tilde{\Omega}_{y'}( \Stat_{y'}(t),\Delay_{y'}(t) ) \define \set{ \omega_{k,j}(t) | \forall j\in\jSpace }, \forall y'\notin\mathcal{Y}_{n}.
 \end{align}
 And the dispatching policies of the APs in the subset $\mathcal{Y}_{n}$ is given by solving the following Problem \ref{problem_2}.
 
@@ -83,13 +83,14 @@ And the dispatching policies of the APs in the subset $\mathcal{Y}_{n}$ is given
     In the $t$-th broadcast interval, the $y$-th AP in the set $\mathcal{Y}_{n}$ ($n \equiv t \pmod{N} + 1$) shall solve the following problem to update its policy.
     {\small
     \begin{align}
-        &\min_{ \tilde{\Omega}_{y}(\Stat_{y}(t)) }
-        \sum_{\Stat(t+1)} \Pr\Brace{
-            \Stat(t+1) | \Stat(t), \tilde{\Omega}_{y}(\Stat_{y}(t))
+        \min_{ \tilde{\Omega}_{y}(\Stat_{y}(t),\Delay_{y}(t)) }
+        &\sum_{\Stat(t+1)} \Pr\Brace{
+            \Stat(t+1) | \Stat(t), \tilde{\Omega}_{y}(\Stat_{y}(t),\Delay_{y}(t))
         } \times
         \nonumber\\
-        &~~~~~~~~~~~\Bracket{
-            W^{\dagger}_{\Baseline(\Stat(t))} \Paren{\mathcal{R}(t+1)} + W^{\ddagger}_{\Baseline(\Stat(t))}\Paren{\mathcal{Q}(t+1)}
+        &\Bracket{
+            W^{\AP}_{\Baseline(\Stat(t))} \Paren{\Stat(t+1)} +
+            W^{\ES}_{\Baseline(\Stat(t))} \Paren{\Stat(t+1)}
         }.
     \end{align}
     }
@@ -99,15 +100,15 @@ Moreover, we notice that the system information in $\Stat(t)$ and $\Stat(t+1)$ i
 Hence, we could further rewrite the problem in the following reduced form.
 % The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
 \begin{problem}[]
-    In the $t$-th broadcast interval, the $y$-th AP in the set $\mathcal{Y}_{n}$ ($n \equiv t \pmod{N} + 1$) shall solve the following problem based on its OSI and local \brlatency
+    In the $t$-th broadcast interval, the $y$-th AP in the set $\mathcal{Y}_{n}$ ($n \equiv t \pmod{N} + 1$) shall solve the following problem based on its OSI and local \brlatency~information
     {\small
     \begin{align}
-        \min_{\tilde{\Omega}_{y}(\Stat_{y}(t))}
-        &\mathbb{E}_{\set{\Stat(t+1), \tilde{\Omega}_{y}(\Stat_{y}(t))}}
+        &\min_{\tilde{\Omega}_{y}(\Stat_{y}(t),\Delay_{y}(t))}
+        \mathbb{E}_{\set{\Stat(t+1), \tilde{\Omega}_{y}(\Stat_{y}(t),\Delay_{y}(t))}}
         \nonumber\\
-        &\Bracket{
-            W^{\AP}_{ \tilde{\Omega}_{y}(\Stat_{y}(t)) }\Paren{\mathcal{R}(t+1)} +
-            W^{\ES}_{ \tilde{\Omega}_{y}(\Stat_{y}(t)) }\Paren{\mathcal{Q}(t+1)}
+        &~~~~~~~~~~~\Bracket{
+            W^{\AP}_{ \Pi_{k}(\Stat_{k}(t)) }\Paren{\Stat_{k}(t+1)} +
+            W^{\ES}_{ \Pi_{k}(\Stat_{k}(t)) }\Paren{\Stat_{k}(t+1)}
         }.
         \label{eqn:partial}
     \end{align}
@@ -120,9 +121,9 @@ Hence, we could further rewrite the problem in the following reduced form.
 \end{lemma}
 
 Specifically, the definitions of symbols in the remaining parts is given in the Appendix \ref{apped_1} and the calculation of Eqn (\ref{eqn:partial}) is elaborated below.
-The expected value function $W^{\AP}_{\tilde{\Omega}_{y}(\Stat_{y}(t))}(\mathcal{R}(t+1))$ is easily obtained by evaluating the following equation
+The expected value function $W^{\AP}_{\Pi_{k}(\Stat_{k}(t))}(\Stat_{k}(t+1))$ is easily obtained by evaluating the following equation
 \begin{align}
-    W^{\AP}_{\tilde{\Omega}_{y}(\Stat_{y}(t))}\Paren{\mathcal{R}(t+1)} &= \sum_{j\in\jSpace}\sum_{k\in\ccSet_{k}}\sum_{m\in\esSet_{k}}
+    W^{\AP}_{\Pi_{k}(\Stat_{k}(t))}\Paren{\Stat(t+1)} &= \sum_{j\in\jSpace}\sum_{k\in\ccSet_{k}}\sum_{m\in\esSet_{k}}
     \nonumber\\
     &\Inorm{
         \Paren{ 1 - \gamma ({\Gamma}^{(k)}_{m,j})^{N} }^{-1} \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1)
@@ -134,10 +135,10 @@ The expected value function $W^{\AP}_{\tilde{\Omega}_{y}(\Stat_{y}(t))}(\mathcal
 The expression for expected value function is little more complex compared to Eqn (\ref{w_ap}).
 It is affected with both arrival process under dispatching policy and last queue state.
 However, we notice that the arrival process would be stationary after the maximum uploading time under the stationary baseline policy and the relationship between APs and edge server could be decoupled.
-Hence, the expected value function $W^{\ES}_{\tilde{\Omega}_{y}(\Stat_{y}(t))}(\mathcal{Q}(t+1))$ is obtained by the following equation.
+Hence, the expected value function $W^{\ES}_{\Pi_{k}(\Stat_{k}(t))}(\Stat_{k}(t+1))$ is obtained by the following equation.
 {\small
 \begin{align}
-    &W^{\ES}_{\tilde{\Omega}_{y}(\Stat_{y}(t))}\Paren{\mathcal{Q}(t+1)}
+    &W^{\ES}_{\Pi_{k}(\Stat_{k}(t))}\Paren{\Stat_{k}(t+1)}
     = \sum_{j\in\jSpace}\sum_{m\in\esSet_{k}}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ Q_{m,j}({t+i+1}) ]
     \nonumber\\
     &~~~~~~~~~~~~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}',
@@ -157,12 +158,12 @@ where $\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\
 
 The details of the procedure is elaborated as follows.
 \begin{enumerate}
-    \item Initialize the system dispatching policy $\Policy(\Stat(0))$ start with some heuristic policy;
+    \item Initialize the dispatching policy of the $k$-th AP ($\forall k\in\apSet$) with some heuristic policy as $\Policy_{k}(\Stat_{k}(0), \Delay_{k}(0))$;
     \item At the $1$-st broadcast time slot when $t=0$, the APs in set $\mathcal{Y}_{1}$ and the edge servers in the corresponding \emph{candidate server set} of APs in $\mathcal{Y}_{1}$, shall broadcast their LSI (including the heuristic policies);
     \item Each AP (say the $y_1$-th AP) in set $\mathcal{Y}_{1}$ would receive the OSI at the $D_{y_1}(1)$ time slots in the $1$-st broadcast interval, and then it updates its policy $\Omega_{y_1}(\Stat_{y_1}(1))$ by solving Eqn (\ref{eqn:partial}); The APs in set $\mathcal{Y}_{1}$ would keep with this policy until they receive the OSI again;
-    \item At the $2$-nd broadcast time slot when $t=1$, the APs in set $\mathcal{Y}_{2}$ would receive the  broadcast OSI;
-    % the $1$-st AP would broadcast $\Omega_{1}(\Stat_{1}(1))$ if it's in the \emph{conflict AP set} of the $2$-nd AP;
+    % \item At the $2$-nd broadcast time slot when $t=1$, the APs in set $\mathcal{Y}_{2}$ would receive the broadcast OSI;
     \item Similarly, in the $t$-th broadcast interval the APs in subset indexed with $n \equiv (t + 1)\mod{N}$ would receive the OSI, and then update their policy $\Omega_{y_n}(t+1)$ ($\forall y_n\in\mathcal{Y}_{n}$) by solving Eqn (\ref{eqn:partial}).
+    \item Step 4) is periodically repeated with respect to the broadcast interval.
 \end{enumerate}
 
 \begin{lemma}[Complexity Analysis]
