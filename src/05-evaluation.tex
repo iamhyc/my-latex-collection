@@ -24,13 +24,13 @@ We compare the proposed algorithm with other three heuristic algorithms which ar
 \end{itemize}
 Specifically, we choose the \emph{Local Selfish Algorithm} which is state-invariant as the initial fixed policy for our proposed algorithm.
 The explicit definition is given as follows.
-\begin{definition}[Selfish Policy]
+\begin{policy}[Selfish Policy]
     \begin{align}
         \Baseline &\define \Bracket{ \Pi_{1}, \dots, \Pi_{K} }
         \\
         \pi_{k,j} &\define \arg\min_{m} \mathbb{E}[U_{k,m,j}] + \mathbb{E}[C_{m,j}]
     \end{align} 
-\end{definition}
+\end{policy}
 %----------------------------------------------------------------------------------------%
 
 \subsection{Performance Analysis}
