@@ -117,6 +117,13 @@ Hence, we could further rewrite the problem in the following reduced form with O
     The optimal solution to Problem \ref{problem_2} and Problem \ref{problem_3} is same.
 \end{lemma}
 
+\fixit{
+    The problem is easy to solve by brutally evalute the value function for all $m\in\esSet_{k}$ for the $k$-th AP ($\forall k\in\ccSet$).
+    \begin{remark}[Complexity Analysis]
+        The complexity of the above solution to the algorithm is $O(J(KM+M))$.
+    \end{remark}
+}
+
 Specifically, the definitions of symbols in the remaining parts is given in the Appendix \ref{apped_1} and the calculation of Eqn (\ref{eqn:partial}) is elaborated below.
 The expected value function $W^{\AP}_{\Pi_{k}(\Stat_{k}(t))}(\Stat_{k}(t+1))$ is easily obtained by evaluating the following equation
 \begin{align}
@@ -153,6 +160,7 @@ where $\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\
     ~~~~&= \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j}
 \end{align}
 
+\subsection{Algorithm?}
 The details of the procedure is elaborated as follows.
 \begin{enumerate}
     \item Initialize the dispatching policy of the $k$-th AP ($\forall k\in\apSet$) with some heuristic policy as $\Policy_{k}(\Stat_{k}(0), \Delay_{k}(0))$;
@@ -170,6 +178,7 @@ The details of the procedure is elaborated as follows.
 %     Overall, the computation complexity of the algorithm in one period is $O(J(KM+M))$.
 % \end{remark}
 
+Finally, we have the following conclusion on the performance of the above proposed algorithm.
 \begin{lemma}[Performance Guarantee]
     % The optimized policy solved as $\Baseline(t)$ for next stage, is better than $\Baseline(t-1), \dots, \Baseline(1)$ when considering the \emph{approximated value function} defined above.
     The performance of the series of the baseline policies is upper bounded by the optimal solution $\Policy^*$ when considering the original Bellman's equation.
