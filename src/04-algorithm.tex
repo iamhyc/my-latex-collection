@@ -50,7 +50,8 @@ The definitions are given below.
         \sum_{i=0}^{\infty} \gamma^{i+1} Q_{m,j}(t+i+1)
     }.
 \end{align}
-\comments{
+\fixit{
+    (DELETE)
     However, since the GSI and the global \brlatency~ is not obtainable in the edge computing system, we need to further decouple Problem \ref{problem_1} onto individual APs where only local OSI and \brlatency~is required to update the dispatching policy.
     Hence, in the following subsection \ref{subsec:ap_alg}, we propose a decentralized algorithm where the APs shall update their policies simultaneously in the form of disjoint clusters.
     The performance guarantee of the algorithm is also provided.
@@ -58,7 +59,12 @@ The definitions are given below.
 
 \subsection{The Decentralized Algorithm}
 \label{subsec:ap_alg}
-We firstly define the following sequence of AP subsets, where APs of each subset are selected to update dispatching strategy periodically.
+\comments{
+    Although the optimal value function with the relaxation of GSI, denoted as $V$, has been approximated via the baseline policy in the previous part, it is still infeasible for all the APs to solve the right-hand-side of the Bellman's equations with OSI only.
+    This is because \fixit{some information is not available}.
+    Instead, it can be proved that it is feasible for part of the APs to update their dispatching actions distributively and achieve a better performance.
+}
+Hence, we first define the following sequence of AP subsets, where APs of each subset are selected to update dispatching strategy periodically, followed by the procedure of alternative update of dispatching actions.
 \begin{definition}[Subsets of Periodic Strategy Update]
     Let $\mathcal{Y}_{1}, \dots, \mathcal{Y}_{N} \subseteq \ccSet$ be a sequence of subset, where each subset (say the $n$-th subset) satisfies the following constraints
     \begin{align}
@@ -67,14 +73,24 @@ We firstly define the following sequence of AP subsets, where APs of each subset
         \ccSet_{y} \cap \ccSet_{y'} &=\emptyset, \forall y' \neq y \in \mathcal{Y}_{n}~(n=1,\dots,N).
     \end{align}
 \end{definition}
+\fixit{
+    (Add one example with figure illustration).
+}
 
 % Hence, the proposed dispatching policy, based on the one-step policy iteration on the baseline policy, is defined as follows.
-Hence, in the $t$-th broadcast, the APs in the subset indexed with $n \equiv t \pmod{N} + 1$, i.e. $\mathcal{Y}_{n}$ shall update their policies.
-Specifically, the dispatching policies of the APs outside the subset $\mathcal{Y}_{n}$ is given by
-\begin{align}
-    \tilde{\Omega}_{y'}( \Stat_{y'}(t),\Delay_{y'}(t) ) \define \set{ \omega_{k,j}(t) | \forall j\in\jSpace }, \forall y'\notin\mathcal{Y}_{n}.
-\end{align}
-And the dispatching policies of the APs in the subset $\mathcal{Y}_{n}$ is given by solving the following Problem \ref{problem_2}.
+\fixit{
+    Moreover, we define $\tilde{\mathbf{\Omega}}$ as the disaptching actions for the APs in $Y_{n}$.
+}
+Hence, in the $t$-th broadcast, the APs in the subset indexed with $n \equiv t \pmod{N} + 1$, i.e. $\mathcal{Y}_{n}$, shall update their dispatching actions.
+Specifically, the optimization of \fixit{what dispatching actions of what} at the right-hand-side of the Bellman's equations can be rewritten as the following problem.
+\delete{v14}{
+    the dispatching policies of the APs outside the subset $\mathcal{Y}_{n}$ is given by
+    \begin{align}
+        \tilde{\Omega}_{y'}( \Stat_{y'}(t),\Delay_{y'}(t) ) \define \set{ \omega_{k,j}(t) | \forall j\in\jSpace }, \forall y'\notin\mathcal{Y}_{n}.
+    \end{align}
+    And the dispatching policies of the APs in the subset $\mathcal{Y}_{n}$ is given by solving the following Problem \ref{problem_2}.
+    % The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
+}
 
 \begin{problem}[]
     In the $t$-th broadcast interval, the $y$-th AP in the set $\mathcal{Y}_{n}$ ($n \equiv t \pmod{N} + 1$) shall solve the following problem to update its policy.
@@ -88,14 +104,19 @@ And the dispatching policies of the APs in the subset $\mathcal{Y}_{n}$ is given
         &\Bracket{
             W^{\AP}_{\Baseline(\Stat(t))} \Paren{\Stat(t+1)} +
             W^{\ES}_{\Baseline(\Stat(t))} \Paren{\Stat(t+1)}
-        }.
+        },
     \end{align}
     }
     \label{problem_2}
 \end{problem}
-We notice that the GSI $\Stat(t)$ and $\Stat(t+1)$ is not obtainable and also not necessary in solving Problem \ref{problem_2}.
-Hence, we could further rewrite the problem in the following reduced form with OSI.
-% The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
+\fixit{where the $\tilde{\Omega}$ is how defined.}
+
+Moreover, we have the following conclusion on the decomposition of Problem \ref{problem_2}.
+\begin{lemma}
+    \fixit{(decomposition lemma by split the expression basedon OSI).}    
+\end{lemma}
+
+\fixit{Based on the above lemma, we could rewrite the Problem \ref{problem_2} as the following reduced form.}
 \begin{problem}[]
     In the $t$-th broadcast interval, the $y$-th AP in the set $\mathcal{Y}_{n}$ ($n \equiv t \pmod{N} + 1$) shall solve the following problem based on its OSI and local \brlatency~information
     {\small
@@ -113,52 +134,51 @@ Hence, we could further rewrite the problem in the following reduced form with O
     \label{problem_3}
 \end{problem}
 
-\begin{lemma}[]
-    The optimal solution to Problem \ref{problem_2} and Problem \ref{problem_3} is same.
-\end{lemma}
-
 \fixit{
+    (SOLUTION ALGORITHM to PROBLEM 3)
     The problem is easy to solve by brutally evalute the value function for all $m\in\esSet_{k}$ for the $k$-th AP ($\forall k\in\ccSet$).
     \begin{remark}[Complexity Analysis]
         The complexity of the above solution to the algorithm is $O(J(KM+M))$.
     \end{remark}
 }
 
-Specifically, the definitions of symbols in the remaining parts is given in the Appendix \ref{apped_1} and the calculation of Eqn (\ref{eqn:partial}) is elaborated below.
-The expected value function $W^{\AP}_{\Pi_{k}(\Stat_{k}(t))}(\Stat_{k}(t+1))$ is easily obtained by evaluating the following equation
-\begin{align}
-    W^{\AP}_{\Pi_{k}(\Stat_{k}(t))}\Paren{\Stat(t+1)} &= \sum_{j\in\jSpace}\sum_{k\in\ccSet_{k}}\sum_{m\in\esSet_{k}}
-    \nonumber\\
-    &\Inorm{
-        \Paren{ 1 - \gamma ({\Gamma}^{(k)}_{m,j})^{N} }^{-1} \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1)
-    }.
-    \label{w_ap}
-\end{align}
-% where $\hat{\Gamma}^{(k)}_{m,j} \define (\Gamma^{(k)}_{m,j})^{N}$.
-
-The expression for expected value function is little more complex compared to Eqn (\ref{w_ap}).
-It is affected with both arrival process under dispatching policy and last queue state.
-However, we notice that the arrival process would be stationary after the maximum uploading time under the stationary baseline policy and the relationship between APs and edge server could be decoupled.
-Hence, the expected value function $W^{\ES}_{\Pi_{k}(\Stat_{k}(t))}(\Stat_{k}(t+1))$ is obtained by the following equation.
-{\small
-\begin{align}
-    &W^{\ES}_{\Pi_{k}(\Stat_{k}(t))}\Paren{\Stat_{k}(t+1)}
-    = \sum_{j\in\jSpace}\sum_{m\in\esSet_{k}}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ Q_{m,j}({t+i+1}) ]
-    \nonumber\\
-    &~~~~~~~~~~~~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}',
-\end{align}   
-}
-where the $i$-th element of vector $\vec{g}$ denotes the cost of server as $Q_{m,j}(t)$, and
-\begin{align}
-    \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) \define \prod_{n=0,\dots,N-1} \mat{P}_{m,j}(\tilde{\beta}_{m,j}),
-\end{align}
-% the probability distribution of $Q_{m,j}({t+i+1})$ is denoted by $\vecG{\nu}({t+i+1})$ which is obtained by calculating equation Enq. (\ref{eqn_0}) - Eqn (\ref{eqn_4}) ($\forall i=0,\dots,\frac{\Xi}{T}$);
-where $\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\Pi(t)$ (on $m$-th ES with type $j$ jobs)
-\begin{align}
-    \tilde{\beta}_{m,j} &\define \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j} \times \sum_{\xi=0,\dots,\Xi-1} \Pr\{ \xi<U_{k,m}\leq(\xi+1) \}
+\delete{v14}{
+    Specifically, the definitions of symbols in the remaining parts is given in the Appendix \ref{apped_1} and the calculation of Eqn (\ref{eqn:partial}) is elaborated below.
+    The expected value function $W^{\AP}_{\Pi_{k}(\Stat_{k}(t))}(\Stat_{k}(t+1))$ is easily obtained by evaluating the following equation
+    \begin{align}
+        W^{\AP}_{\Pi_{k}(\Stat_{k}(t))}\Paren{\Stat(t+1)} &= \sum_{j\in\jSpace}\sum_{k\in\ccSet_{k}}\sum_{m\in\esSet_{k}}
         \nonumber\\
-    ~~~~&= \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j}
-\end{align}
+        &\Inorm{
+            \Paren{ 1 - \gamma ({\Gamma}^{(k)}_{m,j})^{N} }^{-1} \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1)
+        }.
+        \label{w_ap}
+    \end{align}
+    % where $\hat{\Gamma}^{(k)}_{m,j} \define (\Gamma^{(k)}_{m,j})^{N}$.
+
+    The expression for expected value function is little more complex compared to Eqn (\ref{w_ap}).
+    It is affected with both arrival process under dispatching policy and last queue state.
+    However, we notice that the arrival process would be stationary after the maximum uploading time under the stationary baseline policy and the relationship between APs and edge server could be decoupled.
+    Hence, the expected value function $W^{\ES}_{\Pi_{k}(\Stat_{k}(t))}(\Stat_{k}(t+1))$ is obtained by the following equation.
+    {\small
+    \begin{align}
+        &W^{\ES}_{\Pi_{k}(\Stat_{k}(t))}\Paren{\Stat_{k}(t+1)}
+        = \sum_{j\in\jSpace}\sum_{m\in\esSet_{k}}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ Q_{m,j}({t+i+1}) ]
+        \nonumber\\
+        &~~~~~~~~~~~~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}',
+    \end{align}   
+    }
+    where the $i$-th element of vector $\vec{g}$ denotes the cost of server as $Q_{m,j}(t)$, and
+    \begin{align}
+        \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) \define \prod_{n=0,\dots,N-1} \mat{P}_{m,j}(\tilde{\beta}_{m,j}),
+    \end{align}
+    % the probability distribution of $Q_{m,j}({t+i+1})$ is denoted by $\vecG{\nu}({t+i+1})$ which is obtained by calculating equation Enq. (\ref{eqn_0}) - Eqn (\ref{eqn_4}) ($\forall i=0,\dots,\frac{\Xi}{T}$);
+    where $\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\Pi(t)$ (on $m$-th ES with type $j$ jobs)
+    \begin{align}
+        \tilde{\beta}_{m,j} &\define \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j} \times \sum_{\xi=0,\dots,\Xi-1} \Pr\{ \xi<U_{k,m}\leq(\xi+1) \}
+            \nonumber\\
+        ~~~~&= \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j}
+    \end{align}
+}
 
 \subsection{Algorithm?}
 The details of the procedure is elaborated as follows.
@@ -178,7 +198,9 @@ The details of the procedure is elaborated as follows.
 %     Overall, the computation complexity of the algorithm in one period is $O(J(KM+M))$.
 % \end{remark}
 
-Finally, we have the following conclusion on the performance of the above proposed algorithm.
+\comments{
+    Finally, we have the following conclusion on the performance of the above proposed algorithm.
+}
 \begin{lemma}[Performance Guarantee]
     % The optimized policy solved as $\Baseline(t)$ for next stage, is better than $\Baseline(t-1), \dots, \Baseline(1)$ when considering the \emph{approximated value function} defined above.
     The performance of the series of the baseline policies is upper bounded by the optimal solution $\Policy^*$ when considering the original Bellman's equation.
