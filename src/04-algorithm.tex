@@ -15,7 +15,7 @@ To alleviate the curse of dimensionality, we use the baseline policy with fixed 
 Specifically, the baseline policy is elaborated below.
 
 \begin{policy}[Baseline Policy]
-    In the baseline policy $\Baseline$, each AP fixes the target processing edge server for each job type as the previous broadcast interval. Specifically,
+    In the baseline policy $\Baseline$, each AP fixes the target processing edge server for each job type as the previous broadcast interval. Specifically, in the $t$-th broadcast interval,
     \begin{align}
         \Baseline_{t} &\define \Bracket{ \Pi_{t,1}, \dots, \Pi_{t,K} },
     \end{align}
@@ -49,12 +49,65 @@ The definitions are given below.
         \sum_{i=0}^{\infty} \gamma^{i+1} Q_{m,j}(t+i+1)
     }.
 \end{align}
-\fixit{
-    (DELETE)
-    However, since the GSI and the global \brlatency~ is not obtainable in the edge computing system, we need to further decouple Problem \ref{problem_1} onto individual APs where only local OSI and \brlatency~is required to update the dispatching policy.
-    Hence, in the following subsection \ref{subsec:ap_alg}, we propose a decentralized algorithm where the APs shall update their policies simultaneously in the form of disjoint clusters.
-    The performance guarantee of the algorithm is also provided.
-}
+
+% To efficiently express the state transition, we further elaborate the distribution probability of the state vector as the corresponding probability vector, and perform the state transition with the transition matrix.
+% Specifically, the definitions of symbols in the remaining parts is given in the Appendix \ref{apped_1} and the calculation of Eqn (\ref{eqn:partial}) is elaborated below.
+Moreover, the expression of $W^{\AP}_{\Baseline_{t}}(\Stat(t+1))$ and $W^{\ES}_{\Baseline_{t}}(\Stat(t+1))$ are derived in the following lemmas, respectively.
+
+\begin{lemma}[Expression of $W^{\AP}_{\Baseline_{t}}$]
+    We denote $\vecG{\Theta}^{(k)}_{m,j}(t)$ as the probability vector for $\vec{R}_{m,j}^{(k)}(t)$ at the beginning time slot in the $t$-th broadcast interval ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$), and the definition is given as
+    \begin{align}
+        \vecG{\Theta}^{(k)}_{m,j}(t) &\define
+        \Bracket{ \theta^{(k)}_{m,j,0}(t), \theta^{(k)}_{m,j,1}(t), \dots, \theta^{(k)}_{m,j,\Xi}(t) },
+    \end{align}
+    where $\theta^{(k)}_{m,j,\xi}(t)$ denotes the probability of job existence ($\forall \xi=0,\dots,\Xi$)
+    \begin{align}
+        \theta^{(k)}_{m,j,\xi}(t) &\define \Pr\{R^{(k)}_{m,j,\xi}(t,0) = 1\}.
+    \end{align}
+    Let ${\Gamma}^{(k)}_{m,j}(\Pi_{t,k})$ be the transition matrix under baseline policy $\Baseline_{t}$
+    \begin{align}
+        \vec{\Theta}_{m,j}^{(k)}(t+1) = {\Gamma}^{(k)}_{m,j}(\Pi_{t,k}) \times \vec{\Theta}_{m,j}^{(k)}(t).
+    \end{align}
+    The explicit expression of the transition matrix is elaborated in Appendix \ref{append_1}.
+
+    Hence, $W^{\AP}_{\Baseline_{t}}(\Stat(t+1))$ is obtained by calculating the following equation
+    \begin{align}
+        W^{\AP}_{\Baseline_{t}}\Paren{\Stat(t+1)} &= \sum_{j\in\jSpace}\sum_{k\in\apSet}\sum_{m\in\esSet}
+        \nonumber\\
+        &\Inorm{
+            \Paren{ \mat{I} - \gamma {\Gamma}^{(k)}_{m,j}(\Pi_{t,k}) }^{-1} \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1)
+        }.
+        \label{w_ap}
+    \end{align}
+    % where $\hat{\Gamma}^{(k)}_{m,j} \define (\Gamma^{(k)}_{m,j})^{N}$.
+\end{lemma}
+
+\begin{lemma}[Expression of $W^{\ES}_{\Baseline_{t}}$]
+    We denote $\vecG{\mu}_{m,j}(t)$ as the probability vector for $Q_{m,j}(t)$ at the beginning time slot in the $t$-th broadcast interval ($\forall m\in\esSet, j\in\jSpace$), and the definition is given as
+    \begin{align}
+        \vecG{\nu}_{m,j}(t) \define [\Pr\{Q_{m,j}(t)=0\}, \dots, \Pr\{Q_{m,j}(t)=L_{max}\}].
+    \end{align}
+
+    % The expression for expected value function is little more complex compared to Eqn (\ref{w_ap}).
+    The transition matrix for state transition is affected by the baseline policy and the system states of APs.
+    However, we notice that under the fixed baseline policy, the arrival process on edge servers would be stationary after the maximum uploading time from the initial interval, and thus the transition matrix is invariant of system states of APs.
+    Let $\mat{P}_{m,j}(\Baseline_{t})$ be the transition matrix under baseline policy $\Baseline_{t}$ which is invariant of system states of APs
+    \begin{align}
+        \vecG{\nu}_{m,j}(t+1) &= \mat{P}_{m,j}(\Baseline_{t}) \times \vecG{\nu}_{m,j}(t)
+    \end{align}
+    The explicit expression of the transition matrix is elaborated in Appendix \ref{append_1}.
+
+    Hence, the expected value function $W^{\ES}_{\Baseline_{t}}(\Stat(t+1))$ is obtained by the following equation.
+    {\small
+    \begin{align}
+        &W^{\ES}_{\Baseline_{t}}\Paren{\Stat(t+1)}
+        = \sum_{j\in\jSpace}\sum_{m\in\esSet}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ Q_{m,j}({t+i+1}) ]
+        \nonumber\\
+        &~~~~~~~~~~~~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \mat{P}_{m,j}(\Baseline_{t}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}',
+    \end{align}   
+    }
+    where the calculation of the first summation part is elaborated in \ref{append_1}, and $i$-th element of vector $\vec{g}$ denotes the cost of server for $Q_{m,j}(t,0)$.
+\end{lemma}
 
 \subsection{The Decentralized Algorithm}
 \label{subsec:ap_alg}
@@ -62,6 +115,9 @@ The definitions are given below.
     Although the optimal value function with the relaxation of GSI, denoted as $V$, has been approximated via the baseline policy in the previous part, it is still infeasible for all the APs to solve the right-hand-side of the Bellman's equations with OSI only.
     This is because \fixit{some information is not available}.
     Instead, it can be proved that it is feasible for part of the APs to update their dispatching actions distributively and achieve a better performance.
+    % However, since the GSI and the global \brlatency~ is not obtainable in the edge computing system, we need to further decouple Problem \ref{problem_1} onto individual APs where only local OSI and \brlatency~is required to update the dispatching policy.
+    % Hence, in the following subsection \ref{subsec:ap_alg}, we propose a decentralized algorithm where the APs shall update their policies simultaneously in the form of disjoint clusters.
+    The performance guarantee of the algorithm is also provided.
 }
 Hence, we first define the following sequence of AP subsets, where APs of each subset are selected to update dispatching strategy periodically, followed by the procedure of alternative update of dispatching actions.
 \begin{definition}[Subsets of Periodic Strategy Update]
@@ -141,44 +197,6 @@ Moreover, we have the following conclusion on the decomposition of Problem \ref{
     \end{remark}
 }
 
-\fixit{
-    Specifically, the definitions of symbols in the remaining parts is given in the Appendix \ref{apped_1} and the calculation of Eqn (\ref{eqn:partial}) is elaborated below.
-    The expected value function $W^{\AP}_{\Pi_{k}(\Stat_{k}(t))}(\Stat_{k}(t+1))$ is easily obtained by evaluating the following equation
-    \begin{align}
-        W^{\AP}_{\Pi_{k}(\Stat_{k}(t))}\Paren{\Stat(t+1)} &= \sum_{j\in\jSpace}\sum_{k\in\ccSet_{k}}\sum_{m\in\esSet_{k}}
-        \nonumber\\
-        &\Inorm{
-            \Paren{ 1 - \gamma ({\Gamma}^{(k)}_{m,j})^{N} }^{-1} \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1)
-        }.
-        \label{w_ap}
-    \end{align}
-    % where $\hat{\Gamma}^{(k)}_{m,j} \define (\Gamma^{(k)}_{m,j})^{N}$.
-
-    The expression for expected value function is little more complex compared to Eqn (\ref{w_ap}).
-    It is affected with both arrival process under dispatching policy and last queue state.
-    However, we notice that the arrival process would be stationary after the maximum uploading time under the stationary baseline policy and the relationship between APs and edge server could be decoupled.
-    Hence, the expected value function $W^{\ES}_{\Pi_{k}(\Stat_{k}(t))}(\Stat_{k}(t+1))$ is obtained by the following equation.
-    {\small
-    \begin{align}
-        &W^{\ES}_{\Pi_{k}(\Stat_{k}(t))}\Paren{\Stat_{k}(t+1)}
-        = \sum_{j\in\jSpace}\sum_{m\in\esSet_{k}}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ Q_{m,j}({t+i+1}) ]
-        \nonumber\\
-        &~~~~~~~~~~~~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}',
-    \end{align}   
-    }
-    where the $i$-th element of vector $\vec{g}$ denotes the cost of server as $Q_{m,j}(t)$, and
-    \begin{align}
-        \hat{\mat{P}}_{m,j}(\tilde{\beta}_{m,j}) \define \prod_{n=0,\dots,N-1} \mat{P}_{m,j}(\tilde{\beta}_{m,j}),
-    \end{align}
-    % the probability distribution of $Q_{m,j}({t+i+1})$ is denoted by $\vecG{\nu}({t+i+1})$ which is obtained by calculating equation Enq. (\ref{eqn_0}) - Eqn (\ref{eqn_4}) ($\forall i=0,\dots,\frac{\Xi}{T}$);
-    where $\tilde{\beta}_{m,j}$ is the arrival distribution under baseline policy $\Pi(t)$ (on $m$-th ES with type $j$ jobs)
-    \begin{align}
-        \tilde{\beta}_{m,j} &\define \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j} \times \sum_{\xi=0,\dots,\Xi-1} \Pr\{ \xi<U_{k,m}\leq(\xi+1) \}
-            \nonumber\\
-        ~~~~&= \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j}
-    \end{align}
-}
-
 \subsection{Algorithm?}
 The details of the procedure is elaborated as follows.
 \begin{enumerate}
@@ -215,6 +233,25 @@ The details of the procedure is elaborated as follows.
 \end{proof}
 
 %----------------------------------------------------------------------------------------%
+\delete{v14}{
+    Moreover, we notice that the transition function in Eqn (\ref{eqn:sp_0}) could be rewrite in the following form.
+    \begin{align}
+        & \Pr\Brace{ \Stat_{k}(t+1)|\Stat_{k}(t), \Omega_{k}(\Stat_{k}(t)) }
+        \nonumber\\
+        =& \prod_{j\in\jSpace} \Brace{
+            \prod_{k'\in\ccSet_{k}}\prod_{m\in\esSet_{k}} \Pr\big\{
+                \vec{R}^{(k')}_{m,j}(t+1) | \vec{R}^{(k')}_{m,j}(t), \Omega_{k}(\Stat_{k}(t))
+            \big\}
+            \nonumber\\
+            &\times \prod_{m\in\esSet_{k}} \Pr\big\{
+                Q_{m,j}(t+1) | Q_{m,j}(t), \Omega_{k}(\Stat_{k}(t))
+            \big\}
+        },
+    \end{align}
+    where the transition function is decoupled into two parts of state transition on APs and edge servers, respectively.
+
+
+}
 \delete{v11}{
     % [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
     % \begin{algorithm}[H]
