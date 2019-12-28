@@ -9,7 +9,9 @@ The individual dispatching policy of one AP, the system dispatching policy, and 
     The individual policy of the $k$-th AP $\Omega_{k}$ ($\forall k \in\apSet$) maps from its OSI $\Stat_{k}$ and its \emph{delivery latency} $\Delay_{k}$ to the dispatching strategy for each job type, i.e.,
     \begin{align}
         &\Omega_{k} \Paren{ \Stat_{k}(t), \mathcal{D}_{k}(t) }
-        \define \set{\omega_{k,j}(t+1)|\forall j\in\jSpace}.
+        \define \Brace{
+            \omega_{k,j}(t+1)|\forall j\in\jSpace
+        }.
         \label{def:action}
     \end{align}
 
@@ -17,7 +19,7 @@ The individual dispatching policy of one AP, the system dispatching policy, and 
     Thus,
     {\small
     \begin{align}
-        \Policy\Paren{ \Stat(t), \Delay(t) } \define \Brace{
+        \Policy\Paren{ \Stat(t), \Delay(t) } \define \Bracket{
             \Omega_{1}(\Stat_{1}(t), \mathcal{D}_{1}(t)), \dots, \Omega_{K}(\Stat_{K}(t),\mathcal{D}_{K}(t))
         },
     \end{align}

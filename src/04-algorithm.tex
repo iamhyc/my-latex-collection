@@ -104,6 +104,7 @@ Moreover, the expression of $W^{\AP}_{\Baseline_{t}}(\Stat(t+1))$ and $W^{\ES}_{
         = \sum_{j\in\jSpace}\sum_{m\in\esSet}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ Q_{m,j}({t+i+1}) ]
         \nonumber\\
         &~~~~~~~~~~~~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \mat{P}_{m,j}(\Baseline_{t}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}',
+        \label{w_es}
     \end{align}   
     }
     where the calculation of the first summation part is elaborated in \ref{append_1}, and $i$-th element of vector $\vec{g}$ denotes the cost of server for $Q_{m,j}(t,0)$.
@@ -112,41 +113,41 @@ Moreover, the expression of $W^{\AP}_{\Baseline_{t}}(\Stat(t+1))$ and $W^{\ES}_{
 \subsection{The Decentralized Algorithm}
 \label{subsec:ap_alg}
 \comments{
-    Although the optimal value function with the relaxation of GSI, denoted as $V$, has been approximated via the baseline policy in the previous part, it is still infeasible for all the APs to solve the right-hand-side of the Bellman's equations with OSI only.
-    This is because \fixit{some information is not available}.
-    Instead, it can be proved that it is feasible for part of the APs to update their dispatching actions distributively and achieve a better performance.
-    % However, since the GSI and the global \brlatency~ is not obtainable in the edge computing system, we need to further decouple Problem \ref{problem_1} onto individual APs where only local OSI and \brlatency~is required to update the dispatching policy.
-    % Hence, in the following subsection \ref{subsec:ap_alg}, we propose a decentralized algorithm where the APs shall update their policies simultaneously in the form of disjoint clusters.
-    The performance guarantee of the algorithm is also provided.
+    Although the optimal value function has been approximated via the baseline policy in the previous subsection, it is still infeasible for all the APs to solve the right-hand-side (RHS) with OSI only.
+    This is because evaluation of Eqn (\ref{w_ap}) and Eqn (\ref{w_es}) requires GSI.
 }
+Instead, it can be proved that it is feasible for part of APs to update their dispatching actions distributively and achieve a better performance compared with baseline policy.
 Hence, we first define the following sequence of AP subsets, where APs of each subset are selected to update dispatching strategy periodically, followed by the procedure of alternative update of dispatching actions.
 \begin{definition}[Subsets of Periodic Strategy Update]
     Let $\mathcal{Y}_{1}, \dots, \mathcal{Y}_{N} \subseteq \ccSet$ be a sequence of subset, where each subset (say the $n$-th subset) satisfies the following constraints
     \begin{align}
         &\bigcup_{n=1,\dots,N} \mathcal{Y}_{n} = \apSet
         \\
-        \ccSet_{y} \cap \ccSet_{y'} &=\emptyset, \forall y' \neq y \in \mathcal{Y}_{n}~(n=1,\dots,N).
+        \esSet_{y} \cap \esSet_{y'} &=\emptyset, \forall y' \neq y \in \mathcal{Y}_{n}~(n=1,\dots,N).
     \end{align}
 \end{definition}
-\fixit{
-    (Add one example with figure illustration).
-}
+\begin{example}
+    In Fig.\ref{fig:conflict}, the AP set $\apSet$ could be decomposed of two subsets as $\set{1,3}$ and $\set{2}$.
+\end{example}
 
-% Hence, the proposed dispatching policy, based on the one-step policy iteration on the baseline policy, is defined as follows.
-\fixit{
-    Moreover, we define $\tilde{\mathbf{\Omega}}$ as the dispatching actions for the APs in $Y_{n}$.
-}
+
 Hence, in the $t$-th broadcast, the APs in the subset indexed with $n \equiv t \pmod{N} + 1$, i.e. $\mathcal{Y}_{n}$, shall update their dispatching actions.
-Specifically, the optimization of \fixit{what dispatching actions of what} at the right-hand-side of the Bellman's equations can be rewritten as the following problem.
-\delete{v14}{
-    the dispatching policies of the APs outside the subset $\mathcal{Y}_{n}$ is given by
-    \begin{align}
-        \tilde{\Omega}_{y'}( \Stat_{y'}(t),\Delay_{y'}(t) ) \define \set{ \omega_{k,j}(t) | \forall j\in\jSpace }, \forall y'\notin\mathcal{Y}_{n}.
-    \end{align}
-    And the dispatching policies of the APs in the subset $\mathcal{Y}_{n}$ is given by solving the following Problem \ref{problem_2}.
-    % The optimization problem at right-hand side of approximate Bellman's Equation is given as follows.
+\comments{
+    Moreover, we shall adopt the baseline policy $\Pi_{t,y}$ for the $y'$-th APs $\forall y' \notin \mathcal{Y}$.
+    And the aggregated alternative policy is denoted as follows.
+    \begin{policy}[Alternative Dispatching Policy]
+        \begin{align}
+            \Omega(\Stat_{y}(t), \Delay_{y}(t)) =
+            \begin{cases}
+                \tilde{\Omega}_{y}( \Stat_{y}(t),\Delay_{y}(t) ), &\forall y \in \mathcal{Y}
+                \\
+                \Pi_{y,t}, & \text{otherwise.}
+            \end{cases}
+        \end{align}
+    \end{policy}
 }
 
+Specifically, the optimization of the dispatching actions $\Policy$ at the right-hand-side of the Bellman's equations can be rewritten as the following problem.
 \begin{problem}[]
     In the $t$-th broadcast interval, the $y$-th AP in the set $\mathcal{Y}_{n}$ ($n \equiv t \pmod{N} + 1$) shall solve the following problem to update its policy.
     {\small
@@ -154,24 +155,27 @@ Specifically, the optimization of \fixit{what dispatching actions of what} at th
         \min_{ \tilde{\Omega}_{y}(\Stat_{y}(t),\Delay_{y}(t)) }
         &\sum_{\Stat(t+1)} \Pr\Brace{
             \Stat(t+1) | \Stat(t), \tilde{\Omega}_{y}(\Stat_{y}(t),\Delay_{y}(t))
-        } \times
+        }
         \nonumber\\
-        &\Bracket{
-            W^{\AP}_{\Baseline(\Stat(t))} \Paren{\Stat(t+1)} +
-            W^{\ES}_{\Baseline(\Stat(t))} \Paren{\Stat(t+1)}
+        &~~~~~~
+        \times \Bracket{
+            W^{\AP}_{\Baseline_{t}} \Paren{\Stat(t+1)} +
+            W^{\ES}_{\Baseline_{t}} \Paren{\Stat(t+1)}
         },
     \end{align}
     }
     \label{problem_2}
 \end{problem}
-\fixit{where the $\tilde{\Omega}$ is how defined.}
+where the $\tilde{\Omega}_{y}$ is the dispatching policy of the $y$-th AP in $\mathcal{Y}_{n}$, while the other APs follows the policy as baseline policy which is recorded in $\Stat(t)$.
 
 Moreover, we have the following conclusion on the decomposition of Problem \ref{problem_2}.
 \begin{lemma}
-    \fixit{(decomposition lemma by split the expression basedon OSI).}    
+    The GSI is not necessary in solving Problem \ref{problem_2} when the alternative dispatching policy is considered, because the update policy would only change the cost raised on local AP and the corresponding \emph{candidate server set}.
+    We could simply reduce the expression of Eqn (\ref{w_ap}) and Eqn (\ref{w_es}) on the RHS of the Bellman's equations based on local OSI.
 \end{lemma}
-
-\fixit{Based on the above lemma, we could rewrite the Problem \ref{problem_2} as the following reduced form.}
+\comments{
+    Based on the above lemma, we could rewrite the Problem \ref{problem_2} as the following reduced form.
+}
 \begin{problem}[]
     In the $t$-th broadcast interval, the $y$-th AP in the set $\mathcal{Y}_{n}$ ($n \equiv t \pmod{N} + 1$) shall solve the following problem based on its OSI and local \brlatency~information
     {\small
@@ -180,24 +184,35 @@ Moreover, we have the following conclusion on the decomposition of Problem \ref{
         \mathbb{E}_{\set{\Stat(t+1), \tilde{\Omega}_{y}(\Stat_{y}(t),\Delay_{y}(t))}}
         \nonumber\\
         &~~~~~~~~~~~\Bracket{
-            W^{\AP}_{ \Pi_{k}(\Stat_{k}(t)) }\Paren{\Stat_{k}(t+1)} +
-            W^{\ES}_{ \Pi_{k}(\Stat_{k}(t)) }\Paren{\Stat_{k}(t+1)}
-        }.
+            W^{\AP}_{ \Baseline_{t} }\Paren{\Stat_{k}(t+1)} +
+            W^{\ES}_{ \Baseline_{t} }\Paren{\Stat_{k}(t+1)}
+        },
         \label{eqn:partial}
     \end{align}
     }
+    where
+    \begin{align}
+        W^{\AP}_{\Baseline_{t}}\Paren{\Stat_{k}(t+1)} &= \sum_{j\in\jSpace}\sum_{m\in\esSet}
+        \nonumber\\
+        &\Inorm{
+            \Paren{ \mat{I} - \gamma {\Gamma}^{(k)}_{m,j}(\Pi_{t,k}) }^{-1} \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1)
+        }
+        \\
+        W^{\ES}_{\Baseline_{t}}\Paren{\Stat_{k}(t+1)}
+        &= \sum_{j\in\jSpace}\sum_{m\in\esSet_{k}}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ Q_{m,j}({t+i+1}) ]
+        \nonumber\\
+        &+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \mat{P}_{m,j}(\Baseline_{t}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}'.
+    \end{align}
     \label{problem_3}
 \end{problem}
 
-\fixit{
-    (SOLUTION ALGORITHM to PROBLEM 3)
-    The problem is easy to solve by brutally evalute the value function for all $m\in\esSet_{k}$ for the $k$-th AP ($\forall k\in\ccSet$).
-    \begin{remark}[Complexity Analysis]
-        The complexity of the above solution to the algorithm is $O(J(KM+M))$.
+\comments{
+    \begin{remark}[Complexity Analysis of Solving Problem \ref{problem_3}]
+        The optimization of $\tilde{\Omega}_{y}(\Stat_{y}(t), \Delay_{y}(t))$ could be applied by brutally searching the solution space of size $|\esSet_{y}|$ for the $y$-th AP ($\forall y\in\mathcal{Y}_{n}$), and then evaluating Eqn (\ref{eqn:partial}) for each possible solution.
+        The complexity of the above solution is $O(J(KM+M))$.
     \end{remark}
 }
 
-\subsection{Algorithm?}
 The details of the procedure is elaborated as follows.
 \begin{enumerate}
     \item Initialize the dispatching policy of the $k$-th AP ($\forall k\in\apSet$) with some heuristic policy as $\Policy_{k}(\Stat_{k}(0), \Delay_{k}(0))$;
@@ -215,18 +230,17 @@ The details of the procedure is elaborated as follows.
 %     Overall, the computation complexity of the algorithm in one period is $O(J(KM+M))$.
 % \end{remark}
 
-\comments{
-    Finally, we have the following conclusion on the performance of the above proposed algorithm.
-}
+
+Finally, we have the following conclusion on the performance of the above proposed algorithm.
 \begin{lemma}[Performance Guarantee]
     % The optimized policy solved as $\Baseline(t)$ for next stage, is better than $\Baseline(t-1), \dots, \Baseline(1)$ when considering the \emph{approximated value function} defined above.
     The performance of the series of the baseline policies is upper bounded by the optimal solution $\Policy^*$ when considering the original Bellman's equation.
-    $$
+    \begin{align}
         V_{\Omega^*}\Paren{\Stat(t)}
-        \leq W_{\tilde{\Policy}(\Stat(t))}\Paren{\Stat(t)}
-        \leq W_{\tilde{\Policy}(\Stat(t-1))}\Paren{\Stat(t)},
-        \forall \Stat(t)
-    $$
+        \leq W_{\tilde{\Policy}}\Paren{\Stat(t)}
+        \leq W_{\Baseline_{t}}\Paren{\Stat(t)},
+        \forall \Stat(t).
+    \end{align}
 \end{lemma}
 \begin{proof}
     
@@ -250,7 +264,9 @@ The details of the procedure is elaborated as follows.
     \end{align}
     where the transition function is decoupled into two parts of state transition on APs and edge servers, respectively.
 
-
+    However, since the GSI and the global \brlatency~ is not obtainable in the edge computing system, we need to further decouple Problem \ref{problem_1} onto individual APs where only local OSI and \brlatency~is required to update the dispatching policy.
+    Hence, in the following subsection \ref{subsec:ap_alg}, we propose a decentralized algorithm where the APs shall update their policies simultaneously in the form of disjoint clusters.
+    % The performance guarantee of the algorithm is also provided.
 }
 \delete{v11}{
     % [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE

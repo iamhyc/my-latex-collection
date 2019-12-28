@@ -86,12 +86,12 @@ Thus we could obtain the denotation of transition matrix and probability vector 
     \end{align}
 
     Let $\hat{\vecG{\nu}}_{m,j}(t)$ denote the probability vector at the first time slot of the $t$-th broadcast interval.
-    The time-variant transition matrix composed of multiple transition matrix $P_{m,j}(\beta({t,n}))$ in all the time slots in $i$-th interval as follows.
+    The time-variant transition matrix composed of multiple transition matrix $\mat{\hat{P}}_{m,j}(\beta({t,n}))$ in all the time slots in $i$-th interval as follows.
     \begin{align}
-        \vecG{\nu}({t,n+1}) &= P_{m,j}\Paren{\beta_{m,j}({t,n})} \vecG{\nu}({t,n})
+        \hat{\vecG{\nu}}({t,n+1}) &= \mat{\hat{P}}_{m,j}\Paren{\beta_{m,j}({t,n})} \hat{\vecG{\nu}}({t,n})
         % \label{eqn_3}
         \\
-        \hat{\vecG{\nu}}(t+1) &= \prod_{n=0,\dots,N-1} P_{m,j}\Paren{\beta_{m,j}({t,n})} \hat{\vecG{\nu}}(t),
+        \vecG{\nu}(t+1) &= \prod_{n=0,\dots,N-1} \mat{\hat{P}}_{m,j}\Paren{\beta_{m,j}({t,n})} \vecG{\nu}(t),
         \label{eqn_4}
     \end{align}
 \end{definition}
