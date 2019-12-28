@@ -15,15 +15,13 @@ To alleviate the curse of dimensionality, we use the baseline policy with fixed 
 Specifically, the baseline policy is elaborated below.
 
 \begin{policy}[Baseline Policy]
-    In the baseline policy $\Baseline$, each AP fixes 
-
     In the baseline policy $\Baseline$, each AP fixes the target processing edge server for each job type as the previous broadcast interval. Specifically,
     \begin{align}
-        \Baseline(t) &\define \Bracket{ \Pi_{1}(t), \dots, \Pi_{K}(t) },
+        \Baseline_{t} &\define \Bracket{ \Pi_{t,1}, \dots, \Pi_{t,K} },
     \end{align}
     where 
     \begin{align}
-        \Pi_{k}(t) &\define \Brace{
+        \Pi_{t,k} &\define \Brace{
             \omega_{k,j}(t) | \forall j\in\jSpace
         }, \forall k\in\apSet.
     \end{align}
@@ -32,21 +30,20 @@ Specifically, the baseline policy is elaborated below.
 Thus, we shall approximate the value function of the optimal policy as
 \begin{align}
     &V\Paren{\Stat(t+1)} \approx
-    \nonumber\\
-    &~~~~W^{\AP}_{\Baseline(\Stat(t))} \Paren{\Stat(t+1)}
-    + W^{\ES}_{\Baseline(\Stat(t))}\Paren{\Stat(t+1)},
+    W^{\AP}_{\Baseline_{t}} \Paren{\Stat(t+1)} +
+    W^{\ES}_{\Baseline_{t}} \Paren{\Stat(t+1)},
 \end{align}
-where $W^{\AP}_{\Baseline(\Stat(t))}(\Stat(t+1))$ and $W^{\ES}_{\Baseline(\Stat(t))}(\Stat(t+1))$ denote the cost raised by the APs and edge servers with the baseline policy $\Baseline(\Stat(t))$ and initial system state $\Stat$, respectively.
+where $W^{\AP}_{\Baseline_{t}}(\Stat(t+1))$ and $W^{\ES}_{\Baseline_{t}}(\Stat(t+1))$ denote the cost raised by the APs and edge servers with the baseline policy $\Baseline_{t}$ and initial system state $\Stat(t+1)$, respectively.
 The definitions are given below.
 %FIXME: no baseline in the definition!
 \begin{align}
-    &W^{\dagger}_{\Baseline(\Stat(t))} \Paren{\Stat(t+1)} \define
+    &W^{\dagger}_{\Baseline_{t}} \Paren{\Stat(t+1)} \define
     \nonumber\\
     &~~~~~~~~~~~\sum_{k\in\apSet}\sum_{m\in\esSet}\sum_{j\in\jSpace}\Bracket{
         \sum_{i=0}^{\infty} \gamma^{i+1} \Inorm{\vec{R}^{(k)}_{m,j}(t+i+1)}
     },
     \\    
-    &W^{\ddagger}_{\Baseline(\Stat(t))}\Paren{\Stat(t+1)} \define
+    &W^{\ddagger}_{\Baseline_{t}}\Paren{\Stat(t+1)} \define
     \nonumber\\
     &~~~~~~~~~~~~~~~~\sum_{m\in\esSet}\sum_{j\in\jSpace}\Bracket{
         \sum_{i=0}^{\infty} \gamma^{i+1} Q_{m,j}(t+i+1)
@@ -81,7 +78,7 @@ Hence, we first define the following sequence of AP subsets, where APs of each s
 
 % Hence, the proposed dispatching policy, based on the one-step policy iteration on the baseline policy, is defined as follows.
 \fixit{
-    Moreover, we define $\tilde{\mathbf{\Omega}}$ as the disaptching actions for the APs in $Y_{n}$.
+    Moreover, we define $\tilde{\mathbf{\Omega}}$ as the dispatching actions for the APs in $Y_{n}$.
 }
 Hence, in the $t$-th broadcast, the APs in the subset indexed with $n \equiv t \pmod{N} + 1$, i.e. $\mathcal{Y}_{n}$, shall update their dispatching actions.
 Specifically, the optimization of \fixit{what dispatching actions of what} at the right-hand-side of the Bellman's equations can be rewritten as the following problem.
@@ -144,7 +141,7 @@ Moreover, we have the following conclusion on the decomposition of Problem \ref{
     \end{remark}
 }
 
-\delete{v14}{
+\fixit{
     Specifically, the definitions of symbols in the remaining parts is given in the Appendix \ref{apped_1} and the calculation of Eqn (\ref{eqn:partial}) is elaborated below.
     The expected value function $W^{\AP}_{\Pi_{k}(\Stat_{k}(t))}(\Stat_{k}(t+1))$ is easily obtained by evaluating the following equation
     \begin{align}
