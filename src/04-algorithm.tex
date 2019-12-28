@@ -15,13 +15,15 @@ To alleviate the curse of dimensionality, we use the baseline policy with fixed 
 Specifically, the baseline policy is elaborated below.
 
 \begin{policy}[Baseline Policy]
+    In the baseline policy $\Baseline$, each AP fixes 
+
     In the baseline policy $\Baseline$, each AP fixes the target processing edge server for each job type as the previous broadcast interval. Specifically,
     \begin{align}
-        \Baseline(\Stat(t)) &\define \Bracket{ \Pi_{1}(\Stat_{1}(t)), \dots, \Pi_{K}(\Stat_{K}(t)) },
+        \Baseline(t) &\define \Bracket{ \Pi_{1}(t), \dots, \Pi_{K}(t) },
     \end{align}
     where 
     \begin{align}
-        \Pi_{k}(\Stat_{k}(t)) &\define \Brace{
+        \Pi_{k}(t) &\define \Brace{
             \omega_{k,j}(t) | \forall j\in\jSpace
         }, \forall k\in\apSet.
     \end{align}

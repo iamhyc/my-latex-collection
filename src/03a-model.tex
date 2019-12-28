@@ -68,9 +68,11 @@ We shall refer to every $t_B$ time slots as a broadcast interval.
     Let $R^{(k)}_{m,j,\xi}(t,n)$ be the number of the type $j$ jobs being uploaded from the $k$-th AP to the $m$-th server at the $n$-th time slot of the $t$-th interval, which has been delivered for $\xi$ time slots. 
     The LSI of the $k$-th AP at the $t$-th broadcast interval is defined as
     \begin{align}
-        \mathcal{R}_{k}(t) \define \Brace{
-            \big( \vec{R}^{(k)}_{m,j}(t,0), \omega_{k,j}(t) \big) | \forall m\in\esSet_{k}, j\in\jSpace
-        },
+        \mathcal{R}_{k}(t) \define
+        \big(
+            \Brace{\vec{R}^{(k)}_{m,j}(t,0) | \forall m\in\esSet,j\in\jSpace},
+            \Brace{\omega_{k,j}(t) | \forall j\in\jSpace}
+        \big),
     \end{align}
     where
     $\vec{R}^{(k)}_{m,j}(t,0) \define ( R^{(k)}_{m,j,0}(t,0), \dots, R^{(k)}_{m,j,\Xi}(t,0) )$.
@@ -92,9 +94,10 @@ We shall refer to every $t_B$ time slots as a broadcast interval.
     The global state information (GSI) of the $t$-th broadcast interval is defined as the aggregation of the broadcast LSIs from all the APs and edge servers, i.e.,
     \begin{align}
         \Stat(t) \define
-            \Brace{
-                \big( \mathcal{R}_{k}(t), \mathcal{Q}_{m}(t) \big)| \forall k\in\apSet, m\in\esSet
-            }.
+            \big(
+                \Brace{\mathcal{R}_{k}(t)|\forall k\in\apSet},
+                \Brace{\mathcal{Q}_{m}(t)|\forall m\in\esSet}
+            \big).
     \end{align}
 \end{definition}
 
@@ -126,8 +129,11 @@ Specifically, the \emph{conflict AP sets} and the \emph{observed state informati
 \begin{definition}[Observed State Information]
     The observed state information (OSI) of the $k$-th AP ($\forall k\in\apSet$) at the $t$-th broadcast is defined as the aggregation of LSIs of the APs in \emph{conflict AP set} and the edge servers in \emph{candidate server set} of the $k$-th AP, i.e.,
     \begin{align}
-        \Stat_{k}(t) &\define \set{\mathcal{R}_{k'}(t) | \forall k'\in\ccSet_{k}}
-                         \cup \set{\mathcal{Q}_{m}(t) | \forall m\in\esSet_{k}}.
+        \Stat_{k}(t) &\define
+        \big(
+            \Brace{\mathcal{R}_{k'}(t) | \forall k'\in\ccSet_{k}},
+            \Brace{\mathcal{Q}_{m}(t) | \forall m\in\esSet_{k}}
+        \big).
     \end{align}
     \label{def:OSI}
 \end{definition}
@@ -145,12 +151,10 @@ It is assumed that $\mathcal{D}_{k}(t)$ follows identical and independent distri
     We refer to $\mathcal{D}_{k}(t)$ as the \brlatency~of the $k$-th AP in the $t$-th broadcast interval.
     An example is given below to demonstrate how the \brlatency~affects the reception of OSI and the update of the dispatching strategy.
 }
-% We refer to $\mathcal{D}_{k}(t) \sim \mathbb{D}_{k}(t)$ as the \brlatency~of the $k$-th AP for the $t$-th broadcast with support $\set{1,\dots,t_B}$, i.e. the broadcast interval $t_B$ is set that the $k$-th AP ($\forall k\in\apSet$) could receive the complete OSI before the start of next broadcast interval.
-% One AP shall update its dispatching decision immediately after the reception of its OSI.
-% An example is given below to demonstrate the decision changes.
+
 \begin{example}
-    In Fig.\ref{fig:brd-timeline} we focus on the decision changes for the $1$-st AP.
-    In the $t$-th broadcast interval, it updates its dispatching decisions for all the job type $\mathcal{D}_{1}(t)$ time slots later, which is denoted as $\set{\omega_{1,j}(t) | \forall j\in\jSpace}$.
-    At the start of the second broadcast interval, it will firstly keep the the previous decisions unchanged, and then updates the decisions immediately $\mathcal{D}_{1}(t+1)$ time slots later which is denoted as $\set{\omega_{1,j}(t+1) | \forall j\in\jSpace}$.
+    In Fig.\ref{fig:brd-timeline} we focus on the dispatching actions update for the $1$-st AP.
+    In the $t$-th broadcast interval, it updates its dispatching actions for all the job type $\mathcal{D}_{1}(t)$ time slots later, which is denoted as $\set{\omega_{1,j}(t) | \forall j\in\jSpace}$.
+    At the start of the second broadcast interval, it will firstly keep the the previous actions unchanged, and then updates the actions immediately $\mathcal{D}_{1}(t+1)$ time slots later which is denoted as $\set{\omega_{1,j}(t+1) | \forall j\in\jSpace}$.
     And then it repeats the process for the remaining of the time.
 \end{example}
