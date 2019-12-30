@@ -37,13 +37,13 @@ where $W^{\AP}_{\Baseline}(\Stat(t+1))$ and $W^{\ES}_{\Baseline}(\Stat(t+1))$ de
 Their definitions are given below.
 %FIXME: no baseline in the definition!
 \begin{align}
-    &W^{\dagger}_{\Baseline_{t}} \Paren{\Stat(t+1)} \define
+    &W^{\dagger}_{\Baseline} \Paren{\Stat(t+1)} \define
     \nonumber\\
     &~~~~~~~~~~~\sum_{k\in\apSet}\sum_{m\in\esSet}\sum_{j\in\jSpace}\Bracket{
         \sum_{i=0}^{\infty} \gamma^{i+1} \Inorm{\vec{R}^{(k)}_{m,j}(t+i+1)}
     },
     \\    
-    &W^{\ddagger}_{\Baseline_{t}}\Paren{\Stat(t+1)} \define
+    &W^{\ddagger}_{\Baseline}\Paren{\Stat(t+1)} \define
     \nonumber\\
     &~~~~~~~~~~~~~~~~\sum_{m\in\esSet}\sum_{j\in\jSpace}\Bracket{
         \sum_{i=0}^{\infty} \gamma^{i+1} Q_{m,j}(t+i+1)
@@ -52,63 +52,105 @@ Their definitions are given below.
 
 % To efficiently express the state transition, we further elaborate the distribution probability of the state vector as the corresponding probability vector, and perform the state transition with the transition matrix.
 % Specifically, the definitions of symbols in the remaining parts is given in the Appendix \ref{apped_1} and the calculation of Eqn (\ref{eqn:partial}) is elaborated below.
-Moreover, the expression of $W^{\AP}_{\Baseline_{t}}(\Stat(t+1))$ and $W^{\ES}_{\Baseline_{t}}(\Stat(t+1))$ are derived in the following lemmas, respectively.
+Moreover, the expression of $W^{\AP}_{\Baseline}(\Stat(t+1))$ and $W^{\ES}_{\Baseline}(\Stat(t+1))$ are derived in the following lemmas, respectively.
 
 \begin{lemma}[Analytical Expression of $W^{\AP}_{\Baseline}$]
-    We denote $\vecG{\Theta}^{(k)}_{m,j}(t)$ as the probability vector for $\vec{R}_{m,j}^{(k)}(t)$ at the beginning time slot in the $t$-th broadcast interval ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$), and the definition is given as
     \begin{align}
-        \vecG{\Theta}^{(k)}_{m,j}(t) &\define
-        \Bracket{ \theta^{(k)}_{m,j,0}(t), \theta^{(k)}_{m,j,1}(t), \dots, \theta^{(k)}_{m,j,\Xi}(t) },
-    \end{align}
-    where $\theta^{(k)}_{m,j,\xi}(t)$ denotes the probability of job existence ($\forall \xi=0,\dots,\Xi$)
-    \begin{align}
-        \theta^{(k)}_{m,j,\xi}(t) &\define \Pr\{R^{(k)}_{m,j,\xi}(t,0) = 1\}.
-    \end{align}
-    Let ${\Gamma}^{(k)}_{m,j}(\Pi_{t,k})$ be the transition matrix under baseline policy $\Baseline_{t}$
-    \begin{align}
-        \vec{\Theta}_{m,j}^{(k)}(t+1) = {\Gamma}^{(k)}_{m,j}(\Pi_{t,k}) \times \vec{\Theta}_{m,j}^{(k)}(t).
-    \end{align}
-    The explicit expression of the transition matrix is elaborated in Appendix \ref{append_1}.
-
-    Hence, $W^{\AP}_{\Baseline_{t}}(\Stat(t+1))$ is obtained by calculating the following equation
-    \begin{align}
-        W^{\AP}_{\Baseline_{t}}\Paren{\Stat(t+1)} &= \sum_{j\in\jSpace}\sum_{k\in\apSet}\sum_{m\in\esSet}
+        &W^{\AP}_{\Baseline}\Paren{\Stat(t+1)} = \sum_{j\in\jSpace}\sum_{k\in\apSet}\sum_{m\in\esSet}
         \nonumber\\
-        &\Inorm{
-            \Paren{ \mat{I} - \gamma {\Gamma}^{(k)}_{m,j}(\Pi_{t,k}) }^{-1} \vecG{\Theta}^{(k)}_{m,j}(t+1)
-        }.
+        &~~~~~~~~~~~~~~~~~~~~~\Inorm{
+            [ \vecG{\Theta}^{(k, \Baseline)}_{m,j}(t+1) ]'
+            [
+                \mat{I} - \gamma \Gamma^{(k)}_{m,j}
+            ]^{-1}
+        },
         \label{w_ap}
     \end{align}
-    % where $\hat{\Gamma}^{(k)}_{m,j} \define (\Gamma^{(k)}_{m,j})^{N}$.
+    where the notations of $\vecG{\Theta}^{(k, \Baseline)}_{m,j}(t)$ and $\Gamma^{(k)}_{m,j}$ are defined below.
+    \begin{itemize}
+        \item $\vecG{\Theta}^{(k, \Baseline)}_{m,j}(t) \in \mathbb{R}^{(\Xi+1) \times 1}$ denotes the probability vector under baseline $\Baseline$
+        \begin{align}
+            \vecG{\Theta}^{(k)}_{m,j}(t) &\define
+            \Bracket{ \theta^{(k)}_{m,j,0}(t), \theta^{(k)}_{m,j,1}(t), \dots, \theta^{(k)}_{m,j,\Xi}(t) },
+        \end{align}
+        where 
+        \begin{align}
+            \theta^{(k)}_{m,j,\xi}(t) \define 
+            \begin{cases}
+                \lambda_{k,j} I[\omega_{k,j}(t)=m], & \xi=0
+                \\
+                \Pr\{R^{(k)}_{m,j,\xi}(t,0) = 1\}, & \xi=1,\dots,\Xi
+            \end{cases}
+        \end{align}
+        \item $\Gamma^{(k)}_{m,j} \in \mathbb{R}^{(\Xi+1) \times (\Xi+1)}$ denotes the transition matrix which is given as $\Gamma^{(k)}_{m,j} \define (\hat{\Gamma}^{(k)}_{m,j})^N$ where
+        \begin{align}
+            \hat{\Gamma}^{(k)}_{m,j} &\define
+            \begin{bmatrix}
+                1 & \bar{p}^{(k)}_{m,j,0} &                       &        &                           \\
+                  & 0                     & \bar{p}^{(k)}_{m,j,1} &        &                           \\
+                  &                       & \ddots                & \ddots &                           \\
+                  &                       &                       & \ddots & \bar{p}^{(k)}_{m,j,\Xi-1} \\
+                  &                       &                       &        & 0                         \\
+            \end{bmatrix},
+        \end{align}
+        and $\bar{p}^{(k)}_{m,j,\xi}$ denotes the job offloading probability ($\forall \xi=0,\dots,\Xi$)
+        \begin{align}
+            \bar{p}^{(k)}_{m,j,\xi} &\define 1 - \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\xi\}.
+        \end{align}
+    \end{itemize}
+    % \begin{align}
+    %     \vec{\Theta}_{m,j}^{(k)}(t+1) = {\Gamma}^{(k)}_{m,j}(\Pi_{t,k}) \times \vec{\Theta}_{m,j}^{(k)}(t).
+    % \end{align}
 \end{lemma}
+\begin{proof}
+    Please refer to Appendix \ref{append_1}.
+\end{proof}
 
 \begin{lemma}[Expression of $W^{\ES}_{\Baseline}$]
-    We denote $\vecG{\mu}_{m,j}(t)$ as the probability vector for $Q_{m,j}(t)$ at the beginning time slot in the $t$-th broadcast interval ($\forall m\in\esSet, j\in\jSpace$), and the definition is given as
-    \begin{align}
-        \vecG{\nu}_{m,j}(t) \define [\Pr\{Q_{m,j}(t)=0\}, \dots, \Pr\{Q_{m,j}(t)=L_{max}\}].
-    \end{align}
-
-    % The expression for expected value function is little more complex compared to Eqn (\ref{w_ap}).
-    The transition matrix for state transition is affected by the baseline policy and the system states of APs.
-    However, we notice that under the fixed baseline policy, the arrival process on edge servers would be stationary after the maximum uploading time from the initial interval, and thus the transition matrix is invariant of system states of APs.
-    Let $\mat{P}_{m,j}(\Baseline_{t})$ be the transition matrix under baseline policy $\Baseline_{t}$ which is invariant of system states of APs
-    \begin{align}
-        \vecG{\nu}_{m,j}(t+1) &= \mat{P}_{m,j}(\Baseline_{t}) \times \vecG{\nu}_{m,j}(t)
-    \end{align}
-    The explicit expression of the transition matrix is elaborated in Appendix \ref{append_1}.
-
-    Hence, the expected value function $W^{\ES}_{\Baseline_{t}}(\Stat(t+1))$ is obtained by the following equation.
     {\small
     \begin{align}
-        &W^{\ES}_{\Baseline_{t}}\Paren{\Stat(t+1)}
+        &W^{\ES}_{\Baseline}\Paren{\Stat(t+1)}
         = \sum_{j\in\jSpace}\sum_{m\in\esSet}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ Q_{m,j}({t+i+1}) ]
         \nonumber\\
-        &~~~~~~~~~~~~~~~~~~~+ \gamma^{\frac{\Xi}{T}} \Paren{ \mat{I} - \gamma \mat{P}_{m,j}(\Baseline_{t}) }^{-1} \vecG{\nu}({t+\frac{\Xi}{T}+1}) \vec{g}',
+        &~~~~~~~~~~~~+ \gamma^{\frac{\Xi}{T}} 
+        \vecG{\nu}({t+\frac{\Xi}{T}+1})
+        \Paren{
+            \mat{I} - \gamma \mat{P}_{m,j}(\beta_{m,j}(t))
+        }^{-1} \vec{g}',
         \label{w_es}
     \end{align}   
     }
-    where the calculation of the first summation part is elaborated in \ref{append_1}, and $i$-th element of vector $\vec{g}$ denotes the cost of server for $Q_{m,j}(t,0)$.
+    where the notations of $\vecG{\nu}_{m,j}(t)$, $\mat{P}_{m,j}(\beta_{m,j}(t))$, $\beta_{m,j}(t)$ and $\vec{g}$ are defined below.
+    \begin{itemize}
+        \item $\vecG{\nu}_{m,j}(t) \in \mathbb{R}^{(L_{max}+1) \times 1}$ denotes the probability vector where
+        \begin{align}
+            \vecG{\nu}_{m,j}(t) \define [\Pr\{Q_{m,j}(t)=0\}, \dots, \Pr\{Q_{m,j}(t)=L_{max}\}].
+        \end{align}
+
+        \item $\vec{g} \in \mathbb{R}^{(L_{max}+1) \times 1}$ whose $i$-th element is
+        \begin{align}
+            [\vec{g}]_{i} = 
+            \begin{cases}
+                i, & i=0,1,\dots,L_{max}-1
+                \\
+                L_{max}+\beta, & \text{otherwise}
+            \end{cases}.
+        \end{align}
+
+        \item $\mat{P}_{m,j}(\beta_{m,j}(t)) \in \mathbb{R}^{(L_{max}+1) \times (L_{max}+1)}$ denotes the transition matrix given the average job arrival rate $\beta_{m,j}(t)$ under baseline policy $\Baseline(\Stat(t))$ where
+        \begin{align}
+            \beta_{m,j}(t) = \sum_{k\in\apSet} \lambda_{k,j} I[\omega_{k,j}(t)=m].
+        \end{align}
+    \end{itemize}
+
+    % The expression for expected value function is little more complex compared to Eqn (\ref{w_ap}).
+    % The transition matrix for state transition is affected by the baseline policy and the system states of APs.
+    % However, we notice that under the fixed baseline policy, the arrival process on edge servers would be stationary after the maximum uploading time from the initial interval, and thus the transition matrix is invariant of system states of APs.
+    % Let $\mat{P}_{m,j}(\Baseline_{t})$ be the transition matrix under baseline policy $\Baseline_{t}$ which is invariant of system states of APs    
 \end{lemma}
+\begin{proof}
+    Please refer to Appendix \ref{append_1}.
+\end{proof}
 
 \subsection{The Decentralized Algorithm}
 \label{subsec:ap_alg}
