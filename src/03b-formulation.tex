@@ -87,11 +87,11 @@ where the value function $V(\Stat(t))$ of the optimal policy $\Policy^{*}$ (if O
     \label{eqn:val_f}
 \end{align}
 
-Moreover, the optimal policy $\Omega^{*}$ can be obtained by solving the right-hand-side of the above Bellman's equations.
+Moreover, the optimal policy $\Omega^{*}$ can be obtained by solving the right-hand-side (RHS) of the above Bellman's equations.
 However, it is infeasible to solve the above Bellman's equations in our problem.
 This is because each AP (say the $k$-th AP) only has the knowledge of its own OSI $\Stat_{k}(t)$ and local \brlatency~$\mathcal{D}_{k}(t)$, and hence, our problem is actually a POMDP.
 In fact, the general solution of POMDP is of huge complexity \cite{IJCAI03-NairR,IJCAI99-BoutilierC}.
 In this paper, we shall propose a novel low-complexity solution based on an analytical approximation of the value function.
 Specifically, we shall first introduce an analytical approximation of the value function $V(\Stat(t))$, which depends on the OSI and the global \brlatency.
-Hence, each AP can update its dispatching action distributively by using the right-hand-side of the Bellman's equations as the local objective.
+Hence, each AP can update its dispatching action distributively by using the RHS of the Bellman's equations as the local objective.
 %----------------------------------------------------------------------------------------%
