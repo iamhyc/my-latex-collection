@@ -106,7 +106,7 @@ Moreover, the expression of $W^{\AP}_{\Baseline}(\Stat(t+1))$ and $W^{\ES}_{\Bas
     Please refer to Appendix \ref{append_1}.
 \end{proof}
 
-\begin{lemma}[Expression of $W^{\ES}_{\Baseline}$]
+\begin{lemma}[Analytical Expression of $W^{\ES}_{\Baseline}$]
     {\small
     \begin{align}
         &W^{\ES}_{\Baseline}\Paren{\Stat(t+1)}
@@ -184,7 +184,7 @@ Hence, in the $t$-th broadcast, the APs in the subset indexed with $n \equiv t \
             \begin{cases}
                 \tilde{\Omega}_{y}( \Stat_{y}(t),\Delay_{y}(t) ), &\forall y \in \mathcal{Y}
                 \\
-                \Pi_{t}(\Stat_{y}(t)), & \text{otherwise.}
+                \Pi_{y}(\Stat_{y}(t)), & \text{otherwise.}
             \end{cases}
         \end{align}
     \end{policy}
@@ -202,8 +202,8 @@ Specifically, the optimization of the dispatching actions $\Policy$ at the right
         \nonumber\\
         &~~~~~~
         \times \Bracket{
-            W^{\AP}_{\Baseline_{t}} \Paren{\Stat(t+1)} +
-            W^{\ES}_{\Baseline_{t}} \Paren{\Stat(t+1)}
+            W^{\AP}_{\Baseline} \Paren{\Stat(t+1)} +
+            W^{\ES}_{\Baseline} \Paren{\Stat(t+1)}
         },
     \end{align}
     }
@@ -227,8 +227,8 @@ Moreover, we have the following conclusion on the decomposition of Problem \ref{
         \mathbb{E}_{\set{\Stat(t+1), \tilde{\Omega}_{y}(\Stat_{y}(t),\Delay_{y}(t))}}
         \nonumber\\
         &~~~~~~~~~~~\Bracket{
-            W^{\AP}_{ \Baseline_{t} }\Paren{\Stat_{k}(t+1)} +
-            W^{\ES}_{ \Baseline_{t} }\Paren{\Stat_{k}(t+1)}
+            W^{\AP}_{ \Baseline }\Paren{\Stat_{k}(t+1)} +
+            W^{\ES}_{ \Baseline }\Paren{\Stat_{k}(t+1)}
         },
         \label{eqn:partial}
     \end{align}
@@ -281,7 +281,7 @@ Finally, we have the following conclusion on the performance of the above propos
     \begin{align}
         V_{\Omega^*}\Paren{\Stat(t)}
         \leq W_{\tilde{\Policy}}\Paren{\Stat(t)}
-        \leq W_{\Baseline_{t}}\Paren{\Stat(t)},
+        \leq W_{\Baseline}\Paren{\Stat(t)},
         \forall \Stat(t).
     \end{align}
 \end{lemma}
