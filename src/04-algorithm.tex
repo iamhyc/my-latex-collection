@@ -35,7 +35,7 @@ Thus, we shall approximate the value function of the optimal policy as
 \end{align}
 where $W^{\AP}_{\Baseline}(\Stat(t+1))$ and $W^{\ES}_{\Baseline}(\Stat(t+1))$ denote the cost raised by the APs and edge servers with the baseline policy $\Baseline$ and initial system state $\Stat(t+1)$, respectively.
 Their definitions are given below.
-%FIXME: no baseline in the definition!
+\fixit{(INCLUDE DEFINITION OVER OSI)}
 \begin{align}
     &W^{\dagger}_{\Baseline} \Paren{\Stat(t+1)} \define
     \nonumber\\
@@ -173,16 +173,16 @@ For example, as illustrated in Fig.\ref{fig:conflict}, the AP set $\apSet$ could
 Hence, in the $t$-th broadcast, the APs in the subset indexed with $n \equiv t \pmod{N} + 1$ should update their dispatching actions.
 Moreover, we shall adopt the baseline policy $\Pi_{t,y}$ for the $y'$-th APs $\forall y' \notin \mathcal{Y}$.
 \fixit{
-    Hence, let what=what be the aggregation of dispatching actions for the APs in the subset $\mathcal{Y}_{n}$, and $xx=xx$ be the aggregation of dispatching actions of all APs.
+    Hence, let $xx=xx$ be the aggregation of dispatching actions for the APs in the subset $\mathcal{Y}_{n}$, and $xx=xx$ be the aggregation of dispatching actions of all APs.
 
-    \begin{align}
-        \Omega(\Stat_{y}(t), \Delay_{y}(t)) =
-        \begin{cases}
-            \tilde{\Omega}_{y}( \Stat_{y}(t),\Delay_{y}(t) ), &\forall y \in \mathcal{Y}
-            \\
-            \Pi_{y}(\Stat_{y}(t)), & \text{otherwise.}
-        \end{cases}
-    \end{align}
+    % \begin{align}
+    %     \Omega(\Stat_{y}(t), \Delay_{y}(t)) =
+    %     \begin{cases}
+    %         \tilde{\Omega}_{y}( \Stat_{y}(t),\Delay_{y}(t) ), &\forall y \in \mathcal{Y}
+    %         \\
+    %         \Pi_{y}(\Stat_{y}(t)), & \text{otherwise.}
+    %     \end{cases}
+    % \end{align}
 }
 
 The optimization of the dispatching actions $\Policy$ at the RHS of the Bellman's equations can be rewritten as the following problem.
@@ -204,11 +204,9 @@ The optimization of the dispatching actions $\Policy$ at the RHS of the Bellman'
 }
 where the $\tilde{\Omega}_{y}$ is the dispatching policy of the $y$-th AP in $\mathcal{Y}_{n}$, while the other APs follows the policy as baseline policy which is recorded in $\Stat(t)$.
 
-\fixit{
-    % Moreover, we have the following conclusion on the decomposition of P2.
-    The GSI is not necessary in solving Problem \ref{problem_2} when the alternative dispatching policy is considered, because the update policy would only change the cost raised on local AP and the corresponding \emph{candidate server set}.
-    We could simply reduce the expression of equation (\ref{w_ap}) and equation (\ref{w_es}) on the RHS of the Bellman's equations based on local OSI.
-    Based on the above lemma, we could rewrite the Problem \ref{problem_2} as the following reduced form.
+Moreover, we have the following conclusion on the decomposition of P2.
+\begin{lemma}[]
+    The optimization problem in P2 can be equivalently decoupled into the following local optimization problem.
     {\small
     \begin{align}
         \text{P3:}~
@@ -222,8 +220,13 @@ where the $\tilde{\Omega}_{y}$ is the dispatching policy of the $y$-th AP in $\m
         \label{eqn:partial}
     \end{align}
     }
+\end{lemma}
+\fixit{
+    (DELETE)
+    The GSI is not necessary in solving P2 when the alternative dispatching policy is considered, because the update policy would only change the cost raised on local AP and the corresponding \emph{candidate server set}.
+    We could simply reduce the expression of equation (\ref{w_ap}) and equation (\ref{w_es}) on the RHS of the Bellman's equations based on local OSI.
+    Based on the above lemma, we could rewrite the P2 as the following reduced form.
 }
-
 
 \comments{
     The optimization of $\tilde{\Omega}_{y}(\Stat_{y}(t), \Delay_{y}(t))$ could be applied by linear search over the solution space of size $|\esSet_{y}|$ for the $y$-th AP ($\forall y\in\mathcal{Y}_{n}$), and then evaluating equation (\ref{eqn:partial}) for each possible solution.
@@ -232,23 +235,24 @@ where the $\tilde{\Omega}_{y}$ is the dispatching policy of the $y$-th AP in $\m
     % \end{remark}
 }
 
-The details of the algorithm is elaborated as follows.
-\begin{enumerate}
-    \item Initialize the dispatching policy of the $k$-th AP ($\forall k\in\apSet$) with some heuristic policy as $\Policy_{k}(\Stat_{k}(0), \Delay_{k}(0))$;
-    \item At the $1$-st broadcast time slot when $t=0$, the APs in set $\mathcal{Y}_{1}$ and the edge servers in the corresponding \emph{candidate server set} of APs in $\mathcal{Y}_{1}$, shall broadcast their LSI (including the heuristic policies);
-    \item Each AP (say the $y_1$-th AP) in set $\mathcal{Y}_{1}$ would receive the OSI at the $D_{y_1}(1)$ time slots in the $1$-st broadcast interval, and then it updates its policy $\Omega_{y_1}(\Stat_{y_1}(1))$ by solving equation (\ref{eqn:partial}); The APs in set $\mathcal{Y}_{1}$ would keep with this policy until they receive the OSI again;
-    % \item At the $2$-nd broadcast time slot when $t=1$, the APs in set $\mathcal{Y}_{2}$ would receive the broadcast OSI;
-    \item Similarly, in the $t$-th broadcast interval the APs in subset indexed with $n \equiv (t + 1)\mod{N}$ would receive the OSI, and then update their policy $\Omega_{y_n}(t+1)$ ($\forall y_n\in\mathcal{Y}_{n}$) by solving equation (\ref{eqn:partial}).
-    \item Step 4) is periodically repeated with respect to the broadcast interval.
-\end{enumerate}
-
+\fixit{
+    (RE-FORMULATION)
+    The details of the algorithm is elaborated as follows.
+    \begin{enumerate}
+        \item Initialize the dispatching policy of the $k$-th AP ($\forall k\in\apSet$) with some heuristic policy as $\Policy_{k}(\Stat_{k}(0), \Delay_{k}(0))$;
+        \item At the $1$-st broadcast time slot when $t=0$, the APs in set $\mathcal{Y}_{1}$ and the edge servers in the corresponding \emph{candidate server set} of APs in $\mathcal{Y}_{1}$, shall broadcast their LSI (including the heuristic policies);
+        \item Each AP (say the $y_1$-th AP) in set $\mathcal{Y}_{1}$ would receive the OSI at the $D_{y_1}(1)$ time slots in the $1$-st broadcast interval, and then it updates its policy $\Omega_{y_1}(\Stat_{y_1}(1))$ by solving equation (\ref{eqn:partial}); The APs in set $\mathcal{Y}_{1}$ would keep with this policy until they receive the OSI again;
+        % \item At the $2$-nd broadcast time slot when $t=1$, the APs in set $\mathcal{Y}_{2}$ would receive the broadcast OSI;
+        \item Similarly, in the $t$-th broadcast interval the APs in subset indexed with $n \equiv (t + 1)\mod{N}$ would receive the OSI, and then update their policy $\Omega_{y_n}(t+1)$ ($\forall y_n\in\mathcal{Y}_{n}$) by solving equation (\ref{eqn:partial}).
+        \item Step 4) is periodically repeated with respect to the broadcast interval.
+    \end{enumerate}
+}
 % \begin{remark}[Complexity Analysis]
 %     The computation complexity of solving Problem \ref{problem_3} is $O(J())$
 
 %     % The computation complexity of solving Problem \ref{problem_3} is $O(J(c_k M_k+M_k))$ where $c_k, M_k$ is the number of APs in the \emph{conflict AP set} and number of edge servers in the \emph{potential server set} of the $k$-th AP, respectively.
 %     Overall, the computation complexity of the algorithm in one period is $O(J(KM+M))$.
 % \end{remark}
-
 
 Finally, we have the following conclusion on the performance of the above proposed algorithm.
 \begin{lemma}[Performance Guarantee]
