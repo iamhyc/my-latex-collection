@@ -17,11 +17,11 @@ Specifically, the baseline policy is elaborated below.
 \begin{policy}[Baseline Policy]
     In the baseline policy $\Baseline$, each AP fixes the target processing edge server for each job type as the previous broadcast interval. Specifically, in the $t$-th broadcast interval,
     \begin{align}
-        \Baseline(\Stat(t)) &\define \Bracket{ \Pi_{1}(\Stat(t)), \dots, \Pi_{K}(\Stat(t)) },
+        \Baseline(\Stat(t)) &\define \Bracket{ \Pi_{1}(\Stat_{1}(t)), \dots, \Pi_{K}(\Stat_{K}(t)) },
     \end{align}
     where 
     \begin{align}
-        \Pi_{k}(\Stat(t)) &\define \Brace{
+        \Pi_{k}(\Stat_{k}(t)) &\define \Brace{
             \omega_{k,j}(t) | \forall j\in\jSpace
         }, \forall k\in\apSet.
     \end{align}
@@ -184,7 +184,7 @@ Hence, in the $t$-th broadcast, the APs in the subset indexed with $n \equiv t \
             \begin{cases}
                 \tilde{\Omega}_{y}( \Stat_{y}(t),\Delay_{y}(t) ), &\forall y \in \mathcal{Y}
                 \\
-                \Pi_{y,t}, & \text{otherwise.}
+                \Pi_{t}(\Stat_{y}(t)), & \text{otherwise.}
             \end{cases}
         \end{align}
     \end{policy}
