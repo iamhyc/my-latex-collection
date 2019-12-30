@@ -11,17 +11,17 @@ Specifically, the decoupling can be achieved via the following two steps:
 
 \subsection{Baseline Police and Approximate Value Function}
 \label{subsec:baseline}
-To alleviate the curse of dimensionality, we use the baseline policy with fixed dispatching action to approximate value function at the right-hand-side of the Bellman's equations.
+To alleviate the curse of dimensionality, we first use the baseline policy with fixed dispatching action to approximate value function at the right-hand-side of the Bellman's equations in Eqn (\ref{eqn:val_f}).
 Specifically, the baseline policy is elaborated below.
 
 \begin{policy}[Baseline Policy]
     In the baseline policy $\Baseline$, each AP fixes the target processing edge server for each job type as the previous broadcast interval. Specifically, in the $t$-th broadcast interval,
     \begin{align}
-        \Baseline_{t} &\define \Bracket{ \Pi_{t,1}, \dots, \Pi_{t,K} },
+        \Baseline(\Stat(t)) &\define \Bracket{ \Pi_{1}(\Stat(t)), \dots, \Pi_{K}(\Stat(t)) },
     \end{align}
     where 
     \begin{align}
-        \Pi_{t,k} &\define \Brace{
+        \Pi_{k}(\Stat(t)) &\define \Brace{
             \omega_{k,j}(t) | \forall j\in\jSpace
         }, \forall k\in\apSet.
     \end{align}
@@ -30,11 +30,11 @@ Specifically, the baseline policy is elaborated below.
 Thus, we shall approximate the value function of the optimal policy as
 \begin{align}
     &V\Paren{\Stat(t+1)} \approx
-    W^{\AP}_{\Baseline_{t}} \Paren{\Stat(t+1)} +
-    W^{\ES}_{\Baseline_{t}} \Paren{\Stat(t+1)},
+    W^{\AP}_{\Baseline} \Paren{\Stat(t+1)} +
+    W^{\ES}_{\Baseline} \Paren{\Stat(t+1)},
 \end{align}
-where $W^{\AP}_{\Baseline_{t}}(\Stat(t+1))$ and $W^{\ES}_{\Baseline_{t}}(\Stat(t+1))$ denote the cost raised by the APs and edge servers with the baseline policy $\Baseline_{t}$ and initial system state $\Stat(t+1)$, respectively.
-The definitions are given below.
+where $W^{\AP}_{\Baseline}(\Stat(t+1))$ and $W^{\ES}_{\Baseline}(\Stat(t+1))$ denote the cost raised by the APs and edge servers with the baseline policy $\Baseline$ and initial system state $\Stat(t+1)$, respectively.
+Their definitions are given below.
 %FIXME: no baseline in the definition!
 \begin{align}
     &W^{\dagger}_{\Baseline_{t}} \Paren{\Stat(t+1)} \define
@@ -54,7 +54,7 @@ The definitions are given below.
 % Specifically, the definitions of symbols in the remaining parts is given in the Appendix \ref{apped_1} and the calculation of Eqn (\ref{eqn:partial}) is elaborated below.
 Moreover, the expression of $W^{\AP}_{\Baseline_{t}}(\Stat(t+1))$ and $W^{\ES}_{\Baseline_{t}}(\Stat(t+1))$ are derived in the following lemmas, respectively.
 
-\begin{lemma}[Expression of $W^{\AP}_{\Baseline_{t}}$]
+\begin{lemma}[Analytical Expression of $W^{\AP}_{\Baseline}$]
     We denote $\vecG{\Theta}^{(k)}_{m,j}(t)$ as the probability vector for $\vec{R}_{m,j}^{(k)}(t)$ at the beginning time slot in the $t$-th broadcast interval ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$), and the definition is given as
     \begin{align}
         \vecG{\Theta}^{(k)}_{m,j}(t) &\define
@@ -75,14 +75,14 @@ Moreover, the expression of $W^{\AP}_{\Baseline_{t}}(\Stat(t+1))$ and $W^{\ES}_{
         W^{\AP}_{\Baseline_{t}}\Paren{\Stat(t+1)} &= \sum_{j\in\jSpace}\sum_{k\in\apSet}\sum_{m\in\esSet}
         \nonumber\\
         &\Inorm{
-            \Paren{ \mat{I} - \gamma {\Gamma}^{(k)}_{m,j}(\Pi_{t,k}) }^{-1} \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1)
+            \Paren{ \mat{I} - \gamma {\Gamma}^{(k)}_{m,j}(\Pi_{t,k}) }^{-1} \vecG{\Theta}^{(k)}_{m,j}(t+1)
         }.
         \label{w_ap}
     \end{align}
     % where $\hat{\Gamma}^{(k)}_{m,j} \define (\Gamma^{(k)}_{m,j})^{N}$.
 \end{lemma}
 
-\begin{lemma}[Expression of $W^{\ES}_{\Baseline_{t}}$]
+\begin{lemma}[Expression of $W^{\ES}_{\Baseline}$]
     We denote $\vecG{\mu}_{m,j}(t)$ as the probability vector for $Q_{m,j}(t)$ at the beginning time slot in the $t$-th broadcast interval ($\forall m\in\esSet, j\in\jSpace$), and the definition is given as
     \begin{align}
         \vecG{\nu}_{m,j}(t) \define [\Pr\{Q_{m,j}(t)=0\}, \dots, \Pr\{Q_{m,j}(t)=L_{max}\}].
