@@ -162,37 +162,27 @@ Hence, we first define the following sequence of AP subsets, where APs of each s
 \begin{definition}[Subsets of Periodic Strategy Update]
     Let $\mathcal{Y}_{1}, \dots, \mathcal{Y}_{N} \subseteq \ccSet$ be a sequence of subset, where each subset satisfies the following constraints
     \begin{align}
-        &\bigcup_{n=1,\dots,N} \mathcal{Y}_{n} = \apSet
+        &\bigcup_{n=0,\dots,N-1} \mathcal{Y}_{n} = \apSet
         \\
         \esSet_{y} \cap \esSet_{y'} &=\emptyset, y' \neq y~(\forall y',y \in \mathcal{Y}_{n}).
     \end{align}
 \end{definition}
 For example, as illustrated in Fig.\ref{fig:conflict}, the AP set $\apSet$ could be decomposed of two subsets as $\set{1,3}$ and $\set{2}$.
 
-
-Hence, in the $t$-th broadcast, the APs in the subset indexed with $n \equiv t \pmod{N} + 1$ should update their dispatching actions.
-Moreover, we shall adopt the baseline policy $\Pi_{t,y}$ for the $y'$-th APs $\forall y' \notin \mathcal{Y}$.
-\fixit{
-    Hence, let $xx=xx$ be the aggregation of dispatching actions for the APs in the subset $\mathcal{Y}_{n}$, and $xx=xx$ be the aggregation of dispatching actions of all APs.
-
-    % \begin{align}
-    %     \Omega(\Stat_{y}(t), \Delay_{y}(t)) =
-    %     \begin{cases}
-    %         \tilde{\Omega}_{y}( \Stat_{y}(t),\Delay_{y}(t) ), &\forall y \in \mathcal{Y}
-    %         \\
-    %         \Pi_{y}(\Stat_{y}(t)), & \text{otherwise.}
-    %     \end{cases}
-    % \end{align}
-}
-
-The optimization of the dispatching actions $\Policy$ at the RHS of the Bellman's equations can be rewritten as the following problem.
+Hence, in the $t$-th broadcast, the APs in the subset indexed with $n \define t \pmod{N}$ should update their dispatching actions.
+Moreover, we shall adopt the baseline policy $\Pi_{y'}$ for the $y'$-th APs ($\forall y' \notin \mathcal{Y}_{n}$).
+Let
+$\tilde{\mathcal{A}}(t) \define \set{\tilde{\omega}_{k,j}(t) | \forall k\in\apSet, j\in\jSpace}$
+be the aggregation of dispatching actions for the APs in the subset $\mathcal{Y}_{n}$, and
+$\bar{\mathcal{A}}(t) \define \tilde{\mathcal{A}}(t) \cup \set{\Pi_{y}(t) | \forall y\notin\mathcal{Y}_{n}}$ be the aggregation of dispatching actions of all APs.
+The optimization of the dispatching actions $\tilde{\mathcal{A}}(t)$ at the RHS of the Bellman's equations can be rewritten as the following problem.
 % In the $t$-th broadcast interval, the $y$-th AP in the set $\mathcal{Y}_{n}$ ($n \equiv t \pmod{N} + 1$) shall solve the following problem to update its policy.
 {\small
 \begin{align}
     \text{P2:}~
-    \min_{ \tilde{\Omega}_{y}(\Stat_{y}(t),\Delay_{y}(t)) }
+    \min_{ \tilde{\omega}_{k,j}(t) }
     &\sum_{\Stat(t+1)} \Pr\Brace{
-        \Stat(t+1) | \Stat(t), \tilde{\Omega}_{y}(\Stat_{y}(t),\Delay_{y}(t))
+        \Stat(t+1) | \Stat(t), \bar{\mathcal{A}}(t)
     }
     \nonumber\\
     &~~~~
@@ -202,7 +192,6 @@ The optimization of the dispatching actions $\Policy$ at the RHS of the Bellman'
     },
 \end{align}
 }
-where the $\tilde{\Omega}_{y}$ is the dispatching policy of the $y$-th AP in $\mathcal{Y}_{n}$, while the other APs follows the policy as baseline policy which is recorded in $\Stat(t)$.
 
 Moreover, we have the following conclusion on the decomposition of P2.
 \begin{lemma}[]
@@ -210,8 +199,8 @@ Moreover, we have the following conclusion on the decomposition of P2.
     {\small
     \begin{align}
         \text{P3:}~
-        &\min_{\tilde{\Omega}_{y}(\Stat_{y}(t),\Delay_{y}(t))}
-        \mathbb{E}_{\set{\Stat(t+1), \tilde{\Omega}_{y}(\Stat_{y}(t),\Delay_{y}(t))}}
+        &\min_{ \tilde{\omega}_{k,j}(t) }
+        \mathbb{E}_{\set{ \Stat(t+1), \tilde{\omega}_{k,j}(t) }}
         \nonumber\\
         &~~~~~~~~~~~\Bracket{
             W^{\AP}_{ \Baseline }\Paren{\Stat_{k}(t+1)} +
