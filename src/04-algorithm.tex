@@ -172,15 +172,20 @@ For example, as illustrated in Fig.\ref{fig:conflict}, the AP set $\apSet$ could
 Hence, in the $t$-th broadcast, the APs in the subset indexed with $n \define t \pmod{N}$ should update their dispatching actions.
 Moreover, we shall adopt the baseline policy $\Pi_{y'}$ for the $y'$-th APs ($\forall y' \notin \mathcal{Y}_{n}$).
 Let
-$\tilde{\mathcal{A}}(t) \define \set{\tilde{\omega}_{k,j}(t) | \forall k\in\apSet, j\in\jSpace}$
+\begin{align}
+    \tilde{\mathcal{A}}(t) \define \set{\tilde{\mathcal{A}}_{k}(t) | \forall k\in\apSet},
+\end{align}
+where $\tilde{\mathcal{A}}_{k}(t) \define \set{ \tilde{\omega}_{k,j}(t)|\forall j\in\jSpace }$, 
 be the aggregation of dispatching actions for the APs in the subset $\mathcal{Y}_{n}$, and
-$\bar{\mathcal{A}}(t) \define \tilde{\mathcal{A}}(t) \cup \set{\Pi_{y}(t) | \forall y\notin\mathcal{Y}_{n}}$ be the aggregation of dispatching actions of all APs.
-The optimization of the dispatching actions $\tilde{\mathcal{A}}(t)$ at the RHS of the Bellman's equations can be rewritten as the following problem.
-% In the $t$-th broadcast interval, the $y$-th AP in the set $\mathcal{Y}_{n}$ ($n \equiv t \pmod{N} + 1$) shall solve the following problem to update its policy.
+\begin{align}
+    \bar{\mathcal{A}}(t) \define \tilde{\mathcal{A}}(t) \cup \set{\Pi_{y}(\Stat(t)) | \forall y\notin\mathcal{Y}_{n}}
+\end{align}
+be the aggregation of dispatching actions of all APs.
+The optimization of the dispatching actions $\tilde{\mathcal{A}}_{y}(t)$ ($\forall y\in\mathcal{Y}_{n}$) at the RHS of the Bellman's equations can be rewritten as the following problem.
 {\small
 \begin{align}
     \text{P2:}~
-    \min_{ \tilde{\omega}_{k,j}(t) }
+    \min_{ \tilde{\mathcal{A}}_{y}(t) }
     &\sum_{\Stat(t+1)} \Pr\Brace{
         \Stat(t+1) | \Stat(t), \bar{\mathcal{A}}(t)
     }
@@ -199,30 +204,26 @@ Moreover, we have the following conclusion on the decomposition of P2.
     {\small
     \begin{align}
         \text{P3:}~
-        &\min_{ \tilde{\omega}_{k,j}(t) }
-        \mathbb{E}_{\set{ \Stat(t+1), \tilde{\omega}_{k,j}(t) }}
+        &\min_{ \tilde{\mathcal{A}}_{y}(t) }
+        \mathbb{E}_{\set{ \Stat(t+1), \tilde{\mathcal{A}}_{y}(t) }}
         \nonumber\\
         &~~~~~~~~~~~\Bracket{
             W^{\AP}_{ \Baseline }\Paren{\Stat_{k}(t+1)} +
             W^{\ES}_{ \Baseline }\Paren{\Stat_{k}(t+1)}
-        },
+        }.
         \label{eqn:partial}
     \end{align}
     }
 \end{lemma}
-\fixit{
-    (DELETE)
-    The GSI is not necessary in solving P2 when the alternative dispatching policy is considered, because the update policy would only change the cost raised on local AP and the corresponding \emph{candidate server set}.
-    We could simply reduce the expression of equation (\ref{w_ap}) and equation (\ref{w_es}) on the RHS of the Bellman's equations based on local OSI.
-    Based on the above lemma, we could rewrite the P2 as the following reduced form.
-}
+% \begin{proof}
+%     We could simply reduce the expression of equation (\ref{w_ap}) and equation (\ref{w_es}) on the RHS of the Bellman's equations based on local OSI, while GSI is not necessary.
+%     because the update policy would only change the cost raised on local AP and the corresponding \emph{candidate server set}.
+% \end{proof}
 
-\comments{
-    The optimization of $\tilde{\Omega}_{y}(\Stat_{y}(t), \Delay_{y}(t))$ could be applied by linear search over the solution space of size $|\esSet_{y}|$ for the $y$-th AP ($\forall y\in\mathcal{Y}_{n}$), and then evaluating equation (\ref{eqn:partial}) for each possible solution.
-    % \begin{remark}[Complexity Analysis of Solving Problem \ref{problem_3}]
-    %     The complexity of the above solution is $O(J(KM+M))$.
-    % \end{remark}
-}
+The optimization of $\tilde{\mathcal{A}}_{y}(t)$ in P3 could be applied by linear search over the solution space of size $|\esSet_{y}|$.
+\begin{remark}[Complexity Analysis of Solving P3]
+    The computational complexity of solving P3 with linear search is $O(J(KM+M))$ for evaluating equation (\ref{eqn:partial}).
+\end{remark}
 
 \fixit{
     (RE-FORMULATION)
