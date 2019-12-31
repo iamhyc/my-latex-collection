@@ -228,15 +228,15 @@ The optimization of $\mathcal{A}_{y}(t)$ in P3 could be applied by linear search
     The computational complexity of solving P3 with linear search is $O(J(KM+M))$ for evaluating equation (\ref{eqn:partial}).
 \end{remark}
 
-\fixit{
-    (RE-WRITE)
-    The details of the algorithm is elaborated as follows.
+The details of the algorithm is elaborated as follows.
+\accept{
     \begin{enumerate}
-        \item Initialize the dispatching policy of the $k$-th AP ($\forall k\in\apSet$) with some heuristic policy as $\Policy_{k}(\Stat_{k}(0), \Delay_{k}(0))$;
-        \item At the $1$-st broadcast time slot when $t=0$, the APs in set $\mathcal{Y}_{1}$ and the edge servers in the corresponding \emph{candidate server set} of APs in $\mathcal{Y}_{1}$, shall broadcast their LSI (including the heuristic policies);
-        \item Each AP (say the $y_1$-th AP) in set $\mathcal{Y}_{1}$ would receive the OSI at the $D_{y_1}(1)$ time slots in the $1$-st broadcast interval, and then it updates its policy $\Omega_{y_1}(\Stat_{y_1}(1))$ by solving equation (\ref{eqn:partial}); The APs in set $\mathcal{Y}_{1}$ would keep with this policy until they receive the OSI again;
+        \item Initialize the all the APs with heuristic policy as dispatching actions $\mathcal{\tilde{A}}(0)$;
+        \item At the $1$-st broadcast time slot when $t=0$, the APs in set $\mathcal{Y}_{1}$ and the edge servers in the corresponding \emph{candidate server set}s of APs in $\mathcal{Y}_{1}$, should broadcast their LSI (including the heuristic actions);
+        \item Each AP (say the $y_0$-th AP) in set $\mathcal{Y}_{0}$ would receive the OSI at the $D_{y_0}(1)$ time slots in the $1$-st broadcast interval, and then it updates its dispatching actions $\mathcal{A}_{y_0}(1)$ by solving P3;
+        % (the APs in set $\mathcal{Y}_{1}$ would keep with the actions until they receive the OSI again);
         % \item At the $2$-nd broadcast time slot when $t=1$, the APs in set $\mathcal{Y}_{2}$ would receive the broadcast OSI;
-        \item Similarly, in the $t$-th broadcast interval the APs in subset indexed with $n \equiv (t + 1)\mod{N}$ would receive the OSI, and then update their policy $\Omega_{y_n}(t+1)$ ($\forall y_n\in\mathcal{Y}_{n}$) by solving equation (\ref{eqn:partial}).
+        \item Similarly, in the $t$-th broadcast interval the APs in subset indexed with $n \define (t+1)\mod{N}$ would receive the OSI, and then update their dispatching actions $\mathcal{A}_{y_n}(t)$ ($\forall y_n\in\mathcal{Y}_{n}$) by solving P3.
         \item Step 4) is periodically repeated with respect to the broadcast interval.
     \end{enumerate}
 }
@@ -250,10 +250,13 @@ The optimization of $\mathcal{A}_{y}(t)$ in P3 could be applied by linear search
 Finally, we have the following conclusion on the performance of the above proposed algorithm.
 \begin{lemma}[Performance Guarantee]
     % The optimized policy solved as $\Baseline(t)$ for next stage, is better than $\Baseline(t-1), \dots, \Baseline(1)$ when considering the \emph{approximated value function} defined above.
+    Let $W_{\tilde{\Omega}}(\cdot)$ be the value function of the policy $\tilde{\Omega}$ where
+    $\tilde{\Omega}(\Stat(t)) \define \tilde{\mathcal{A}}(t)$, and
+    
     The performance of the series of the baseline policies is upper bounded by the optimal solution $\Policy^*$ when considering the original Bellman's equation.
     \begin{align}
         V_{\Omega^*}\Paren{\Stat(t)}
-        \leq W_{J}\Paren{\Stat(t)}
+        \leq W_{\tilde{\Omega}}\Paren{\Stat(t)}
         \leq W_{\Baseline}\Paren{\Stat(t)},
         \forall \Stat(t).
     \end{align}
