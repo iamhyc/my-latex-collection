@@ -29,40 +29,44 @@ Specifically, the baseline policy is elaborated below.
 
 Thus, we shall approximate the value function of the optimal policy as
 \begin{align}
-    &V\Paren{\Stat(t+1)} \approx
-    W^{\AP}_{\Baseline} \Paren{\Stat(t+1)} +
-    W^{\ES}_{\Baseline} \Paren{\Stat(t+1)},
+    V\Paren{\Stat(t+1)} &\approx W_{\Baseline}\Paren{\Stat(t+1)}
+    \nonumber\\
+    &= \sum_{j\in\jSpace}\Brace{
+        \sum_{k\in\apSet}\sum_{m\in\esSet} \tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))
+        \nonumber\\
+        &~~~~~~~~~~~~~~+\sum_{m\in\esSet} \tilde{W}^{\ES}_{m,j}(\Stat(t+1))
+    }
 \end{align}
-where $W^{\AP}_{\Baseline}(\Stat(t+1))$ and $W^{\ES}_{\Baseline}(\Stat(t+1))$ denote the cost raised by the APs and edge servers with the baseline policy $\Baseline$ and initial system state $\Stat(t+1)$, respectively.
+where $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and $\tilde{W}^{\ES}_{m,j}(\Stat(t+1))$ denote the cost raised by the type $j$ job on the $k$-th AP to the $m$-th server and $m$-th edge servers with the baseline policy $\Baseline$ and initial system state $\Stat(t+1)$, respectively.
 Their definitions are given below.
-\fixit{(INCLUDE DEFINITION OVER OSI)}
+{\small
 \begin{align}
-    &W^{\dagger}_{\Baseline} \Paren{\Stat(t+1)} \define
-    \nonumber\\
-    &~~~~~~~~~~~\sum_{k\in\apSet}\sum_{m\in\esSet}\sum_{j\in\jSpace}\Bracket{
-        \sum_{i=0}^{\infty} \gamma^{i+1} \Inorm{\vec{R}^{(k)}_{m,j}(t+i+1)}
-    },
+    \tilde{W}^{\AP}_{k,m,j} \Paren{\Stat(t+1)} &\define
+        \sum_{i=0}^{\infty} \gamma^{i+1} \Inorm{\vec{R}^{(k)}_{m,j}(t+i+1)},
     \\    
-    &W^{\ddagger}_{\Baseline}\Paren{\Stat(t+1)} \define
-    \nonumber\\
-    &~~~~~~~~~~~~~~~~\sum_{m\in\esSet}\sum_{j\in\jSpace}\Bracket{
-        \sum_{i=0}^{\infty} \gamma^{i+1} Q_{m,j}(t+i+1)
-    }.
+    \tilde{W}^{\ES}_{m,j} \Paren{\Stat(t+1)} &\define
+        \sum_{i=0}^{\infty} \gamma^{i+1} \Brace{
+            Q_{m,j}(t+i+1) +
+            \nonumber\\
+            &~~~~~~~~~~\beta I[Q_{m,j}(t+i+1) = L_{max}]
+        }.
 \end{align}
+}
 
 % To efficiently express the state transition, we further elaborate the distribution probability of the state vector as the corresponding probability vector, and perform the state transition with the transition matrix.
 % Specifically, the definitions of symbols in the remaining parts is given in the Appendix \ref{apped_1} and the calculation of equation (\ref{eqn:partial}) is elaborated below.
-Moreover, the expression of $W^{\AP}_{\Baseline}(\Stat(t+1))$ and $W^{\ES}_{\Baseline}(\Stat(t+1))$ are derived in the following lemmas, respectively.
+Moreover, the explicit expression of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and $\tilde{W}^{\ES}_{m,j}(\Stat(t+1))$ are derived in the following lemmas, respectively.
 
-\begin{lemma}[Analytical Expression of $W^{\AP}_{\Baseline}$]
+\begin{lemma}[Analytical Expression of $\tilde{W}^{\AP}_{k,m,j}$]
     \begin{align}
-        &W^{\AP}_{\Baseline}\Paren{\Stat(t+1)} = \sum_{j\in\jSpace}\sum_{k\in\apSet}\sum_{m\in\esSet}
-        \nonumber\\
-        &~~~~~~~~~~~~~~~~~~~~~\Inorm{
-            [ \vecG{\Theta}^{(k, \Baseline)}_{m,j}(t+1) ]'
-            [
+        &\tilde{W}^{\AP}_{k,m,j}\Paren{\Stat(t+1)} =
+        \Inorm{
+            \Bracket{
+                \vecG{\Theta}^{(k, \Baseline)}_{m,j}(t+1)
+            }'
+            \Bracket{
                 \mat{I} - \gamma \Gamma^{(k)}_{m,j}
-            ]^{-1}
+            }^{-1}
         },
         \label{w_ap}
     \end{align}
@@ -106,11 +110,11 @@ Moreover, the expression of $W^{\AP}_{\Baseline}(\Stat(t+1))$ and $W^{\ES}_{\Bas
     Please refer to Appendix \ref{append_1}.
 \end{proof}
 
-\begin{lemma}[Analytical Expression of $W^{\ES}_{\Baseline}$]
+\begin{lemma}[Analytical Expression of $\tilde{W}^{\ES}_{m,j}$]
     {\small
     \begin{align}
-        &W^{\ES}_{\Baseline}\Paren{\Stat(t+1)}
-        = \sum_{j\in\jSpace}\sum_{m\in\esSet}\sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}[ Q_{m,j}({t+i+1}) ]
+        &\tilde{W}^{\ES}_{m,j}\Paren{\Stat(t+1)}
+        = \sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}^{\Baseline}[ Q_{m,j}({t+i+1}) ]
         \nonumber\\
         &~~~~~~~~~~~~+ \gamma^{\frac{\Xi}{T}} 
         \vecG{\nu}({t+\frac{\Xi}{T}+1})
@@ -173,28 +177,22 @@ Hence, in the $t$-th broadcast, the APs in the subset indexed with $n \define t 
 Moreover, we shall adopt the baseline policy $\Pi_{y'}$ for the $y'$-th APs ($\forall y' \notin \mathcal{Y}_{n}$).
 Let
 \begin{align}
-    \tilde{\mathcal{A}}(t) \define \set{\tilde{\mathcal{A}}_{y}(t) | \forall y\in\mathcal{Y}_{n}},
+    \mathcal{A}(t) \define \set{\mathcal{A}_{y}(t) | \forall y\in\mathcal{Y}_{n}},
 \end{align}
-where $\tilde{\mathcal{A}}_{y}(t) \define \set{ \tilde{\omega}_{y,j}(t)\in \esSet_{y}|\forall j\in\jSpace }$, 
+where $\mathcal{A}_{y}(t) \define \set{ \tilde{\omega}_{y,j}(t)\in \esSet_{y}|\forall j\in\jSpace }$, 
 be the aggregation of dispatching actions for the APs in the subset $\mathcal{Y}_{n}$, and
 \begin{align}
-    \bar{\mathcal{A}}(t) \define \tilde{\mathcal{A}}(t) \cup \set{\Pi_{y}(\Stat(t)) | \forall y\notin\mathcal{Y}_{n}}
+    \tilde{\mathcal{A}}(t) \define \mathcal{A}(t) \cup \set{\Pi_{y}(\Stat(t)) | \forall y\notin\mathcal{Y}_{n}}
 \end{align}
 be the aggregation of dispatching actions of all APs.
-The optimization of the dispatching actions $\tilde{\mathcal{A}}_{y}(t)$ ($\forall y\in\mathcal{Y}_{n}$) at the RHS of the Bellman's equations can be rewritten as the following problem.
+The optimization of the dispatching actions $\mathcal{A}_{y}(t)$ ($\forall y\in\mathcal{Y}_{n}$) at the RHS of the Bellman's equations can be rewritten as the following problem.
 {\small
 \begin{align}
     \textbf{P2:}~
-    \min_{ \tilde{\mathcal{A}}_{y}(t) }
+    \min_{ \mathcal{A}_{y}(t) }
     &\sum_{\Stat(t+1)} \Pr\Brace{
-        \Stat(t+1) | \Stat(t), \bar{\mathcal{A}}(t)
-    }
-    \nonumber\\
-    &~~~~
-    \times \Bracket{
-        W^{\AP}_{\Baseline} \Paren{\Stat(t+1)} +
-        W^{\ES}_{\Baseline} \Paren{\Stat(t+1)}
-    },
+        \Stat(t+1) | \Stat(t), \tilde{\mathcal{A}}(t)
+    } \cdot W_{\Baseline}\Paren{\Stat(t+1)},
 \end{align}
 }
 
@@ -204,13 +202,18 @@ Moreover, we have the following conclusion on the decomposition of P2.
     {\small
     \begin{align}
         \textbf{P3:}~
-        &\min_{ \tilde{\mathcal{A}}_{y}(t) }
-        \mathbb{E}_{\set{ \Stat(t+1), \tilde{\mathcal{A}}_{y}(t) }}
-        \nonumber\\
-        &~~~~~~~~~~~\Bracket{
-            W^{\AP}_{ \Baseline }\Paren{\Stat_{k}(t+1)} +
-            W^{\ES}_{ \Baseline }\Paren{\Stat_{k}(t+1)}
+        \min_{ \mathcal{A}_{y}(t) }
+        \mathbb{E}_{\set{ \Stat(t+1), \mathcal{A}_{y}(t) }}
+        &\sum_{j\in\jSpace} \sum_{m\in\esSet_{y}} \Brace{
+            \tilde{W}^{\AP}_{y,m,j}\Paren{\Stat(t+1)}
+            \nonumber\\
+            &~~~~~~~~~~~~~~~+\tilde{W}^{\ES}_{m,j}\Paren{\Stat(t+1)}
         }.
+        % \nonumber\\
+        % &~~~~~~~~~~~\Bracket{
+        %     W^{\AP}_{ \Baseline }\Paren{\Stat_{k}(t+1)} +
+        %     W^{\ES}_{ \Baseline }\Paren{\Stat_{k}(t+1)}
+        % }.
         \label{eqn:partial}
     \end{align}
     }
@@ -220,7 +223,7 @@ Moreover, we have the following conclusion on the decomposition of P2.
 %     because the update policy would only change the cost raised on local AP and the corresponding \emph{candidate server set}.
 % \end{proof}
 
-The optimization of $\tilde{\mathcal{A}}_{y}(t)$ in P3 could be applied by linear search over the solution space of size $|\esSet_{y}|$.
+The optimization of $\mathcal{A}_{y}(t)$ in P3 could be applied by linear search over the solution space of size $|\esSet_{y}|$.
 \begin{remark}[Complexity Analysis of Solving P3]
     The computational complexity of solving P3 with linear search is $O(J(KM+M))$ for evaluating equation (\ref{eqn:partial}).
 \end{remark}
@@ -250,7 +253,7 @@ Finally, we have the following conclusion on the performance of the above propos
     The performance of the series of the baseline policies is upper bounded by the optimal solution $\Policy^*$ when considering the original Bellman's equation.
     \begin{align}
         V_{\Omega^*}\Paren{\Stat(t)}
-        \leq W_{\tilde{\Policy}}\Paren{\Stat(t)}
+        \leq W_{J}\Paren{\Stat(t)}
         \leq W_{\Baseline}\Paren{\Stat(t)},
         \forall \Stat(t).
     \end{align}
