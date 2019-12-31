@@ -173,9 +173,9 @@ Hence, in the $t$-th broadcast, the APs in the subset indexed with $n \define t 
 Moreover, we shall adopt the baseline policy $\Pi_{y'}$ for the $y'$-th APs ($\forall y' \notin \mathcal{Y}_{n}$).
 Let
 \begin{align}
-    \tilde{\mathcal{A}}(t) \define \set{\tilde{\mathcal{A}}_{k}(t) | \forall k\in\apSet},
+    \tilde{\mathcal{A}}(t) \define \set{\tilde{\mathcal{A}}_{y}(t) | \forall y\in\mathcal{Y}_{n}},
 \end{align}
-where $\tilde{\mathcal{A}}_{k}(t) \define \set{ \tilde{\omega}_{k,j}(t)|\forall j\in\jSpace }$, 
+where $\tilde{\mathcal{A}}_{y}(t) \define \set{ \tilde{\omega}_{y,j}(t)\in \esSet_{y}|\forall j\in\jSpace }$, 
 be the aggregation of dispatching actions for the APs in the subset $\mathcal{Y}_{n}$, and
 \begin{align}
     \bar{\mathcal{A}}(t) \define \tilde{\mathcal{A}}(t) \cup \set{\Pi_{y}(\Stat(t)) | \forall y\notin\mathcal{Y}_{n}}
@@ -184,7 +184,7 @@ be the aggregation of dispatching actions of all APs.
 The optimization of the dispatching actions $\tilde{\mathcal{A}}_{y}(t)$ ($\forall y\in\mathcal{Y}_{n}$) at the RHS of the Bellman's equations can be rewritten as the following problem.
 {\small
 \begin{align}
-    \text{P2:}~
+    \textbf{P2:}~
     \min_{ \tilde{\mathcal{A}}_{y}(t) }
     &\sum_{\Stat(t+1)} \Pr\Brace{
         \Stat(t+1) | \Stat(t), \bar{\mathcal{A}}(t)
@@ -203,7 +203,7 @@ Moreover, we have the following conclusion on the decomposition of P2.
     The optimization problem in P2 can be equivalently decoupled into the following local optimization problem.
     {\small
     \begin{align}
-        \text{P3:}~
+        \textbf{P3:}~
         &\min_{ \tilde{\mathcal{A}}_{y}(t) }
         \mathbb{E}_{\set{ \Stat(t+1), \tilde{\mathcal{A}}_{y}(t) }}
         \nonumber\\
@@ -226,7 +226,7 @@ The optimization of $\tilde{\mathcal{A}}_{y}(t)$ in P3 could be applied by linea
 \end{remark}
 
 \fixit{
-    (RE-FORMULATION)
+    (RE-WRITE)
     The details of the algorithm is elaborated as follows.
     \begin{enumerate}
         \item Initialize the dispatching policy of the $k$-th AP ($\forall k\in\apSet$) with some heuristic policy as $\Policy_{k}(\Stat_{k}(0), \Delay_{k}(0))$;
