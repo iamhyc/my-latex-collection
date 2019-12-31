@@ -42,10 +42,12 @@ Their definitions are given below.
 {\small
 \begin{align}
     \tilde{W}^{\AP}_{k,m,j} \Paren{\Stat(t+1)} &\define
-        \sum_{i=0}^{\infty} \gamma^{i+1} \Inorm{\vec{R}^{(k)}_{m,j}(t+i+1)},
+        \sum_{i=0}^{\infty} \gamma^{i+1} \mathbb{E}^{\Baseline}\Bracket{
+            \Inorm{\vec{R}^{(k)}_{m,j}(t+i+1)}
+        },
     \\    
     \tilde{W}^{\ES}_{m,j} \Paren{\Stat(t+1)} &\define
-        \sum_{i=0}^{\infty} \gamma^{i+1} \Brace{
+        \sum_{i=0}^{\infty} \gamma^{i+1} \mathbb{E}^{\Baseline}\Bracket{
             Q_{m,j}(t+i+1) +
             \nonumber\\
             &~~~~~~~~~~\beta I[Q_{m,j}(t+i+1) = L_{max}]
@@ -250,13 +252,18 @@ The details of the algorithm is elaborated as follows.
 Finally, we have the following conclusion on the performance of the above proposed algorithm.
 \begin{lemma}[Performance Guarantee]
     % The optimized policy solved as $\Baseline(t)$ for next stage, is better than $\Baseline(t-1), \dots, \Baseline(1)$ when considering the \emph{approximated value function} defined above.
-    Let $W_{\tilde{\Omega}}(\cdot)$ be the value function of the policy $\tilde{\Omega}$ where
-    $\tilde{\Omega}(\Stat(t)) \define \tilde{\mathcal{A}}(t)$, and
-    
-    The performance of the series of the baseline policies is upper bounded by the optimal solution $\Policy^*$ when considering the original Bellman's equation.
+    Let $W_{\tilde{\Policy}}(\cdot)$ be the value function of the policy $\tilde{\Policy}$ where
+    $\tilde{\Policy}(\Stat(t)) \define \tilde{\mathcal{A}}(t)$,
     \begin{align}
-        V_{\Omega^*}\Paren{\Stat(t)}
-        \leq W_{\tilde{\Omega}}\Paren{\Stat(t)}
+        W_{\tilde{\Policy}}(\Stat) \define
+        \sum_{t=1}^{\infty} \gamma^{t-1} \mathbb{E}^{\tilde{\Policy}} \Bracket{
+            g\Paren{\Stat(t), \tilde{\Policy}(\Stat(t))} | \Stat(1)=\Stat
+        }.
+    \end{align}
+    The performance of the baseline policies is upper bounded by the optimal solution $\Policy^*$ when considering the original Bellman's equations.
+    \begin{align}
+        V_{\Policy^*}\Paren{\Stat(t)}
+        \leq W_{\tilde{\Policy}}\Paren{\Stat(t)}
         \leq W_{\Baseline}\Paren{\Stat(t)},
         \forall \Stat(t).
     \end{align}
