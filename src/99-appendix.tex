@@ -1,44 +1,43 @@
 \appendix
-\section{Expression of Transition Matrix}
 \label{append_1}
 
-In this part, we shall 
-
 %NOTE: transition matrix and vector for AP
-\begin{definition}[Denotation of Transition on AP]
-    Let ${\Gamma}^{(k)}_{m,j}(t,n)$ be the transition matrix of $\vec{R}^{(k)}_{m,j}(t,n)$ at the $n$-th time slot in the $t$-th broadcast interval ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
-    \begin{align}
-        \Gamma^{(k)}_{m,j}(t,n) &\define
-        \begin{bmatrix}
-            1 & \bar{p}^{(k)}_{m,j,0} &                       &        &                           \\
-            & 0                     & \bar{p}^{(k)}_{m,j,1} &        &                           \\
-            &                       & \ddots                & \ddots &                           \\
-            &                       &                       & \ddots & \bar{p}^{(k)}_{m,j,\Xi-1} \\
-            &                       &                       &        & 0                         \\
-        \end{bmatrix},
-    \end{align}
-    where $\bar{p}^{(k)}_{m,j,\xi}$ denote the probability of offloading ($\forall \xi=0,\dots,\Xi$)
-    \begin{align}
-        p^{(k)}_{m,j,\xi} &\define \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\xi\}
-        \\
-        \bar{p}^{(k)}_{m,j,\xi} &= 1 - p^{(k)}_{m,j,\xi}.
-    \end{align}
-    And we note that $\theta^{(k)}_{m,j,0}(t,n)$ is purely determined by the arrival process and dispatching policy of the $j$-th type of job on the $k$-th AP, i.e. $\theta^{(k)}_{m,j,0}(t,n) = \lambda_{k,j} I[\omega_{k,j}(t) = m]$, where $I[\cdot]$ is the indicator function.
+\section{Proof of Lemma \ref{lemma:w_ap}}
+Let ${\Gamma}^{(k)}_{m,j}(t,n)$ be the transition matrix of $\vec{R}^{(k)}_{m,j}(t,n)$ at the $n$-th time slot in the $t$-th broadcast interval ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
+\begin{align}
+    \Gamma^{(k)}_{m,j}(t,n) &\define
+    \begin{bmatrix}
+        1 & \bar{p}^{(k)}_{m,j,0} &                       &        &                           \\
+        & 0                     & \bar{p}^{(k)}_{m,j,1} &        &                           \\
+        &                       & \ddots                & \ddots &                           \\
+        &                       &                       & \ddots & \bar{p}^{(k)}_{m,j,\Xi-1} \\
+        &                       &                       &        & 0                         \\
+    \end{bmatrix},
+\end{align}
+where $\bar{p}^{(k)}_{m,j,\xi}$ denote the probability of offloading ($\forall \xi=0,\dots,\Xi$)
+\begin{align}
+    p^{(k)}_{m,j,\xi} &\define \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\xi\}
+    \\
+    \bar{p}^{(k)}_{m,j,\xi} &= 1 - p^{(k)}_{m,j,\xi}.
+\end{align}
+And we note that $\theta^{(k)}_{m,j,0}(t,n)$ is purely determined by the arrival process and dispatching policy of the $j$-th type of job on the $k$-th AP, i.e. $\theta^{(k)}_{m,j,0}(t,n) = \lambda_{k,j} I[\omega_{k,j}(t) = m]$, where $I[\cdot]$ is the indicator function.
 
-    Let $\hat{\vecG{\Theta}}^{(k)}_{m,j}(t)$ denote the probability vector at the first time slot of the $t$-th broadcast interval and the state transition on AP between adjacent interval, i.e. from $\hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1)$ to $\hat{\vecG{\Theta}}^{(k)}_{m,j}(t)$, is expressed as follows.
-    \begin{align}
-        \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)) &= (\Gamma^{(k)}_{m,j})^{\mathcal{D}_{k}(t)} \times \hat{\vecG{\Theta}}_{m,j}(t),
-        \nonumber\\
-        \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1) &= (\Gamma^{(k)}_{m,j})^{N-\mathcal{D}_{k}(t)} \times \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)).
-    \end{align}
-    % is composed of two-phase policy separated by $D_k(t)$, which is expressed as follows.
-    % \begin{align}
-    %     \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)) &= (\Gamma^{(k)}_{m,j})^{\mathcal{D}_{k}(t)} \times \hat{\vecG{\Theta}}_{m,j}(t),
-    %     \nonumber\\
-    %     \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1) &= (\Gamma^{(k)}_{m,j})^{N-\mathcal{D}_{k}(t)} \times \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)).
-    % \end{align}
-\end{definition}
+Let $\hat{\vecG{\Theta}}^{(k)}_{m,j}(t)$ denote the probability vector at the first time slot of the $t$-th broadcast interval and the state transition on AP between adjacent interval, i.e. from $\hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1)$ to $\hat{\vecG{\Theta}}^{(k)}_{m,j}(t)$, is expressed as follows.
+\begin{align}
+    \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)) &= (\Gamma^{(k)}_{m,j})^{\mathcal{D}_{k}(t)} \times \hat{\vecG{\Theta}}_{m,j}(t),
+    \nonumber\\
+    \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1) &= (\Gamma^{(k)}_{m,j})^{N-\mathcal{D}_{k}(t)} \times \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)).
+\end{align}
+% is composed of two-phase policy separated by $D_k(t)$, which is expressed as follows.
+% \begin{align}
+%     \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)) &= (\Gamma^{(k)}_{m,j})^{\mathcal{D}_{k}(t)} \times \hat{\vecG{\Theta}}_{m,j}(t),
+%     \nonumber\\
+%     \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1) &= (\Gamma^{(k)}_{m,j})^{N-\mathcal{D}_{k}(t)} \times \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)).
+% \end{align}
 
+
+%NOTE: transition matrix and vector for ES
+\section{Proof of Lemma \ref{lemma:w_es}}
 %NOTE: small probability approximation
 % The expression of transition matrix $P_{m,j}$ is more complex.
 The transition happening on edge servers is affect by the arrival process from APs.

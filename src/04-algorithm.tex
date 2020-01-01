@@ -60,6 +60,7 @@ Their definitions are given below.
 Moreover, the explicit expression of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and $\tilde{W}^{\ES}_{m,j}(\Stat(t+1))$ are derived in the following lemmas, respectively.
 
 \begin{lemma}[Analytical Expression of $\tilde{W}^{\AP}_{k,m,j}$]
+    \label{lemma:w_ap}
     \begin{align}
         &\tilde{W}^{\AP}_{k,m,j}\Paren{\Stat(t+1)} =
         \Inorm{
@@ -108,6 +109,7 @@ Moreover, the explicit expression of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and $
 \end{proof}
 
 \begin{lemma}[Analytical Expression of $\tilde{W}^{\ES}_{m,j}$]
+    \label{lemma:w_es}
     {\small
     \begin{align}
         &\tilde{W}^{\ES}_{m,j}\Paren{\Stat(t+1)}
@@ -141,7 +143,7 @@ Moreover, the explicit expression of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and $
         \begin{align}
             \beta_{m,j}(t) = \sum_{k\in\apSet} \lambda_{k,j} I[\omega_{k,j}(t)=m].
         \end{align}
-        The entries of the transition matrix $\mat{P}_{m,j}$ are provided by table $\ref{tab:matP}$ in Appendix \ref{append_1}.
+        The entries of the transition matrix $\mat{P}_{m,j}$ are provided in Appendix \ref{append_1}.
     \end{itemize}
 
     % The expression for expected value function is little more complex compared to equation (\ref{w_ap}).
@@ -178,7 +180,7 @@ Let
 where $\tilde{\mathcal{A}}_{y}(t) \define \set{ \tilde{\omega}_{y,j}(t)\in \esSet_{y}|\forall j\in\jSpace }$, 
 be the aggregation of dispatching actions for the APs in the subset $\mathcal{Y}_{n}$, and
 \begin{align}
-    \bar{\mathcal{A}}(t) \define \tilde{\mathcal{A}}(t) \cup \set{\Pi_{y}(\Stat(t)) | \forall y\notin\mathcal{Y}_{n}}
+    \hat{\mathcal{A}}(t) \define \tilde{\mathcal{A}}(t) \cup \set{\Pi_{y}(\Stat(t)) | \forall y\notin\mathcal{Y}_{n}}
 \end{align}
 be the aggregation of dispatching actions of all APs.
 The optimization of the dispatching actions $\tilde{\mathcal{A}}_{y}(t)$ ($\forall y\in\mathcal{Y}_{n}$) at the RHS of the Bellman's equations can be rewritten as the following problem.
@@ -187,7 +189,7 @@ The optimization of the dispatching actions $\tilde{\mathcal{A}}_{y}(t)$ ($\fora
     \textbf{P2:}~
     \min_{ \tilde{\mathcal{A}}_{y}(t) }
     &\sum_{\Stat(t+1)} \Pr\Brace{
-        \Stat(t+1) | \Stat(t), \bar{\mathcal{A}}(t)
+        \Stat(t+1) | \Stat(t), \hat{\mathcal{A}}(t)
     } \cdot W_{\Baseline}\Paren{\Stat(t+1)},
 \end{align}
 }
@@ -247,7 +249,7 @@ Finally, we have the following conclusion on the performance of the above propos
 \begin{lemma}[Performance Guarantee]
     % The optimized policy solved as $\Baseline(t)$ for next stage, is better than $\Baseline(t-1), \dots, \Baseline(1)$ when considering the \emph{approximated value function} defined above.
     Let $W_{\tilde{\Policy}}(\cdot)$ be the value function of the policy $\tilde{\Policy}$ where
-    $\tilde{\Policy}(\Stat(t)) \define \bar{\mathcal{A}}(t)$,
+    $\tilde{\Policy}(\Stat(t)) \define \hat{\mathcal{A}}(t)$,
     \begin{align}
         W_{\tilde{\Policy}}(\Stat) \define
         \sum_{t=1}^{\infty} \gamma^{t-1} \mathbb{E}^{\tilde{\Policy}} \Bracket{
