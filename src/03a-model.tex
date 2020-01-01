@@ -61,8 +61,10 @@ The LSI at the APs and edge servers, global state information, and observed LSI 
 
 %NOTE: State and Broadcast Information for AP
 \begin{definition}[Local State Information of APs]
-    Let $R^{(k)}_{m,j,\xi}(t,n)$ be the number of the type-$j$ jobs being uploaded from the $k$-th AP to the $m$-th server at the $n$-th time slot of the $t$-th interval, which has been delivered for $\xi$ time slots. 
-    The LSI of the $k$-th AP at the $t$-th broadcast interval is defined as
+    Let $R^{(k)}_{m,j}(\xi,t,n) \in \set{0,1}$ be the indicator of the type-$j$ jobs at the $n$-th time slot of the $t$-th interval.
+    Its value is $1$ when there is one job being uploaded from the $k$-th AP to the $m$-th server which has been delivered for $\xi$ time slots, and $0$ otherwise. 
+    The LSI of the $k$-th AP at the beginning of the $t$-th broadcast interval is defined as
+    {\small
     \begin{align}
         \mathcal{R}_{k}(t) \define
         \Paren{
@@ -70,13 +72,14 @@ The LSI at the APs and edge servers, global state information, and observed LSI 
             \Brace{\omega_{k,j}(t) | \forall j\in\jSpace}
         },
     \end{align}
+    }
     where
-    $\vec{R}^{(k)}_{m,j}(t,0) \define ( R^{(k)}_{m,j,0}(t,0), \dots, R^{(k)}_{m,j,\Xi}(t,0) )$.
+    $\vec{R}^{(k)}_{m,j}(t,0) \define ( R^{(k)}_{m,j}(0,t,0), \dots, R^{(k)}_{m,j}(\Xi,t,0) )$, $\set{\omega_{k,j}(t)|\forall j\in\jSpace}$ is referred as the dispatching actions of the $t$-th broadcast interval.
 \end{definition}
 
 %NOTE: State and Broadcast Information for Edge Server
 \begin{definition}[Local State Information of Edge Servers]
-    Let $Q_{m,j}({t,n})$ be the pending number of the type-$j$ jobs on the $m$-th edge server at the $n$-th time slot of the $t$-th interval ($\forall m\in\esSet, j\in\jSpace$).
+    Let $Q_{m,j}({t,n})$ be the pending number of type-$j$ jobs on the $m$-th edge server at the $n$-th time slot of the $t$-th interval ($\forall m\in\esSet, j\in\jSpace$).
     The LSI of the $m$-th edge server at the $t$-th broadcast interval is defined as
     \begin{align}
         \mathcal{Q}_{m}(t) \define \Brace{
@@ -90,21 +93,21 @@ The LSI at the APs and edge servers, global state information, and observed LSI 
     The global state information (GSI) of the $t$-th broadcast interval is defined as the aggregation of the broadcast LSIs from all the APs and edge servers, i.e.,
     \begin{align}
         \Stat(t) \define
-            \big(
+            \Paren{
                 \Brace{\mathcal{R}_{k}(t)|\forall k\in\apSet},
                 \Brace{\mathcal{Q}_{m}(t)|\forall m\in\esSet}
-            \big).
+            }.
     \end{align}
 \end{definition}
 
 %NOTE: Conflict of AP set and partial information definition
-As the APs and edge servers may reside in different locations of a MAN, the propagation delay of LSI is not negligible.
+As the APs and edge servers may reside in different locations of a MAN, the transmission delay of LSI is not negligible.
 It might be costly for one AP (say the $k$-th AP) to collect the complete GSI before update the dispatching policy.
-For example, the transmission latency of the LSI from the edge servers out of its \emph{candidate server set} $\esSet_{k}$ may be large, and some broadcast information may be discarded by the routers after a certain number of hops.
+For example, the transmission delay of the LSI from the edge servers out of its \emph{candidate server set} $\esSet_{k}$ may be large, and some broadcast information may be discarded by the routers after a certain number of hops.
 In this paper, we shall investigate the dispatching design based on the \emph{observed state information} at each AP.
 Specifically, the \emph{conflict AP sets} and the \emph{observed state information} are defined below, respectively.
 \begin{definition}[Conflict AP Set]
-    The conflict AP set to the $k$-th AP consists of the neighboring APs who has direct impact on the queueing delay of the jobs dispatching from the $k$-th AP, i.e.,
+    The conflict AP set to the $k$-th AP consists of the neighboring APs who have direct impact on the queueing delay of the jobs dispatched from the $k$-th AP, i.e.,
     \begin{align}
         \ccSet_{k} \define \bigcup_{m\in\esSet_{k}} \apSet_{m}.
         % \ccSet_{k} \define \set{\forall k' \neq k\in\apSet|\esSet_{k'} \cap \esSet_{k} \neq \emptyset}
@@ -124,10 +127,10 @@ Specifically, the \emph{conflict AP sets} and the \emph{observed state informati
     The observed state information (OSI) of the $k$-th AP ($\forall k\in\apSet$) at the $t$-th broadcast is defined as the aggregation of LSIs of the APs in \emph{conflict AP set} and the edge servers in \emph{candidate server set} of the $k$-th AP, i.e.,
     \begin{align}
         \Stat_{k}(t) &\define
-        \big(
+        \Paren{
             \Brace{\mathcal{R}_{k'}(t) | \forall k'\in\ccSet_{k}},
             \Brace{\mathcal{Q}_{m}(t) | \forall m\in\esSet_{k}}
-        \big).
+        }.
     \end{align}
     \label{def:OSI}
 \end{definition}
@@ -139,7 +142,7 @@ Specifically, the \emph{conflict AP sets} and the \emph{observed state informati
     \label{fig:brd-timeline}
 \end{figure*}
 
-The $k$-th AP is able to collect its OSI at the $\mathcal{D}_{k}(t)$-th time slots of the $t$-th broadcast time slot, where the broadcast latency $\mathcal{D}_{k}(t)$ is a random variable.
+The $k$-th AP is able to collect its OSI at the $\mathcal{D}_{k}(t)$-th time slots of the $t$-th broadcast interval, where the broadcast latency $\mathcal{D}_{k}(t)$ is a random variable.
 It is assumed that $\mathcal{D}_{k}(t)$ follows identical and independent distribution in different broadcast interval.
 \accept{
     We refer to $\mathcal{D}_{k}(t)$ as the \brlatency~of the $k$-th AP in the $t$-th broadcast interval.
@@ -147,7 +150,8 @@ It is assumed that $\mathcal{D}_{k}(t)$ follows identical and independent distri
 }
 
 \begin{example}
-    In Fig.\ref{fig:brd-timeline} we focus on the dispatching actions update for the $1$-st AP.
+    An example is illustrated in Fig.\ref{fig:brd-timeline}, where the $2$-nd and $3$-rd APs are in the  
+    we focus on the dispatching actions update for the $1$-st AP.
     In the $t$-th broadcast interval, it updates its dispatching actions for all the job type $\mathcal{D}_{1}(t)$ time slots later, which is denoted as $\set{\omega_{1,j}(t) | \forall j\in\jSpace}$.
     At the start of the second broadcast interval, it will firstly keep the the previous actions unchanged, and then updates the actions immediately $\mathcal{D}_{1}(t+1)$ time slots later which is denoted as $\set{\omega_{1,j}(t+1) | \forall j\in\jSpace}$.
     And then it repeats the process for the remaining of the time.
