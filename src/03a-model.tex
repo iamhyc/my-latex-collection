@@ -69,12 +69,21 @@ The LSI at the APs and edge servers, global state information, and observed LSI 
         \mathcal{R}_{k}(t) \define
         \Paren{
             \Brace{\vec{R}^{(k)}_{m,j}(t,0) | \forall m\in\esSet,j\in\jSpace},
-            \Brace{\omega_{k,j}(t) | \forall j\in\jSpace}
+            \mathcal{A}_{k}(t)
         },
     \end{align}
     }
     where
-    $\vec{R}^{(k)}_{m,j}(t,0) \define ( R^{(k)}_{m,j}(0,t,0), \dots, R^{(k)}_{m,j}(\Xi,t,0) )$, $\set{\omega_{k,j}(t)|\forall j\in\jSpace}$ is referred as the dispatching actions of the $t$-th broadcast interval.
+    \begin{align}
+        \vec{R}^{(k)}_{m,j}(t,0) \define \Paren{
+            R^{(k)}_{m,j}(0,t,0), \dots, R^{(k)}_{m,j}(\Xi,t,0) )
+        },
+    \end{align}
+    and
+    \begin{align}
+        \mathcal{A}_{k}(t) &\define \Brace{\omega_{k,j}(t) | \forall j\in\jSpace}
+    \end{align}
+    is referred as the dispatching actions of the $k$-th AP at the start of the $t$-th broadcast interval.
 \end{definition}
 
 %NOTE: State and Broadcast Information for Edge Server
@@ -150,11 +159,10 @@ It is assumed that $\mathcal{D}_{k}(t)$ follows identical and independent distri
 }
 
 \begin{example}
-    An example is illustrated in Fig.\ref{fig:brd-timeline}, where the $2$-nd and $1$-st server are in the \emph{conflict AP set} and \emph{candidate server set}, respectively, of the $1$-st AP.
-    At the beginning of the $t$-th broadcast interval, the dispatching actions 
-
-    we focus on the dispatching actions update for the $1$-st AP.
-    In the $t$-th broadcast interval, it updates its dispatching actions for all the job type $\mathcal{D}_{1}(t)$ time slots later, which is denoted as $\set{\omega_{1,j}(t) | \forall j\in\jSpace}$.
-    At the start of the second broadcast interval, it will firstly keep the the previous actions unchanged, and then updates the actions immediately $\mathcal{D}_{1}(t+1)$ time slots later which is denoted as $\set{\omega_{1,j}(t+1) | \forall j\in\jSpace}$.
+    An example is illustrated in Fig.\ref{fig:brd-timeline}, where the $2$-nd and $1$-st server are in the \emph{conflict AP set} and \emph{candidate server set} of the $1$-st AP, respectively.
+    At the beginning of the $t$-th broadcast interval, the dispatching actions $\mathcal{A}_{1}(t)$ is adopted by the $1$-st AP.
+    Then after $\mathcal{D}_{1}(t)$ time slots, it updates the dispatching actions to $\mathcal{A}_{1}(t+1)$ based on the OSI.
+    At the start of the $(t+1)$-th broadcast interval, it will firstly keep the previous actions, and then updates the actions immediately $\mathcal{D}_{1}(t+1)$ time slots later which is denotes as $\mathcal{A}(t+2)$.
     And then it repeats the process for the remaining of the time.
+    % $\set{\omega_{1,j}(t+1) | \forall j\in\jSpace}$
 \end{example}
