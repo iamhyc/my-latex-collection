@@ -217,7 +217,7 @@ The optimization of $\tilde{\mathcal{A}}_{y}(t)$ in P3 could be applied by linea
 The computational complexity of solving P3 with linear search is $O(J(KM+M))$ for evaluating equation (\ref{eqn:partial}).
 
 As a result, the overall algorithm of job dispatching is elaborated as follows.
-\accept{
+\fixit{
     \begin{enumerate}
         \item Initialize the all the APs with heuristic policy as dispatching actions $\mathcal{\tilde{A}}(0)$;
         \item At the $1$-st broadcast time slot when $t=0$, the APs in set $\mathcal{Y}_{1}$ and the edge servers in the corresponding \emph{candidate server set}s of APs in $\mathcal{Y}_{1}$, should broadcast their LSI (including the heuristic actions);
@@ -239,7 +239,7 @@ Finally, we have the following conclusion on the performance of the above propos
 \begin{lemma}[Performance Guarantee]
     % The optimized policy solved as $\Baseline(t)$ for next stage, is better than $\Baseline(t-1), \dots, \Baseline(1)$ when considering the \emph{approximated value function} defined above.
     Let $W_{\tilde{\Policy}}(\cdot)$ be the value function of the policy $\tilde{\Policy}$ where
-    $\tilde{\Policy}(\Stat(t)) \define \hat{\mathcal{A}}(t)$,
+    $\tilde{\Policy}(\Stat(t)) \define \tilde{\mathcal{A}}(t) \cup \hat{\mathcal{A}}(t)$,
     \begin{align}
         W_{\tilde{\Policy}}(\Stat) \define
         \sum_{t=1}^{\infty} \gamma^{t-1} \mathbb{E}^{\tilde{\Policy}} \Bracket{
@@ -256,7 +256,9 @@ Finally, we have the following conclusion on the performance of the above propos
     \end{align}
 \end{lemma}
 \begin{proof}
-    
+    \fixit{
+        (TODO)
+    }
 \end{proof}
 
 %----------------------------------------------------------------------------------------%
