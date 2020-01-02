@@ -37,7 +37,6 @@ Different types of jobs may have different distributions of the input data size.
 Moreover, due to the random traffic in the network, the job uploading from one AP to one edge server consumes a random number of time slots.
 It is assumed that the distributions of uploading time are independent for each job.
 Specifically, let $\mathbb{U}_{k,m,j}(\Xi)$ be the uploading latency distribution of the type-$j$ jobs from the $k$-th AP to the $m$-th edge server with support $\set{1, \dots, \Xi}$ ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
-% In practice, the distribution of uploading latency may not be known to the APs or edge servers in advance.
 
 %NOTE: [processing process]
 There are $J$ parallel virtual machines (VMs) running on each edge server for processing the $J$ job types, respectively.
@@ -97,7 +96,6 @@ The LSI at the APs and edge servers, global state information, and observed LSI 
     \end{align}
 \end{definition}
 
-% We refer to \emph{global state information} (GSI) as the aggregation of LSI of all the APs and edge servers, which is defined below.
 \begin{definition}[Global State Information]
     The global state information (GSI) of the $t$-th broadcast interval is defined as the aggregation of the broadcast LSIs from all the APs and edge servers, i.e.,
     \begin{align}
@@ -121,7 +119,6 @@ Specifically, the \emph{conflict AP sets} and the \emph{observed state informati
         \ccSet_{k} \define \bigcup_{m\in\esSet_{k}} \apSet_{m}.
         % \ccSet_{k} \define \set{\forall k' \neq k\in\apSet|\esSet_{k'} \cap \esSet_{k} \neq \emptyset}
     \end{align}
-    % The \emph{conflict AP set} indicates that the subset of APs whose LSI could affect the decision making for the $k$-th AP.
 \end{definition}
 
 \begin{figure}[tp]
@@ -164,5 +161,4 @@ It is assumed that $\mathcal{D}_{k}(t)$ follows identical and independent distri
     Then after $\mathcal{D}_{1}(t)$ time slots, it updates the dispatching actions to $\mathcal{A}_{1}(t+1)$ based on the OSI.
     At the start of the $(t+1)$-th broadcast interval, it will firstly keep the previous actions, and then updates the actions immediately $\mathcal{D}_{1}(t+1)$ time slots later which is denotes as $\mathcal{A}(t+2)$.
     And then it repeats the process for the remaining of the time.
-    % $\set{\omega_{1,j}(t+1) | \forall j\in\jSpace}$
 \end{example}

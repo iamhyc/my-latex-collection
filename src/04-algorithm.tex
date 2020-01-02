@@ -55,8 +55,6 @@ Their definitions are given below.
 \end{align}
 }
 
-% To efficiently express the state transition, we further elaborate the distribution probability of the state vector as the corresponding probability vector, and perform the state transition with the transition matrix.
-% Specifically, the definitions of symbols in the remaining parts is given in the Appendix \ref{apped_1} and the calculation of equation (\ref{eqn:partial}) is elaborated below.
 Moreover, the explicit expression of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and $\tilde{W}^{\ES}_{m,j}(\Stat(t+1))$ are derived in the following lemmas, respectively.
 
 \begin{lemma}[Analytical Expression of $\tilde{W}^{\AP}_{k,m,j}$]
@@ -144,12 +142,7 @@ Moreover, the explicit expression of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and $
             \beta_{m,j}(t) = \sum_{k\in\apSet} \lambda_{k,j} I[\omega_{k,j}(t)=m].
         \end{align}
         The entries of the transition matrix $\mat{P}_{m,j}$ are provided in Appendix \ref{append_1}.
-    \end{itemize}
-
-    % The expression for expected value function is little more complex compared to equation (\ref{w_ap}).
-    % The transition matrix for state transition is affected by the baseline policy and the system states of APs.
-    % However, we notice that under the fixed baseline policy, the arrival process on edge servers would be stationary after the maximum uploading time from the initial interval, and thus the transition matrix is invariant of system states of APs.
-    % Let $\mat{P}_{m,j}(\Baseline_{t})$ be the transition matrix under baseline policy $\Baseline_{t}$ which is invariant of system states of APs    
+    \end{itemize}   
 \end{lemma}
 \begin{proof}
     Please refer to Appendix \ref{append_1}.
@@ -239,9 +232,9 @@ The details of the algorithm is elaborated as follows.
     \end{enumerate}
 }
 % \begin{remark}[Complexity Analysis]
-%     The computation complexity of solving Problem \ref{problem_3} is $O(J())$
+%     The computation complexity of solving Problem P3 is $O(J())$
 
-%     % The computation complexity of solving Problem \ref{problem_3} is $O(J(c_k M_k+M_k))$ where $c_k, M_k$ is the number of APs in the \emph{conflict AP set} and number of edge servers in the \emph{potential server set} of the $k$-th AP, respectively.
+%     % The computation complexity of solving Problem P3 is $O(J(c_k M_k+M_k))$ where $c_k, M_k$ is the number of APs in the \emph{conflict AP set} and number of edge servers in the \emph{potential server set} of the $k$-th AP, respectively.
 %     Overall, the computation complexity of the algorithm in one period is $O(J(KM+M))$.
 % \end{remark}
 
@@ -286,7 +279,7 @@ Finally, we have the following conclusion on the performance of the above propos
     \end{align}
     where the transition function is decoupled into two parts of state transition on APs and edge servers, respectively.
 
-    However, since the GSI and the global \brlatency~ is not obtainable in the edge computing system, we need to further decouple Problem \ref{problem_1} onto individual APs where only local OSI and \brlatency~is required to update the dispatching policy.
+    However, since the GSI and the global \brlatency~ is not obtainable in the edge computing system, we need to further decouple Problem P1 onto individual APs where only local OSI and \brlatency~is required to update the dispatching policy.
     Hence, in the following subsection \ref{subsec:ap_alg}, we propose a decentralized algorithm where the APs shall update their policies simultaneously in the form of disjoint clusters.
     % The performance guarantee of the algorithm is also provided.
 }

@@ -3,6 +3,8 @@
 
 %NOTE: transition matrix and vector for AP
 \section{Proof of Lemma \ref{lemma:w_ap}}
+% To efficiently express the state transition, we further elaborate the distribution probability of the state vector as the corresponding probability vector, and perform the state transition with the transition matrix.
+% Specifically, the definitions of symbols in the remaining parts is given in the Appendix \ref{apped_1} and the calculation of equation (\ref{eqn:partial}) is elaborated below.
 Let ${\Gamma}^{(k)}_{m,j}(t,n)$ be the transition matrix of $\vec{R}^{(k)}_{m,j}(t,n)$ at the $n$-th time slot in the $t$-th broadcast interval ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
 \begin{align}
     \Gamma^{(k)}_{m,j}(t,n) &\define
@@ -40,6 +42,10 @@ Let $\hat{\vecG{\Theta}}^{(k)}_{m,j}(t)$ denote the probability vector at the fi
 \section{Proof of Lemma \ref{lemma:w_es}}
 %NOTE: small probability approximation
 % The expression of transition matrix $P_{m,j}$ is more complex.
+% The expression for expected value function is little more complex compared to equation (\ref{w_ap}).
+    % The transition matrix for state transition is affected by the baseline policy and the system states of APs.
+    % However, we notice that under the fixed baseline policy, the arrival process on edge servers would be stationary after the maximum uploading time from the initial interval, and thus the transition matrix is invariant of system states of APs.
+    % Let $\mat{P}_{m,j}(\Baseline_{t})$ be the transition matrix under baseline policy $\Baseline_{t}$ which is invariant of system states of APs 
 The transition happening on edge servers is affect by the arrival process from APs.
 Hence, we first denote the offloading matrix $\bar{\Gamma}^{(k)}_{m,j}$ from each AP to the $m$-th edge server and the offloading number vector $\vecG{\rho}^{(k,+)}_{m,j}({t,n})$ as follows, respectively ($\forall k\in\apSet, m\in\esSet_{m}, j\in\jSpace$).
 \begin{align}
