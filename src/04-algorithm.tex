@@ -150,11 +150,11 @@ Moreover, the explicit expression of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and $
 
 \subsection{The Decentralized Algorithm}
 \label{subsec:ap_alg}
-Although the optimal value function has been approximated via the baseline policy in the previous part, it is still infeasible for all the APs to solve the RHS with OSI only.
-This is because evaluation of equation (\ref{w_ap}) and (\ref{w_es}) requires the knowledge of GSI at each AP.
+Although the optimal value function has been approximated via the baseline policy in the previous part, it is still infeasible for all the APs to solve the RHS of the Bellmans equations in a distributive manner with OSI only.
+This is because the evaluation of equation (\ref{w_ap}) and (\ref{w_es}) requires the knowledge of GSI at each AP.
 Instead, it is feasible for part of APs to update their dispatching actions distributively and achieve a better performance compared with baseline policy.
-Hence, we first define the following sequence of AP subsets, where APs of each subset are selected to update dispatching actions periodically.
-\begin{definition}[Subsets of Periodic Strategy Update]
+Hence, we first define the following sequence of AP subsets, where each subset are selected to update dispatching actions periodically.
+\begin{definition}[Subsets of Periodic Actions Update]
     Let $\mathcal{Y}_{1}, \dots, \mathcal{Y}_{N} \subseteq \ccSet$ be a sequence of subset, where each subset satisfies the following constraints
     \begin{align}
         &\bigcup_{n=0,\dots,N-1} \mathcal{Y}_{n} = \apSet
@@ -163,26 +163,25 @@ Hence, we first define the following sequence of AP subsets, where APs of each s
     \end{align}
 \end{definition}
 For example, as illustrated in Fig.\ref{fig:conflict}, the AP set $\apSet$ could be decomposed of two subsets as $\set{1,3}$ and $\set{2}$.
-
-Hence, in the $t$-th broadcast, the APs in the subset indexed with $n \define t \pmod{N}$ should update their dispatching actions.
-Moreover, we shall adopt the baseline policy $\Pi_{y'}$ for the $y'$-th APs ($\forall y' \notin \mathcal{Y}_{n}$).
-Let
+Hence, in the $t$-th broadcast interval, the APs in the subset indexed with $n \define t \pmod{N}$ update their dispatching actions, while the other APs keep the same dispatching actions as the previous broadcast interval.
+Hence, let
 \begin{align}
-    \tilde{\mathcal{A}}(t) \define \set{\tilde{\mathcal{A}}_{y}(t) | \forall y\in\mathcal{Y}_{n}},
+    \tilde{\mathcal{A}}(t) \define \Brace{
+        \tilde{\mathcal{A}}_{y}(t) \define \set{ \tilde{\omega}_{y,j}(t)\in \esSet_{y}|\forall j\in\jSpace } | \forall y\in\mathcal{Y}_{n}
+    }
 \end{align}
-where $\tilde{\mathcal{A}}_{y}(t) \define \set{ \tilde{\omega}_{y,j}(t)\in \esSet_{y}|\forall j\in\jSpace }$, 
 be the aggregation of dispatching actions for the APs in the subset $\mathcal{Y}_{n}$, and
 \begin{align}
     \hat{\mathcal{A}}(t) \define \tilde{\mathcal{A}}(t) \cup \set{\Pi_{y}(\Stat(t)) | \forall y\notin\mathcal{Y}_{n}}
 \end{align}
-be the aggregation of dispatching actions of all APs.
-The optimization of the dispatching actions $\tilde{\mathcal{A}}_{y}(t)$ ($\forall y\in\mathcal{Y}_{n}$) at the RHS of the Bellman's equations can be rewritten as the following problem.
+be the aggregation of dispatching actions of the rest APs.
+In the $t$-th broadcast interval, the optimization of $\tilde{\mathcal{A}}_{y}(t)$ ($\forall y\in\mathcal{Y}_{n}$) at the RHS of the Bellman's equations can be rewritten as the following problem.
 {\small
 \begin{align}
     \textbf{P2:}~
-    \min_{ \tilde{\mathcal{A}}_{y}(t) }
+    \min_{ \tilde{\mathcal{A}}(t) }
     &\sum_{\Stat(t+1)} \Pr\Brace{
-        \Stat(t+1) | \Stat(t), \hat{\mathcal{A}}(t)
+        \Stat(t+1) | \Stat(t), \tilde{\mathcal{A}}(t), \hat{\mathcal{A}}(t)
     } \cdot W_{\Baseline}\Paren{\Stat(t+1)},
 \end{align}
 }
@@ -215,11 +214,9 @@ Moreover, we have the following conclusion on the decomposition of P2.
 % \end{proof}
 
 The optimization of $\tilde{\mathcal{A}}_{y}(t)$ in P3 could be applied by linear search over the solution space of size $|\esSet_{y}|$.
-\begin{remark}[Complexity Analysis of Solving P3]
-    The computational complexity of solving P3 with linear search is $O(J(KM+M))$ for evaluating equation (\ref{eqn:partial}).
-\end{remark}
+The computational complexity of solving P3 with linear search is $O(J(KM+M))$ for evaluating equation (\ref{eqn:partial}).
 
-The details of the algorithm is elaborated as follows.
+As a result, the overall algorithm of job dispatching is elaborated as follows.
 \accept{
     \begin{enumerate}
         \item Initialize the all the APs with heuristic policy as dispatching actions $\mathcal{\tilde{A}}(0)$;
@@ -247,9 +244,10 @@ Finally, we have the following conclusion on the performance of the above propos
         W_{\tilde{\Policy}}(\Stat) \define
         \sum_{t=1}^{\infty} \gamma^{t-1} \mathbb{E}^{\tilde{\Policy}} \Bracket{
             g\Paren{\Stat(t), \tilde{\Policy}(\Stat(t))} | \Stat(1)=\Stat
-        }.
+        },
     \end{align}
-    The performance of the baseline policies is upper bounded by the optimal solution $\Policy^*$ when considering the original Bellman's equations.
+    % The performance of the baseline policies is upper bounded by the optimal solution $\Policy^*$ when considering the original Bellman's equations.
+    we have
     \begin{align}
         V_{\Policy^*}\Paren{\Stat(t)}
         \leq W_{\tilde{\Policy}}\Paren{\Stat(t)}
