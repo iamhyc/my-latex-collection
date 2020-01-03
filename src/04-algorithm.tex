@@ -194,10 +194,10 @@ Moreover, we have the following conclusion on the decomposition of P2.
         \textbf{P3:}~
         \min_{ \tilde{\mathcal{A}}_{y}(t) }
         \mathbb{E}_{\set{ \Stat(t+1), \tilde{\mathcal{A}}_{y}(t) }}
-        &\sum_{j\in\jSpace} \sum_{m\in\esSet_{y}} \Brace{
+        &\sum_{j\in\jSpace,m\in\esSet_{y}} \Brace{
             \tilde{W}^{\AP}_{y,m,j}\Paren{\Stat(t+1)}
             \nonumber\\
-            &~~~~~~~~~~~~~~~+\tilde{W}^{\ES}_{m,j}\Paren{\Stat(t+1)}
+            &~~~~~~~~~~~~~~~~~+\tilde{W}^{\ES}_{m,j}\Paren{\Stat(t+1)}
         }.
         % \nonumber\\
         % &~~~~~~~~~~~\Bracket{
@@ -219,11 +219,43 @@ The computational complexity of solving P3 with linear search is $O(J(KM+M))$ fo
 As a result, the overall algorithm of job dispatching is elaborated as follows.
 % [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
 \begin{algorithm}
-    \caption{Dispatching Actions Update Algorithm}
-    \begin{algorithmic}[1]
-        \STATE $t=0$
-    \end{algorithmic}
+    \caption{Online Alternative Actions Update Algorithm}\label{alg_1}
+    \DontPrintSemicolon % Some LaTeX compilers require you to use \dontprintsemicolon instead
+    \KwIn{$\Stat(t), \Delay(t)$}
+    \KwOut{$\tilde{\mathcal{A}}(t)$}
+
+    Initialize $\tilde{\mathcal{A}}(0),\hat{\mathcal{A}}(0)$ with heuristic dispatching actions.\;
+    \For{$t=0,1,2,\dots$}{
+        $n \gets t \pmod{N}$\;
+        \For{$y \in \mathcal{Y}_{n}$}{
+            Observe $\Stat_{y}(t)$ after $\mathcal{D}_{y}(t)$\;
+            $\tilde{\mathcal{A}}_{y}(t+1) \gets$ solving Problem P3 with $\mathcal{D}_{y}(t+1), \Stat(t)$\;
+        }
+        \Return $\tilde{\mathcal{A}}(t+1)$\;
+    }
 \end{algorithm}
+
+% \begin{algorithm}
+%     $location \gets 0$\;
+%     $i \gets 2$\;
+%     \While{$i \leq n$ \textbf{and} $location = 0$}{
+%       $j \gets 1$\;
+%       \While{$j < i$ \textbf{and} $location = 0$}{
+%         % The "u" before the "If" makes it so there is no "end" after the statement, so the else will then follow
+%         \uIf{$a_i = a_j$}{
+%           $location \gets i$\;
+%         }
+%         \Else{
+%           $j \gets j + 1$\;
+%         }
+%       }
+%       $i \gets i + 1$\;
+%     }
+%     \Return{location}\;
+%     \caption{{\sc FindDuplicate}}
+%     \label{algo:duplicate}
+% \end{algorithm}
+
 % \begin{algorithm}[H]
 %     \caption{Online Iterative Policy Improvement Algorithm}
 %     \begin{algorithmic}[1]
@@ -237,23 +269,16 @@ As a result, the overall algorithm of job dispatching is elaborated as follows.
 %         \ENDFOR
 %     \end{algorithmic}
 % \end{algorithm}
-\fixit{
-    \begin{enumerate}
-        \item Initialize the all the APs with heuristic policy as dispatching actions $\mathcal{\tilde{A}}(0)$;
-        \item At the $1$-st broadcast time slot when $t=0$, the APs in set $\mathcal{Y}_{1}$ and the edge servers in the corresponding \emph{candidate server set}s of APs in $\mathcal{Y}_{1}$, should broadcast their LSI (including the heuristic actions);
-        \item Each AP (say the $y_0$-th AP) in set $\mathcal{Y}_{0}$ would receive the OSI at the $D_{y_0}(1)$ time slots in the $1$-st broadcast interval, and then it updates its dispatching actions $\tilde{\mathcal{A}}_{y_0}(1)$ by solving P3;
-        % (the APs in set $\mathcal{Y}_{1}$ would keep with the actions until they receive the OSI again);
-        % \item At the $2$-nd broadcast time slot when $t=1$, the APs in set $\mathcal{Y}_{2}$ would receive the broadcast OSI;
-        \item Similarly, in the $t$-th broadcast interval the APs in subset indexed with $n \define (t+1)\mod{N}$ would receive the OSI, and then update their dispatching actions $\tilde{\mathcal{A}}_{y_n}(t)$ ($\forall y_n\in\mathcal{Y}_{n}$) by solving P3.
-        \item Step 4) is periodically repeated with respect to the broadcast interval.
-    \end{enumerate}
-}
-% \begin{remark}[Complexity Analysis]
-%     The computation complexity of solving Problem P3 is $O(J())$
 
-%     % The computation complexity of solving Problem P3 is $O(J(c_k M_k+M_k))$ where $c_k, M_k$ is the number of APs in the \emph{conflict AP set} and number of edge servers in the \emph{potential server set} of the $k$-th AP, respectively.
-%     Overall, the computation complexity of the algorithm in one period is $O(J(KM+M))$.
-% \end{remark}
+\begin{enumerate}
+    \item Initialize the all the APs with heuristic policy as dispatching actions $\mathcal{\tilde{A}}(0)$;
+    \item At the $1$-st broadcast time slot when $t=0$, the APs in set $\mathcal{Y}_{1}$ and the edge servers in the corresponding \emph{candidate server set}s of APs in $\mathcal{Y}_{1}$, should broadcast their LSI (including the heuristic actions);
+    \item Each AP (say the $y_0$-th AP) in set $\mathcal{Y}_{0}$ would receive the OSI at the $D_{y_0}(1)$ time slots in the $1$-st broadcast interval, and then it updates its dispatching actions $\tilde{\mathcal{A}}_{y_0}(1)$ by solving P3;
+    % (the APs in set $\mathcal{Y}_{1}$ would keep with the actions until they receive the OSI again);
+    % \item At the $2$-nd broadcast time slot when $t=1$, the APs in set $\mathcal{Y}_{2}$ would receive the broadcast OSI;
+    \item Similarly, in the $t$-th broadcast interval the APs in subset indexed with $n \define (t+1)\mod{N}$ would receive the OSI, and then update their dispatching actions $\tilde{\mathcal{A}}_{y_n}(t)$ ($\forall y_n\in\mathcal{Y}_{n}$) by solving P3.
+    \item Step 4) is periodically repeated with respect to the broadcast interval.
+\end{enumerate}
 
 Finally, we have the following conclusion on the performance of the above proposed algorithm.
 \begin{lemma}[Performance Guarantee]
