@@ -4,6 +4,29 @@
 \label{append_1}
 % To efficiently express the state transition, we further elaborate the distribution probability of the state vector as the corresponding probability vector, and perform the state transition with the transition matrix.
 % Specifically, the definitions of symbols in the remaining parts is given in the Appendix \ref{apped_1} and the calculation of equation (\ref{eqn:partial}) is elaborated below.
+Firstly, we derive the expression of cost raised on APs in each time slot.
+At the $n$-th time slot of the $t$-th broadcast interval, let $\hat{\vecG{\Theta}}^{k,\Pi}_{m,j}(t,n)$ denote the probability of job existence under baseline policy $\Baseline(t)$ where
+\begin{align}
+    \hat{\vecG{\Theta}}^{k,\Pi}_{m,j}(t,n)
+\end{align}
+
+and $\hat{\Gamma}^{(k)}_{m,j}$ denotes the time-invariant transition matrix for the
+
+Then, we could express the \fixit{what} under baseline policy $\Baseline$ as follows.
+\begin{align}
+    &\tilde{W}^{\AP}_{k,m,j}\Paren{\Stat(t+1)} =
+    \Inorm{
+        \Bracket{
+            \vecG{\Theta}^{(k, \Baseline)}_{m,j}(t+1)
+        }'
+        \Bracket{
+            \mat{I} - \gamma \Gamma^{(k)}_{m,j}
+        }^{-1}
+    },
+    \label{w_ap}
+\end{align}
+where
+
 Let ${\Gamma}^{(k)}_{m,j}(t,n)$ be the transition matrix of $\vec{R}^{(k)}_{m,j}(t,n)$ at the $n$-th time slot in the $t$-th broadcast interval ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
 \begin{align}
     \Gamma^{(k)}_{m,j}(t,n) &\define
@@ -35,6 +58,7 @@ Let $\hat{\vecG{\Theta}}^{(k)}_{m,j}(t)$ denote the probability vector at the fi
 %     \nonumber\\
 %     \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1) &= (\Gamma^{(k)}_{m,j})^{N-\mathcal{D}_{k}(t)} \times \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)).
 % \end{align}
+
 
 %NOTE: transition matrix and vector for ES
 \section{ Proof of Lemma \ref{lemma:w_es} }
