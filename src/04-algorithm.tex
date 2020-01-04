@@ -263,25 +263,4 @@ Finally, we have the following conclusion on the performance of the above propos
 \end{proof}
 
 %----------------------------------------------------------------------------------------%
-\delete{v14}{
-    Moreover, we notice that the transition function in equation (\ref{eqn:sp_0}) could be rewrite in the following form.
-    \begin{align}
-        & \Pr\Brace{ \Stat_{k}(t+1)|\Stat_{k}(t), \Omega_{k}(\Stat_{k}(t)) }
-        \nonumber\\
-        =& \prod_{j\in\jSpace} \Brace{
-            \prod_{k'\in\ccSet_{k}}\prod_{m\in\esSet_{k}} \Pr\big\{
-                \vec{R}^{(k')}_{m,j}(t+1) | \vec{R}^{(k')}_{m,j}(t), \Omega_{k}(\Stat_{k}(t))
-            \big\}
-            \nonumber\\
-            &\times \prod_{m\in\esSet_{k}} \Pr\big\{
-                Q_{m,j}(t+1) | Q_{m,j}(t), \Omega_{k}(\Stat_{k}(t))
-            \big\}
-        },
-    \end{align}
-    where the transition function is decoupled into two parts of state transition on APs and edge servers, respectively.
-
-    However, since the GSI and the global \brlatency~ is not obtainable in the edge computing system, we need to further decouple Problem P1 onto individual APs where only local OSI and \brlatency~is required to update the dispatching policy.
-    Hence, in the following subsection \ref{subsec:ap_alg}, we propose a decentralized algorithm where the APs shall update their policies simultaneously in the form of disjoint clusters.
-    % The performance guarantee of the algorithm is also provided.
-}
 %----------------------------------------------------------------------------------------%
