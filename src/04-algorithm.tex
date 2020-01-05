@@ -74,14 +74,19 @@ Moreover, the explicit expression of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and $
     where $\vecG{\Theta}^{(k, \Baseline)}_{m,j}(t)$ and $\Gamma^{(k)}_{m,j}$ are defined below.
     \begin{itemize}
         % \item $\vecG{\Theta}^{(k, \Baseline)}_{m,j}(t) \in \mathbb{R}^{(\Xi+1) \times 1}$ denotes the probability vector under baseline $\Baseline$
-        \item $\vecG{\Theta}^{(k)}_{m,j}(t) \define \Bracket{ \theta^{(k)}_{m,j,0}(t), \theta^{(k)}_{m,j,1}(t), \dots, \theta^{(k)}_{m,j,\Xi}(t) }$,
+        \item $\vecG{\Theta}^{(k,\Baseline)}_{m,j}(t) \define \Bracket{
+            \theta^{(k,\Baseline)}_{m,j}(0,t),
+            \theta^{(k,\Baseline)}_{m,j}(1,t),
+            \dots,
+            \theta^{(k,\Baseline)}_{m,j}(\Xi,t)
+            }$,
         where 
         \begin{align}
-            \theta^{(k)}_{m,j,\xi}(t) \define 
+            \theta^{(k)}_{m,j}(\xi,t) \define 
             \begin{cases}
                 \lambda_{k,j} I[\omega_{k,j}(t)=m], & \xi=0
                 \\
-                \Pr\{R^{(k)}_{m,j,\xi}(t,0) = 1\}, & \xi=1,\dots,\Xi
+                \Pr\{R^{(k)}_{m,j}(\xi,t,0) = 1\}, & \xi=1,\dots,\Xi
             \end{cases}
         \end{align}
         % \item $\Gamma^{(k)}_{m,j} \define (\hat{\Gamma}^{(k)}_{m,j})^N$ where

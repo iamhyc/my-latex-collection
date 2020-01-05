@@ -2,38 +2,70 @@
 \appendices
 \section{ Proof of Lemma \ref{lemma:w_ap} }
 \label{append_1}
-% To efficiently express the state transition, we further elaborate the distribution probability of the state vector as the corresponding probability vector, and perform the state transition with the transition matrix.
-% Specifically, the definitions of symbols in the remaining parts is given in the Appendix \ref{apped_1} and the calculation of equation (\ref{eqn:partial}) is elaborated below.
-Firstly, we notice that the transition function in equation (\ref{eqn:sp_0}) could be rewrite in the following form.
-    \begin{align}
-        & \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t)) }
-        \nonumber\\
-        =& \prod_{j\in\jSpace} \Brace{
-            \prod_{k\in\apSet} \prod_{m\in\esSet}
-            \Pr\big\{
-                \vec{R}^{(k)}_{m,j}(t+1) | \vec{R}^{(k)}_{m,j}(t), \Policy(\Stat(t))
-            \big\}
-            \nonumber\\
-            &\times \prod_{m\in\esSet} \Pr\big\{
-                Q_{m,j}(t+1) | Q_{m,j}(t), \Policy(\Stat(t))
-            \big\}
-        },
-    \end{align}
-    where the transition function is decoupled into two parts of state transition on APs and edge servers, respectively, under policy $\Policy$.
-
-    However, since the GSI and the global \brlatency~ is not obtainable in the edge computing system, we need to further decouple Problem P1 onto individual APs where only local OSI and \brlatency~is required to update the dispatching policy.
-    Hence, in the following subsection \ref{subsec:ap_alg}, we propose a decentralized algorithm where the APs shall update their policies simultaneously in the form of disjoint clusters.
-    % The performance guarantee of the algorithm is also provided.
-
-Firstly, we derive the expression of cost raised on APs in each time slot.
-At the $n$-th time slot of the $t$-th broadcast interval, let $\hat{\vecG{\Theta}}^{k,\Pi}_{m,j}(t,n)$ denote the probability of job existence under baseline policy $\Baseline(t)$ where
+At the $n$-th time slot of the $t$-th broadcast interval, let $\hat{\vecG{\Theta}}^{(k,\Policy)}_{m,j}(t,n)$ denote the probability of job existence under dispatching policy $\Policy$ where the explicit definition is given as follows.
 \begin{align}
-    \hat{\vecG{\Theta}}^{k,\Pi}_{m,j}(t,n)
+    \hat{\vecG{\Theta}}^{(k,\Policy)}_{m,j}(t,n) \define \Bracket{
+        \hat{\theta}^{(k,\Policy)}_{m,j}(0,t,n),
+        \dots,
+        \hat{\theta}^{(k,\Policy)}_{m,j}(0,t,n)
+    },
+\end{align}
+where
+{\small
+\begin{align}
+    \hat{\theta}^{(k,\Policy)}_{m,j}(\xi,t,n) \define
+    \begin{cases}
+        \lambda_{k,j} I[\omega_{k,j}(t)=m], &\xi=0, n < \mathcal{D}_{k}(t)
+        \\
+        \lambda_{k,j} I[\omega_{k,j}(t+1)=m], &\xi=0, n \geq \mathcal{D}_{k}(t) 
+        \\
+        \Pr\{R^{(k)}_{m,j}(\xi,t,n)=1\}, & \text{otherwise}
+    \end{cases}.
+\end{align}
+}
+The dispatching policy $\Policy$ only affects the first entry of the probability vector, i.e. the arrival probability of one job in the time slot.
+Hence, we denote the time-invariant transition matrix $\hat{\Gamma}^{(k)}_{m,j}$ for the state transition on AP between adjacent time slots which is defined as follows.
+\begin{align}
+    \hat{\Gamma}^{(k)}_{m,j} &\define
+    \begin{bmatrix}
+        1 & \bar{p}^{(k)}_{m,j,0} &                       &        &                           \\
+        & 0                     & \bar{p}^{(k)}_{m,j,1} &        &                           \\
+        &                       & \ddots                & \ddots &                           \\
+        &                       &                       & \ddots & \bar{p}^{(k)}_{m,j,\Xi-1} \\
+        &                       &                       &        & 0                         \\
+    \end{bmatrix},
+\end{align}
+where $\bar{p}^{(k)}_{m,j,\xi}$ denotes the probability of job still stay at the $k$-th AP in the next time slot as $\bar{p}^{(k)}_{m,j,\xi} = 1 - p^{(k)}_{m,j,\xi}$, and
+\begin{align}
+    p^{(k)}_{m,j,\xi} &\define \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\xi\}
+\end{align}
+denotes the probability of job offloading to the $m$-th edge server.
+% And we note that $\theta^{(k)}_{m,j,0}(t,n)$ is purely determined by the arrival process and dispatching policy of the $j$-th type of job on the $k$-th AP, i.e. $\theta^{(k)}_{m,j,0}(t,n) = \lambda_{k,j} I[\omega_{k,j}(t) = m]$.
+
+Hence, let $\vecG{\Theta}^{(\Policy, k)}_{m,j}(t)$ and $\Gamma^{(k)}_{m,j}$ denotes the probability vector and transition matrix for the adjacent broadcast interval, respectively.
+Based on the previous definition in the time slot, the explicit definition is given as follows.
+\begin{align}
+    \vecG{\Theta}^{(\Policy, k)}_{m,j}(t) &\define \hat{\vecG{\Theta}}^{(\Policy, k)}_{m,j}(t,0)
+    \\
+    \vecG{\Theta}^{(k)}_{m,j}(t+1) &= \hat{\vecG{\Theta}}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)) \times (\hat{\Gamma}^{(k)}_{m,j})^{N-\mathcal{D}_{k}(t)},
+    \nonumber\\
+    \hat{\vecG{\Theta}}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)) &= \vecG{\Theta}_{m,j}(t) \times (\hat{\Gamma}^{(k)}_{m,j})^{\mathcal{D}_{k}(t)}.
 \end{align}
 
-and $\hat{\Gamma}^{(k)}_{m,j}$ denotes the time-invariant transition matrix for the
 
-Then, we could express the \fixit{what} under baseline policy $\Baseline$ as follows.
+% is composed of two-phase policy separated by $D_k(t)$, which is expressed as follows.
+% \begin{align}
+%     \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)) &= (\Gamma^{(k)}_{m,j})^{\mathcal{D}_{k}(t)} \times \hat{\vecG{\Theta}}_{m,j}(t),
+%     \nonumber\\
+%     \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1) &= (\Gamma^{(k)}_{m,j})^{N-\mathcal{D}_{k}(t)} \times \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)).
+% \end{align}
+Given that the cost raised on APs is approximated with baseline policy $\Baseline$, the AP (saying the $k$-th AP) would adopt the same dispatching actions as $\Baseline(\Stat(t))$ before and after $\mathcal{D}_{k}(t)$ time slots in the $t$-th broadcast interval.
+Hence, we have
+\begin{align}
+    \vecG{\Theta}^{(k,\Baseline)}_{m,j}(t+1) = \vecG{\Theta}^{(k,\Baseline)}_{m,j}(t) \times (\hat{\Gamma}^{(k)}_{m,j})^{N}.
+\end{align}
+
+Then, we could express the cost raised on AP under baseline policy $\Baseline$ as follows.
 \begin{align}
     &\tilde{W}^{\AP}_{k,m,j}\Paren{\Stat(t+1)} =
     \Inorm{
@@ -43,42 +75,9 @@ Then, we could express the \fixit{what} under baseline policy $\Baseline$ as fol
         \Bracket{
             \mat{I} - \gamma \Gamma^{(k)}_{m,j}
         }^{-1}
-    },
+    }.
     \label{w_ap}
 \end{align}
-where
-
-Let ${\Gamma}^{(k)}_{m,j}(t,n)$ be the transition matrix of $\vec{R}^{(k)}_{m,j}(t,n)$ at the $n$-th time slot in the $t$-th broadcast interval ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
-\begin{align}
-    \Gamma^{(k)}_{m,j}(t,n) &\define
-    \begin{bmatrix}
-        1 & \bar{p}^{(k)}_{m,j,0} &                       &        &                           \\
-        & 0                     & \bar{p}^{(k)}_{m,j,1} &        &                           \\
-        &                       & \ddots                & \ddots &                           \\
-        &                       &                       & \ddots & \bar{p}^{(k)}_{m,j,\Xi-1} \\
-        &                       &                       &        & 0                         \\
-    \end{bmatrix},
-\end{align}
-where $\bar{p}^{(k)}_{m,j,\xi}$ denote the probability of offloading ($\forall \xi=0,\dots,\Xi$)
-\begin{align}
-    p^{(k)}_{m,j,\xi} &\define \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\xi\}
-    \\
-    \bar{p}^{(k)}_{m,j,\xi} &= 1 - p^{(k)}_{m,j,\xi}.
-\end{align}
-And we note that $\theta^{(k)}_{m,j,0}(t,n)$ is purely determined by the arrival process and dispatching policy of the $j$-th type of job on the $k$-th AP, i.e. $\theta^{(k)}_{m,j,0}(t,n) = \lambda_{k,j} I[\omega_{k,j}(t) = m]$, where $I[\cdot]$ is the indicator function.
-
-Let $\hat{\vecG{\Theta}}^{(k)}_{m,j}(t)$ denote the probability vector at the first time slot of the $t$-th broadcast interval and the state transition on AP between adjacent interval, i.e. from $\hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1)$ to $\hat{\vecG{\Theta}}^{(k)}_{m,j}(t)$, is expressed as follows.
-\begin{align}
-    \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)) &= (\Gamma^{(k)}_{m,j})^{\mathcal{D}_{k}(t)} \times \hat{\vecG{\Theta}}_{m,j}(t),
-    \nonumber\\
-    \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1) &= (\Gamma^{(k)}_{m,j})^{N-\mathcal{D}_{k}(t)} \times \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)).
-\end{align}
-% is composed of two-phase policy separated by $D_k(t)$, which is expressed as follows.
-% \begin{align}
-%     \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)) &= (\Gamma^{(k)}_{m,j})^{\mathcal{D}_{k}(t)} \times \hat{\vecG{\Theta}}_{m,j}(t),
-%     \nonumber\\
-%     \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1) &= (\Gamma^{(k)}_{m,j})^{N-\mathcal{D}_{k}(t)} \times \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)).
-% \end{align}
 
 
 %NOTE: transition matrix and vector for ES
@@ -138,3 +137,24 @@ Thus we could obtain the denotation of transition matrix and probability vector 
         \label{eqn_4}
     \end{align}
 \end{definition}
+
+%----------------------------------------------------------------------------------------%
+%----------------------------------------------------------------------------------------%
+\delete{v19}{
+    Firstly, we notice that the transition function in equation (\ref{eqn:sp_0}) could be rewritten in the following form.
+    \begin{align}
+        & \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t)) }
+        \nonumber\\
+        =& \prod_{j\in\jSpace} \Brace{
+            \prod_{k\in\apSet} \prod_{m\in\esSet}
+            \Pr\big\{
+                \vec{R}^{(k)}_{m,j}(t+1) | \vec{R}^{(k)}_{m,j}(t), \Policy(\Stat(t))
+            \big\}
+            \nonumber\\
+            &\times \prod_{m\in\esSet} \Pr\big\{
+                Q_{m,j}(t+1) | Q_{m,j}(t), \Policy(\Stat(t))
+            \big\}
+        },
+    \end{align}
+    where the two production parts denote state transition on APs and edge servers under policy $\Policy$, respectively.
+}
