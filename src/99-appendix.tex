@@ -51,14 +51,8 @@ Based on the previous definition in the time slot, the explicit definition is gi
     \nonumber\\
     \hat{\vecG{\Theta}}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)) &= \vecG{\Theta}_{m,j}(t) \times (\hat{\Gamma}^{(k)}_{m,j})^{\mathcal{D}_{k}(t)}.
 \end{align}
-
-
 % is composed of two-phase policy separated by $D_k(t)$, which is expressed as follows.
-% \begin{align}
-%     \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)) &= (\Gamma^{(k)}_{m,j})^{\mathcal{D}_{k}(t)} \times \hat{\vecG{\Theta}}_{m,j}(t),
-%     \nonumber\\
-%     \hat{\vecG{\Theta}}^{(k)}_{m,j}(t+1) &= (\Gamma^{(k)}_{m,j})^{N-\mathcal{D}_{k}(t)} \times \vecG{\Theta}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)).
-% \end{align}
+
 Given that the cost raised on APs is approximated with baseline policy $\Baseline$, the AP (saying the $k$-th AP) would adopt the same dispatching actions as $\Baseline(\Stat(t))$ before and after $\mathcal{D}_{k}(t)$ time slots in the $t$-th broadcast interval.
 Hence, we have
 \begin{align}
@@ -83,41 +77,32 @@ Then, we could express the cost raised on AP under baseline policy $\Baseline$ a
 %NOTE: transition matrix and vector for ES
 \section{ Proof of Lemma \ref{lemma:w_es} }
 \label{append_2}
-%NOTE: small probability approximation
-% The expression of transition matrix $P_{m,j}$ is more complex.
-% The expression for expected value function is little more complex compared to equation (\ref{w_ap}).
-    % The transition matrix for state transition is affected by the baseline policy and the system states of APs.
-    % However, we notice that under the fixed baseline policy, the arrival process on edge servers would be stationary after the maximum uploading time from the initial interval, and thus the transition matrix is invariant of system states of APs.
-    % Let $\mat{P}_{m,j}(\Baseline_{t})$ be the transition matrix under baseline policy $\Baseline_{t}$ which is invariant of system states of APs 
-The transition happening on edge servers is affect by the arrival process from APs.
-Hence, we first denote the offloading matrix $\bar{\Gamma}^{(k)}_{m,j}$ from each AP to the $m$-th edge server and the offloading number vector $\vecG{\rho}^{(k,+)}_{m,j}({t,n})$ as follows, respectively ($\forall k\in\apSet, m\in\esSet_{m}, j\in\jSpace$).
+The state transition on edge server is composed of both arrival processes of all the APs in the corresponding \emph{potential AP set}, and the departure processes of jobs computation.
+We first denote the offloading matrix $\bar{\Gamma}^{(k)}_{m,j}$ for the type-$j$ job offloaded from the $k$-th AP to the $m$-th edge server, and the offloading number vector $\vecG{\rho}^{(k,+)}_{m,j}({t,n})$ as follows, respectively ($\forall k\in\apSet, m\in\esSet_{k}, j\in\jSpace$).
 \begin{align}
     \bar{\Gamma}^{(k)}_{m,j}(t,n) &\define
     \begin{bmatrix}
         0 & p^{(k)}_{m,j,0} &                 &        &                     \\
-        & 0               & p^{(k)}_{m,j,1} &        &                     \\
-        &                 & \ddots          & \ddots &                     \\
-        &                 &                 & \ddots & p^{(k)}_{m,j,\Xi-1} \\
-        &                 &                 &        & 1                   \\
+        & 0                 & p^{(k)}_{m,j,1} &        &                     \\
+        &                   & \ddots          & \ddots &                     \\
+        &                   &                 & \ddots & p^{(k)}_{m,j,\Xi-1} \\
+        &                   &                 &        & 1                   \\
     \end{bmatrix},
     \\
-    \vecG{\rho}^{(k,+)}_{m,j}({t,n}) &\define \bar{\Gamma}^{(k)}_{m,j} \times \vecG{\theta}^{(k)}_{m,j}({t,n}).
+    \vecG{\rho}^{(k,+)}_{m,j}({t,n}) &\define \hat{\vecG{\Theta}}^{(k, \Policy)}_{m,j}({t,n}) \times \bar{\Gamma}^{(k)}_{m,j}.
 \end{align}
-The combinations of all the offloading number vector for the $m$-th edge server from its \emph{potential AP set} would be unacceptable.
-Thus we rewrite the arrival process on edge server with small probability approximation, i.e. there would be at most one job arriving in one time slot, with the probability as the expected arrival rate of the original distribution.
+However, the computational complexity of combinations of all the offloading number vectors for the $m$-th edge server from its \emph{potential AP set} would be unacceptable.
+Hence, we rewrite the arrival process on edge server with small probability approximation, i.e. there would be at most one job arriving in one time slot, with the probability as the expected arrival rate of the original distribution.
 The explicit definition of the approximate arriving probability $\beta_{m,j}({t,n})$ is given as follows.
+% The expression for expected value function is little more complex compared to equation (\ref{w_ap}).
+% The transition matrix for state transition is affected by the baseline policy and the system states of APs.
+% However, we notice that under the fixed baseline policy, the arrival process on edge servers would be stationary after the maximum uploading time from the initial interval, and thus the transition matrix is invariant of system states of APs.
+% Let $\mat{P}_{m,j}(\Baseline_{t})$ be the transition matrix under baseline policy $\Baseline_{t}$ which is invariant of system states of APs
 \begin{align}
-    {\beta}_{m,j}({t,n}) &\define \sum_{k\in\apSet} \sum_{\xi=0,\dots,\Xi-1} \mathbb{E}[\vecG{\rho}^{(k,+)}_{m,j,\xi}({t,n})]
+    \hat{\beta}_{m,j}({t,n}) &\define \sum_{k\in\apSet} \sum_{\xi=0,\dots,\Xi-1} \mathbb{E}[\vecG{\rho}^{(k,+)}_{m,j,\xi}({t,n})]
     \label{eqn_0}
 \end{align}
-\begin{lemma}[Small Probability Approximation]
-    The probability distribution of $\sum_{k\in\apSet} \vecG{\rho}^{(k,+)}_{m,j}({t,n})$ could be approximated with a Bernoulli arrival process who is with the expected arrival rate denoted as ${\beta}_{m,j}({t,n})$.
-\end{lemma}
-\begin{proof}
-    % We notice that the job arrival distribution ${\beta}_{m,j}(t)$ is given by $\mathcal{R}(t)$, and the departure rate in one slot is deterministic as $1/N$.
-    % Thus the expectation of ${\beta}$ would be always far more smaller than $1$ as composed of all $K$ AP nodes.
-    % We take approximation on ${\beta}$ as Bernoulli distribution in each time slot.
-\end{proof}
+The probability distribution of $\sum_{k\in\apSet} \vecG{\rho}^{(k,+)}_{m,j}({t,n})$ could be approximated with a Bernoulli arrival process who is with the expected arrival rate denoted as ${\beta}_{m,j}({t,n})$.
 
 %NOTE: transition matrix and vector for Edge Server
 Thus we could obtain the denotation of transition matrix and probability vector for edge servers.
@@ -138,6 +123,10 @@ Thus we could obtain the denotation of transition matrix and probability vector 
     \end{align}
 \end{definition}
 
+%NOTE: transition matrix and vector for ES
+\section{ Proof of Lemma \ref{lemma:perform} }
+\label{append_3}
+
 %----------------------------------------------------------------------------------------%
 %----------------------------------------------------------------------------------------%
 \delete{v19}{
@@ -157,4 +146,13 @@ Thus we could obtain the denotation of transition matrix and probability vector 
         },
     \end{align}
     where the two production parts denote state transition on APs and edge servers under policy $\Policy$, respectively.
+
+    \begin{lemma}[Small Probability Approximation]
+        The probability distribution of $\sum_{k\in\apSet} \vecG{\rho}^{(k,+)}_{m,j}({t,n})$ could be approximated with a Bernoulli arrival process who is with the expected arrival rate denoted as ${\beta}_{m,j}({t,n})$.
+    \end{lemma}
+    \begin{proof}
+        We notice that the job arrival distribution ${\beta}_{m,j}(t)$ is given by $\mathcal{R}(t)$, and the departure rate in one slot is deterministic as $1/N$.
+        Thus the expectation of ${\beta}$ would be always far more smaller than $1$ as composed of all $K$ AP nodes.
+        We take approximation on ${\beta}$ as Bernoulli distribution in each time slot.
+    \end{proof}
 }
