@@ -50,6 +50,7 @@ Hence, we define the cost function per broadcast interval as follows.
 
 Since the job dispatching in one broadcast interval will affect the GSI of the following broadcast intervals, we should consider the joint minimization of the costs of all the broadcast intervals.
 Specifically, we consider the following discounted summation of the costs of all the broadcast intervals as the system objective.
+{\small
 \begin{align}
     &\bar{G}(\Stat, \Policy) \define
     \lim_{T \to \infty} \mathbb{E}^{\Policy}_{\set{\Stat(t)|\forall t}}
@@ -57,6 +58,7 @@ Specifically, we consider the following discounted summation of the costs of all
         \sum_{t=1}^{T} \gamma^{t-1} g\Paren{\Stat(t)} | \Stat(1)
     },
 \end{align}
+}
 where $\mathbb{E}^{\Policy}_{\set{\Stat(t)|\forall t}}[\cdot]$ denotes the expectation with respect to all possible system state in the future given scheduling policy $\Policy$, and $\gamma \in (0,1)$ is the discount factor.
 Hence, the optimization of job dispatching policy can be formulated as the following minimization problem.
 \begin{align}

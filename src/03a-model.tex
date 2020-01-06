@@ -36,7 +36,7 @@ Each AP immediately dispatches each type of received jobs to one edge server.
 Different types of jobs may have different distributions of the input data size.
 Moreover, due to the random traffic in the network, the job uploading from one AP to one edge server consumes a random number of time slots.
 It is assumed that the distributions of uploading time are independent for each job.
-Specifically, let $\mathbb{U}_{k,m,j}(\Xi)$ be the uploading latency distribution of the type-$j$ jobs from the $k$-th AP to the $m$-th edge server with support $\set{1, \dots, \Xi}$ ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$).
+Specifically, let $\mathbb{U}_{k,m,j}(\Xi)$ be the uploading latency distribution of the type-$j$ jobs from the $k$-th AP to the $m$-th edge server with support $\set{1, \dots, \Xi}$ ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$), whose expectation is denoted as $u_{k,m,j}$.
 
 %NOTE: [processing process]
 There are $J$ parallel virtual machines (VMs) running on each edge server for processing the $J$ job types, respectively.
@@ -150,10 +150,8 @@ Specifically, the \emph{conflict AP sets} and the \emph{observed state informati
 
 The $k$-th AP is able to collect its OSI at the $\mathcal{D}_{k}(t)$-th time slots of the $t$-th broadcast interval, where the broadcast latency $\mathcal{D}_{k}(t)$ is a random variable.
 It is assumed that $\mathcal{D}_{k}(t)$ follows identical and independent distribution in different broadcast interval.
-\accept{
-    We refer to $\mathcal{D}_{k}(t)$ as the \brlatency~of the $k$-th AP in the $t$-th broadcast interval.
-    An example is given below to demonstrate how the \brlatency~affects the reception of OSI and the update of the dispatching strategy.
-}
+We refer to $\mathcal{D}_{k}(t)$ as the \brlatency~of the $k$-th AP in the $t$-th broadcast interval.
+An example is given below to demonstrate how the \brlatency~affects the reception of OSI and the update of the dispatching strategy.
 
 \begin{example}
     An example is illustrated in Fig.\ref{fig:brd-timeline}, where the $2$-nd and $1$-st server are in the \emph{conflict AP set} and \emph{candidate server set} of the $1$-st AP, respectively.
