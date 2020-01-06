@@ -59,13 +59,11 @@ Hence, we have
     \vecG{\Theta}^{(k,\Baseline)}_{m,j}(t+1) = \vecG{\Theta}^{(k,\Baseline)}_{m,j}(t) \times (\hat{\Gamma}^{(k)}_{m,j})^{t_B}.
 \end{align}
 
-Then, we could express the cost raised on AP under baseline policy $\Baseline$ as follows.
+Then, we take the denotation $\Gamma^{(m)}_{m,j}$ in equation (\ref{eqn:gamma}), and the expression of the cost raised on AP under baseline policy $\Baseline$ is given as follows.
 \begin{align}
     &\tilde{W}^{\AP}_{k,m,j}\Paren{\Stat(t+1)} =
     \Inorm{
-        \Bracket{
-            \vecG{\Theta}^{(k, \Baseline)}_{m,j}(t+1)
-        }'
+        \vecG{\Theta}^{(k, \Baseline)}_{m,j}(t+1) \times
         \Bracket{
             \mat{I} - \gamma \Gamma^{(k)}_{m,j}
         }^{-1}

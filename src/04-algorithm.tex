@@ -28,6 +28,7 @@ Specifically, the baseline policy is elaborated below.
 \end{policy}
 
 Let $W_{\Baseline}(\cdot)$ be the value function of the baseline policy, and we shall approximate the value function of the optimal policy $V(\cdot)$ via $\Baseline$, i.e.
+{\small
 \begin{align}
     V\Paren{\Stat(t+1)} &\approx W_{\Baseline}\Paren{\Stat(t+1)}
     \nonumber\\
@@ -37,6 +38,7 @@ Let $W_{\Baseline}(\cdot)$ be the value function of the baseline policy, and we 
         &~~~~~~~~~~~~~~~~~~~~~~+\tilde{W}^{\ES}_{m,j}(\Stat(t+1))
     },
 \end{align}
+}
 where $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ denotes the cost raised by the type-$j$ job which is transmitting from the $k$-th AP to the $m$-th edge server with the baseline policy $\Baseline$ and initial system state $\Stat(t+1)$, and $\tilde{W}^{\ES}_{m,j}(\Stat(t+1))$ denotes the cost raised by the type-$j$ job on the $m$-th server.
 Their definitions are given below.
 {\small
@@ -62,9 +64,7 @@ Moreover, the explicit expression of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and $
     \begin{align}
         &\tilde{W}^{\AP}_{k,m,j}\Paren{\Stat(t+1)} =
         \Inorm{
-            \Bracket{
-                \vecG{\Theta}^{(k, \Baseline)}_{m,j}(t+1)
-            }'
+            \vecG{\Theta}^{(k, \Baseline)}_{m,j}(t+1) \times
             \Bracket{
                 \mat{I} - \gamma \Gamma^{(k)}_{m,j}
             }^{-1}
@@ -74,19 +74,19 @@ Moreover, the explicit expression of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and $
     where $\vecG{\Theta}^{(k, \Baseline)}_{m,j}(t)$ and $\Gamma^{(k)}_{m,j}$ are defined below.
     \begin{itemize}
         % \item $\vecG{\Theta}^{(k, \Baseline)}_{m,j}(t) \in \mathbb{R}^{(\Xi+1) \times 1}$ denotes the probability vector under baseline $\Baseline$
-        \item $\vecG{\Theta}^{(k,\Baseline)}_{m,j}(t) \define \Bracket{
+        \item {$\vecG{\Theta}^{(k,\Baseline)}_{m,j}(t) \define \Bracket{
             \theta^{(k,\Baseline)}_{m,j}(0,t),
             \theta^{(k,\Baseline)}_{m,j}(1,t),
             \dots,
             \theta^{(k,\Baseline)}_{m,j}(\Xi,t)
-            }$,
+            }$},
         where 
         \begin{align}
             \theta^{(k)}_{m,j}(\xi,t) \define 
             \begin{cases}
                 \lambda_{k,j} I[\omega_{k,j}(t)=m], & \xi=0
                 \\
-                \Pr\{R^{(k)}_{m,j}(\xi,t,0) = 1\}, & \xi=1,\dots,\Xi
+                \Pr\{R^{(k)}_{m,j}(\xi,t,0) = 1\}, & \text{otherwise}
             \end{cases}
         \end{align}
         % \item $\Gamma^{(k)}_{m,j} \define (\hat{\Gamma}^{(k)}_{m,j})^{t_B}$ where
@@ -100,6 +100,7 @@ Moreover, the explicit expression of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and $
                   &                       &                       & \ddots & \bar{p}^{(k)}_{m,j,\Xi-1} \\
                   &                       &                       &        & 0                         \\
             \end{bmatrix}^{t_B}
+            \label{eqn:gamma}
         \end{align}
         and $\bar{p}^{(k)}_{m,j,\xi} \define 1 - \Pr\{U^{(k)}_{m,j} < \xi+1 | U^{(k)}_{m,j}>\xi\}$.
     \end{itemize}
@@ -155,7 +156,7 @@ Moreover, the explicit expression of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and $
 
 \subsection{The Decentralized Algorithm}
 \label{subsec:ap_alg}
-Although the optimal value function has been approximated via the baseline policy in the previous part, it is still infeasible for all the APs to solve the RHS of the Bellmans equations in a distributive manner with OSI only.
+Although the optimal value function has been approximated via the baseline policy in the previous part, it is still infeasible for all the APs to solve the RHS of the Bellman's equations in a distributive manner with OSI only.
 This is because the evaluation of equation (\ref{w_ap}) and (\ref{w_es}) requires the knowledge of GSI at each AP.
 Instead, it is feasible for part of APs to update their dispatching actions distributively and achieve a better performance compared with baseline policy.
 Hence, we first define the following sequence of AP subsets, where each subset are selected to update dispatching actions periodically.
@@ -215,11 +216,10 @@ Moreover, we have the following conclusion on the decomposition of P2.
 \end{proof}
 
 The optimization of $\tilde{\mathcal{A}}_{y}(t)$ in P3 could be applied by linear search over the solution space of size $|\esSet_{y}|$.
-The computational complexity of solving P3 with linear search is $O(J(KM+M))$ for evaluating equation (\ref{eqn:partial}).
+The computational complexity of solving P3 with linear search is $O(J(KM+M))$ for evaluating the objective function in equation (\ref{eqn:partial}).
 
-As a result, the overall algorithm of job dispatching is elaborated as follows.
-% [\IF, \ENDIF], [\FOR, \TO, \ENDFOR], [\WHILE, \ENDWHILE], \STATE, \AND, \TRUE
-\begin{algorithm}[!]
+As a result, the overall algorithm of job dispatching is elaborated in Algorithm \ref{alg_1}.
+\begin{algorithm}[h]
     \caption{Online Alternative Actions Update Algorithm}\label{alg_1}
     \DontPrintSemicolon % Some LaTeX compilers require you to use \dontprintsemicolon instead
     % \KwIn{$\Stat(t), \Delay(t)$}
@@ -229,8 +229,8 @@ As a result, the overall algorithm of job dispatching is elaborated as follows.
     \For{$t=0,1,2,\dots$}{
         $n \gets t \pmod{N}$\;
         \For{$y \in \mathcal{Y}_{n}$}{
-            Observe $\Stat_{y}(t)$ after $\mathcal{D}_{y}(t)$\;
-            $\tilde{\mathcal{A}}_{y}(t+1) \gets$ solving Problem P3 with $\mathcal{D}_{y}(t), \Stat_{y}(t)$\;
+            Observe $\Stat_{y}(t)$ after $\mathcal{D}_{y}(t)$.\;
+            $\tilde{\mathcal{A}}_{y}(t+1) \gets$ P3 $\mathcal{D}_{y}(t), \Stat_{y}(t)$\;
         }
         % \Return $\tilde{\mathcal{A}}(t+1)$\;
     }
