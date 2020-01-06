@@ -108,22 +108,23 @@ Let $\hat{\vecG{\nu}}_{m,j}(t,n)$ denote the probability vector of $Q_{m,j}(t,n)
 The transition matrix $\hat{\mat{P}}_{m,j}(\hat{\beta}^{\Policy}_{m,j}(t,n))$ for adjacent time slots is determined by $\hat{\beta}^{\Policy}_{m,j}(t,n)$ under policy $\Policy$, whose entries are elaborated as follows.
 {\small
 \begin{align}
-    \Bracket{ \hat{\mat{P}}_{m,j}(\hat{\beta}^{\Policy}_{m,j}(t,n)) }_{a,b} =
-    \begin{cases}
+    &\Bracket{ \hat{\mat{P}}_{m,j}(\hat{\beta}^{\Policy}_{m,j}(t,n)) }_{a,b} =
+    \nonumber\\
+    &\begin{cases}
         (1/c_{m,j})(1-\hat{\beta}^{\Policy}_{m,j}(t,n)), & j=i-1 \\
         (1-1/c_{m,j})\hat{\beta}^{\Policy}_{m,j}(t,n), & j=i+1 \\
-        (1/c_{m,j})\hat{\beta}^{\Policy}_{m,j}(t,n), & i=j \\
+        (1/c_{m,j})\hat{\beta}^{\Policy}_{m,j}(t,n) + (1-1/c_{m,j})(1-\hat{\beta}^{\Policy}_{m,j}(t,n)), & i=j \\
         0, &\text{otherwise}
     \end{cases}.
 \end{align}
 }
 
 Hence, let $\vecG{\nu}_{m,j}(t)$ and $\mat{P}^{\Policy}_{m,j}(t)$ denote the probability vector and transition matrix for adjacent broadcast intervals, respectively.
-Based on the previous definitions in the time slot, the explicit definition is give as
+Based on the previous definitions in the time slot, the explicit definition is given as
 \begin{align}
     \vecG{\nu}_{m,j}(t) &\define \hat{\vecG{\nu}}_{m,j}(t,0)
     \\
-    \mat{P}^{\Policy}_{m,j}(t) &\define \prod_{n=0,\dots,t_B-1} \hat{\mat{P}}_{m,j}(\hat{\beta}_{m,j}(t,n)),
+    \mat{P}^{\Policy}_{m,j}(t) &\define \prod_{n=0,\dots,t_B-1} \hat{\mat{P}}_{m,j}(\hat{\beta}^{\Policy}_{m,j}(t,n)),
     \\
     \vecG{\nu}_{m,j}(t+1) &= \vecG{\nu}_{m,j}(t) \times \mat{P}^{\Policy}_{m,j}(t)
 \end{align}
@@ -131,15 +132,19 @@ Based on the previous definitions in the time slot, the explicit definition is g
 Given that the cost raised on edge servers is approximated with baseline policy $\Baseline$, the transition matrix for state transition is affected by the baseline policy and the system states of APs which could not be decoupled.
 However, we notice that under the fixed baseline policy, the arrival process on edge servers would be stationary after the \emph{maximum uploading time} from the initial interval, and thus the transition matrix is invariant of system states of APs.
 
-Let $\mat{P}^{\Baseline}_{m,j}(t)$ be the transition matrix for the stationary arrival process under baseline policy $\Baseline$, where $\hat{\beta}_{m,j}(t,n) = \beta_{m,j}$ and
+Let $\hat{\mat{P}}_{m,j}(\hat{\beta}^{\Baseline}_{m,j}(t,n))$ be the transition matrix for the stationary arrival process under baseline policy $\Baseline$ and
+{\small
 \begin{align}
-    \beta_{m,j} &\define \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j} \times \Pr\{ \xi<U_{k,m,j}<\xi+1 \}
+    \beta_{m,j}(t,n) &\define \sum_{k\in\apSet} \lambda_{k,j}I[\omega_{k,j}(t)=m] \times \Pr\{ \xi<U_{k,m,j}\le\xi+1 \}
     \nonumber\\
-    &= \sum_{k\in\apSet} \tilde{\lambda}^{(k)}_{m,j},
+    &= \sum_{k\in\apSet} \lambda_{k,j}I[\omega_{k,j}(t)=m] (\forall n),
 \end{align}
-where $\tilde{\lambda}^{(k)}_{m,j} \define \lambda_{k,j}I[\omega_{k,j}(t)=m]$ and $U_{k,m,j}$ denotes the random variable of job uploading time.
+}
+where $U_{k,m,j}$ denotes the random variable of job uploading time.
 
-Then, we could express the cost raised on edge server under baseline policy $\Baseline$ as follows.
+Let
+$\mat{P}^{\Baseline}_{m,j}(t) \define \big( \hat{\mat{P}}_{m,j}(\hat{\beta}^{\Baseline}_{m,j}(t,n)) \big)^{t_B}$
+denote the transition matrix under baseline policy $\Baseline$ between adjacent broadcast intervals, we could express the cost raised on edge server under baseline policy $\Baseline$ as follows.
 {\small
 \begin{align}
     &\tilde{W}^{\ES}_{m,j}\Paren{\Stat(t+1)}
@@ -148,11 +153,11 @@ Then, we could express the cost raised on edge server under baseline policy $\Ba
     &~~~~~~~~~~~~+ \gamma^{\frac{\Xi}{T}} 
     \vecG{\nu}({t+\frac{\Xi}{T}+1})
     \Paren{
-        \mat{I} - \gamma \mat{P}_{m,j}(\beta_{m,j}(t))
+        \mat{I} - \gamma \Paren{\mat{P}_{m,j}(\beta_{m,j}(t))}^{t_B}
     }^{-1} \vec{g}',
 \end{align}   
 }
-where $\vec{g}$ is the cost vector.
+where $\vec{g}$ is the cost vector taking the definition in equation (\ref{eqn:g_vec}).
 
 %NOTE: transition matrix and vector for ES
 \section{ Proof of Lemma \ref{lemma:perform} }

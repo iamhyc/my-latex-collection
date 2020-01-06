@@ -122,7 +122,7 @@ Moreover, the explicit expression of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and $
         &~~~~~~~~~~~~+ \gamma^{\frac{\Xi}{T}} 
         \vecG{\nu}({t+\frac{\Xi}{T}+1})
         \Paren{
-            \mat{I} - \gamma \mat{P}_{m,j}(\beta_{m,j}(t))
+            \mat{I} - \gamma \Paren{\mat{P}_{m,j}(\beta_{m,j}(t))}^{t_B}
         }^{-1} \vec{g}',
         \label{w_es}
     \end{align}   
@@ -141,13 +141,10 @@ Moreover, the explicit expression of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and $
                 \\
                 L_{max}+\beta, & \text{otherwise}
             \end{cases}.
+            \label{eqn:g_vec}
         \end{align}
 
-        \item $\mat{P}_{m,j}(\beta_{m,j}(t)) \in \mathbb{R}^{(L_{max}+1) \times (L_{max}+1)}$ denotes the transition matrix given the average job arrival rate $\beta_{m,j}(t)$ under baseline policy $\Baseline(\Stat(t))$ where
-        \begin{align}
-            \beta_{m,j}(t) = \sum_{k\in\apSet} \lambda_{k,j} I[\omega_{k,j}(t)=m].
-        \end{align}
-        The entries of the transition matrix $\mat{P}_{m,j}$ are provided in Appendix \ref{append_1}.
+        \item $\mat{P}^{\Policy}_{m,j}(t) \in \mathbb{R}^{(L_{max}+1) \times (L_{max}+1)}$ denotes the transition matrix under baseline policy $\Baseline(\Stat(t))$ whose are described in Appendix \ref{append_1}.
     \end{itemize}   
 \end{lemma}
 \begin{proof}
