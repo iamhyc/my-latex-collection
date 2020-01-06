@@ -47,7 +47,7 @@ Based on the previous definition in the time slot, the explicit definitions is g
 \begin{align}
     \vecG{\Theta}^{(\Policy, k)}_{m,j}(t) &\define \hat{\vecG{\Theta}}^{(\Policy, k)}_{m,j}(t,0)
     \\
-    \vecG{\Theta}^{(k)}_{m,j}(t+1) &= \hat{\vecG{\Theta}}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)) \times (\hat{\Gamma}^{(k)}_{m,j})^{N-\mathcal{D}_{k}(t)},
+    \vecG{\Theta}^{(k)}_{m,j}(t+1) &= \hat{\vecG{\Theta}}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)) \times (\hat{\Gamma}^{(k)}_{m,j})^{t_B-\mathcal{D}_{k}(t)},
     \nonumber\\
     \hat{\vecG{\Theta}}^{(k)}_{m,j}(t, \mathcal{D}_{k}(t)) &= \vecG{\Theta}_{m,j}(t) \times (\hat{\Gamma}^{(k)}_{m,j})^{\mathcal{D}_{k}(t)}.
 \end{align}
@@ -56,7 +56,7 @@ Based on the previous definition in the time slot, the explicit definitions is g
 Given that the cost raised on APs is approximated with baseline policy $\Baseline$, the AP (saying the $k$-th AP) would adopt the same dispatching actions as $\Baseline(\Stat(t))$ before and after $\mathcal{D}_{k}(t)$ time slots in the $t$-th broadcast interval.
 Hence, we have
 \begin{align}
-    \vecG{\Theta}^{(k,\Baseline)}_{m,j}(t+1) = \vecG{\Theta}^{(k,\Baseline)}_{m,j}(t) \times (\hat{\Gamma}^{(k)}_{m,j})^{N}.
+    \vecG{\Theta}^{(k,\Baseline)}_{m,j}(t+1) = \vecG{\Theta}^{(k,\Baseline)}_{m,j}(t) \times (\hat{\Gamma}^{(k)}_{m,j})^{t_B}.
 \end{align}
 
 Then, we could express the cost raised on AP under baseline policy $\Baseline$ as follows.
@@ -120,7 +120,7 @@ Based on the previous definitions in the time slot, the explicit definition is g
 \begin{align}
     \vecG{\nu}_{m,j}(t) &\define \hat{\vecG{\nu}}_{m,j}(t,0)
     \\
-    \mat{P}^{\Policy}_{m,j}(t) &\define \prod_{n=0,\dots,N-1} \hat{\mat{P}}_{m,j}(\hat{\beta}_{m,j}(t,n)),
+    \mat{P}^{\Policy}_{m,j}(t) &\define \prod_{n=0,\dots,t_B-1} \hat{\mat{P}}_{m,j}(\hat{\beta}_{m,j}(t,n)),
     \\
     \vecG{\nu}_{m,j}(t+1) &= \vecG{\nu}_{m,j}(t) \times \mat{P}^{\Policy}_{m,j}(t)
 \end{align}
