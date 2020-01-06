@@ -86,18 +86,18 @@ We first denote the offloading matrix $\bar{\Gamma}^{(k)}_{m,j}$ for the type-$j
         &                   &                 &        & 1                   \\
     \end{bmatrix},
     \\
-    \vecG{\rho}^{(k)}_{m,j}({t,n}) &\define \hat{\vecG{\Theta}}^{(k, \Policy)}_{m,j}({t,n}) \times \bar{\Gamma}^{(k)}_{m,j}.
+    \vecG{\rho}^{(k, \Policy)}_{m,j}({t,n}) &\define \hat{\vecG{\Theta}}^{(k, \Policy)}_{m,j}({t,n}) \times \bar{\Gamma}^{(k)}_{m,j}.
 \end{align}
 However, the computational complexity of combinations of all the offloading probability vectors for the $m$-th edge server from its \emph{potential AP set} is unacceptable.
 To alleviate the complexity, we rewrite the combinatorial arrival process on edge server as an equivalent Bernoulli process with \emph{small probability approximation}, i.e. there would be at most one job arriving in one time slot with the probability as the expected arrival rate of the original combinatorial distribution.
-Specifically, the probability distribution of $\sum_{k\in\apSet} \vecG{\rho}^{(k)}_{m,j}({t,n})$ is approximated as a Bernoulli distribution with the expected arrival rate denoted as $\hat{\beta}_{m,j}({t,n})$ whose definition is given as follows.
+Specifically, the probability distribution of $\sum_{k\in\apSet} \vecG{\rho}^{(k, \Policy)}_{m,j}({t,n})$ is approximated as a Bernoulli distribution with the expected arrival rate denoted as $\hat{\beta}^{\Policy}_{m,j}({t,n})$ whose definition is given as
 \begin{align}
-    \hat{\beta}_{m,j}({t,n}) &\define \sum_{k\in\apSet} \sum_{\xi=0,\dots,\Xi-1} \mathbb{E}[\vecG{\rho}^{(k)}_{m,j,\xi}({t,n})]
+    \hat{\beta}^{\Policy}_{m,j}({t,n}) &\define \sum_{k\in\apSet} \sum_{\xi=0,\dots,\Xi-1} \mathbb{E}[\vecG{\rho}^{(k, \Policy)}_{m,j,\xi}({t,n})].
     \label{eqn_0}
 \end{align}
 
 %NOTE: transition matrix and vector for Edge Server
-Let $\hat{\vecG{\nu}}_{m,j}(t,n)$ denote the probability vector of $Q_{m,j}(t,n)$ at the $n$-th time slot in the $t$-th broadcast interval ($\forall m\in\esSet, j\in\jSpace$)
+Let $\hat{\vecG{\nu}}_{m,j}(t,n)$ denote the probability vector of $Q_{m,j}(t,n)$ at the $n$-th time slot of the $t$-th broadcast interval ($\forall m\in\esSet, j\in\jSpace$)
 {\small
 \begin{align}
     \vecG{\nu}_{m,j}(t,n) \define \Bracket{
@@ -105,13 +105,18 @@ Let $\hat{\vecG{\nu}}_{m,j}(t,n)$ denote the probability vector of $Q_{m,j}(t,n)
     }.
 \end{align}
 }
-The transition matrix $\hat{\mat{P}}_{m,j}(\hat{\beta}_{m,j}(t,n))$ for adjacent time slots is determined by $\hat{\beta}_{m,j}(t,n)$ under policy $\Policy$, whose entries are elaborated as follows.
-\begin{itemize}
-    \item When $i=0,j=0$,
-    \item When $i=0, j\neq0$,
-    \item When $i\neq 0, j=0$,
-    \item When $i\neq 0, j\neq 0$,
-\end{itemize}
+The transition matrix $\hat{\mat{P}}_{m,j}(\hat{\beta}^{\Policy}_{m,j}(t,n))$ for adjacent time slots is determined by $\hat{\beta}^{\Policy}_{m,j}(t,n)$ under policy $\Policy$, whose entries are elaborated as follows.
+{\small
+\begin{align}
+    \Bracket{ \hat{\mat{P}}_{m,j}(\hat{\beta}^{\Policy}_{m,j}(t,n)) }_{a,b} =
+    \begin{cases}
+        (1/c_{m,j})(1-\hat{\beta}^{\Policy}_{m,j}(t,n)), & j=i-1 \\
+        (1-1/c_{m,j})\hat{\beta}^{\Policy}_{m,j}(t,n), & j=i+1 \\
+        (1/c_{m,j})\hat{\beta}^{\Policy}_{m,j}(t,n), & i=j \\
+        0, &\text{otherwise}
+    \end{cases}.
+\end{align}
+}
 
 Hence, let $\vecG{\nu}_{m,j}(t)$ and $\mat{P}^{\Policy}_{m,j}(t)$ denote the probability vector and transition matrix for adjacent broadcast intervals, respectively.
 Based on the previous definitions in the time slot, the explicit definition is give as
