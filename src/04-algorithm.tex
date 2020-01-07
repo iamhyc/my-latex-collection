@@ -236,31 +236,30 @@ As a result, the overall algorithm of job dispatching is elaborated in Algorithm
 % At the $1$-st broadcast time slot when $t=0$, the APs in set $\mathcal{Y}_{1}$ and the edge servers in the corresponding \emph{candidate server set}s of APs in $\mathcal{Y}_{1}$, should broadcast their LSI (including the heuristic actions)
 
 Finally, we have the following conclusion on the performance of the above proposed algorithm.
-\fixit{
-    \begin{lemma}[Performance Guarantee]
-        \label{lemma:perform}
-        % The optimized policy solved as $\Baseline(t)$ for next stage, is better than $\Baseline(t-1), \dots, \Baseline(1)$ when considering the \emph{approximated value function} defined above.
-        Let $W_{\tilde{\Policy}}(\cdot)$ be the value function of the policy $\tilde{\Policy}$ where
-        $\tilde{\Policy}(\Stat(t)) \define \tilde{\mathcal{A}}(t) \cup \hat{\mathcal{A}}(t)$,
-        \begin{align}
-            W_{\tilde{\Policy}}(\Stat) \define
-            \sum_{t=1}^{\infty} \gamma^{t-1} \mathbb{E}^{\tilde{\Policy}} \Bracket{
-                g\Paren{\Stat(t), \tilde{\Policy}(\Stat(t))} | \Stat(1)=\Stat
-            },
-        \end{align}
-        % The performance of the baseline policies is upper bounded by the optimal solution $\Policy^*$ when considering the original Bellman's equations.
-        we have
-        \begin{align}
-            V_{\Policy^*}\Paren{\Stat(t)}
-            \leq W_{\tilde{\Policy}}\Paren{\Stat(t)}
-            \leq W_{\Baseline}\Paren{\Stat(t)},
-            \forall \Stat(t).
-        \end{align}
-    \end{lemma}
-    \begin{proof}
-        Please refer to Appendix \ref{append_3}
-    \end{proof}
-}
+
+\begin{lemma}[Performance Guarantee]
+    \label{lemma:perform}
+    % The optimized policy solved as $\Baseline(t)$ for next stage, is better than $\Baseline(t-1), \dots, \Baseline(1)$ when considering the \emph{approximated value function} defined above.
+    Let $W_{\tilde{\Policy}}(\cdot)$ be the value function of the policy $\tilde{\Policy}$ where
+    $\tilde{\Policy}(\Stat(t)) \define \tilde{\mathcal{A}}(t) \cup \hat{\mathcal{A}}(t)$,
+    \begin{align}
+        W_{\tilde{\Policy}}(\Stat) \define
+        \sum_{t=1}^{\infty} \gamma^{t-1} \mathbb{E}^{\tilde{\Policy}} \Bracket{
+            g\Paren{\Stat(t), \tilde{\Policy}(\Stat(t))} | \Stat(1)=\Stat
+        },
+    \end{align}
+    % The performance of the baseline policies is upper bounded by the optimal solution $\Policy^*$ when considering the original Bellman's equations.
+    we have
+    \begin{align}
+        V_{\Policy^*}\Paren{\Stat(t)}
+        \leq W_{\tilde{\Policy}}\Paren{\Stat(t)}
+        \leq W_{\Baseline}\Paren{\Stat(t)},
+        \forall \Stat(t).
+    \end{align}
+\end{lemma}
+\begin{proof}
+    Please refer to Appendix \ref{append_3}
+\end{proof}
 
 %----------------------------------------------------------------------------------------%
 %----------------------------------------------------------------------------------------%
