@@ -117,13 +117,13 @@ Moreover, the explicit expression of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and $
     {\small
     \begin{align}
         &\tilde{W}^{\ES}_{m,j}\Paren{\Stat(t+1)}
-        = \sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}^{\Baseline}[ Q_{m,j}({t+i+1}) ]
-        \nonumber\\
-        &~~~~~~~~~~~~+ \gamma^{\frac{\Xi}{T}} 
-        \vecG{\nu}({t+\frac{\Xi}{T}+1})
-        \Paren{
-            \mat{I} - \gamma \Paren{\mat{P}_{m,j}(\beta_{m,j}(t))}^{t_B}
-        }^{-1} \vec{g}',
+    = \sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}^{\Baseline}[ Q_{m,j}({t+i+1}) ]
+    \nonumber\\
+    &~~~~~~~~~~~~+ \gamma^{\frac{\Xi}{T}} 
+    \vecG{\nu}({t+\frac{\Xi}{T}+1})
+    \Paren{
+        \mat{I} - \gamma \mat{P}^{\Baseline}_{m,j}(t)
+    }^{-1} \vec{g}',
         \label{w_es}
     \end{align}   
     }
@@ -144,7 +144,7 @@ Moreover, the explicit expression of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and $
             \label{eqn:g_vec}
         \end{align}
 
-        \item $\mat{P}^{\Policy}_{m,j}(t) \in \mathbb{R}^{(L_{max}+1) \times (L_{max}+1)}$ denotes the transition matrix under baseline policy $\Baseline(\Stat(t))$ whose are described in Appendix \ref{append_1}.
+        \item $\mat{P}^{\Baseline}_{m,j}(t) \in \mathbb{R}^{(L_{max}+1) \times (L_{max}+1)}$ denotes the transition matrix under baseline policy $\Baseline$ whose entries are described in Appendix \ref{append_2}.
     \end{itemize}   
 \end{lemma}
 \begin{proof}
