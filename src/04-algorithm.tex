@@ -239,20 +239,23 @@ Finally, we have the following conclusion on the performance of the above propos
 
 \begin{lemma}[Performance Guarantee]
     \label{lemma:perform}
-    % The optimized policy solved as $\Baseline(t)$ for next stage, is better than $\Baseline(t-1), \dots, \Baseline(1)$ when considering the \emph{approximated value function} defined above.
-    Let $W_{\tilde{\Policy}}(\cdot)$ be the value function of the policy $\tilde{\Policy}$ where
-    $\tilde{\Policy}(\Stat(t)) \define \tilde{\mathcal{A}}(t) \cup \hat{\mathcal{A}}(t)$,
+    Based on the proposed actions update algorithm, in the $t$-th broadcast interval, we denote the joint dispatching actions as
+    \begin{align}
+        \vecG{\pi}^{(t)}(\Stat(t)) = \tilde{\mathcal{A}}(t) \cup \hat{\mathcal{A}}(t),
+    \end{align}
+    where $\vecG{\pi}^{(t)}$ is the stationary policy obtained by solving problem P3 ($\forall \Stat$).
+    Let $W_{\vecG{\pi}^{(t)}}(\cdot)$ be the value function of the policy $\vecG{\pi}^{(t)}$
     \begin{align}
         W_{\tilde{\Policy}}(\Stat) \define
-        \sum_{t=1}^{\infty} \gamma^{t-1} \mathbb{E}^{\tilde{\Policy}} \Bracket{
-            g\Paren{\Stat(t), \tilde{\Policy}(\Stat(t))} | \Stat(1)=\Stat
+        \sum_{t=1}^{\infty} \gamma^{t-1} \mathbb{E}^{ \vecG{\pi}^{(t)} } \Bracket{
+            g\Paren{\Stat(t), \vecG{\pi}^{(t)}(\Stat(t))} | \Stat(1)=\Stat
         },
     \end{align}
     % The performance of the baseline policies is upper bounded by the optimal solution $\Policy^*$ when considering the original Bellman's equations.
     we have
     \begin{align}
         V_{\Policy^*}\Paren{\Stat(t)}
-        \leq W_{\tilde{\Policy}}\Paren{\Stat(t)}
+        \leq \lim_{t\to\infty} W_{\vecG{\pi}^{(t)}}\Paren{\Stat(t)}
         \leq W_{\Baseline}\Paren{\Stat(t)},
         \forall \Stat(t).
     \end{align}
