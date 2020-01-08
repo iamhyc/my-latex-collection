@@ -1,5 +1,11 @@
 \section{Conclusion}
 \label{sec:conclusion}
 In this paper, we consider the cooperative job dispatching problem in an edge computing network residing in a MAN with multiple APs and edge servers.
-
-In the future work, we shall improve the execution efficiency of the algorithm and implement it in the real online system. 
+The APs and edge servers periodically broadcast their local state information to facilitate distributive dispatchers design.
+The new challenges is addressed to the cooperation of distributive dispatcher design that significant signaling overhead and random transmission latency causes the inconsistency of system information at different dispatchers.
+We formulate the distributive optimization of job dispatching strategies at all the APs as a POMDP, whose minimization objective is a discount measurement of job delivery and computation delay.
+We propose a novel low-complexity distributive solution framework based on one-step policy iteration, where the complicated POMDP solution or value iteration is avoided.
+The analytical performance lower bound is derived.
+The evaluation results show that the proposed solution framework outperforms various benchmarks in average JCT and average job throughput.
+\comments{The sensitivity study shows the robustness of algorithm in sensitivity study with various parameter settings.}
+In the future work, we shall improve the execution efficiency of the algorithm and implement it in the real-time online system. 
