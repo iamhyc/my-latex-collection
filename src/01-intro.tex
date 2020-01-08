@@ -1,16 +1,17 @@
 
 \section{Introduction}
 %NOTE: General Background of MEC and Motivation
-Edge computing is believed to be the solid solution for increasing computation-intensive and energy-hungry applications on mobile devices.
-The edge servers are deployed in closer proximity to mobile devices than cloud infrastructure, which alleviates the communication overhead and enables {time-sensitive} jobs offloading.
+Edge computing is believed to be a promising solution for increasing computation-intensive and energy-hungry applications on mobile devices.
 Large amount of mobile devices can connect to the access points (APs) which functions as gateway to aggregate and offload jobs to the edge servers \cite{MEC-SURVEY}.
-However, the edge servers are always deployed with limited computation resources standalone, and the establish of efficient cooperation is indispensable among the distributed servers.
+The edge servers are deployed in closer proximity to APs than cloud infrastructure, which alleviates the communication overhead and enables offloading of time-sensitive jobs.
+However, the edge servers are always deployed with limited computation resources.
+The establish of efficient cooperation among APs and edge servers is one of the major design challenges, given the network transmission latency and signaling overhead.
 
 %NOTE: Motivation with MAN
-We consider the edge computing network with APs and edge servers residing in the Metropolitan Area Network (MAN).
-The APs shall collect jobs offloaded from the mobile users in its range and make dispatching decisions for each job on the edge servers.
-The existing literature, such as \cite{tan-online,MOBIHOC19-ZhouZ,IOTJ18-FanQ,TOC19-LiuC,JSAC19-AlameddineHA}, considers the transmission latency of jobs is non-negligible but fixed in MAN.
-However, according to one MAN performance analysis research in \cite{MAN-LATENCY}, the transmission latency will vary a lot with respect to different hours of day and devices' locations in MAN.
+We consider an edge computing system with multiple APs and edge servers residing in the Metropolitan Area Network (MAN).
+The APs should collect jobs offloaded from the mobile users in its service area and make dispatching decisions for each job.
+The existing literature, such as \cite{tan-online,MOBIHOC19-ZhouZ,IOTJ18-FanQ,TOC19-LiuC,JSAC19-AlameddineHA}, usually assumed that the transmission latency of jobs is non-negligible but fixed in MAN.
+However, according to the MAN performance analysis research in \cite{MAN-LATENCY}, the transmission latency will vary a lot with respect to different hours of day and devices' locations in a MAN.
 This brings new challenges to the job dispatcher design in the edge computing network.
 Firstly, the transmission latency of control information may vary a lot due to random traffic, and the centralized dispatcher design is discouraged without timely interaction with APs or edge servers.
 Secondly, the staleness of information is not negligible and the out-of-date information received by dispatcher would cause mis-estimate of system states which results into irreversible error.
@@ -33,12 +34,12 @@ Our contributions are summarized as follows.
 \end{itemize}
 
 The remainder of this paper is organized as follows.
-In Sec.\ref{sec:review}, we review on the related works.
-In Sec.\ref{sec:model}, we illustrate the system model and broadcast information sharing design.
-In Sec.\ref{sec:formulation}, we formulate the global optimization problem of joint optimization on dispatching decisions of all APs.
-In Sec.\ref{sec:algorithm}, we argue that the global joint optimization of all APs is impractical and then decouple the problem into optimization over individual APs.
-We introduce a low-complexity algorithm in Sec.V and then show the numerical analysis in Sec.\ref{sec:evaluation}.
-In Sec.\ref{sec:conclusion}, the conclusion is given.
+In Section \ref{sec:review}, we review on the related works.
+In Section \ref{sec:model}, we illustrate the system model and broadcast information sharing design.
+In Section \ref{sec:formulation}, we formulate the global optimization problem of joint optimization on dispatching decisions of all APs.
+In Section \ref{sec:algorithm}, we argue that the global joint optimization of all APs is impractical and then decouple the problem into optimization over individual APs.
+We introduce a low-complexity algorithm in Section V and then show the numerical analysis in Section \ref{sec:evaluation}.
+In Section \ref{sec:conclusion}, the conclusion is given.
 
 \section{Related Works}
 \label{sec:review}
