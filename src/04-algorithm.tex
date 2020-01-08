@@ -246,18 +246,18 @@ Finally, we have the following conclusion on the performance of the above propos
     where $\vecG{\pi}^{(t)}$ is the stationary policy obtained by solving problem P3 ($\forall \Stat$).
     Let $W_{\vecG{\pi}^{(t)}}(\cdot)$ be the value function of the policy $\vecG{\pi}^{(t)}$
     \begin{align}
-        W_{\tilde{\Policy}}(\Stat) \define
-        \sum_{t=1}^{\infty} \gamma^{t-1} \mathbb{E}^{ \vecG{\pi}^{(t)} } \Bracket{
-            g\Paren{\Stat(t), \vecG{\pi}^{(t)}(\Stat(t))} | \Stat(1)=\Stat
+        W_{\vecG{\pi}^{(t)}}(\Stat) \define
+        \sum_{t'=1}^{\infty} \gamma^{t'-1} \mathbb{E}^{ \vecG{\pi}^{(t)} } \Bracket{
+            g\Paren{\Stat(t'), \vecG{\pi}^{(t)}(\Stat(t'))} | \Stat(1)=\Stat
         },
     \end{align}
     % The performance of the baseline policies is upper bounded by the optimal solution $\Policy^*$ when considering the original Bellman's equations.
     we have
     \begin{align}
-        V_{\Policy^*}\Paren{\Stat(t)}
-        \leq \lim_{t\to\infty} W_{\vecG{\pi}^{(t)}}\Paren{\Stat(t)}
-        \leq W_{\Baseline}\Paren{\Stat(t)},
-        \forall \Stat(t).
+        V_{\Policy^*}\Paren{\Stat}
+        \leq \lim_{t\to\infty} W_{\vecG{\pi}^{(t)}}\Paren{\Stat}
+        \leq W_{\Baseline}\Paren{\Stat},
+        \forall \Stat.
     \end{align}
 \end{lemma}
 \begin{proof}
