@@ -12,6 +12,13 @@ Each queue for VMs on edge server is set with maximum queue length $L_{max}=20$,
 % The arrival rate is taken as small probability with enough APs in the system, and correspondingly enough edge servers for the processing.
 % Each queue on edge server with maximum 20 jobs because our algorithm is strong enough to predict the overflow to ensure a reliable system.
 
+\begin{figure*}[ht!]
+    \centering
+    \includegraphics[width=0.80\textwidth]{images/Figure_1.pdf}
+    \caption{Timeline illustration.}
+    \label{fig:general_timeline}
+\end{figure*}
+
 \textbf{Compared Algorithms:}
 We compare the proposed algorithm with other three heuristic algorithms which are listed as follows.
 \begin{itemize}
@@ -32,12 +39,6 @@ The explicit definition is given as follows.
     \end{align} 
 \end{policy}
 %----------------------------------------------------------------------------------------%
-\begin{figure*}[htp!]
-    \centering
-    \includegraphics[width=0.80\textwidth]{images/Figure_1.pdf}
-    \caption{Timeline illustration.}
-    \label{fig:general_timeline}
-\end{figure*}
 
 \subsection{Performance Analysis}
     \subsubsection{Basic Performance}
@@ -55,7 +56,7 @@ The explicit definition is given as follows.
         \item CDF graph of JCT (with different algorithms);
     \end{itemize}
 
-    \begin{figure}[htp!]
+    \begin{figure}[h]
         \centering
         \includegraphics[width=0.45\textwidth]{images/bar_graph.pdf}
         \caption{Basic performance comparison.}
@@ -72,7 +73,7 @@ The explicit definition is given as follows.
     \end{itemize}
     % CDF of \# of dropped jobs (over the queue limit); CDF of queue length;
 
-    \begin{figure*}[tp]
+    \begin{figure*}[ht!]
         \centering
         \begin{tabular}{ccc}
             \includegraphics[width=0.30\textwidth]{images/535_LowPressure_NoDelay.pdf}&
@@ -87,30 +88,30 @@ The explicit definition is given as follows.
         \label{fig:eval_delay}
     \end{figure*}
 
-    % \begin{figure}[htp!]
-    %     \centering
-    %     \includegraphics[width=0.45\textwidth]{images/bar_graph.pdf}
-    %     \caption{Fake.}
-    %     \label{fig:bar_plot}
-    % \end{figure}
-    % \begin{figure}[htp!]
-    %     \centering
-    %     \includegraphics[width=0.45\textwidth]{images/bar_graph.pdf}
-    %     \caption{Fake.}
-    %     \label{fig:bar_plot}
-    % \end{figure}
-    % \begin{figure}[htp!]
-    %     \centering
-    %     \includegraphics[width=0.45\textwidth]{images/bar_graph.pdf}
-    %     \caption{Fake.}
-    %     \label{fig:bar_plot}
-    % \end{figure}
-    % \begin{figure}[htp!]
-    %     \centering
-    %     \includegraphics[width=0.45\textwidth]{images/bar_graph.pdf}
-    %     \caption{Fake.}
-    %     \label{fig:bar_plot}
-    % \end{figure}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.45\textwidth]{images/bar_graph.pdf}
+        \caption{Fake.}
+        \label{fig:bar_plot}
+    \end{figure}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.45\textwidth]{images/bar_graph.pdf}
+        \caption{Fake.}
+        \label{fig:bar_plot}
+    \end{figure}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.45\textwidth]{images/bar_graph.pdf}
+        \caption{Fake.}
+        \label{fig:bar_plot}
+    \end{figure}
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.45\textwidth]{images/bar_graph.pdf}
+        \caption{Fake.}
+        \label{fig:bar_plot}
+    \end{figure}
 %----------------------------------------------------------------------------------------%
 
 \delete{v19}{
