@@ -32,6 +32,12 @@ The explicit definition is given as follows.
     \end{align} 
 \end{policy}
 %----------------------------------------------------------------------------------------%
+\begin{figure*}[htp!]
+    \centering
+    \includegraphics[width=0.80\textwidth]{images/Figure_1.pdf}
+    \caption{Timeline illustration.}
+    \label{fig:general_timeline}
+\end{figure*}
 
 \subsection{Performance Analysis}
     \subsubsection{Basic Performance}
@@ -49,12 +55,12 @@ The explicit definition is given as follows.
         \item CDF graph of JCT (with different algorithms);
     \end{itemize}
 
-    \begin{figure*}[htp!]
+    \begin{figure}[htp!]
         \centering
-        \includegraphics[width=0.95\textwidth]{images/bar_graph.pdf}
+        \includegraphics[width=0.45\textwidth]{images/bar_graph.pdf}
         \caption{Basic performance comparison.}
         \label{fig:bar_plot}
-    \end{figure*}
+    \end{figure}
 
     \subsubsection{Sensitivity Study}
     \begin{itemize}
@@ -65,29 +71,47 @@ The explicit definition is given as follows.
         % \item \textbf{Different Penalty Factors.}
     \end{itemize}
     % CDF of \# of dropped jobs (over the queue limit); CDF of queue length;
+
+    \begin{figure*}[tp]
+        \centering
+        \begin{tabular}{ccc}
+            \includegraphics[width=0.30\textwidth]{images/535_LowPressure_NoDelay.pdf}&
+            \includegraphics[width=0.30\textwidth]{images/535_LowPressure_LargeDelay_cdf.pdf}&
+            \includegraphics[width=0.30\textwidth]{images/535_LowPressure_FullDelay.pdf}
+            \\
+            {\small (a) No \brlatency} &
+            {\small (b) Large \brlatency} &
+            {\small (c) Whole-interval \brlatency}
+        \end{tabular}
+        \caption{Evaluation of Information Staleness Impact on Algorithm Robustness under Low Back Pressure.}
+        \label{fig:eval_delay}
+    \end{figure*}
+
+    % \begin{figure}[htp!]
+    %     \centering
+    %     \includegraphics[width=0.45\textwidth]{images/bar_graph.pdf}
+    %     \caption{Fake.}
+    %     \label{fig:bar_plot}
+    % \end{figure}
+    % \begin{figure}[htp!]
+    %     \centering
+    %     \includegraphics[width=0.45\textwidth]{images/bar_graph.pdf}
+    %     \caption{Fake.}
+    %     \label{fig:bar_plot}
+    % \end{figure}
+    % \begin{figure}[htp!]
+    %     \centering
+    %     \includegraphics[width=0.45\textwidth]{images/bar_graph.pdf}
+    %     \caption{Fake.}
+    %     \label{fig:bar_plot}
+    % \end{figure}
+    % \begin{figure}[htp!]
+    %     \centering
+    %     \includegraphics[width=0.45\textwidth]{images/bar_graph.pdf}
+    %     \caption{Fake.}
+    %     \label{fig:bar_plot}
+    % \end{figure}
 %----------------------------------------------------------------------------------------%
-
-\begin{figure*}[htp!]
-    \centering
-    \begin{tabular}{ccc}
-        \includegraphics[width=0.30\textwidth]{images/535_LowPressure_NoDelay.pdf}&
-        \includegraphics[width=0.30\textwidth]{images/535_LowPressure_LargeDelay_cdf.pdf}&
-        \includegraphics[width=0.30\textwidth]{images/535_LowPressure_FullDelay.pdf}
-        \\
-        {\small (a) No \brlatency} &
-        {\small (b) Large \brlatency} &
-        {\small (c) Whole-interval \brlatency}
-    \end{tabular}
-    \caption{Evaluation of Information Staleness Impact on Algorithm Robustness under Low Back Pressure.}
-    \label{fig:eval_delay}
-\end{figure*}
-
-% \begin{figure*}[htp!]
-%     \centering
-%     \includegraphics[width=0.80\textwidth]{images/Figure_1.pdf}
-%     \caption{Timeline illustration.}
-%     \label{fig:general_timeline}
-% \end{figure*}
 
 \delete{v19}{
     \textbf{Data Trace Extraction:}
