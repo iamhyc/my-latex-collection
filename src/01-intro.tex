@@ -22,7 +22,7 @@ Secondly, the cooperation of distributive dispatchers suffers from significant s
 In this paper, we would like to shed some lights on the above challenging distributive dispatcher design via POMDP problem formulation and a novel low-complexity approximate MDP solution framework.
 Specifically, the signaling latency among APs and edge servers and job uploading latency from APs to edge servers are assumed to be random, and our contributions in this new optimization scenario are summarized as follows.
 \begin{itemize}
-    \item We propose a novel low-complexity distributive solution framework for the dispatcher design at the APs, where each AP collects the information only from the APs and edge servers in a close proximity and make dispatching decision with random signaling latency. We directly derive the expression of approximate value function and obtain distributive dispatching policy via one-step policy iteration. Thus, the complicated POMDP solution or value iteration is avoided. To our best knowledge, this is the first work to address the cooperative distributed multi-agent optimization problem under MDP framework.
+    \item We propose a novel low-complexity distributive solution framework for the dispatcher design at the APs, where each AP collects the information only from the APs and edge servers in a close proximity and make dispatching decision with random signaling latency. We directly derive the expression of approximate value function and obtain distributive dispatching policy via one-step policy iteration. Thus, the complicated POMDP solution or value iteration is avoided. To our best knowledge, this is the first work to address the cooperative distributive multi-agent optimization problem under MDP framework.
     \item We derive an analytical cost lower bound for the proposed distributive dispatching policy in the above novel solution framework. In the conventional approximate MDP method, the performance is usually evaluated via numerical method, and it is hard to obtain analytical performance bound.
 \end{itemize}
 
@@ -71,7 +71,7 @@ However, in the above works, the delay information in the system is known as fix
 % In \cite{CloudCom18-Cicconetti},
 
 %NOTE: stale-information based multi-agent related works
-Different from the previous referred works which merely consider the information exchange latency in the system, the staleness of exchanged information sharing among agents also have impacts on decision making in distributed system.
+Different from the previous referred works which merely consider the information exchange latency in the system, the staleness of exchanged information sharing among agents also have impacts on decision making in distributive system.
 As what we have learned, there are very limited discussions on this topic.
 % The earliest works entangling with outdated information we could find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing limited information. The agent considers communication as extra action to synchronize the states and thus incurs extra cost (However, the communication is without delay, thus converted into POMDP problem; criticize with impractical);
 In \cite{JSAC17-LyuX}, the authors consider maximizing the number of admitted jobs where jobs offloading via base stations with stochastic offloading latency with general time-division multiple-access (TDMA) model assumption.W
@@ -106,9 +106,9 @@ Hence, in our problem, we target at optimizing the average job response time whi
     \end{itemize}
     Using Game Theory:
     \begin{itemize}
-        \item \cite{yang2018} and \cite{Josilo2019a} considers distributed computation offloading game;
+        \item \cite{yang2018} and \cite{Josilo2019a} considers distributive computation offloading game;
         \item \cite{Liu2018} is a work considering minimize users' power consumption with Lyapunov optimization and matching theory;
-        \item \cite{Dinh2018} considers distributed multi-user offloading in wireless channel with selfish EPG (exact potential game);
+        \item \cite{Dinh2018} considers distributive multi-user offloading in wireless channel with selfish EPG (exact potential game);
         \item \cite{Josilo2019} considers selfish offloading to achieve Nash equilibrium;
         \item \cite{Chen2016} is a work considering multi-user computation offloading with multi-channel contention, and adopt game theory approach to achieve Nash equilibrium with upper bound of convergence time;
         \item \cite{Zhang2018} considers multi-user offloading under transmit power decision and user association decision;
