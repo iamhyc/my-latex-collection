@@ -1,16 +1,14 @@
 \section{Performance Evaluation}
 \label{sec:evaluation}
 In this section, we evaluate the performance of the proposed low-complexity solution framework by numerical simulations.
-We first elaborate our experiment setup in section \ref{subsec:basic}, and the evaluation results compared with other benchmarks show that .
-Then we \fixit{do what} to apply the sensitivity study on the robustness of our proposed framework.
+The experiment setup and compared benchmarks are elaborated in section \ref{subsec:basic}.
+The evaluation results are displayed in \ref{subsec:advance}, where some metrics (average cost, average JCT, average throughput) are adopted to prove the performance of our proposed solution framework.
+The sensitivity study on parameters is also applied to provide some insights on the robustness of the framework.
 
-\subsection{Performance Analysis}
+\subsection{Experiment Setup}
 \label{subsec:basic}
-\textbf{System Parameters Setup:}
-\fixit{
-    In the simulation, there are 5 APs, 3 ES and 10 type of jobs in the system.
-}
-We implement the system in a small scale setting where fully-accessible APs and edge servers are considered.
+\textbf{Parameters Setup:}
+In the simulation, we implement the system in a small scale setting where fully-accessible APs and edge servers are considered.
 specifically, there are $K=5$ APs, $M=3$ edge servers, and $J=5$ type of jobs in the system corresponding to the manipulated data trace.
 Each time slot is taken as $\tau = 0.05$ i.e. 50ms, and the broadcast interval is taken as $20$ time slots, i.e. $1$ second.
 The maximum uploading time is set as $3$ times the broadcast interval, i.e. $\Xi = 3T$.
@@ -21,19 +19,20 @@ The distributions of arrival rate, uploading time and processing time are genera
 Each queue for VMs on edge server is set with maximum queue length $L_{max}=20$, i.e. there would be at most $100$ jobs on one edge server.
 \fixit{
     We set small maximum queue length, in case to show that how job rejection affects the system.
+    % The arrival rate is taken as small probability with enough APs in the system, and correspondingly enough edge servers for the processing.
+    % Each queue on edge server with maximum 20 jobs because our algorithm is strong enough to predict the overflow to ensure a reliable system.
 }
-% The arrival rate is taken as small probability with enough APs in the system, and correspondingly enough edge servers for the processing.
-% Each queue on edge server with maximum 20 jobs because our algorithm is strong enough to predict the overflow to ensure a reliable system.
 
-\begin{figure*}[ht!]
-    \centering
-    \includegraphics[width=0.80\textwidth]{48113-timeline-number.pdf}
-    \caption{The illustration of number of jobs on all the APs and edge servers over time.}
-    \label{fig:general_timeline}
-\end{figure*}
+%-----------------------------------------------------------------------------------------------%
+\begin{figure*}[ht!]                                                                            %
+    \centering                                                                                  %
+    \includegraphics[width=0.80\textwidth]{48113-timeline-number.pdf}                           %
+    \caption{The illustration of number of jobs on all the APs and edge servers over time.}     %
+    \label{fig:general_timeline}                                                                %
+\end{figure*}                                                                                   %
+%-----------------------------------------------------------------------------------------------%
 
 %NOTE: Benchmark Elaboration
-\fixit{The following four benchmark schemes are compared with the proposed scheduling scheme.}
 \textbf{Benchmarks:}
 We compare the proposed algorithm with other three heuristic algorithms which are listed as follows.
 \begin{itemize}
@@ -75,7 +74,7 @@ CDF graph of Cost (with different benchmarks).
 % \fixit{\blindtext}
 % CDF graph of JCT (with different algorithms).
 %----------------------------------------------------------------------------------------%
-\subsection{Sensitivity Study}
+\subsection{Performance Analysis}
 \label{subsec:advance}
 \blindtext
 
