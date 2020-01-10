@@ -94,20 +94,8 @@ Moreover, the explicit expressions of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and 
                 \Pr\{R^{(k)}_{m,j}(\xi,t,0) = 1\}, & \text{otherwise}
             \end{cases}
         \end{align}
-        % \item $\Gamma^{(k)}_{m,j} \define (\hat{\Gamma}^{(k)}_{m,j})^{t_B}$ where
-        \item \fixit{(PUT THIS IN APPENDIX; PUT ZEROS IN MATRIX)}
-        \begin{align}
-            \Gamma^{(k)}_{m,j} &\define
-            \begin{bmatrix}
-                1 & \bar{p}^{(k)}_{m,j,0} &                       &        &                           \\
-                  & 0                     & \bar{p}^{(k)}_{m,j,1} &        &                           \\
-                  &                       & \ddots                & \ddots &                           \\
-                  &                       &                       & \ddots & \bar{p}^{(k)}_{m,j,\Xi-1} \\
-                  &                       &                       &        & 0                         \\
-            \end{bmatrix}^{t_B}
-            \label{eqn:gamma}
-        \end{align}
-        and $\bar{p}^{(k)}_{m,j,\xi} \define 1 - \Pr\{U^{(k)}_{m,j} < \xi+1 | U^{(k)}_{m,j}>\xi\}$.
+        \item $\Gamma^{(k)}_{m,j} \in \mathbb{R}^{(\Xi+1)\times(\Xi+1)}$ denotes the transition matrix whose entries are provided in Appendix \ref{append_1}.
+        % and $\bar{p}^{(k)}_{m,j,\xi} \define 1 - \Pr\{U^{(k)}_{m,j} < \xi+1 | U^{(k)}_{m,j}>\xi\}$.
     \end{itemize}
     % \begin{align}
     %     \vec{\Theta}_{m,j}^{(k)}(t+1) = {\Gamma}^{(k)}_{m,j}(\Pi_{t,k}) \times \vec{\Theta}_{m,j}^{(k)}(t).
