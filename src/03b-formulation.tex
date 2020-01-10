@@ -6,10 +6,12 @@ Since each AP update the job dispatching actions according to OSI instead of GSI
 Specifically, the individual dispatching policy of one AP, the system dispatching policy, and the cost function are first defined below.
 
 \begin{definition}[Dispatching Policy]
-    The individual policy of the $k$-th AP, denoted as $\Omega_{k}$ ($\forall k \in\apSet$), maps from its OSI $\Stat_{k}$ and its \emph{delivery latency} $\mathcal{D}_{k}$ to the dispatching action for each job type, i.e.,
+    The individual policy of the $k$-th AP, denoted as $\Omega_{k}$ ($\forall k \in\apSet$), maps from its OSI $\Stat_{k}$ and its \brlatency~$\mathcal{D}_{k}$ to the dispatching action for each job type, i.e.,
     \begin{align}
-        &\Omega_{k} \Paren{ \Stat_{k}(t), \mathcal{D}_{k}(t) }
-        \define \Brace{
+        \Omega_{k} \Paren{ \Stat_{k}(t), \mathcal{D}_{k}(t) }
+        &\define \mathcal{A}_{k}(t+1)
+        \nonumber\\
+        &= \Brace{
             \omega_{k,j}(t+1)|\forall j\in\jSpace
         }.
         \label{def:action}
@@ -44,8 +46,7 @@ Hence, we define the cost function per broadcast interval as follows.
                 &~~~~~+ \beta \cdot I[Q_{m,j}(t,0)=L_{max}]
             },
     \end{align}
-    }
-    where $\Inorm{\vec{x}}$ denotes the $L^1$-norm of the vector $\vec{x}$, and $\beta$ is the weight factor of overflow penalty.
+    }where $\Inorm{\vec{x}}$ denotes the $L^1$-norm of the vector $\vec{x}$, and $\beta$ is the weight of overflow penalty.
 \end{definition}
 
 Since the job dispatching in one broadcast interval will affect the GSI of the following broadcast intervals, we should consider the joint minimization of the costs of all the broadcast intervals.
@@ -58,12 +59,11 @@ Specifically, we consider the following discounted summation of the costs of all
         \sum_{t=1}^{T} \gamma^{t-1} g\Paren{\Stat(t)} | \Stat(1)
     },
 \end{align}
-}
-where $\mathbb{E}^{\Policy}_{\set{\Stat(t)|\forall t}}[\cdot]$ denotes the expectation with respect to all possible system state in the future given scheduling policy $\Policy$, and $\gamma \in (0,1)$ is the discount factor.
+}where $\mathbb{E}^{\Policy}_{\set{\Stat(t)|\forall t}}[\cdot]$ denotes the expectation with respect to all possible system state in the future given scheduling policy $\Policy$, and $\gamma \in (0,1)$ is the discount factor.
 Hence, the optimization of job dispatching policy can be formulated as the following minimization problem.
 \begin{align}
     \text{P1:}~
-    \arg\min_{\Policy} \bar{G}(\Stat, \Policy).
+    \min_{\Policy} \bar{G}(\Stat, \Policy).
 \end{align}
 
 If the GSI $\Stat(t)$ and \brlatency~$\Delay(t)$ are known to all the APs, the MDP in problem P1 can be solved via the following Bellman's equations as in \cite{sutton1998}.
@@ -83,11 +83,11 @@ where the value function $V(\Stat(t))$ of the optimal policy $\Policy^{*}$ (if G
     }.
     \label{eqn:val_f}
 \end{align}
-
 Moreover, the optimal policy $\Omega^{*}$ can be obtained by solving the right-hand-side (RHS) of the above Bellman's equations.
-However, it is infeasible to solve the above Bellman's equations in our problem.
+
+However, it is infeasible to solve the above Bellman's equations in our problem \wangr{and achieve the performance of $\Policy^*$ in our problem.}
 This is because each AP (say the $k$-th AP) only has the knowledge of its own OSI $\Stat_{k}(t)$ and local \brlatency~ $\mathcal{D}_{k}(t)$.
-Thus, our problem is actually a POMDP.
-The general solution of POMDP is of huge complexity \cite{IJCAI03-NairR,IJCAI99-BoutilierC}.
-In this paper, we shall propose a novel low-complexity solution framework based on an analytical approximation of the value function, and alternative action update, where distributive job dispatching via the Bellman's equations becomes feasible.
+Thus, problem P1 is actually a POMDP.
+The general solution of POMDP is of huge complexity \wangr{as all the historical system states should be involved in the current system state} \cite{IJCAI03-NairR,IJCAI99-BoutilierC}.
+In this paper, we shall propose a novel low-complexity solution framework based on an analytical approximation of the value function $V(\cdot)$ and alternative action update, where distributive job dispatching via the Bellman's equations becomes feasible even with OSI and local signaling latency.
 %----------------------------------------------------------------------------------------%

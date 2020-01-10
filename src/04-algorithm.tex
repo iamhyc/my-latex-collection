@@ -4,10 +4,11 @@
 In this section, we shall introduce a novel approximation method to decouple the centralized optimization on the RHS of the Bellman's equations to each AP for arbitrary system state.
 Specifically, the decoupling can be achieved via the following two steps:
 \begin{enumerate}
-    \item We first introduce a baseline policy, use its value function to approximate the value function of the optimal policy $\Policy^*$, and derive the analytical expression of approximate value function in Section \ref{subsec:baseline}.
-    \item Based on the approximate value function, an alternative action update algorithm, where a subset of APs are selected to update their dispatching action distributively in each broadcast interval, is proposed in Section \ref{subsec:ap_alg}.
+    \item We first introduce a baseline policy, use its value function to approximate the value function of the optimal policy $\Policy^*$, and derive the analytical expression of the approximate value function in Section \ref{subsec:baseline}.
+    \item Based on the approximate value function, an alternative action update algorithm, where a subset of APs are selected to update their dispatching action distributively in each broadcast interval, is proposed to solve the RHs of the Bellman's equation in \ref{eqn:sp_0} in Section \ref{subsec:ap_alg}.
     Moreover, the analytically performance bound is also derived.
 \end{enumerate}
+\wangr{As a remark notice that solving the value function and then the RHS of the Bellman's equations are the two standard steps to solve an MDP problem with complete knowledge on system state. These approach cannot be used for POMDP. In our proposed approximate solution framework.  however, we follow a similar two-step procedure but with novel techniques to solve the POMDP problem in P1: (1) find approximate value function, instead of solving the accurate value function V; (2) use alternative method to optimize the RHS of the Bellman's equation gradually, instead of simultaneous action optimization at all APs.}
 
 \subsection{Baseline Policy and Approximate Value Function}
 \label{subsec:baseline}
