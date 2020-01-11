@@ -2,9 +2,9 @@
 % \documentclass[sigconf]{acmart} %ACM Mobihoc 20'
 \documentclass[conference]{IEEEtran}
 % \IEEEoverridecommandlockouts
-\usepackage{blindtext}
 \usepackage[linesnumbered,vlined,ruled]{algorithm2e}
 \usepackage{algorithmic}
+\usepackage{etoolbox}
 % \usepackage[noend]{algpseudocode}
 \usepackage{amsmath,amsthm,amssymb,amsfonts}
 \usepackage[dvipsnames]{xcolor}
@@ -14,6 +14,7 @@
 \usepackage{soul}
 \usepackage{mathtools}
 \graphicspath{ {./images/} }
+% \renewcommand{\algorithmicforall}{\textbf{for all}}
 %---------------------------------------------------------------%
 \newtheorem{definition}{Definition}   % 
 \theoremstyle{definition}             % alter theorem style: <definition>
