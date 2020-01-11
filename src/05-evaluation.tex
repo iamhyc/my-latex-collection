@@ -27,7 +27,7 @@ Each queue for VMs on edge server is set with maximum queue length $L_{max}=20$,
 \begin{figure*}[ht!]                                                                            %
     \centering                                                                                  %
     \includegraphics[width=0.80\textwidth]{48113-timeline-number.pdf}                           %
-    \caption{The illustration of number of jobs on all the APs and edge servers over time.}     %
+    \caption{Illustration of number of jobs on all the APs and edge servers over time.}     %
     \label{fig:general_timeline}                                                                %
 \end{figure*}                                                                                   %
 %-----------------------------------------------------------------------------------------------%
@@ -62,7 +62,7 @@ Average Departure Rate (throughput) v.s. Algorithms, Fig.\ref{fig:bar_plot}(c).
 \begin{figure}[h]                                                       %
     \centering                                                          %
     \includegraphics[width=0.45\textwidth]{48113-bar-graph.pdf}         %
-    \caption{Basic performance comparison.}                             %
+    \caption{Illustration of performance metrics comparison with benchmarks.}
     \label{fig:bar_plot}                                                %
 \end{figure}                                                            %
 %-----------------------------------------------------------------------%
@@ -71,7 +71,6 @@ Average Departure Rate (throughput) v.s. Algorithms, Fig.\ref{fig:bar_plot}(c).
 Specifically, 
 our proposed algorithm is better than compared algorithms all the time;
 CDF graph of Cost (with different benchmarks).
-% \fixit{\blindtext}
 % CDF graph of JCT (with different algorithms).
 %----------------------------------------------------------------------------------------%
 \subsection{Performance Analysis}
@@ -92,7 +91,7 @@ CDF graph of Cost (with different benchmarks).
         {\small (c) Whole-interval \brlatency}                                                  %
     \end{tabular}                                                                               %
     \caption{Evaluation of Information Staleness Impact on Algorithm Robustness.}               %
-    \label{fig:eval_delay}                                                                      %
+    \label{fig:ss_delay}                                                                        %
 \end{figure*}                                                                                   %
 %-----------------------------------------------------------------------------------------------%
 
@@ -100,8 +99,8 @@ CDF graph of Cost (with different benchmarks).
 \begin{figure}[hbt]                                                 %
     \centering                                                      %
     \includegraphics[width=0.45\textwidth]{bar_graph.pdf}           %
-    \caption{Fake 01.}                                              %
-    \label{fig:fake_01}                                             %
+    \caption{}                                              %
+    \label{fig:ss_scale}                                            %
 \end{figure}                                                        %
 %-------------------------------------------------------------------%
 
@@ -110,7 +109,7 @@ CDF graph of Cost (with different benchmarks).
     \centering                                                      %
     \includegraphics[width=0.45\textwidth]{bar_graph.pdf}           %
     \caption{Fake 02.}                                              %
-    \label{fig:fake_02}                                             %
+    \label{fig:ss_dist}                                             %
 \end{figure}                                                        %
 %-------------------------------------------------------------------%
 
@@ -118,34 +117,24 @@ CDF graph of Cost (with different benchmarks).
 \begin{figure}[hbt]                                                 %
     \centering                                                      %
     \includegraphics[width=0.45\textwidth]{bar_graph.pdf}           %
-    \caption{Fake 03.}                                              %
-    \label{fig:fake_03}                                             %
+    \caption{}                                              %
+    \label{fig:ss_scale}                                            %
 \end{figure}                                                        %
 %-------------------------------------------------------------------%
 
-%-------------------------------------------------------------------%
-\begin{figure}[hbt]                                                 %
-    \centering                                                      %
-    \includegraphics[width=0.45\textwidth]{bar_graph.pdf}           %
-    \caption{Fake 04.}                                              %
-    \label{fig:fake_04}                                             %
-\end{figure}                                                        %
-%-------------------------------------------------------------------%
+%NOTE: sensitivity study
+\textbf{Compared with different \brlatency.}
+The evaluation of staleness of \brlatency~is demonstrated in Fig.\ref{fig:ss_delay}.
 
-%NOTE: 
-\textbf{Compared with different \brlatency.} Fig.\ref{fig:eval_delay}
+\textbf{Uploading Time or Processing Time domains.}
+The evaluation of distribution of is demonstrated in Fig.\ref{fig:ss_dist}.
 \blindtext
 
-\textbf{Different number of APs.} (a.k.a arrival rate)
-\blindtext
+\textbf{Number of APs.} %(a.k.a arrival rate)
+The evaluation of scale of is demonstrated in Fig.\ref{fig:ss_scale}.
+It's shown that on the left of the figure, the SQF algorithm would work better when the system is almost idle; on the right of the figure, SQF and random algorithm could not handle high rejection rate and thus the \emph{average throughput} decreases extremely. 
 
-\textbf{Different $t_B$ setting.}
-\blindtext
-
-\textbf{Uploading time domains/Processing time domains.}
-\blindtext
-
-\textbf{Different Penalty Factors.}
-\blindtext
+% \textbf{Different Penalty Factors.}
 % CDF of \# of dropped jobs (over the queue limit); CDF of queue length;
+
 %----------------------------------------------------------------------------------------%
