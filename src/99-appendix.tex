@@ -29,11 +29,11 @@ Hence, we denote the time-invariant and policy-independent transition matrix $\h
     \hat{\Gamma}^{(k)}_{m,j} &\define
     \begin{bmatrix}
         1 & \bar{p}^{(k)}_{m,j,0} &                       &        &                           \\
-        & 0                     & \bar{p}^{(k)}_{m,j,1} &        &                           \\
-        &                       & \ddots                & \ddots &                           \\
-        &                       &                       & \ddots & \bar{p}^{(k)}_{m,j,\Xi-1} \\
-        &                       &                       &        & 0                         \\
-    \end{bmatrix},
+          & 0                     & \bar{p}^{(k)}_{m,j,1} &        & \text{\huge0}             \\
+          &                       & \ddots                & \ddots &                           \\
+          & \text{\huge0}         &                       & \ddots & \bar{p}^{(k)}_{m,j,\Xi-1} \\
+          &                       &                       &        & 0                         \\
+    \end{bmatrix}^{t_B},
 \end{align}
 where $\bar{p}^{(k)}_{m,j,\xi}$ denotes the probability of job still stay at the $k$-th AP in the next time slot as $\bar{p}^{(k)}_{m,j,\xi} = 1 - p^{(k)}_{m,j,\xi}$, and
 \begin{align}
@@ -60,14 +60,7 @@ Hence, we have
 \end{align}
 and the transition matrix $\Gamma^{(k)}_{m,j}$ as
 \begin{align}
-    \Gamma^{(k)}_{m,j} &\define
-    \begin{bmatrix}
-        1 & \bar{p}^{(k)}_{m,j,0} &                       &        &                           \\
-          & 0                     & \bar{p}^{(k)}_{m,j,1} &        &                           \\
-          &                       & \ddots                & \ddots &                           \\
-          &                       &                       & \ddots & \bar{p}^{(k)}_{m,j,\Xi-1} \\
-          &                       &                       &        & 0                         \\
-    \end{bmatrix}^{t_B},
+    \Gamma^{(k)}_{m,j} &\define \big( \hat{\Gamma}^{(k)}_{m,j} \big)^{t_B},
 \end{align}
 and the expression of the cost raised on AP under baseline policy $\Baseline$ is given as follows.
 \begin{align}
@@ -90,9 +83,9 @@ We first denote the offloading matrix $\bar{\Gamma}^{(k)}_{m,j}$ for the type-$j
     \bar{\Gamma}^{(k)}_{m,j}(t,n) &\define
     \begin{bmatrix}
         0 & p^{(k)}_{m,j,0} &                 &        &                     \\
-        & 0                 & p^{(k)}_{m,j,1} &        &                     \\
+        & 0                 & p^{(k)}_{m,j,1} &        & \text{\huge0}       \\
         &                   & \ddots          & \ddots &                     \\
-        &                   &                 & \ddots & p^{(k)}_{m,j,\Xi-1} \\
+        & \text{\huge0}     &                 & \ddots & p^{(k)}_{m,j,\Xi-1} \\
         &                   &                 &        & 1                   \\
     \end{bmatrix},
     \\
@@ -140,8 +133,11 @@ Based on the previous definitions in the time slot, the explicit definition is g
 \end{align}
 
 Given that the cost raised on edge servers is approximated with baseline policy $\Baseline$, the transition matrix for state transition is affected by the baseline policy and the system states of APs which could not be decoupled.
-However, we notice that under the fixed baseline policy, the arrival process on edge servers would be stationary after the \emph{maximum uploading time} from the initial interval, and thus the transition matrix is invariant of system states of APs.
+\begin{align}
+    \mathbb{E}^{\Baseline}[ Q_{m,j}({t+i+1}) | \Stat(t+i)] \define 
+\end{align}
 
+Moreover, we notice that under the fixed baseline policy, the arrival process on edge servers would be stationary after the \emph{maximum uploading time} from the initial interval and thus the transition matrix is invariant of system states of APs.
 Let $\hat{\mat{P}}_{m,j}(\hat{\beta}^{\Baseline}_{m,j}(t,n))$ be the transition matrix for the stationary arrival process under baseline policy $\Baseline$ and
 {\small
 \begin{align}
@@ -168,6 +164,11 @@ denote the transition matrix under baseline policy $\Baseline$ between adjacent 
 \end{align}   
 }
 where $\vec{g}$ is the cost vector taking the definition in equation (\ref{eqn:g_vec}).
+
+\section{ Proof of Lemma \ref{lemma:w_partial} }
+\label{append_3}
+We could simply reduce the expression of equation (\ref{w_ap}) and equation (\ref{w_es}) on the RHS of the Bellman's equations based on local OSI, while GSI is not necessary.
+Because the update policy would only change the cost raised on local AP and the corresponding \emph{candidate server set}.
 
 %----------------------------------------------------------------------------------------%
 \delete{v19}{
