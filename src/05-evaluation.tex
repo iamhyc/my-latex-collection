@@ -8,20 +8,18 @@ The sensitivity study on parameters is also applied to provide some insights on 
 \subsection{Experiment Setup}
 \label{subsec:basic}
 \textbf{Parameters Setup:}
-In the simulation, we implement the system in a small scale setting where fully-accessible APs and edge servers are considered.
-specifically, there are $K=5$ APs, $M=3$ edge servers, and $J=5$ type of jobs in the system corresponding to the manipulated data trace.
-Each time slot is taken as $\tau = 0.05$ i.e. 50ms, and the broadcast interval is taken as $20$ time slots, i.e. $1$ second.
-The maximum uploading time is set as $3$ times the broadcast interval, i.e. $\Xi = 3T$.
-\fixit{
-    The computation time of each job type at each edge server follows the uniform distribution.
-}
-The distributions of arrival rate, uploading time and processing time are generated randomly.
+In the simulation, the edge computing system is considered in a small-scale setting, where the edge servers are all fully-accessible to all the APs, i.e. $\esSet_{k}=\esSet$ ($\forall k\in\apSet$). 
+Specifically, there are $K=5$ APs, $M=3$ edge servers and $J=5$ type of jobs in the system.
+
+The time slot is taken as $\tau = 0.05$ i.e. 50ms and the broadcast interval is taken as $t_{B}=20$ time slots, i.e. $1$ second.
+% The distributions of arrival rate, uploading time and processing time are generated randomly.
+The maximum uploading time is set as $3$ times the broadcast interval, i.e. $\Xi = 3t_B$, and the distribution of $\mathbb{U}_{k,m,j}(\Xi)$ is randomly generated within the range $[0, \Xi]$.
+The expected computation time $c_{m,j}$ is also randomly generated in the range $[30,50]$ with the unit of time slot.
+
 Each queue for VMs on edge server is set with maximum queue length $L_{max}=20$, i.e. there would be at most $100$ jobs on one edge server.
-\fixit{
-    We set small maximum queue length, in case to show that how job rejection affects the system.
-    % The arrival rate is taken as small probability with enough APs in the system, and correspondingly enough edge servers for the processing.
-    % Each queue on edge server with maximum 20 jobs because our algorithm is strong enough to predict the overflow to ensure a reliable system.
-}
+We set small maximum queue length, in case to show that how job rejection affects the system.
+The arrival rate is selected so that \emph{small probability assumption} in Appendix \ref{append_2} is satisfied, and the rejection could not be avoided cause of small queue length selected.
+% The arrival rate is taken as small probability with enough APs in the system, and correspondingly enough edge servers for the processing.
 
 %-----------------------------------------------------------------------------------------------%
 \begin{figure*}[ht!]                                                                            %
@@ -43,7 +41,7 @@ We compare the proposed algorithm with other three heuristic algorithms which ar
     \item \textbf{Queue-aware Selfish Algorithm}:
             for each job type, always choose the edge server with the minimum expected uploading time, plus the expected processing time and queueing time based on the observation of outdated queue states.
 \end{itemize}
-Specifically, we choose the \emph{Local Selfish Algorithm} which is state-invariant as the initial fixed policy for our proposed algorithm.
+Specifically, we choose the \emph{Selfish Algorithm} which is state-invariant as the initial policy for our proposed algorithm.
 The explicit definition is given as follows.
 \begin{policy}[Selfish Policy]
     \begin{align}
@@ -59,7 +57,7 @@ Average JCT (job completion time) v.s. Algorithms, Fig.\ref{fig:bar_plot}(b);
 Average Departure Rate (throughput) v.s. Algorithms, Fig.\ref{fig:bar_plot}(c).
 
 %-----------------------------------------------------------------------%
-\begin{figure}[h]                                                       %
+\begin{figure}[ht]                                                       %
     \centering                                                          %
     \includegraphics[width=0.45\textwidth]{48113-bar-graph.pdf}         %
     \caption{Illustration of performance metrics comparison with benchmarks.}
@@ -74,8 +72,7 @@ CDF graph of Cost (with different benchmarks).
 % CDF graph of JCT (with different algorithms).
 %----------------------------------------------------------------------------------------%
 \subsection{Performance Analysis}
-\label{subsec:advance}
-\blindtext
+\label{subsec:advance}  
 
 %FIXME: replace the graphs
 %-----------------------------------------------------------------------------------------------%
@@ -99,7 +96,7 @@ CDF graph of Cost (with different benchmarks).
 \begin{figure}[hbt]                                                 %
     \centering                                                      %
     \includegraphics[width=0.45\textwidth]{bar_graph.pdf}           %
-    \caption{}                                              %
+    \caption{Illustration of impact of scale of APs on algorithms.}
     \label{fig:ss_scale}                                            %
 \end{figure}                                                        %
 %-------------------------------------------------------------------%
@@ -108,7 +105,7 @@ CDF graph of Cost (with different benchmarks).
 \begin{figure}[hbt]                                                 %
     \centering                                                      %
     \includegraphics[width=0.45\textwidth]{bar_graph.pdf}           %
-    \caption{Fake 02.}                                              %
+    \caption{Illustration of impact of uploading and processing time distribution on algorithms.}
     \label{fig:ss_dist}                                             %
 \end{figure}                                                        %
 %-------------------------------------------------------------------%
@@ -117,24 +114,34 @@ CDF graph of Cost (with different benchmarks).
 \begin{figure}[hbt]                                                 %
     \centering                                                      %
     \includegraphics[width=0.45\textwidth]{bar_graph.pdf}           %
-    \caption{}                                              %
-    \label{fig:ss_scale}                                            %
+    \caption{Illustration of impact of penalty factors on algorithms.}
+    \label{fig:ss_penalty}                                          %
 \end{figure}                                                        %
 %-------------------------------------------------------------------%
 
-%NOTE: sensitivity study
-\textbf{Compared with different \brlatency.}
-The evaluation of staleness of \brlatency~is demonstrated in Fig.\ref{fig:ss_delay}.
+\blindtext\blindtext
 
-\textbf{Uploading Time or Processing Time domains.}
-The evaluation of distribution of is demonstrated in Fig.\ref{fig:ss_dist}.
-\blindtext
+%NOTE: sensitivity study
+\textbf{Various Signaling Latency.}
+\fixit{
+    The evaluation of staleness of \brlatency~is demonstrated in Fig.\ref{fig:ss_delay}.
+}
+
+\textbf{Uploading Time and Processing Time Distributions.}
+\fixit{
+    The evaluation of distribution of is demonstrated in Fig.\ref{fig:ss_dist}.
+}
 
 \textbf{Number of APs.} %(a.k.a arrival rate)
 The evaluation of scale of is demonstrated in Fig.\ref{fig:ss_scale}.
-It's shown that on the left of the figure, the SQF algorithm would work better when the system is almost idle; on the right of the figure, SQF and random algorithm could not handle high rejection rate and thus the \emph{average throughput} decreases extremely. 
+\fixit{
+    It's shown that on the left of the figure, the SQF algorithm would work better when the system is almost idle; on the right of the figure, SQF and random algorithm could not handle high rejection rate and thus the \emph{average throughput} decreases extremely. 
+}
 
-% \textbf{Different Penalty Factors.}
-% CDF of \# of dropped jobs (over the queue limit); CDF of queue length;
+\textbf{Penalty Factors.}
+\fixit{
+    The evaluation of CDF of number of dropped jobs (over the queue limit) is shown in Fig.\ref{fig:ss_penalty}.
+    % CDF of queue length.
+}
 
 %----------------------------------------------------------------------------------------%
