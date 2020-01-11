@@ -52,10 +52,19 @@ The explicit definition is given as follows.
 %NOTE: Basic Performance
 \subsection{Performance Analysis}
 \label{subsec:basic}
-Here we measure some basic metrics concerning in edge computing system, compared with different algorithms.
-Average Cost v.s. Algorithms, Fig.\ref{fig:bar_plot}(a);
-Average JCT (job completion time) v.s. Algorithms, Fig.\ref{fig:bar_plot}(b);
-Average Departure Rate (throughput) v.s. Algorithms, Fig.\ref{fig:bar_plot}(c).
+The evaluation results are shown in Fig.\ref{fig:bar_plot} where three metrics are taken to demonstrate the performance of our proposed algorithm with other benchmarks.
+\fixit{
+    Average Cost v.s. Algorithms in Fig.\ref{fig:bar_plot}(a);
+    Average JCT (job completion time) v.s. Algorithms, Fig.\ref{fig:bar_plot}(b);
+    Average Departure Rate (throughput) v.s. Algorithms, Fig.\ref{fig:bar_plot}(c).
+}
+Specifically, our proposed algorithm is better than compared algorithms all the time in the timeline figure Fig.\ref{fig:brd-timeline}.
+The CDF of cost is illustrated in Fig.\ref{fig:cdf_cost} where the cost of \emph{SQF policy} is nearly the same as the \emph{selfish policy}, however, the \emph{SQF policy} actually have very poor job departure rate (i.e. throughput) compared with the other's.
+\fixit{
+    This is because the broadcast information is periodically and outdated, and SQF could not handle the penalty brought by job rejection properly.
+    And we take \emph{CDF of number of jobs} other than \emph{CDF of cost} which could better reflect the performance of the average JCT target in the simulation when job rejection considered.
+    
+}
 
 %-----------------------------------------------------------------------%
 \begin{figure}[ht]                                                      %
@@ -65,12 +74,13 @@ Average Departure Rate (throughput) v.s. Algorithms, Fig.\ref{fig:bar_plot}(c).
     \label{fig:bar_plot}                                                %
 \end{figure}                                                            %
 %-----------------------------------------------------------------------%
-
-%NOTE: Insight Analysis
-Specifically, 
-our proposed algorithm is better than compared algorithms all the time;
-CDF graph of Cost (with different benchmarks).
-% CDF graph of JCT (with different algorithms).
+\begin{figure}[ht]                                                      %
+    \centering                                                          %
+    \includegraphics[width=0.45\textwidth]{41122-cdf-cost.pdf}          %
+    \caption{Illustration of performance metrics comparison with benchmarks.}
+    \label{fig:cdf_cost}                                                %
+\end{figure}                                                            %
+%-----------------------------------------------------------------------%
 %----------------------------------------------------------------------------------------%
 \subsection{Sensitivity Study}
 \label{subsec:advance}  
@@ -126,15 +136,15 @@ CDF graph of Cost (with different benchmarks).
     The evaluation of staleness of \brlatency~is demonstrated in Fig.\ref{fig:ss_delay}.
 }
 
-\textbf{Uploading Time and Processing Time Distributions.}
-\fixit{
-    The evaluation of distribution of is demonstrated in Fig.\ref{fig:ss_dist}.
-}
-
 \textbf{Number of APs.} %(a.k.a arrival rate)
 The evaluation of scale of is demonstrated in Fig.\ref{fig:ss_scale}.
 \fixit{
     It's shown that on the left of the figure, the SQF algorithm would work better when the system is almost idle; on the right of the figure, SQF and random algorithm could not handle high rejection rate and thus the \emph{average throughput} decreases extremely. 
+}
+
+\textbf{Uploading Time and Processing Time Distributions.}
+\fixit{
+    The evaluation of distribution of is demonstrated in Fig.\ref{fig:ss_dist}.
 }
 
 \textbf{Penalty Factors.}

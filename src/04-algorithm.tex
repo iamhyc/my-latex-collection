@@ -251,7 +251,8 @@ Since the AP subsets are selected periodically, we have $\tilde{\Policy}(\Stat, 
     \end{align}
 \end{lemma}
 \begin{proof}
-    \fixit{Policy Improvement in \cite{dp-control}.}
+    Since policy $\tilde{\Policy}$ is not optimal policy, $V_{\Policy^*}(\Stat) \leq W_{\tilde{\Policy}}(\Stat)$ is straightforward.
+    Due to the \emph{Policy Improvement Property} in \cite{dp-control}, we have $W_{\tilde{\Policy}}(\Stat) \leq W_{\Baseline}(\Stat)$.
 \end{proof}
 
 %----------------------------------------------------------------------------------------%
