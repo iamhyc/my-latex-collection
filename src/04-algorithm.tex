@@ -110,7 +110,7 @@ Moreover, the explicit expressions of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and 
     {\small
     \begin{align}
         &\tilde{W}^{\ES}_{m,j}\Paren{\Stat(t+1)}
-    = \sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}^{\Baseline}[ Q_{m,j}({t+i+1}) ]
+    = \sum_{i=0,\dots,\frac{\Xi}{T}} \gamma^{i} \mathbb{E}^{\Baseline}[ Q_{m,j}({t+i+1}) | \Stat(t+1)]
     \nonumber\\
     &~~~~~~~~~~~~+ \gamma^{\frac{\Xi}{T}} 
     \vecG{\nu}({t+\frac{\Xi}{T}+1})
@@ -122,11 +122,9 @@ Moreover, the explicit expressions of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and 
     }
     where $\vecG{\nu}_{m,j}(t)$, $\mat{P}_{m,j}(\beta_{m,j}(t))$, $\beta_{m,j}(t)$ and $\vec{g}$ are defined below.
     \begin{itemize}
-        \item \fixit{ADD $\mathbb{E}^{\Baseline}(\cdot)$ EXPRESSION AND CHECK APPENDIX}
         \item {\small
         $\vecG{\nu}_{m,j}(t) \define [\Pr\{Q_{m,j}(t)=0\}, \dots, \Pr\{Q_{m,j}(t)=L_{max}\}]$
         }.
-
         \item $\vec{g} \in \mathbb{R}^{(L_{max}+1) \times 1}$, and its $i$-th entry is
         \begin{align}
             [\vec{g}]_{i} = 
@@ -137,7 +135,7 @@ Moreover, the explicit expressions of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and 
             \end{cases}.
             \label{eqn:g_vec}
         \end{align}
-
+        \item \hongyc{The expression of $\mathbb{E}^{\Baseline}[ Q_{m,j}({t+i+1}) | \Stat(t+1)]$ is elaborated in Appendix \ref{append_2}.}
         \item $\mat{P}^{\Baseline}_{m,j}(t) \in \mathbb{R}^{(L_{max}+1) \times (L_{max}+1)}$ denotes the transition matrix under baseline policy $\Baseline$ whose entries are described in Appendix \ref{append_2}.
     \end{itemize}   
 \end{lemma}
@@ -145,7 +143,7 @@ Moreover, the explicit expressions of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and 
     Please refer to Appendix \ref{append_2}.
 \end{proof}
 
-\subsection{The Distributive Algorithm}
+\subsection{Distributive Action Update}
 \label{subsec:ap_alg}
 Although the optimal value function has been approximated via the baseline policy in the previous part, it is still infeasible for all the APs to solve the RHS of the Bellman's equations in a distributive manner with OSI and local \brlatency~only.
 This is because the evaluation of equation (\ref{w_ap}) and (\ref{w_es}) requires the knowledge of GSI and \brlatency~at all APs.
@@ -201,9 +199,10 @@ Moreover, we have the following conclusion on the decomposition of P2.
     }
 \end{lemma}
 \begin{proof}
-    The proof is delete.
-    % We could simply reduce the expression of equation (\ref{w_ap}) and equation (\ref{w_es}) on the RHS of the Bellman's equations based on local OSI, while GSI is not necessary.
-    % because the update policy would only change the cost raised on local AP and the corresponding \emph{candidate server set}.
+    \fixit{
+        We could simply reduce the expression of equation (\ref{w_ap}) and equation (\ref{w_es}) on the RHS of the Bellman's equations based on local OSI, while GSI is not necessary.
+        Because the update policy would only change the cost raised on local AP and the corresponding \emph{candidate server set}.
+    }
 \end{proof}
 
 The optimization of $\tilde{\mathcal{A}}_{y}(t)$ in P3 could be applied by linear search over the solution space of size $|\esSet_{y}|$.
@@ -257,7 +256,6 @@ Finally, we have the following conclusion on the performance of the above propos
 \begin{proof}
     \fixit{
         Policy Improvement in \cite{dp-control}.
-        \blindtext
     }
 \end{proof}
 
