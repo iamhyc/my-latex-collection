@@ -44,7 +44,8 @@ Specifically, we choose the \emph{Selfish Algorithm} which is state-invariant as
 The explicit definition is given as follows.
 \begin{policy}[Selfish Policy]
     \begin{align}
-        \Baseline &\define \Brace{ \Pi_{k}\define\set{\pi_{k,j}|\forall j\in\jSpace} |\forall k\in\apSet },
+        \Baseline &\define \Brace{ \Pi_{k} |\forall k\in\apSet },
+        \Pi_{k} \define \Brace{\pi_{k,j}|\forall j\in\jSpace},
     \end{align}
     where $\pi_{k,j} \define \arg\min_{m\in\esSet_{k}} u_{k,m,j} + c_{m,j}$.
 \end{policy}
@@ -77,7 +78,7 @@ The CDF of cost is illustrated in Fig.\ref{fig:cdf_cost} where the cost of \emph
 \begin{figure}[ht]                                                      %
     \centering                                                          %
     \includegraphics[width=0.45\textwidth]{41122-cdf-cost.pdf}          %
-    \caption{Illustration of performance metrics comparison with benchmarks.}
+    \caption{Illustration of CDF of cost comparison with benchmarks.}
     \label{fig:cdf_cost}                                                %
 \end{figure}                                                            %
 %-----------------------------------------------------------------------%
@@ -86,22 +87,22 @@ The CDF of cost is illustrated in Fig.\ref{fig:cdf_cost} where the cost of \emph
 \label{subsec:advance}  
 
 %FIXME: replace the graphs
-%-----------------------------------------------------------------------------------------------%
-\begin{figure*}[ht!]                                                                            %
-    \centering                                                                                  %
-    \begin{tabular}{ccc}                                                                        %
-        \includegraphics[width=0.30\textwidth]{images/535_LowPressure_NoDelay.pdf}&             %
-        \includegraphics[width=0.30\textwidth]{images/535_LowPressure_LargeDelay_cdf.pdf}&      %
-        \includegraphics[width=0.30\textwidth]{images/535_LowPressure_FullDelay.pdf}            %
-        \\                                                                                      %
-        {\small (a) No \brlatency} &                                                            %
-        {\small (b) Large \brlatency} &                                                         %
-        {\small (c) Whole-interval \brlatency}                                                  %
-    \end{tabular}                                                                               %
-    \caption{Evaluation of Information Staleness Impact on Algorithm Robustness.}               %
-    \label{fig:ss_delay}                                                                        %
-\end{figure*}                                                                                   %
-%-----------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------%
+\begin{figure*}[ht!]                                                                %
+    \centering                                                                      %
+    \begin{tabular}{ccc}                                                            %
+        \includegraphics[width=0.30\textwidth]{LowPressure-d0.pdf}&                 %
+        \includegraphics[width=0.30\textwidth]{LowPressure-d1.pdf}&                 %
+        \includegraphics[width=0.30\textwidth]{LowPressure-d2.pdf}                  %
+        \\                                                                          %
+        {\small (a) No \brlatency} &                                                %
+        {\small (b) General \brlatency} &                                           %
+        {\small (c) Maximum \brlatency}                                             %
+    \end{tabular}                                                                   %
+    \caption{Evaluation of Information Staleness Impact on Algorithm Robustness.}
+    \label{fig:ss_delay}                                                            %
+\end{figure*}                                                                       %
+%-----------------------------------------------------------------------------------%
 
 %-------------------------------------------------------------------%
 \begin{figure}[hbt]                                                 %

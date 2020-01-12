@@ -215,7 +215,7 @@ As a result, the overall algorithm of job dispatching is elaborated in Algorithm
     \For{$t=0,1,2,\dots$}{
         $n \gets t \pmod{N}$\;
         \ForPar{$y \in \mathcal{Y}_{n}$}{
-            Observe $\Stat_{y}(t)$ after $\mathcal{D}_{y}(t)$ at the $y$-th AP.\;
+            The $y$-th AP observes $\Stat_{y}(t)$ after $\mathcal{D}_{y}(t)$.\;
             $\tilde{\mathcal{A}}_{y}(t+1) \gets$ solving P3 with $\Stat_{y}(t), \mathcal{D}_{y}(t)$\;
             $\hat{\mathcal{A}}_{y}(t+1) \gets \tilde{\mathcal{A}}_{y}(t)$ \;
         }
@@ -251,8 +251,10 @@ Since the AP subsets are selected periodically, we have $\tilde{\Policy}(\Stat, 
     \end{align}
 \end{lemma}
 \begin{proof}
-    Since policy $\tilde{\Policy}$ is not optimal policy, $V_{\Policy^*}(\Stat) \leq W_{\tilde{\Policy}}(\Stat)$ is straightforward.
-    Due to the \emph{Policy Improvement Property} in \cite{dp-control}, we have $W_{\tilde{\Policy}}(\Stat) \leq W_{\Baseline}(\Stat)$.
+    \accept{
+        Since policy $\tilde{\Policy}$ is not optimal policy, $V_{\Policy^*}(\Stat) \leq W_{\tilde{\Policy}}(\Stat)$ is straightforward.
+        Due to the \emph{Policy Improvement Property} in \cite{dp-control}, we have $W_{\tilde{\Policy}}(\Stat) \leq W_{\Baseline}(\Stat)$.
+    }
 \end{proof}
 
 %----------------------------------------------------------------------------------------%
