@@ -54,11 +54,10 @@ The explicit definition is given as follows.
 As illustrated in Fig.\ref{fig:bar_plot}, the simulation results straightly show that the proposed 
 algorithm outperforms other benchmarks all the time with less pending jobs in the system, and the system states converge fast from the start.
 The detailed analysis is provided in Fig.\ref{fig:bar_plot} where three metrics are taken to demonstrate different profiles of the benchmarks.
-The simulation results shown in Fig.\ref{fig:bar_plot} (a) 
-The average JCT over all the jobs in Fig.\ref{fig:bar_plot}(b) resembles Fig.\ref{fig:bar_plot}(a) which proves the correctness of cost function selection.
-\fixit{
-    The metric as average cost in Fig.\ref{fig:bar_plot}(c),
-}
+The \emph{average cost} in Fig.\ref{fig:bar_plot}(a) shows that the proposed algorithm collects less cost than other algorithms within the same time duration.
+% Moreover, 
+The \emph{average JCT} of all the jobs in Fig.\ref{fig:bar_plot}(b) resembles the shape of Fig.\ref{fig:bar_plot}(a) which proves the correctness of the cost function selection.
+The \emph{average throughput} in Fig.\ref{fig:bar_plot}(c) is defined as the division of the total number of computed jobs  (i.e., the jobs being accepted by edge servers and finishing the computation) over the time duration, and the results show that the proposed algorithm have the most of jobs computed in the system.
 
 \delete{v20}{
     The CDF of cost is illustrated in Fig.\ref{fig:cdf_cost} where the cost of \emph{SQF policy} is nearly the same as the \emph{selfish policy}, however, the \emph{SQF policy} actually have very poor job departure rate (, throughput) compared with the other's.
