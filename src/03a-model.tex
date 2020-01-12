@@ -1,6 +1,6 @@
 \section{System Model}
 \label{sec:model}
-In this section, we elaborate the model of edge computing networks with random job arrivals, uploading delay and computation time, as well as the distributive job dispatching model with partially observable system state information at each AP.
+In this section, we elaborate the model of edge computing networks with random job arrivals, uploading delay and computation time, as well as the distributed job dispatching model with partially observable system state information at each AP.
 %----------------------------------------------------------------------------------------%
 \subsection{Network Model}
 \begin{figure*}[htp!]
@@ -20,11 +20,11 @@ Let $\esSet_{k} \subseteq \esSet$ be the set of edge servers which can compute t
 We refer to $\esSet_{k}$ as the \emph{candidate server set} of the $k$-th AP, and $\apSet_{m}$ as the \emph{potential AP set} of the $m$-th edge server ($\forall k\in\apSet, m\in\esSet$).
 Different APs may have different candidate servers according to their locations in the network, as illustrated in Fig.\ref{fig:system}.
 In this edge computing network, each AP and edge server periodically broadcast their state information (the state information is defined in the Section \ref{subsec:broadcast}), and one AP updates its strategy of job dispatching when receiving the broadcast state information.
-In this paper, we shall optimize the job dispatching strategy distributively at APs with partially collected state information\wangr{, where both job uploading and state information broadcasting suffer from random transmission latency.}
+In this paper, we shall optimize the job dispatching strategy distributedly at APs with partially collected state information\wangr{, where both job uploading and state information broadcasting suffer from random transmission latency.}
 
 %NOTE: [job space support and arrival process]
 The time axis is organized by time slots.
-The arrivals of the type-$j$ jobs at the $k$-th AP ($\forall k\in\apSet,j\in\jSpace$) in different time slots are assumed to be independent and identically distributive (i.i.d.) Bernoulli random variables, and the arrival probability is denoted as $\lambda_{k,j}$.
+The arrivals of the type-$j$ jobs at the $k$-th AP ($\forall k\in\apSet,j\in\jSpace$) in different time slots are assumed to be independent and identically distributed (i.i.d.) Bernoulli random variables, and the arrival probability is denoted as $\lambda_{k,j}$.
 Let $A_{k,j}(t) \in \set{0,1}$ represents the event of job arrival, where $A_{k,j}(t)=1$ means one type-$j$ job arrives at the $k$-th AP in the $t$-th time slot, and $A_{k,j}(t)=0$ means otherwise.
 Hence,
 \begin{align}
@@ -55,7 +55,7 @@ Let $f_{m,j}$ be its probability mass function (PMF), we have
 
 \subsection{Periodic Broadcast of State Information}
 \label{subsec:broadcast}
-In order to facilitate distributive dispatching for the APs, we refer to every $t_B$ time slots as a broadcast interval.
+In order to facilitate distributed dispatching for the APs, we refer to every $t_B$ time slots as a broadcast interval.
 As illustrated in Fig.\ref{fig:brd-timeline}, at the beginning of each broadcast interval, the local state information (LSI) of APs and edge servers are broadcast, and each AP updates its strategy of job dispatching when \wangr{observing} the broadcast LSIs \wangr{from some APs and edge servers. As a remark notice that the observed LSI may be outdated due to transmission latency among APs and edge servers.}
 The LSI at the APs and edge servers, global state information, and observed LSI at the APs are defined below.
 

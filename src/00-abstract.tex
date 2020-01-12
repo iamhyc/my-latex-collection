@@ -1,13 +1,13 @@
 \begin{abstract}
-    In this paper, we consider the distributive job dispatching problem in an edge computing network residing in a Metropolitan Area Network (MAN), where the job arrivals, uploading latency and computation time are all random.
+    In this paper, we consider the distributed job dispatching problem in an edge computing network residing in a Metropolitan Area Network (MAN), where the job arrivals, uploading latency and computation time are all random.{\tann{(random means there might be a distribution. 'arbitrary' means RenYi in chinese)}} \hongyc{(A: Yes, they follow some distributions.)}
     Specifically, multiple access points (APs) collect jobs from the mobile users, and upload each job to one edge server according to the job type.
     % The job arrivals, uploading latency and computation time are all random.
     APs and edge servers periodically broadcast their local state information.
     The transmission latency of broadcast information is random, and the APs update their job dispatching strategy according to outdated and partially observable broadcast information.
-    We formulate the distributive optimization of job dispatching strategies at all the APs as a partially observable Markov decision process (POMDP), whose minimization objective is a discount measurement of job delivery and computation delay.
+    We formulate the distributed optimization of job dispatching strategies at all the APs as a partially observable Markov decision process (POMDP), whose minimization objective is a discount measurement of job delivery and computation delay.
     The conventional solution for POMDP is impractical due to huge complexity.
     In this paper, we propose a novel low-complexity solution framework to address the issue of algorithm complexity.
     Specifically, we first derive the analytical expression of the approximate value function according to a baseline policy.
-    Based on it, the optimization of job dispatching strategy can be decoupled via an alternative policy iteration algorithm, so that the distributive policy iteration of each AP can be made according to the partially observable system state information.
+    Based on it, the optimization of job dispatching strategy can be decoupled via an alternative policy iteration algorithm, so that the distributed policy iteration of each AP can be made according to the partially observable system state information.
     Finally, an analytical performance lower bound is provided, despite of approximate MDP solution.
 \end{abstract}

@@ -23,8 +23,8 @@ The discount factor $\gamma$ is $0.95$ and the penalty weight $\beta$ is $20$.
 %-----------------------------------------------------------------------------------------------%
 \begin{figure}[ht!]                                                                             %
     \centering                                                                                  %
-    \includegraphics[width=0.45\textwidth]{41122-timeline-number.pdf}                           %
-    \caption{Illustration of number of jobs on all the APs and edge servers over time.}         %
+    \includegraphics[width=0.45\textwidth]{41122-timeline-number-alter.pdf}                     %
+    \caption{Illustration of number of jobs on all the APs and edge servers over time.}
     \label{fig:general_timeline}                                                                %
 \end{figure}                                                                                    %
 %-----------------------------------------------------------------------------------------------%
@@ -51,16 +51,15 @@ The explicit definition is given as follows.
 %NOTE: Basic Performance
 \subsection{Performance Analysis}
 \label{subsec:basic}
-The evaluation results are shown in Fig.\ref{fig:bar_plot} where three metrics are taken to demonstrate the performance of our proposed algorithm with other benchmarks.
-The average cost over time in Fig.\ref{fig:bar_plot}(a)
-The average JCT over all the jobs in Fig.\ref{fig:bar_plot}(b) resembles Fig.\ref{fig:bar_plot}(a) which prove the correctness of cost function selection.
-The metric as average cost in Fig.\ref{fig:bar_plot}(c).
+As illustrated in Fig.\ref{fig:bar_plot}, the simulation results straightly show that the proposed 
+algorithm outperforms other benchmarks all the time with less pending jobs in the system, and the system states converge fast from the start.
+The detailed analysis is provided in Fig.\ref{fig:bar_plot} where three metrics are taken to demonstrate different profiles of the benchmarks.
+The simulation results shown in Fig.\ref{fig:bar_plot} (a) 
+The average JCT over all the jobs in Fig.\ref{fig:bar_plot}(b) resembles Fig.\ref{fig:bar_plot}(a) which proves the correctness of cost function selection.
 \fixit{
-    Average Cost v.s. Algorithms ;
-    Average JCT (job completion time) v.s. Algorithms, Fig.\ref{fig:bar_plot}(b);
-    Average Departure Rate (throughput) v.s. Algorithms, Fig.\ref{fig:bar_plot}(c).
+    The metric as average cost in Fig.\ref{fig:bar_plot}(c),
 }
-Specifically, our proposed algorithm is better than compared algorithms all the time in the timeline figure Fig.\ref{fig:brd-timeline}.
+
 \delete{v20}{
     The CDF of cost is illustrated in Fig.\ref{fig:cdf_cost} where the cost of \emph{SQF policy} is nearly the same as the \emph{selfish policy}, however, the \emph{SQF policy} actually have very poor job departure rate (, throughput) compared with the other's.
     This is because the broadcast information is periodically and outdated, and SQF could not handle the penalty brought by job rejection properly.
@@ -70,7 +69,7 @@ Specifically, our proposed algorithm is better than compared algorithms all the 
 %-----------------------------------------------------------------------%
 \begin{figure}[ht]                                                      %
     \centering                                                          %
-    \includegraphics[width=0.45\textwidth]{41122-bar-graph.pdf}         %
+    \includegraphics[width=0.45\textwidth]{41122-bar-graph-alter.pdf}         %
     \caption{Illustration of performance metrics comparison with benchmarks.}
     \label{fig:bar_plot}                                                %
 \end{figure}                                                            %
@@ -109,7 +108,7 @@ Specifically, our proposed algorithm is better than compared algorithms all the 
 \begin{figure}[hbt]                                                 %
     \centering                                                      %
     \includegraphics[width=0.45\textwidth]{Study-NumAP.pdf}           %
-    \caption{Illustration of impact of scale of APs on algorithms.}
+    \caption{Illustration of impact of number of APs on algorithms.}
     \label{fig:ss_scale}                                            %
 \end{figure}                                                        %
 %-------------------------------------------------------------------%
@@ -117,20 +116,20 @@ Specifically, our proposed algorithm is better than compared algorithms all the 
 %-------------------------------------------------------------------%
 \begin{figure}[hbt]                                                 %
     \centering                                                      %
-    \includegraphics[width=0.45\textwidth]{bar_graph.pdf}           %
+    \includegraphics[width=0.45\textwidth]{Study-ProcDist.pdf}      %
     \caption{Illustration of impact of uploading and processing time distribution on algorithms.}
     \label{fig:ss_dist}                                             %
 \end{figure}                                                        %
 %-------------------------------------------------------------------%
 
-%-------------------------------------------------------------------%
-\begin{figure}[hbt]                                                 %
-    \centering                                                      %
-    \includegraphics[width=0.45\textwidth]{bar_graph.pdf}           %
-    \caption{Illustration of impact of penalty factors on algorithms.}
-    \label{fig:ss_penalty}                                          %
-\end{figure}                                                        %
-%-------------------------------------------------------------------%
+% %-------------------------------------------------------------------%
+% \begin{figure}[hbt]                                                 %
+%     \centering                                                      %
+%     \includegraphics[width=0.45\textwidth]{bar_graph.pdf}           %
+%     \caption{Illustration of impact of penalty factors on algorithms.}
+%     \label{fig:ss_penalty}                                          %
+% \end{figure}                                                        %
+% %-------------------------------------------------------------------%
 
 %NOTE: sensitivity study
 \textbf{Various Signaling Latency.}
@@ -149,10 +148,10 @@ The evaluation of scale of is demonstrated in Fig.\ref{fig:ss_scale}.
     The evaluation of distribution of is demonstrated in Fig.\ref{fig:ss_dist}.
 }
 
-\textbf{Penalty Factors.}
-\fixit{
-    The evaluation of CDF of number of dropped jobs (over the queue limit) is shown in Fig.\ref{fig:ss_penalty}.
-    % CDF of queue length.
-}
+% \textbf{Penalty Factors.}
+% \fixit{
+%     The evaluation of CDF of number of dropped jobs (over the queue limit) is shown in Fig.\ref{fig:ss_penalty}.
+%     % tends to job rejection or not
+% }
 
 %----------------------------------------------------------------------------------------%
