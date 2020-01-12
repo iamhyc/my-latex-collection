@@ -203,7 +203,7 @@ Moreover, we have the following conclusion on the decomposition of P2.
     \label{lemma:w_partial}
 \end{lemma}
 \begin{proof}
-    \hongyc{
+    \accept{
         We could simply reduce the expression of equation (\ref{w_ap}) and equation (\ref{w_es}) on the RHS of the Bellman's equations based on local OSI, while GSI is not necessary.
         Because the update policy would only change the cost raised on local AP and the corresponding \emph{candidate server set}.
     }
@@ -237,10 +237,10 @@ In the $t$-th broadcast interval, the dispatching actions is given by
 This is because we choose different AP subset to update dispatching actions.
 Since the AP subsets are selected periodically, we have $\tilde{\Policy}(\Stat, t) = \tilde{\Policy}(\Stat, t+N), \forall \Stat,t$.
 
-\subsection{\tann{Theoretical Analysis}}
+\subsection{Theoretical Analysis\tann{(tann)}}
 Finally, we have the following conclusion on the performance of the above proposed algorithm.
 \begin{lemma}[Analytical Cost Upper Bound]
-    \label{lemma:perform}
+    \label{lemma:bound}
     Let $W_{\tilde{\Policy}}(\cdot)$ be the value function of the policy $\tilde{\Omega}$
     \begin{align}
         W_{\tilde{\Policy}}(\Stat) \define
@@ -257,15 +257,14 @@ Finally, we have the following conclusion on the performance of the above propos
     \end{align}
 \end{lemma}
 \begin{proof}
-    \accept{
+    Please refer to Appendix \ref{append_3}.
+    \delete{v20}{
         Since policy $\tilde{\Policy}$ is not optimal policy, $V_{\Policy^*}(\Stat) \leq W_{\tilde{\Policy}}(\Stat)$ is straightforward.
         Due to the \emph{Policy Improvement Property} in \cite{dp-control}, we have $W_{\tilde{\Policy}}(\Stat) \leq W_{\Baseline}(\Stat)$.
     }
 \end{proof}
-The worst case could be upper bounded.
 \tann{(Give an explanation briefly what this upper bound means. ) Therefore, The cost? of our algorithm is upper bounded by ... , which means...}
-\hongyc{
-    Therefore, the performance of the proposed algorithm is upper bounded by $W_{\Baseline}(\Stat)$ ($\forall \Stat,t$) which means it is always better than baseline policy. 
-}
+Therefore, the performance of the proposed algorithm is upper bounded by $W_{\Baseline}(\Stat)$ ($\forall \Stat,t$) which means it is always better than baseline policy. 
+% The worst case could be upper bounded.
 %----------------------------------------------------------------------------------------%
 %----------------------------------------------------------------------------------------%
