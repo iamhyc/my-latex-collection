@@ -37,11 +37,10 @@ In Section \ref{sec:conclusion}, the conclusion is given.
 \section{Related Works}
 \label{sec:review}
 %NOTE: resource placement (cache-like problem), service migration
-The recent academic works of scheduling problem in edge computing system focus on the resource allocation, job dispatching, service migration and etc.
-The service migration problem is addressed that the jobs submitted to the edge server could be further migrate to other edge servers if the QoS of the job could not be satisfied.
-For example, the authors in \cite{TON19-WangSq} consider the edge server is one-to-one bind to the base station (BS), and the job migration could be applied according to users' mobility traces via the backhaul network connecting the base stations.
-However, according to a recent research \cite{INFOCOM19-WuC}, the resource re-allocation for running jobs on servers is hard to implement in practice, and thus it's hard for jobs migration among heterogeneous edge servers with different resource configurations.
-Hence, it's more important to determine the job dispatching strategy at the arrival time.
+There have been a number of works focusing on the resource allocation, job dispatching and service migration of edge computing system.
+For example, in \cite{TON19-WangSq}, the edge server is one-to-one bound to the base stations (BSs), and the job migration could be applied according to users' mobility traces via the backhaul network connecting the BSs.
+However, according to a recent research \cite{INFOCOM19-WuC}, the resource re-allocation for running jobs on servers is hard to implement in practice, as it's hard for jobs migration among heterogeneous edge servers with different resource configurations.
+Hence, it might be more important to determine the job dispatching strategy at their arrival time.
 
 %NOTE: single-agent dispatching, single UE/server
 % The resource allocation problem is always joint optimization together with job offload problem, including bandwidth resources, computation resources, and etc.
@@ -58,10 +57,10 @@ However, in practice, it's important to specify whether the \emph{agent} is impl
 % When the dispatching decisions of multiple users/APs are considered, the information exchange scheme should be designed.
 
 %NOTE: centralized and distributive multi-agent related works
-There are some work considering a centralized agent is implemented to apply dispatching decisions for multiple APs.
+There are some work considering a centralized dispatcher design for multiple APs.
 In \cite{IOTJ19-CaoJ}, the authors have one extra dispatch server in the system to queue the offloading jobs and then dispatch them to the edge servers.
 It's obvious that the extra dispatcher design introduces unnecessary transmission latency.
-In \cite{Fan2017}, the authors consider the cooperation of multiple MEC-BSs of computation offloading to other MEC-BSs. However, it doesn't consider the offloading utility impact on other MEC-BSs, i.e. only optimize for one BSs in the cluster.
+In \cite{Fan2017}, the authors consider the cooperation of multiple MEC-BSs of computation offloading to other MEC-BSs. However, it doesn't consider the offloading utility impact on other MEC-BSs, i.e., only optimize for one BSs in the cluster.
 In \cite{JSAC19-AlameddineHA}, the authors consider edge server is one-to-one bind to eNB in smart city wide area network (WAN), and centralized make decision with SDN controllers which has a global view of the network.
 In \cite{TVT19-WangY}, the authors propose full cooperation of the edge servers and the cloud server as mixed integer nonlinear optimization problem (MINLP).
 The authors proposed a parallel optimization scheme where a master computation unit is utilized to collect the global variables from the edge servers and the cloud server without delay. 

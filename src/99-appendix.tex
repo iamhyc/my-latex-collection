@@ -23,7 +23,7 @@ where
     \end{cases}.
 \end{align}
 }
-The dispatching policy $\Policy$ only affects the first entry of the probability vector, i.e. the arrival probability of one job in the time slot.
+The dispatching policy $\Policy$ only affects the first entry of the probability vector, i.e., the arrival probability of one job in the time slot.
 Hence, we denote the time-invariant and policy-independent transition matrix $\hat{\Gamma}^{(k)}_{m,j}$ for the state transition on AP between adjacent time slots which is defined below
 \begin{align}
     \hat{\Gamma}^{(k)}_{m,j} &\define
@@ -40,7 +40,6 @@ where $\bar{p}^{(k)}_{m,j,\xi}$ denotes the probability of job still stay at the
     p^{(k)}_{m,j,\xi} &\define \Pr\{U^{(k)}_{m,j} < (\xi+1) | U^{(k)}_{m,j}>\xi\}
 \end{align}
 denotes the probability of job offloading to the $m$-th edge server.
-% And we note that $\theta^{(k)}_{m,j,0}(t,n)$ is purely determined by the arrival process and dispatching policy of the $j$-th type of job on the $k$-th AP, i.e. $\theta^{(k)}_{m,j,0}(t,n) = \lambda_{k,j} I[\omega_{k,j}(t) = m]$.
 
 Hence, let $\vecG{\Theta}^{(\Policy, k)}_{m,j}(t)$ and $\Gamma^{(k)}_{m,j}$ denotes the probability vector and transition matrix for the adjacent broadcast interval, respectively.
 Based on the previous definition in the time slot, the explicit definitions is given as
@@ -92,7 +91,7 @@ We first denote the offloading matrix $\bar{\Gamma}^{(k)}_{m,j}$ for the type-$j
     \vecG{\rho}^{(k, \Policy)}_{m,j}({t,n}) &\define \hat{\vecG{\Theta}}^{(k, \Policy)}_{m,j}({t,n}) \times \bar{\Gamma}^{(k)}_{m,j}.
 \end{align}
 However, the computational complexity of combinations of all the offloading probability vectors for the $m$-th edge server from its \emph{potential AP set} is unacceptable.
-To alleviate the complexity, we rewrite the combinatorial arrival process on edge server as an equivalent Bernoulli process with \emph{small probability approximation}, i.e. there would be at most one job arriving in one time slot with the probability as the expected arrival rate of the original combinatorial distribution.
+To alleviate the complexity, we rewrite the combinatorial arrival process on edge server as an equivalent Bernoulli process with \emph{small probability approximation}, i.e., there would be at most one job arriving in one time slot with the probability as the expected arrival rate of the original combinatorial distribution.
 Specifically, the probability distribution of $\sum_{k\in\apSet} \vecG{\rho}^{(k, \Policy)}_{m,j}({t,n})$ is approximated as a Bernoulli distribution with the expected arrival rate denoted as $\hat{\beta}^{\Policy}_{m,j}({t,n})$ whose definition is given as
 \begin{align}
     \hat{\beta}^{\Policy}_{m,j}({t,n}) &\define \sum_{k\in\apSet} \sum_{\xi=0,\dots,\Xi-1} \mathbb{E}[\vecG{\rho}^{(k, \Policy)}_{m,j,\xi}({t,n})].
@@ -167,10 +166,9 @@ denote the transition matrix under baseline policy $\Baseline$ between adjacent 
 }
 where $\vec{g}$ is the cost vector taking the definition in equation (\ref{eqn:g_vec}).
 
-\section{ Proof of Lemma \ref{lemma:w_partial} }
-\label{append_3}
-We could simply reduce the expression of equation (\ref{w_ap}) and equation (\ref{w_es}) on the RHS of the Bellman's equations based on local OSI, while GSI is not necessary.
-Because the update policy would only change the cost raised on local AP and the corresponding \emph{candidate server set}.
+% \section{ Proof of Lemma \ref{lemma:w_partial} }
+% \label{append_3}
+
 
 %----------------------------------------------------------------------------------------%
 \delete{v19}{
