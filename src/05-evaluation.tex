@@ -17,15 +17,16 @@ The expected computation time $c_{m,j}$ is also randomly generated in the range 
 
 Each queue for VMs on edge server is with maximum queue length $L_{max}=20$, i.e., there would be at most $100$ jobs on one edge server.
 The arrival rate is arbitrarily generated around $0.03$ for each AP.
+The discount factor $\gamma$ is $0.95$ and the penalty weight $\beta$ is $20$.
 % The arrival rate is taken as small probability with enough APs in the system, and correspondingly enough edge servers for the processing.
 
 %-----------------------------------------------------------------------------------------------%
-\begin{figure}[ht!]                                                                            %
+\begin{figure}[ht!]                                                                             %
     \centering                                                                                  %
     \includegraphics[width=0.45\textwidth]{41122-timeline-number.pdf}                           %
     \caption{Illustration of number of jobs on all the APs and edge servers over time.}         %
     \label{fig:general_timeline}                                                                %
-\end{figure}                                                                                   %
+\end{figure}                                                                                    %
 %-----------------------------------------------------------------------------------------------%
 
 %NOTE: Benchmark Elaboration
@@ -51,17 +52,19 @@ The explicit definition is given as follows.
 \subsection{Performance Analysis}
 \label{subsec:basic}
 The evaluation results are shown in Fig.\ref{fig:bar_plot} where three metrics are taken to demonstrate the performance of our proposed algorithm with other benchmarks.
+The average cost over time in Fig.\ref{fig:bar_plot}(a)
+The average JCT over all the jobs in Fig.\ref{fig:bar_plot}(b) resembles Fig.\ref{fig:bar_plot}(a) which prove the correctness of cost function selection.
+The metric as average cost in Fig.\ref{fig:bar_plot}(c).
 \fixit{
-    Average Cost v.s. Algorithms in Fig.\ref{fig:bar_plot}(a);
+    Average Cost v.s. Algorithms ;
     Average JCT (job completion time) v.s. Algorithms, Fig.\ref{fig:bar_plot}(b);
     Average Departure Rate (throughput) v.s. Algorithms, Fig.\ref{fig:bar_plot}(c).
 }
 Specifically, our proposed algorithm is better than compared algorithms all the time in the timeline figure Fig.\ref{fig:brd-timeline}.
-The CDF of cost is illustrated in Fig.\ref{fig:cdf_cost} where the cost of \emph{SQF policy} is nearly the same as the \emph{selfish policy}, however, the \emph{SQF policy} actually have very poor job departure rate (, throughput) compared with the other's.
-\fixit{
+\delete{v20}{
+    The CDF of cost is illustrated in Fig.\ref{fig:cdf_cost} where the cost of \emph{SQF policy} is nearly the same as the \emph{selfish policy}, however, the \emph{SQF policy} actually have very poor job departure rate (, throughput) compared with the other's.
     This is because the broadcast information is periodically and outdated, and SQF could not handle the penalty brought by job rejection properly.
     And we take \emph{CDF of number of jobs} other than \emph{CDF of cost} which could better reflect the performance of the average JCT target in the simulation when job rejection considered.
-    
 }
 
 %-----------------------------------------------------------------------%
@@ -72,12 +75,12 @@ The CDF of cost is illustrated in Fig.\ref{fig:cdf_cost} where the cost of \emph
     \label{fig:bar_plot}                                                %
 \end{figure}                                                            %
 %-----------------------------------------------------------------------%
-\begin{figure}[ht]                                                      %
-    \centering                                                          %
-    \includegraphics[width=0.45\textwidth]{41122-cdf-cost.pdf}          %
-    \caption{Illustration of performance metrics comparison with benchmarks.}
-    \label{fig:cdf_cost}                                                %
-\end{figure}                                                            %
+% \begin{figure}[ht]                                                      %
+%     \centering                                                          %
+%     \includegraphics[width=0.45\textwidth]{41122-cdf-cost.pdf}          %
+%     \caption{Illustration of performance metrics comparison with benchmarks.}
+%     \label{fig:cdf_cost}                                                %
+% \end{figure}                                                            %
 %-----------------------------------------------------------------------%
 %----------------------------------------------------------------------------------------%
 \subsection{Sensitivity Study}
