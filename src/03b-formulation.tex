@@ -69,7 +69,7 @@ Hence, the optimization of job dispatching policy can be formulated as the follo
 If the GSI $\Stat(t)$ and \brlatency~$\Delay(t)$ are known to all the APs, the MDP in problem P1 can be solved via the following Bellman's equations as in \cite{sutton1998}.
 \begin{align}
     &V\Paren{\Stat(t)} =g\Paren{\Stat(t)}
-        + \gamma\mathbb{E}_{\Delay(t)}\bigg\{
+        + \gamma\mathbb{E}_{\Delay}\bigg\{
             \min_{\Policy(\Stat(t),\Delay(t))}
             \nonumber\\
             &\sum_{\Stat(t+1)} \Pr \Big\{ 

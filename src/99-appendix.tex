@@ -2,7 +2,7 @@
 \appendices
 \section{ Proof of Lemma \ref{lemma:w_ap} }
 \label{append_1}
-At the $n$-th time slot of the $t$-th broadcast interval, let $\hat{\vecG{\Theta}}^{(k,\Policy)}_{m,j}(t,n)$ denote the probability of job existence under dispatching policy $\Policy$ where the explicit definition is given as follows.
+At the $n$-th time slot of the $t$-th broadcast interval, let $\hat{\vecG{\Theta}}^{(k,\Policy)}_{m,j}(t,n)$ denote the probability vector of job existence under dispatching policy $\Policy$ where the explicit definition is given as follows.
 \begin{align}
     \hat{\vecG{\Theta}}^{(k,\Policy)}_{m,j}(t,n) \define \Bracket{
         \hat{\theta}^{(k,\Policy)}_{m,j}(0,t,n),
@@ -215,9 +215,10 @@ Let
 \sum_{t'=1}^{\infty} \gamma^{t'-1} \mathbb{E}^{ \tilde{\Policy} } \Bracket{
 	g\Paren{\Stat(t'), \tilde{\Policy}(\Stat(t'),t-1)}
 	- 	g\Paren{\Stat(t'), \tilde{\Policy}(\Stat(t'),t)}
-}.
+}
 \end{align*}
 }
+denote the improvement gap for policy update.
 According to Proposition 2.3.3 (a) in \cite{dp-control}, we have $\Delta(t)\geq 0$, $\forall t$.
 {\small
 \begin{align*}
