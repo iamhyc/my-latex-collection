@@ -203,8 +203,8 @@ Moreover, we have the following conclusion on the decomposition of P2.
     \label{lemma:w_partial}
 \end{lemma}
 \begin{proof}
-    At the $t$-th broadcast interval, the $y$-th AP in the subset $\mathcal{Y}_{n}$ updates its dispatching actions, which could only affect the current and future cost raised on itself and its corresponding \emph{candidate server set}, i.e., the part of its OSI.
-    Hence, it's obvious that the expression of equation (\ref{w_ap}) and equation (\ref{w_es}) on the RHS of the Bellman's equations could be reduced into the form based only on the OSI of the $y$-th AP ($\forall y\in\mathcal{Y}_{n}$).
+    At the $t$-th broadcast interval, the $y$-th AP in the subset $\mathcal{Y}_{n}$ updates its dispatching actions, which could only affect the future cost raised on itself and its corresponding \emph{candidate server set}, i.e., the part of its OSI.
+    Hence, it's obvious that the expression of equation (\ref{w_ap}) and equation (\ref{w_es}) on the RHS of the Bellman's equations could be reduced into the form based only on the OSI of the $y$-th AP ($\forall y\in\mathcal{Y}_{n}$) as illustrated in equation (\ref{eqn:partial}).
 \end{proof}
 
 The optimization of $\tilde{\mathcal{A}}_{y}(t)$ for the $y$-th AP ($\forall y\in\mathcal{Y}_{n}$) in P3 could be achieved via searching all the edge servers in $\esSet_{y}$, whose computational complexity is $O(JMK)$ per AP. % for evaluating the objective function in equation (\ref{eqn:partial}).
