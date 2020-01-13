@@ -1,6 +1,5 @@
 %NOTE: transition matrix and vector for AP
 \appendices
-\tann{(Currently, Section V is not that long. Some important proofs can be move back to the main text.)}
 \section{ Proof of Lemma \ref{lemma:w_ap} }
 \label{append_1}
 At the $n$-th time slot of the $t$-th broadcast interval, let $\hat{\vecG{\Theta}}^{(k,\Policy)}_{m,j}(t,n)$ denote the probability of job existence under dispatching policy $\Policy$ where the explicit definition is given as follows.
@@ -167,8 +166,8 @@ denote the transition matrix under baseline policy $\Baseline$ between adjacent 
 }
 where $\vec{g}$ is the cost vector taking the definition in equation (\ref{eqn:g_vec}).
 
-\section{ Proof of Lemma \ref{lemma:bound} }
-\label{append_3}
+% \section{ Proof of Lemma \ref{lemma:w_partial} }
+% \label{append_3}
 
 
 %----------------------------------------------------------------------------------------%
@@ -203,4 +202,51 @@ where $\vec{g}$ is the cost vector taking the definition in equation (\ref{eqn:g
         We take approximation on ${\beta}$ as Bernoulli distribution in each time slot.
     \end{proof}
 }
+
+
+
+\section{ Proof of Lemma \ref{lemma:bound} }
+\label{append_3}
+ Since policy $\tilde{\Policy}$ is not optimal policy, $V_{\Policy^*}(\Stat) \leq W_{\tilde{\Policy}}(\Stat)$ is straightforward.
+Let 
+{\small
+\begin{align*}
+\Delta(t)\triangleq  
+\sum_{t'=1}^{\infty} \gamma^{t'-1} \mathbb{E}^{ \tilde{\Policy} } \Bracket{
+	g\Paren{\Stat(t'), \tilde{\Policy}(\Stat(t'),t-1)}
+	- 	g\Paren{\Stat(t'), \tilde{\Policy}(\Stat(t'),t)}
+}.
+\end{align*}
+}
+According to Proposition 2.3.3 (a) in \cite{dp-control}, we have $\Delta(t)\geq 0$, $\forall t$.
+{\small
+\begin{align*}
+&W_{\Baseline}(\Stat)- W_{\tilde{\Policy}}(\Stat)\\
+&= 
+\underbrace{\sum_{t'=1}^{N} \gamma^{t'-1} \mathbb{E}^{ \tilde{\Policy} } \Bracket{
+	g\Paren{\Stat(t'), \tilde{\Policy}(\Stat(t'),0)}
+	- 	g\Paren{\Stat(t'), \tilde{\Policy}(\Stat(t'),t')}
+}}_{\mathfrak{F}(N)}\\
+&+\sum_{t'=N+1}^{+\infty} \gamma^{t'-1} \mathbb{E}^{ \tilde{\Policy} } \Bracket{
+	g\Paren{\Stat(t'), \tilde{\Policy}(\Stat(t'),0)}
+	- 	g\Paren{\Stat(t'), \tilde{\Policy}(\Stat(t'),t')}
+}\\
+&\geq \mathfrak{F}(N)+\underbrace{\sum_{t'=N+1}^{+\infty} \gamma^{t'-1} \mathbb{E}^{ \tilde{\Policy} } \Bracket{
+	g\Paren{\Stat(t'), \tilde{\Policy}(\Stat(t'),0)}
+	- 	g_{\max}
+}}_{\mathfrak{G}(N)},
+\end{align*}
+}
+where $g_{\max}$ denotes the upper-bound of the per-stage cost.
+
+Because  $\mathfrak{F}(N)=\sum_{t=1}^{N}\gamma^{t-1}\Delta(t)\geq 0$, $\mathfrak{F}(N)$ increases as $N$ increases.
+It is obvious that $\mathfrak{G}(N)$ decreases as $N$ increases, and 
+\begin{align*}
+\lim\limits_{N\to+\infty}\mathfrak{G}(N)=0
+\end{align*}
+Hence, 
+\begin{align*}
+\exists N,\ \mbox{s.t. }\ W_{\Baseline}(\Stat)- W_{\tilde{\Policy}}(\Stat)\geq \mathfrak{F}(N)-\mathfrak{G}(N) \geq 0.
+\end{align*}
+
 %----------------------------------------------------------------------------------------%

@@ -30,16 +30,16 @@ The discount factor $\gamma$ is $0.95$ and the penalty weight $\beta$ is $20$.
 %-----------------------------------------------------------------------------------------------%
 
 %NOTE: Benchmark Elaboration
-We compare the proposed algorithm with other three heuristic algorithms which are listed as follows. For each type of jobs,
+We compare the proposed algorithm with other three benchmarks which are listed as follows. For each type of jobs,
 \begin{itemize}
     \item \textbf{Random Dispatching Policy}:
             Randomly choose a dispatching edge server in a time slot; 
-    \item \textbf{Selfish Algorithm}:
+    \item \textbf{Selfish Policy}:
             Always choose the edge server with the minimum expected uploading time together with the expected processing time;
-    \item \textbf{Queue-aware Selfish Algorithm}:
+    \item \textbf{Queue-aware Policy}:
             Always choose the edge server with the minimum expected uploading time together with the expected processing time and queueing time based on the observation of outdated queue states.
 \end{itemize}
-Specifically, we choose the \emph{Selfish Algorithm} which is state-invariant as the initial policy for our proposed algorithm.
+Specifically, we choose the \emph{Selfish Policy} which is state-invariant as the initial policy for our proposed algorithm.
 The explicit definition is given as follows.
 \begin{policy}[Selfish Policy]
     \begin{align}
@@ -51,13 +51,12 @@ The explicit definition is given as follows.
 %NOTE: Basic Performance
 \subsection{Performance Analysis}
 \label{subsec:basic}
-As illustrated in Fig.\ref{fig:bar_plot}, the simulation results straightly show that the proposed 
-algorithm outperforms other benchmarks all the time with less pending jobs in the system, and the system states converge fast from the start.
+As illustrated in Fig.\ref{fig:bar_plot}, the simulation results straightly show that the proposed algorithm outperforms other benchmarks all the time with less pending jobs in the system, and the system converges fast from the start of the time.
 The detailed analysis is provided in Fig.\ref{fig:bar_plot} where three metrics are taken to demonstrate different profiles of the benchmarks.
-The \emph{average cost} in Fig.\ref{fig:bar_plot}(a) shows that the proposed algorithm collects less cost than other algorithms within the same time duration.
+Firstly, the \emph{average cost} in Fig.\ref{fig:bar_plot}(a) shows that the proposed algorithm collects less cost than other algorithms within the same time duration.
 % Moreover, 
-The \emph{average JCT} of all the jobs in Fig.\ref{fig:bar_plot}(b) resembles the shape of Fig.\ref{fig:bar_plot}(a) which proves the correctness of the cost function selection.
-The \emph{average throughput} in Fig.\ref{fig:bar_plot}(c) is defined as the division of the total number of computed jobs  (i.e., the jobs being accepted by edge servers and finishing the computation) over the time duration, and the results show that the proposed algorithm have the most of jobs computed in the system.
+Secondly, the \emph{average JCT} of all the jobs in Fig.\ref{fig:bar_plot}(b) resembles the shape of Fig.\ref{fig:bar_plot}(a) which proves the correctness of the cost function selection.
+Finally, The \emph{average throughput} in Fig.\ref{fig:bar_plot}(c) is defined as the division of the total number of computed jobs (i.e., the jobs being accepted by edge servers and finishing the computation) over the time duration, and the results show that the proposed algorithm have the most of jobs computed in the system.
 
 \delete{v20}{
     The CDF of cost is illustrated in Fig.\ref{fig:cdf_cost} where the cost of \emph{SQF policy} is nearly the same as the \emph{selfish policy}, however, the \emph{SQF policy} actually have very poor job departure rate (, throughput) compared with the other's.
@@ -94,7 +93,7 @@ The \emph{average throughput} in Fig.\ref{fig:bar_plot}(c) is defined as the div
         \includegraphics[width=0.30\textwidth]{LowPressure-d2.pdf}                  %
         \\                                                                          %
         {\small (a) No \brlatency} &                                                %
-        {\small (b) General \brlatency} &                                           %
+        {\small (b) Signaling latency in Section \ref{subsec:setup}} &
         {\small (c) Maximum \brlatency}                                             %
     \end{tabular}                                                                   %
     \caption{Evaluation of Information Staleness Impact on Algorithm Robustness.}
@@ -116,7 +115,7 @@ The \emph{average throughput} in Fig.\ref{fig:bar_plot}(c) is defined as the div
 \begin{figure}[hbt]                                                 %
     \centering                                                      %
     \includegraphics[width=0.45\textwidth]{Study-ProcDist.pdf}      %
-    \caption{Illustration of impact of uploading and processing time distribution on algorithms.}
+    \caption{Illustration of impact of processing time distribution on algorithms.}
     \label{fig:ss_dist}                                             %
 \end{figure}                                                        %
 %-------------------------------------------------------------------%
@@ -131,21 +130,29 @@ The \emph{average throughput} in Fig.\ref{fig:bar_plot}(c) is defined as the div
 % %-------------------------------------------------------------------%
 
 %NOTE: sensitivity study
-\textbf{Various Signaling Latency.}
-\fixit{
-    The evaluation of staleness of \brlatency~is demonstrated in Fig.\ref{fig:ss_delay}.
-}
+\textbf{Signaling Latency.}
+The simulation results of various support of \brlatency~$\mathcal{D}_{k}$ ($\forall k\in\apSet$) are illustrated in Fig.\ref{fig:ss_delay}.
+Specifically, the \brlatency~ of all the APs is set to zero and maximum in in Fig.\ref{fig:ss_delay}(a) and Fig.\ref{fig:ss_delay}(c), respectively.
+With the increase of teh \brlatency, \emph{average cost} increase of all the benchmarks and our proposed algorithms.
+Overall, the CDF of proposed algorithm is always at the leftmost of the figures under all the situations.
+Moreover, the \emph{queue-aware policy} algorithm is sensitive to \brlatency, which performs even  worse than \emph{random policy} algorithm.
 
 \textbf{Number of APs.} %(a.k.a arrival rate)
-The evaluation of scale of is demonstrated in Fig.\ref{fig:ss_scale}.
-\fixit{
-    It's shown that on the left of the figure, the SQF algorithm would work better when the system is almost idle; on the right of the figure, SQF and random algorithm could not handle high rejection rate and thus the \emph{average throughput} decreases extremely. 
-}
+The simulation results of different sized $K$ of AP set are illustrated in Fig.\ref{fig:ss_scale}.
+With the increase of the number of APs, \emph{average cost} increase of all the benchmarks and our proposed algorithms.
+Overall, the \emph{average cost} of the proposed algorithm is the smallest under all the situations.
+Moreover, the performance of the benchmarks is similar to \emph{random policy} algorithm when the number is smaller than $5$, because the system burden is not heavy.
+And the performance of \emph{selfish policy} algorithm is worse than \emph{random policy} algorithm before $K=5$ because it generates a static bipartite graph between the set of APs and edge servers, which actually could not always use all the edge servers.
+% {
+%     It's shown that on the left of the figure, the SQF algorithm would work better when the system is almost idle; on the right of the figure, SQF and random algorithm could not handle high rejection rate and thus the \emph{average throughput} decreases extremely. 
+% }
 
-\textbf{Uploading Time and Processing Time Distributions.}
-\fixit{
-    The evaluation of distribution of is demonstrated in Fig.\ref{fig:ss_dist}.
-}
+\textbf{Processing Time Distributions.}
+The simulation results of various distributions of processing time are illustrated in Fig.\ref{fig:ss_dist}, where the $c_{m,j}$ of the processing time distribution $\mathbb{G}(1/c_{m,j})$ ($\forall m\in\esSet,j\in\jSpace$) is generated within different ranges.
+With the increase of $c_{m,j}$, \emph{average cost} increase of all the benchmarks and our proposed algorithms.
+Overall, the \emph{average cost} of the proposed algorithm is the smallest under all the situations.
+Moreover, the curves become flat after the range $[40,50]$ because the job rejection penalty domains the cost collected.
+Moreover, the performance of \emph{selfish policy} algorithm approaches \emph{queue-aware policy} algorithm when $c_{m,j}$ increases, which shows that the latter could not handle the job rejection situation properly.
 
 % \textbf{Penalty Factors.}
 % \fixit{
