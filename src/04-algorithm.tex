@@ -187,9 +187,8 @@ Moreover, we have the following conclusion on the decomposition of P2.
 \begin{lemma}[]
     The optimization problem in P2 can be equivalently decoupled into local optimization problems at APs.
     Specifically, the local optimization at the $y$-th AP ($\forall y\in\mathcal{Y}_{n}$) can be written as
-    {\small
     \begin{align}
-        \textbf{P3:}~
+        &\textbf{P3:}\nonumber\\
         &\min_{ \tilde{\mathcal{A}}_{y}(t) }
         \mathbb{E}_{\set{ \Stat_{y}(t+1)|\Stat_{y}(t), \tilde{\mathcal{A}}_{y}(t) }}
         \nonumber\\
@@ -198,8 +197,7 @@ Moreover, we have the following conclusion on the decomposition of P2.
             +\tilde{W}^{\ES}_{m,j}\Paren{\Stat_{y}(t+1)}
         }.
         \label{eqn:partial}
-    \end{align}
-    }
+    \end{align} 
     \label{lemma:w_partial}
 \end{lemma}
 \begin{proof}
@@ -248,7 +246,7 @@ At the $t$-th broadcast interval, the dispatching actions is given by
 This is because we choose different AP subset to update dispatching actions.
 Since the AP subsets are selected periodically, we have $\tilde{\Policy}(\Stat, t) = \tilde{\Policy}(\Stat, t+N), \forall \Stat,t$.
 
-\subsection{\tann{Theoretical Analysis}}
+\subsection{{Theoretical Analysis}}
 Finally, we have the following conclusion on the performance of the above proposed algorithm.
 \begin{lemma}[Analytical Cost Upper Bound]
     \label{lemma:bound}
