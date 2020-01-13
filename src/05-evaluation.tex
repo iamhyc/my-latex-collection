@@ -11,7 +11,7 @@ In the simulation, there are $K=5$ APs, $M=3$ edge servers and $J=5$ types of jo
 The edge servers are all fully-accessible to all the APs, i.e., $\esSet_{k}=\esSet$ ($\forall k\in\apSet$).
 
 The time slot duration is 50 milliseconds and one broadcast interval consists of $t_{B}=20$ time slots, i.e., its duration is $1$ second.
-% The distributions of arrival rate, uploading time and processing time are generated randomly.
+The \brlatency~is with the support $[10,16]$ within one broadcast interval.
 The maximum uploading time is $3$ seconds, i.e., $\Xi = 3t_B$, and the distribution of $\mathbb{U}_{k,m,j}(\Xi)$ is arbitrarily generated within the support $[0, \Xi]$.
 The expected computation time $c_{m,j}$ is also randomly generated in the range $[30,50]$ (with the unit of time slot).
 
@@ -49,7 +49,7 @@ More insights on the performance comparison is provided in Fig.\ref{fig:bar_plot
 In the former, the average job response times, measuring the average number of broadcast intervals from job's arrival at one AP to the completeness of computation at one edge server, are compared.
 It can be observed that the proposed policy still outperforms all the benchmarks.
 In Fig.\ref{fig:bar_plot}(c), the job dropping rates, measuring the ratio of jobs dropped by edge servers due to queue overflow, are also compared.
-\hongyc{It is shown that the proposed policy can process the approximately the same number of jobs as queue-aware and random algorithm, while with the minimum average cost and job response time.}
+\hongyc{It is shown that the proposed policy can process the approximately the same number of jobs as Queue-aware Policy and Random Policy, while with the minimum average cost and job response time.}
 Finally, an realization of job dispatching is illustrated in Fig.\ref{fig:general_timeline}, where the number of jobs in the system is plot versus the index of broadcast interval.
 It can be observed that the proposed policy manage to keep the number of jobs in lower level, compared with the benchmarks.
 This demonstrate its high dispatching efficiency.
@@ -83,7 +83,7 @@ This demonstrate its high dispatching efficiency.
         \includegraphics[width=0.30\textwidth]{LowPressure-d2.pdf}                  %
         \\                                                                          %
         {\small (a) No \brlatency} &                                                %
-        {\small (b) Signaling latency with Support $[12,20]$} &
+        {\small (b) Signaling latency with Support $[10,16]$} &
         {\small (c) Maximum \brlatency}                                             %
     \end{tabular}                                                                   %
     \caption{Algorithm Robustness versus Signaling Latency.}
@@ -121,28 +121,28 @@ This demonstrate its high dispatching efficiency.
 
 %NOTE: sensitivity study
 \textbf{Signaling Latency.}
-The simulation results of various support with \brlatency~$\mathcal{D}_{k}$ ($\forall k\in\apSet$) are illustrated in Fig.\ref{fig:ss_delay}.
-Specifically, the \brlatency~ of all the APs is set to zero and maximum in in Fig.\ref{fig:ss_delay}(a) and Fig.\ref{fig:ss_delay}(c), respectively.
-With the increase of teh \brlatency, \emph{average cost} increase of all the benchmarks and our proposed algorithms.
-Overall, the CDF of proposed algorithm is always at the leftmost of the figures under all the situations.
-Moreover, the \emph{queue-aware policy} algorithm is sensitive to \brlatency, which performs even  worse than \emph{random policy} algorithm.
+The simulation results with various supports with \brlatency~$\mathcal{D}_{k}$ ($\forall k\in\apSet$) are illustrated in Fig.\ref{fig:ss_delay}, where the cumulative distribution function (CDF) of the job number in the system is plotted.
+Specifically, the \brlatency~of all the APs is set to zero and $20$ in Fig.\ref{fig:ss_delay}(a) and Fig.\ref{fig:ss_delay}(c), respectively, and the \brlatency~is a random variable with support $[10,16]$ in Fig.\ref{fig:ss_delay}(b).
+It can be observed from Fig.\ref{fig:ss_delay}(a) and Fig.\ref{fig:ss_delay}(c) that, with the increasing \brlatency, the performance of Queue-aware Policy becomes worse.
+It outperforms Random Policy in Fig.5(a) with zero \brlatency~(achieving a smaller number of jobs in the system), and becomes worse in Fig.5(c) with large \brlatency.
+This demonstrates that the Queue-aware Policy is sensitive to the \brlatency.
+In all the figures, the proposed policy performs better than the benchmarks, which demonstrate the robustness of its performance versus signaling latency.
 
 \textbf{Number of APs.} %(a.k.a arrival rate)
-The simulation results of different sized $K$ of AP set are illustrated in Fig.\ref{fig:ss_scale}.
-With the increase of the number of APs, \emph{average cost} increase of all the benchmarks and our proposed algorithms.
-Overall, the \emph{average cost} of the proposed algorithm is the smallest under all the situations.
-Moreover, the performance of the benchmarks is similar to \emph{random policy} algorithm when the number is smaller than $5$, because the system burden is not heavy.
-And the performance of \emph{selfish policy} algorithm is worse than \emph{random policy} algorithm before $K=5$ because it generates a static bipartite graph between the set of APs and edge servers, which actually could not always use all the edge servers.
-% {
-%     It's shown that on the left of the figure, the SQF algorithm would work better when the system is almost idle; on the right of the figure, SQF and random algorithm could not handle high rejection rate and thus the \emph{average throughput} decreases extremely. 
-% }
+The average system cost versus the number of APs is illustrated in Fig.\ref{fig:ss_scale}.
+With the increasing AP numbers, the average system cost increases in all the benchmarks and our proposed Policy.
+It can be observed that the proposed policy has better performance than the benchmarks for all numbers of APs.
+Moreover, the performance gain becomes significant when the computation load is heavy ($K$ is large).
+This demonstrates the dispatching efficiency of the proposed policy with heavy load.
+On the other hand, the gain is negligible for light load ($K=3$), where the computation capability is sufficient and dispatcher optimization may not be necessary.
 
 \textbf{Processing Time Distributions.}
 The simulation results of various distributions of processing time are illustrated in Fig.\ref{fig:ss_dist}, where the $c_{m,j}$ of the processing time distribution $\mathbb{G}(1/c_{m,j})$ ($\forall m\in\esSet,j\in\jSpace$) is generated within different ranges.
-With the increase of $c_{m,j}$, \emph{average cost} increase of all the benchmarks and our proposed algorithms.
-Overall, the \emph{average cost} of the proposed algorithm is the smallest under all the situations.
-Moreover, the curves become flat after the range $[40,50]$ because the job rejection penalty domains the cost collected.
-Moreover, the performance of \emph{selfish policy} algorithm approaches \emph{queue-aware policy} algorithm when $c_{m,j}$ increases, which shows that the latter could not handle the job rejection situation properly.
+Generally speaking, with the increasing average processing time, the average system cost increases in all the benchmarks and our proposed policy.
+The simulation results are consistent with Fig.\ref{fig:ss_scale}.
+It can be observed that the proposed policy has better performance than the benchmarks.
+Moreover, the performance gain becomes significant when the computation time is long (the computation load is heavy).
+On the other hand, the gain is negligible for short computation time (the computation load is light).
 
 % \textbf{Penalty Factors.}
 % \fixit{
