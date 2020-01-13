@@ -13,10 +13,10 @@ The edge servers are all fully-accessible to all the APs, i.e., $\esSet_{k}=\esS
 The time slot duration is 50 milliseconds and one broadcast interval consists of $t_{B}=20$ time slots, i.e., its duration is $1$ second.
 % The distributions of arrival rate, uploading time and processing time are generated randomly.
 The maximum uploading time is $3$ seconds, i.e., $\Xi = 3t_B$, and the distribution of $\mathbb{U}_{k,m,j}(\Xi)$ is arbitrarily generated within the support $[0, \Xi]$.
-The expected computation time $c_{m,j}$ is also randomly generated in the range $[30,50]$ with the unit of time slot.
+The expected computation time $c_{m,j}$ is also randomly generated in the range $[30,50]$ (with the unit of time slot).
 
 Each queue for VMs on edge server is with maximum queue length $L_{max}=20$, i.e., there would be at most $100$ jobs on one edge server.
-The arrival rate is arbitrarily generated around $0.03$ for each AP.
+The arrival rate is around $0.03$ for each AP.
 The discount factor $\gamma$ is $0.95$ and the penalty weight $\beta$ is $20$.
 % The arrival rate is taken as small probability with enough APs in the system, and correspondingly enough edge servers for the processing.
 
@@ -30,39 +30,29 @@ The discount factor $\gamma$ is $0.95$ and the penalty weight $\beta$ is $20$.
 %-----------------------------------------------------------------------------------------------%
 
 %NOTE: Benchmark Elaboration
-We compare the proposed algorithm with other three benchmarks which are listed as follows. For each type of jobs,
+We compare the proposed algorithm with other three benchmarks which are listed as follows.
 \begin{itemize}
     \item \textbf{Random Dispatching Policy}:
             Randomly choose a dispatching edge server in a time slot; 
     \item \textbf{Selfish Policy}:
-            Always choose the edge server with the minimum expected uploading time together with the expected processing time;
+            Always choose the edge server with the minimum sum of the expected uploading time and processing time;
     \item \textbf{Queue-aware Policy}:
-            Always choose the edge server with the minimum expected uploading time together with the expected processing time and queueing time based on the observation of outdated queue states.
+            Always choose the edge server with the minimum sum of expected uploading time, processing time and queueing time based on the observation of outdated queue states.
 \end{itemize}
-Specifically, we choose the \emph{Selfish Policy} which is state-invariant as the initial policy for our proposed algorithm.
-The explicit definition is given as follows.
-\begin{policy}[Selfish Policy]
-    \begin{align}
-        \Baseline \define \Brace{ \Pi_{k} |\forall k\in\apSet }, \Pi_{k} \define \Brace{{\pi_{k,j}|\forall j\in\jSpace}}
-    \end{align}
-    where $\pi_{k,j} \define \arg\min_{m\in\esSet_{k}} u_{k,m,j} + c_{m,j}$.
-\end{policy}
-
+Moreover, we choose the \emph{Selfish Policy} as the initial dispatching action for our proposed algorithm (Algorithm \ref{alg_1}).
 %NOTE: Basic Performance
 \subsection{Performance Analysis}
 \label{subsec:basic}
-As illustrated in Fig.\ref{fig:general_timeline}, the simulation results straightly show that the proposed algorithm outperforms other benchmarks all the time with less pending jobs in the system, and the system converges fast from the start of the time.
-The detailed analysis is provided in Fig.\ref{fig:bar_plot} where three metrics are taken to demonstrate different profiles of the benchmarks.
-Firstly, the \emph{average cost} in Fig.\ref{fig:bar_plot}(a) shows that the proposed algorithm collects less cost than other algorithms within the same time duration.
-% Moreover, 
-Secondly, the \emph{average JCT} of all the jobs in Fig.\ref{fig:bar_plot}(b) resembles the shape of Fig.\ref{fig:bar_plot}(a) which proves the correctness of the cost function selection.
-Finally, The \emph{average throughput} in Fig.\ref{fig:bar_plot}(c) is defined as the division of the total number of computed jobs (i.e., the jobs being accepted by edge servers and finishing the computation) over the time duration, and the results show that the proposed algorithm have the most of jobs computed in the system.
-
-\delete{v20}{
-    The CDF of cost is illustrated in Fig.\ref{fig:cdf_cost} where the cost of \emph{SQF policy} is nearly the same as the \emph{selfish policy}, however, the \emph{SQF policy} actually have very poor job departure rate (, throughput) compared with the other's.
-    This is because the broadcast information is periodically and outdated, and SQF could not handle the penalty brought by job rejection properly.
-    And we take \emph{CDF of number of jobs} other than \emph{CDF of cost} which could better reflect the performance of the average JCT target in the simulation when job rejection considered.
-}
+As illustrated in Fig.\ref{fig:bar_plot}(a), the proposed (MDP) algorithm outperforms all the benchmarks in the average system cost.
+Moreover, the Queue-aware has better performance than the other benchmarks due to its capability of adapting action according to the outdated observation of queueing state.
+More insights on the performance comparison is provided in Fig.\ref{fig:bar_plot}(b) and (c).
+In the former, the average job response times, measuring the average number of broadcast intervals from job's arrival at one AP to the completeness of computation at one edge server, are compared.
+It can be observed that the proposed policy still outperforms all the benchmarks.
+In Fig.\ref{fig:bar_plot}(c), the job dropping rates, measuring the ratio of jobs dropped by edge servers due to queue overflow, are also compared.
+\hongyc{It is shown that the proposed policy can process the approximately the same number of jobs as queue-aware and random algorithm, while with the minimum average cost and job response time.}
+Finally, an realization of job dispatching is illustrated in Fig.\ref{fig:general_timeline}, where the number of jobs in the system is plot versus the index of broadcast interval.
+It can be observed that the proposed policy manage to keep the number of jobs in lower level, compared with the benchmarks.
+This demonstrate its high dispatching efficiency.
 
 %-----------------------------------------------------------------------%
 \begin{figure}[ht]                                                      %
@@ -93,10 +83,10 @@ Finally, The \emph{average throughput} in Fig.\ref{fig:bar_plot}(c) is defined a
         \includegraphics[width=0.30\textwidth]{LowPressure-d2.pdf}                  %
         \\                                                                          %
         {\small (a) No \brlatency} &                                                %
-        {\small (b) Signaling latency in Section \ref{subsec:setup}} &
+        {\small (b) Signaling latency with Support $[12,20]$} &
         {\small (c) Maximum \brlatency}                                             %
     \end{tabular}                                                                   %
-    \caption{Evaluation of Information Staleness Impact on Algorithm Robustness.}
+    \caption{Algorithm Robustness versus Signaling Latency.}
     \label{fig:ss_delay}                                                            %
 \end{figure*}                                                                       %
 %-----------------------------------------------------------------------------------%
@@ -106,7 +96,7 @@ Finally, The \emph{average throughput} in Fig.\ref{fig:bar_plot}(c) is defined a
 \begin{figure}[hbt]                                                 %
     \centering                                                      %
     \includegraphics[width=0.45\textwidth]{Study-NumAPs.pdf}        %
-    \caption{Illustration of impact of number of APs on algorithms.}
+    \caption{Illustration of average system cost versus the number of APs.}
     \label{fig:ss_scale}                                            %
 \end{figure}                                                        %
 %-------------------------------------------------------------------%
@@ -115,7 +105,7 @@ Finally, The \emph{average throughput} in Fig.\ref{fig:bar_plot}(c) is defined a
 \begin{figure}[hbt]                                                 %
     \centering                                                      %
     \includegraphics[width=0.45\textwidth]{Study-ProcDist.pdf}      %
-    \caption{Illustration of impact of processing time distribution on algorithms.}
+    \caption{Illustration of average system cost versus the processing time distributions.}
     \label{fig:ss_dist}                                             %
 \end{figure}                                                        %
 %-------------------------------------------------------------------%
@@ -131,7 +121,7 @@ Finally, The \emph{average throughput} in Fig.\ref{fig:bar_plot}(c) is defined a
 
 %NOTE: sensitivity study
 \textbf{Signaling Latency.}
-The simulation results of various support of \brlatency~$\mathcal{D}_{k}$ ($\forall k\in\apSet$) are illustrated in Fig.\ref{fig:ss_delay}.
+The simulation results of various support with \brlatency~$\mathcal{D}_{k}$ ($\forall k\in\apSet$) are illustrated in Fig.\ref{fig:ss_delay}.
 Specifically, the \brlatency~ of all the APs is set to zero and maximum in in Fig.\ref{fig:ss_delay}(a) and Fig.\ref{fig:ss_delay}(c), respectively.
 With the increase of teh \brlatency, \emph{average cost} increase of all the benchmarks and our proposed algorithms.
 Overall, the CDF of proposed algorithm is always at the leftmost of the figures under all the situations.
@@ -160,4 +150,18 @@ Moreover, the performance of \emph{selfish policy} algorithm approaches \emph{qu
 %     % tends to job rejection or not
 % }
 
+%----------------------------------------------------------------------------------------%
+\delete{v20}{
+    The CDF of cost is illustrated in Fig.\ref{fig:cdf_cost} where the cost of \emph{SQF policy} is nearly the same as the \emph{selfish policy}, however, the \emph{SQF policy} actually have very poor job departure rate (, throughput) compared with the other's.
+    This is because the broadcast information is periodically and outdated, and SQF could not handle the penalty brought by job rejection properly.
+    And we take \emph{CDF of number of jobs} other than \emph{CDF of cost} which could better reflect the performance of the average JCT target in the simulation when job rejection considered.
+}
+\delete{v20.2}{
+    As illustrated in Fig.\ref{fig:general_timeline}, the simulation results straightly show that the proposed algorithm outperforms other benchmarks all the time with less pending jobs in the system, and the system converges fast from the start of the time.
+    The detailed analysis is provided in Fig.\ref{fig:bar_plot} where three metrics are taken to demonstrate different profiles of the benchmarks.
+    Firstly, the \emph{average cost} in Fig.\ref{fig:bar_plot}(a) shows that the proposed algorithm collects less cost than other algorithms within the same time duration.
+    % Moreover, 
+    Secondly, the \emph{average JCT} of all the jobs in Fig.\ref{fig:bar_plot}(b) resembles the shape of Fig.\ref{fig:bar_plot}(a) which proves the correctness of the cost function selection.
+    Finally, The \emph{average throughput} in Fig.\ref{fig:bar_plot}(c) is defined as the division of the total number of computed jobs (i.e., the jobs being accepted by edge servers and finishing the computation) over the time duration, and the results show that the proposed algorithm have the most of jobs computed in the system.
+}
 %----------------------------------------------------------------------------------------%
