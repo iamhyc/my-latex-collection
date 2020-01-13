@@ -218,8 +218,10 @@ Let
 }
 \end{align*}
 }
-denote the improvement gap for policy update.
+denote the improvement for the $t$-th policy update.
 According to Proposition 2.3.3 (a) in \cite{dp-control}, we have $\Delta(t)\geq 0$, $\forall t$.
+
+Hence, we have
 {\small
 \begin{align*}
 &W_{\Baseline}(\Stat)- W_{\tilde{\Policy}}(\Stat)\\
@@ -237,9 +239,7 @@ According to Proposition 2.3.3 (a) in \cite{dp-control}, we have $\Delta(t)\geq 
 	- 	g_{\max}
 }}_{\mathfrak{G}(N)},
 \end{align*}
-}
-where $g_{\max}$ denotes the upper-bound of the per-stage cost.
-
+}where $g_{\max}$ denotes the upper-bound of the per-stage cost $g(\cdot)$.
 Because  $\mathfrak{F}(N)=\sum_{t=1}^{N}\gamma^{t-1}\Delta(t)\geq 0$, $\mathfrak{F}(N)$ increases as $N$ increases.
 It is obvious that $\mathfrak{G}(N)$ increases as $N$ increases, and 
 \begin{align*}
