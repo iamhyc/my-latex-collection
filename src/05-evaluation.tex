@@ -16,7 +16,7 @@ The maximum uploading time is $3$ seconds, i.e., $\Xi = 3t_B$, and the distribut
 The expected computation time $c_{m,j}$ is also randomly generated in the range $[30,50]$ (with the unit of time slot).
 
 Each queue for VMs on edge server is with maximum queue length $L_{max}=20$, i.e., there would be at most $100$ jobs on one edge server.
-The arrival rate is around $0.03$ for each AP.
+The arrival rate is around $0.03$ in each time slot for each AP.
 The discount factor $\gamma$ is $0.95$ and the penalty weight $\beta$ is $20$.
 % The arrival rate is taken as small probability with enough APs in the system, and correspondingly enough edge servers for the processing.
 
@@ -87,7 +87,7 @@ This demonstrate its high dispatching efficiency.
         {\small (c) Maximum \brlatency}                                             %
     \end{tabular}                                                                   %
     \caption{Algorithm Robustness versus Signaling Latency.}
-    \label{fig:ss_delay}                                                            %
+    \label{fig:ss_signal}                                                            %
 \end{figure*}                                                                       %
 %-----------------------------------------------------------------------------------%
 
@@ -121,9 +121,9 @@ This demonstrate its high dispatching efficiency.
 
 %NOTE: sensitivity study
 \textbf{Signaling Latency.}
-The simulation results with various supports with \brlatency~$\mathcal{D}_{k}$ ($\forall k\in\apSet$) are illustrated in Fig.\ref{fig:ss_delay}, where the cumulative distribution function (CDF) of the job number in the system is plotted.
-Specifically, the \brlatency~of all the APs is set to zero and $20$ in Fig.\ref{fig:ss_delay}(a) and Fig.\ref{fig:ss_delay}(c), respectively, and the \brlatency~is a random variable with support $[10,16]$ in Fig.\ref{fig:ss_delay}(b).
-It can be observed from Fig.\ref{fig:ss_delay}(a) and Fig.\ref{fig:ss_delay}(c) that, with the increasing \brlatency, the performance of Queue-aware Policy becomes worse.
+The simulation results with various supports with \brlatency~$\mathcal{D}_{k}$ ($\forall k\in\apSet$) are illustrated in Fig.\ref{fig:ss_signal}, where the cumulative distribution function (CDF) of the job number in the system is plotted.
+Specifically, the \brlatency~of all the APs is set to zero and $20$ in Fig.\ref{fig:ss_signal}(a) and Fig.\ref{fig:ss_signal}(c), respectively, and the \brlatency~is a random variable with support $[10,16]$ in Fig.\ref{fig:ss_signal}(b).
+It can be observed from Fig.\ref{fig:ss_signal}(a) and Fig.\ref{fig:ss_signal}(c) that, with the increasing \brlatency, the performance of Queue-aware Policy becomes worse.
 It outperforms Random Policy in Fig.5(a) with zero \brlatency~(achieving a smaller number of jobs in the system), and becomes worse in Fig.5(c) with large \brlatency.
 This demonstrates that the Queue-aware Policy is sensitive to the \brlatency.
 In all the figures, the proposed policy performs better than the benchmarks, which demonstrate the robustness of its performance versus signaling latency.

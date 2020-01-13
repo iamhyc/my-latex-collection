@@ -1,6 +1,6 @@
 \section{System Model}
 \label{sec:model}
-In this section, we elaborate the model of edge computing networks with random job arrivals, uploading delay and computation time, as well as the distributed job dispatching model with partially observable system state information at each AP.
+In this section, we elaborate the model of edge computing networks with random job arrivals, uploading latency and computation time, as well as the distributed job dispatching model with partially observable system state information at each AP.
 %----------------------------------------------------------------------------------------%
 \subsection{Network Model}
 \begin{figure*}[htp!]
@@ -20,7 +20,7 @@ Let $\esSet_{k} \subseteq \esSet$ be the set of edge servers which can compute t
 We refer to $\esSet_{k}$ as the \emph{candidate server set} of the $k$-th AP, and $\apSet_{m}$ as the \emph{potential AP set} of the $m$-th edge server ($\forall k\in\apSet, m\in\esSet$).
 Different APs may have different candidate servers according to their locations in the network, as illustrated in Fig.\ref{fig:system}.
 In this edge computing network, each AP and edge server periodically broadcast their state information (the state information is defined in the Section \ref{subsec:broadcast}), and one AP updates its strategy of job dispatching when receiving the broadcast state information.
-In this paper, we shall optimize the job dispatching strategy distributed at APs with partially collected state information\wangr{, where both job uploading and state information broadcasting suffer from random transmission latency.}
+In this paper, we shall optimize the job dispatching strategy distributed at APs with partially collected state information{, where both job uploading and state information broadcasting suffer from random transmission latency.}
 
 %NOTE: [job space support and arrival process]
 The time axis is organized by time slots.
@@ -44,7 +44,7 @@ For each job type, the uploaded jobs are computed in a First-Come-First-Serve (F
 Hence, a processing queue with a maximum job number $L_{max}$ is established for each VM.
 The arrival jobs will be discarded when the processing queue is full.
 Furthermore, we adopt the \emph{unrelated machines assumption} as in \cite{tan-online}, and assume that the computation time of different job types on different edge servers follows independent memoryless geometric distribution 
-\footnote{\wangr{In this paper, we adopt the memoryless geometric distribution to simplify the elaboration of notations. In fact, the proposed algorithm can be easily extended to other distributions.}}
+\footnote{{In this paper, we adopt the memoryless geometric distribution to simplify the elaboration of notations. In fact, the proposed algorithm can be easily extended to other distributions.}}
 with different expectations \cite{TOWC18-HuangKb}.
 Let $\mathbb{G}(1/c_{m,j})$ be the distribution of the computation time slots for the type-$j$ jobs on the $m$-th edge server, where $\mathbb{G}$ denotes the geometric distribution, and $c_{m,j}$ is the expectation.
 Let $f_{m,j}$ be its probability mass function (PMF), we have
@@ -56,7 +56,7 @@ Let $f_{m,j}$ be its probability mass function (PMF), we have
 \subsection{Periodic Broadcast of State Information}
 \label{subsec:broadcast}
 In order to facilitate distributed dispatching for the APs, we refer to every $t_B$ time slots as a broadcast interval.
-As illustrated in Fig.\ref{fig:brd-timeline}, at the beginning of each broadcast interval, the local state information (LSI) of APs and edge servers are broadcast, and each AP updates its strategy of job dispatching when \wangr{observing} the broadcast LSIs \wangr{from some APs and edge servers. As a remark notice that the observed LSI may be outdated due to transmission latency among APs and edge servers.}
+As illustrated in Fig.\ref{fig:brd-timeline}, at the beginning of each broadcast interval, the local state information (LSI) of APs and edge servers are broadcast, and each AP updates its strategy of job dispatching when {observing} the broadcast LSIs {from some APs and edge servers. As a remark notice that the observed LSI may be outdated due to transmission latency among APs and edge servers.}
 The LSI at the APs and edge servers, global state information, and observed LSI at the APs are defined below.
 
 %NOTE: State and Broadcast Information for AP
@@ -69,7 +69,7 @@ The LSI at the APs and edge servers, global state information, and observed LSI 
     \begin{align}
         \mathcal{R}_{k}(t) \define
         \Paren{
-            \Brace{\vec{R}^{(k)}_{m,j}(t,0) | \forall m\in\esSet,j\in\jSpace},
+            \Brace{\vec{R}^{(k)}_{m,j}(t,0) \Big| \forall m\in\esSet,j\in\jSpace},
             \mathcal{A}_{k}(t)
         },
     \end{align}
@@ -77,12 +77,12 @@ The LSI at the APs and edge servers, global state information, and observed LSI 
     where
     \begin{align}
         \vec{R}^{(k)}_{m,j}(t,0) \define \Paren{
-            R^{(k)}_{m,j}(0,t,0), \dots, R^{(k)}_{m,j}(\Xi,t,0) )
+            R^{(k)}_{m,j}(0,t,0), \dots, R^{(k)}_{m,j}(\Xi,t,0)
         },
     \end{align}
     and
     \begin{align}
-        \mathcal{A}_{k}(t) &\define \Brace{\omega_{k,j}(t) | \forall j\in\jSpace}
+        \mathcal{A}_{k}(t) &\define \Brace{\omega_{k,j}(t) \Big| \forall j\in\jSpace}
     \end{align}
     is referred as the dispatching actions of the $k$-th AP at the start of the $t$-th broadcast interval.
 \end{definition}
@@ -93,7 +93,7 @@ The LSI at the APs and edge servers, global state information, and observed LSI 
     The LSI of the $m$-th edge server at the $t$-th broadcast interval is defined as
     \begin{align}
         \mathcal{Q}_{m}(t) \define \Brace{
-            Q_{m,j}(t, 0) | \forall j\in\jSpace
+            Q_{m,j}(t, 0) \Big| \forall j\in\jSpace
         }.
     \end{align}
 \end{definition}
@@ -103,8 +103,8 @@ The LSI at the APs and edge servers, global state information, and observed LSI 
     \begin{align}
         \Stat(t) \define
             \Paren{
-                \Brace{\mathcal{R}_{k}(t)|\forall k\in\apSet},
-                \Brace{\mathcal{Q}_{m}(t)|\forall m\in\esSet}
+                \Brace{\mathcal{R}_{k}(t) \Big| \forall k\in\apSet},
+                \Brace{\mathcal{Q}_{m}(t) \Big| \forall m\in\esSet}
             }.
     \end{align}
 \end{definition}
@@ -116,7 +116,7 @@ For example, the transmission latency of the LSI from the edge servers out of it
 In this paper, we shall investigate the dispatching design based on the \emph{observed state information} at each AP.
 Specifically, the \emph{conflict AP sets} and the \emph{observed state information} are defined below, respectively.
 \begin{definition}[Conflict AP Set]
-    The conflict AP set to the $k$-th AP consists of the neighboring APs who have direct impact on the queueing delay of the jobs dispatched from the $k$-th AP, i.e.,
+    The conflict AP set to the $k$-th AP consists of the neighboring APs who have direct impact on the queueing time of the jobs dispatched from the $k$-th AP, i.e.,
     \begin{align}
         \ccSet_{k} \define \bigcup_{m\in\esSet_{k}} \apSet_{m}.
         % \ccSet_{k} \define \set{\forall k' \neq k\in\apSet|\esSet_{k'} \cap \esSet_{k} \neq \emptyset}
@@ -136,8 +136,8 @@ Specifically, the \emph{conflict AP sets} and the \emph{observed state informati
     \begin{align}
         \Stat_{k}(t) &\define
         \Paren{
-            \Brace{\mathcal{R}_{k'}(t) | \forall k'\in\ccSet_{k}},
-            \Brace{\mathcal{Q}_{m}(t) | \forall m\in\esSet_{k}}
+            \Brace{\mathcal{R}_{k'}(t) \Big| \forall k'\in\ccSet_{k}},
+            \Brace{\mathcal{Q}_{m}(t) \Big| \forall m\in\esSet_{k}}
         }.
     \end{align}
     \label{def:OSI}
@@ -160,5 +160,5 @@ An example is given below to demonstrate how the \brlatency~affects the receptio
     At the beginning of the $t$-th broadcast interval, the dispatching actions $\mathcal{A}_{1}(t)$ is adopted by the $1$-st AP.
     Then after $\mathcal{D}_{1}(t)$ time slots, it updates the dispatching actions to $\mathcal{A}_{1}(t+1)$ based on the OSI.
     At the start of the $(t+1)$-th broadcast interval, it will firstly keep the previous actions, and then updates the actions immediately $\mathcal{D}_{1}(t+1)$ time slots later which is denotes as $\mathcal{A}(t+2)$.
-    \wangr{The signaling latency $\mathcal{D}_1(t)$ and $\mathcal{D}_1(t+1)$ can be different.}
+    {The signaling latency $\mathcal{D}_1(t)$ and $\mathcal{D}_1(t+1)$ can be different.}
 \end{example}

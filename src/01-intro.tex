@@ -3,7 +3,7 @@
 %NOTE: General Background of MEC and Motivation
 Edge computing is believed to be a promising solution for increasing computation-intensive and energy-hungry applications on mobile devices.
 Large amount of mobile devices can connect to the access points (APs) which functions as gateway to aggregate and offload jobs to the edge servers \cite{MEC-SURVEY}.
-The edge servers are deployed in closer proximity to APs than cloud infrastructure, which alleviates the communication overhead and enables offloading of time-sensitive jobs.
+The edge servers are deployed in closer proximity to APs than cloud infrastructure, which alleviate the communication overhead and enable offloading of time-sensitive jobs.
 However, the edge servers are always deployed with limited computation resources.
 The establishment of efficient cooperation among APs and edge servers is one of the major design challenges, given the network transmission latency and signaling overhead.
 
@@ -14,8 +14,6 @@ The existing literature, such as \cite{tan-online,MOBIHOC19-ZhouZ,IOTJ18-FanQ,TO
 However, according to the MAN performance analysis research in \cite{MAN-LATENCY}, the transmission latency will vary a lot with respect to different hours of day and devices' locations in a MAN.
 This brings new challenges to the job dispatcher design in the edge computing network.
 Firstly, the centralized dispatcher design is discouraged with outdated system information and unpredictable signaling latency.
-% Secondly, the staleness of information is not negligible and the outdated information received by dispatcher would cause mis-estimate of system states which results into irreversible error.
-% Last but not the least, the cooperation of distributed dispatchers requires sharing utility function according to \cite{IJCAI03-NairR} and the observed information from different dispatchers is not identical all the time.
 Secondly, the cooperation of distributed dispatchers suffers from significant signaling overhead and the random transmission latency causes the inconsistency of system information at different dispatchers.
 
 %NOTE: Our contributions
@@ -50,25 +48,14 @@ There also have been a number of works considering the centralized job dispatchi
 In the above works, a centralized dispatcher with complete and instant knowledge of the system status is assumed in the edge computing systems, which might be impractical.
 % However, in practice, there is no centralized scheduler in the edge computing system, and the job dispatching should be decided by APs. 
 
-Hence, there are also some works considering the distributed job dispatching in edge computing systems. For example, in order to minimize a weighted
-summation of total energy consumption and uploading latency, the authors in \cite{ToN-Xuchen2016} proposed a distributed job dispatching algorithm based on game theory to achieve the Nash equilibrium. 
-Considering job migration at edge servers, the authors in \cite{ToN-xujie2018} optimized the edge computing performance (e.g., latency) distributively with limited energy resources via a congestion game framework.
+Hence, there are also some works considering the distributed job dispatching in edge computing systems. For example, in order to minimize a weighted sum of total energy consumption and uploading latency, the authors in \cite{ToN-Xuchen2016} proposed a distributed job dispatching algorithm based on game theory to achieve the Nash equilibrium. 
+Considering job migration at edge servers, the authors in \cite{ToN-xujie2018} optimized the edge computing performance (e.g., latency) in a distributed manner with limited energy resources via a congestion game framework.
 However, in the above works, the latency of information exchange among APs and edge servers is ignored.
 In fact, due to the complicated network traffic, this latency might be significant, and the staleness of system state information at the dispatcher of a edge computing systems should be considered.
-
-\delete{v20}{
-    % Here, we only stress the problem happened between APs and edge servers which is connected via wired network.
-    % When the dispatching decisions of multiple users/APs are considered, the information exchange scheme should be designed.
-    %NOTE: centralized and distributed multi-agent related works
-    %There are some work considering a centralized dispatcher design for multiple APs.In \cite{IOTJ19-CaoJ}, the authors have one extra dispatch server in the system to queue the offloading jobs and then dispatch them to the edge servers.It's obvious that the extra dispatcher design introduces unnecessary transmission latency.In \cite{Fan2017}, the authors consider the cooperation of multiple MEC-BSs of computation offloading to other MEC-BSs. However, it doesn't consider the offloading utility impact on other MEC-BSs, i.e., only optimize for one BSs in the cluster. In \cite{JSAC19-AlameddineHA}, the authors consider edge server is one-to-one bind to eNB in smart city wide area network (WAN), and centralized make decision with SDN controllers which has a global view of the network. In \cite{TVT19-WangY}, the authors propose full cooperation of the edge servers and the cloud server as mixed integer nonlinear optimization problem (MINLP). The authors proposed a parallel optimization scheme where a master computation unit is utilized to collect the global variables from the edge servers and the cloud server without delay.  However, in the above works, the delay information in the system is known as fix constant, and the information exchange latency is ignored.
-    % There are also some works considering distributed multi-agent scheduling where the information exchange scheme matters.
-    % In \cite{CloudCom18-Cicconetti},
-}
 
 %NOTE: stale-information based multi-agent related works
 The staleness of information sharing among APs and edge servers may degrade the performance of the job dispatching algorithm in edge computing systems.
 To the best of our knowledge, there are very limited works investigating this issue.
-% The earliest works entangling with outdated information we could find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing limited information. The agent considers communication as extra action to synchronize the states and thus incurs extra cost (However, the communication is without delay, thus converted into POMDP problem; criticize with impractical);
 For example, the authors in \cite{JSAC17-LyuX} proposed a randomized policy via Lyapunov optimization approach to stabilize the queues \accept{in a MEC system with multiple IoT devices offloading jobs to one edge server}, where \brlatency~is considered. 
 In \cite{TWC18-LyuX}, \accept{the above approach is applied to the scenario that mobile devices offload jobs to each others via D2D link.}
 % The authors used Lyapunov optimization to minimize the overall energy consumption while stabilizing the queues.
@@ -81,38 +68,4 @@ For example, the signaling latencies at distributed dispatchers could be differe
 Furthermore, it is of more practical significance favor for the distributed dispatchers to make scheduling decisions based on locally observed system state information, instead of global state information.
 To our best knowledge, there is no appropriate optimization framework for the distributed dispatcher design with both \brlatency~and partially observable system state information to date.
 
-%NOTE: deleted references with wireless resource allocation
-% In \cite{TOC18-LyuX}, the authors optimize the job admission with partial observed information to assure the asymptotic optimality while the staleness is eliminated.
-% However, the staleness of information gap could not be eliminated in complex fully-cooperative scenario, where all the agents share the same utility function to optimize.
-% The authors in \cite{TOC17-DinhTQ} consider job dispatching only with single MU in the system.
-% Specifically, the authors consider jointly energy and latency optimization with one Mobile Device (MD) by offloading the jobs to multiple servers in \cite{TOC17-DinhTQ}
-% \cite{MOBIHOC19-LiuQ} is a work with centralized controller which determine the radio resources and computing resources for network slices on edge servers.
-% \cite{ACCESS19-ZhengX} is a work considering maximizing the long-term utility in MEC offloading policy, and formulating the problem with MDP solved with Q-learning.
-% However, it is applied with a centralized controller which is assumed without communication overhead the Q-learning method could not guarantee the performance before its convergence.
-% The information exchange is implement via query and the authors evaluate how the query interval affects the convergence of the algorithm.
-
 %----------------------------------------------------------------------------------------%
-\delete{v11}{
-    \cite{Naha2018} is a survey about fog computing in delay-aware computing in IoT, and investigate numerous proposed computing architecture.
-
-    Service Placement Scenario:
-    \begin{itemize}
-        \item \cite{Rodrigues2017} is a work on minimizing service delay in mobile edge computing;
-        \item \cite{Yang2016} is a work considering services placement and requests dispatching on edge servers, and leverage users' pattern to predict "service cache" for online decision making;
-        \item \cite{Chen2018} is a work with SDN on task offloading and battery life saving, and solve the NLP problem with two sub-problems;
-    \end{itemize}
-    Using Game Theory:
-    \begin{itemize}
-        \item \cite{yang2018} and \cite{Josilo2019a} considers distributed computation offloading game;
-        \item \cite{Liu2018} is a work considering minimize users' power consumption with Lyapunov optimization and matching theory;
-        \item \cite{Dinh2018} considers distributed multi-user offloading in wireless channel with selfish EPG (exact potential game);
-        \item \cite{Josilo2019} considers selfish offloading to achieve Nash equilibrium;
-        \item \cite{Chen2016} is a work considering multi-user computation offloading with multi-channel contention, and adopt game theory approach to achieve Nash equilibrium with upper bound of convergence time;
-        \item \cite{Zhang2018} considers multi-user offloading under transmit power decision and user association decision;
-    \end{itemize}
-    System Work:
-    \begin{itemize}
-        \item \cite{Yu2018} is a system work published in ToMC, presents a framework to minimize remote execution overhead, and carry out real system experiments using large-scale data from cellular network provider;
-        \item \cite{Wang2018} is a system work published in IEEE Access, considers the mobility of mobile users in limited coverage solved with service migration and handover, and propose a framework;
-    \end{itemize}
-}

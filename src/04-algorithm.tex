@@ -8,7 +8,7 @@ Specifically, the decoupling can be achieved via the following two steps:
     \item Based on the approximate value function, an alternative action update algorithm, where a subset of APs are selected to update their dispatching action distributed in each broadcast interval, is proposed to solve the RHs of the Bellman's equation in \ref{eqn:sp_0} in Section \ref{subsec:ap_alg}.
     Moreover, the analytically performance bound is also derived.
 \end{enumerate}
-\wangr{As a remark notice that solving the value function and then the RHS of the Bellman's equations are the two standard steps to solve an MDP problem with complete knowledge on system state.
+{As a remark notice that solving the value function and then the RHS of the Bellman's equations are the two standard steps to solve an MDP problem with complete knowledge on system state.
 These approaches cannot be used for POMDP.
 In our proposed approximate solution framework, however, we follow a similar two-step procedure but with novel techniques to solve the POMDP problem in P1: (1) find approximate value function, instead of solving the accurate value function V; (2) use alternative method to optimize the RHS of the Bellman's equation gradually, instead of simultaneous action optimization at all APs.}
 
@@ -28,7 +28,7 @@ Specifically, the baseline policy is elaborated below.
         \hat{\mathcal{A}}_{k}(t)
         \nonumber\\
         &= \Brace{
-            \omega_{k,j}(t) | \forall j\in\jSpace
+            \omega_{k,j}(t) \Big| \forall j\in\jSpace
         }, \forall k\in\apSet.
     \end{align}
 \end{policy}
@@ -147,7 +147,7 @@ Moreover, the explicit expressions of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and 
 \label{subsec:ap_alg}
 Although the optimal value function has been approximated via the baseline policy in the previous part, it is still infeasible for all the APs to solve the RHS of the Bellman's equations in a distributed manner with OSI and local \brlatency~only.
 This is because the evaluation of equation (\ref{w_ap}) and (\ref{w_es}) requires the knowledge of GSI and \brlatency~at all APs.
-Instead, it is feasible for part of APs to update their dispatching actions distributedly and achieve a better performance compared with baseline policy.
+Instead, it is feasible for part of APs to update their dispatching actions distributed and achieve a better performance compared with baseline policy.
 Hence, we first define the following sequence of AP subsets, where each subset are selected to update dispatching actions periodically.
 \begin{definition}[Subsets of Periodic Actions Update]
     Let $\mathcal{Y}_{1}, \dots, \mathcal{Y}_{N} \subseteq \ccSet$ be a sequence of subset, where each subset satisfies the following constraints
@@ -161,15 +161,15 @@ For example, as illustrated in Fig.\ref{fig:system}, the AP set $\apSet$ could b
 In the $t$-th broadcast interval, the APs in the subset indexed with $n \define t \pmod{N}$ update their dispatching actions, while the other APs keep the same dispatching actions as the previous broadcast interval.
 Hence, let 
 \begin{align}
-    \tilde{\mathcal{A}}_{y}(t) \define \set{\tilde{\omega}_{y,j}(t)\in \esSet_{y}|\forall j\in\jSpace}
+    \tilde{\mathcal{A}}_{y}(t) \define \Brace{\tilde{\omega}_{y,j}(t)\in \esSet_{y} \Big| \forall j\in\jSpace}
 \end{align}
 and 
 \begin{align}
-    \tilde{\mathcal{A}}(t) \define \set{\tilde{\mathcal{A}}_{y}(t) | \forall y\in\mathcal{Y}_{n} }
+    \tilde{\mathcal{A}}(t) \define \Brace{\tilde{\mathcal{A}}_{y}(t) \Big| \forall y\in\mathcal{Y}_{n} }
 \end{align}
 be the aggregation of dispatching actions for the $y$-th AP and the APs in the subset $\mathcal{Y}_{n}$, respectively. Let
 \begin{align}
-    \hat{\mathcal{A}}(t) \define \Brace{\omega_{y,j}(t) | \forall y\notin\mathcal{Y}_{n}, j\in\jSpace}
+    \hat{\mathcal{A}}(t) \define \Brace{\omega_{y,j}(t) \Big| \forall y\notin\mathcal{Y}_{n}, j\in\jSpace}
 \end{align}
 be the aggregation of dispatching actions of the rest APs, which are the same as the previous broadcast interval.
 In the $t$-th broadcast interval, the optimization of $\tilde{\mathcal{A}}_{y}(t)$ ($\forall y\in\mathcal{Y}_{n}$) at the RHS of the Bellman's equations can be rewritten as the following problem.
@@ -178,7 +178,7 @@ In the $t$-th broadcast interval, the optimization of $\tilde{\mathcal{A}}_{y}(t
     \textbf{P2:}~
     \min_{ \tilde{\mathcal{A}}(t) }
     &\sum_{\Stat(t+1)} \Pr\Brace{
-        \Stat(t+1) | \Stat(t), \tilde{\mathcal{A}}(t), \hat{\mathcal{A}}(t)
+        \Stat(t+1) \Big| \Stat(t), \tilde{\mathcal{A}}(t), \hat{\mathcal{A}}(t)
     } \cdot W_{\Baseline}\Paren{\Stat(t+1)},
 \end{align}
 }
@@ -212,7 +212,8 @@ Moreover, we have the following conclusion on the decomposition of P2.
 The optimization of $\tilde{\mathcal{A}}_{y}(t)$ for the $y$-th AP ($\forall y\in\mathcal{Y}_{n}$) in P3 could be achieved via searching all the edge servers in $\esSet_{y}$, whose computational complexity is $O(JMK)$ per AP. % for evaluating the objective function in equation (\ref{eqn:partial}).
 As a result, the overall algorithm of job dispatching is elaborated in Algorithm \ref{alg_1}.
 \begin{algorithm}[ht]
-    \caption{Online Alternative Actions Update Algorithm}\label{alg_1}\tann{(line-by-line explanation of the algorithm is necessary.)}
+    \caption{Online Alternative Actions Update Algorithm}\label{alg_1}
+    % \tann{(line-by-line explanation of the algorithm is necessary.)}
     \DontPrintSemicolon % Some LaTeX compilers require you to use \dontprintsemicolon instead
     % \KwIn{$\Stat(t), \Delay(t)$}
     % \KwOut{$\tilde{\mathcal{A}}(t)$}
@@ -257,7 +258,7 @@ Finally, we have the following conclusion on the performance of the above propos
     \begin{align}
         W_{\tilde{\Policy}}(\Stat) \define
         \sum_{t'=1}^{\infty} \gamma^{t'-1} \mathbb{E}^{ \tilde{\Policy} } \Bracket{
-            g\Paren{\Stat(t'), \tilde{\Policy}(\Stat(t'),t')} | \Stat(1)=\Stat
+            g\Paren{\Stat(t'), \tilde{\Policy}(\Stat(t'),t')} \Big| \Stat(1)=\Stat
         },
     \end{align}
     we have
@@ -275,9 +276,9 @@ Finally, we have the following conclusion on the performance of the above propos
         Due to the \emph{Policy Improvement Property} in \cite{dp-control}, we have $W_{\tilde{\Policy}}(\Stat) \leq W_{\Baseline}(\Stat)$.
     }
 \end{proof}
-\tann{(Give an explanation briefly what this upper bound means. ) Therefore, The cost? of our algorithm is upper bounded by ... , which means...}
+% \tann{(Give an explanation briefly what this upper bound means. ) Therefore, The cost? of our algorithm is upper bounded by ... , which means...}
 \hongyc{
-    Therefore, the performance of the proposed algorithm is upper bounded by $W_{\Baseline}(\Stat)$ ($\forall \Stat$) which means it is always better than baseline policy. 
+    Therefore, the performance of the proposed algorithm is upper bounded by $W_{\Baseline}(\Stat)$ ($\forall \Stat$) which means it is always better than the baseline policy. 
 }
 % The worst case could be upper bounded.
 %----------------------------------------------------------------------------------------%
