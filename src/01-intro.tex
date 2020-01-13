@@ -70,9 +70,8 @@ In fact, due to the complicated network traffic, this latency might be significa
 In practice, the staleness of information sharing among APs and edge servers may degrade the performance of the job dispatching in edge computing systems.
 To the best of our knowledge, there are very limited works investigating this issue.
 % The earliest works entangling with outdated information we could find is \cite{ref-01} (cited 167 times). In this work, the single agent is assumed not able to observe the global state, and thus they need communication to establish cooperation by sharing limited information. The agent considers communication as extra action to synchronize the states and thus incurs extra cost (However, the communication is without delay, thus converted into POMDP problem; criticize with impractical);
-For example, the authors in \cite{JSAC17-LyuX} proposed a randomized policy via Lyapunov optimization approach to stabilize the queues \fixit{in a xx system with what}, where \brlatency~is considered. 
-In \cite{TWC18-LyuX}, the mobile devices offload jobs selfishly with the stale information.
-\fixit{The above approach is extended to the scenario that what.}
+For example, the authors in \cite{JSAC17-LyuX} proposed a randomized policy via Lyapunov optimization approach to stabilize the queues \hongyc{in a MEC system with multiple IoT devices offloading jobs to one edge server}, where \brlatency~is considered. 
+In \cite{TWC18-LyuX}, \hongyc{the above approach is applied to the scenario that mobile devices offload jobs to each others via D2D link.}
 % The authors used Lyapunov optimization to minimize the overall energy consumption while stabilizing the queues.
 % In the above two works, the staleness of information sharing may not impact the job dispatching in edge computing systems. Specifically, the papers \cite{JSAC17-LyuX,TWC18-LyuX} chose objectives with only queue-stability guarantee, and the upper bound of queue length could be very loose, which could not guarantee the real-time performance of offloaded jobs.
 % Hence, in our problem, we target at optimizing the average job response time while analyzing the queueing process on edge servers under random uploading distribution and dispatching decisions to be optimized.
