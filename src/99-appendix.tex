@@ -138,7 +138,7 @@ Given that the cost raised on edge servers is approximated with baseline policy 
 \end{align}
 where $\vecG{h} \define [0,1,\dots,L_{max}]$.
 
-Moreover, we notice that under the fixed baseline policy, the arrival process on edge servers would be stationary after the \emph{maximum uploading time} from the initial interval and thus the transition matrix is invariant of system states of APs.
+Moreover, we notice that under the fixed baseline policy, the arrival process on edge servers would be stationary after the maximum uploading latency from the initial interval and thus the transition matrix is invariant of system states of APs.
 Let $\hat{\mat{P}}_{m,j}(\hat{\beta}^{\Baseline}_{m,j}(t,n))$ be the transition matrix for the stationary arrival process under baseline policy $\Baseline$ and
 {\small
 \begin{align}
@@ -147,7 +147,7 @@ Let $\hat{\mat{P}}_{m,j}(\hat{\beta}^{\Baseline}_{m,j}(t,n))$ be the transition 
     &= \sum_{k\in\apSet} \lambda_{k,j}I[\omega_{k,j}(t)=m] (\forall n),
 \end{align}
 }
-where $U_{k,m,j}$ denotes the random variable of job uploading time.
+where $U_{k,m,j}$ denotes the random variable of job uploading latency.
 
 Let
 $\mat{P}^{\Baseline}_{m,j}(t) \define \big( \hat{\mat{P}}_{m,j}(\hat{\beta}^{\Baseline}_{m,j}(t,n)) \big)^{t_B}$
@@ -165,45 +165,7 @@ denote the transition matrix under baseline policy $\Baseline$ between adjacent 
 \end{align}   
 }
 where $\vec{g}$ is the cost vector taking the definition in equation (\ref{eqn:g_vec}).
-
-% \section{ Proof of Lemma \ref{lemma:w_partial} }
-% \label{append_3}
-
-
 %----------------------------------------------------------------------------------------%
-\delete{v19}{
-    % \section{ Proof of Lemma \ref{lemma:perform} }
-    % \label{append_3}
-
-    
-    Firstly, we notice that the transition function in equation (\ref{eqn:sp_0}) could be rewritten in the following form.
-    \begin{align}
-        & \Pr\Brace{ \Stat(t+1)|\Stat(t), \Policy(\Stat(t)) }
-        \nonumber\\
-        =& \prod_{j\in\jSpace} \Brace{
-            \prod_{k\in\apSet} \prod_{m\in\esSet}
-            \Pr\big\{
-                \vec{R}^{(k)}_{m,j}(t+1) | \vec{R}^{(k)}_{m,j}(t), \Policy(\Stat(t))
-            \big\}
-            \nonumber\\
-            &\times \prod_{m\in\esSet} \Pr\big\{
-                Q_{m,j}(t+1) | Q_{m,j}(t), \Policy(\Stat(t))
-            \big\}
-        },
-    \end{align}
-    where the two production parts denote state transition on APs and edge servers under policy $\Policy$, respectively.
-
-    \begin{lemma}[Small Probability Approximation]
-        The probability distribution of $\sum_{k\in\apSet} \vecG{\rho}^{(k,+)}_{m,j}({t,n})$ could be approximated with a Bernoulli arrival process who is with the expected arrival rate denoted as ${\beta}_{m,j}({t,n})$.
-    \end{lemma}
-    \begin{proof}
-        We notice that the job arrival distribution ${\beta}_{m,j}(t)$ is given by $\mathcal{R}(t)$, and the departure rate in one slot is deterministic as $1/N$.
-        Thus the expectation of ${\beta}$ would be always far more smaller than $1$ as composed of all $K$ AP nodes.
-        We take approximation on ${\beta}$ as Bernoulli distribution in each time slot.
-    \end{proof}
-}
-
-
 
 \section{ Proof of Lemma \ref{lemma:bound} }
 \label{append_3}

@@ -39,27 +39,21 @@ There have been a number of works focusing on the resource allocation, job dispa
 For example, in \cite{TON19-WangSq}, the edge servers are one-to-one bound to the base stations (BSs), and the job migration could be applied according to users' mobility traces via the backhaul network connecting the BSs.
 However, according to a recent research \cite{INFOCOM19-WuC}, the resource re-allocation for running jobs on servers is hard to implement in practice, as it's hard for jobs migration among heterogeneous edge servers with different resource configurations.
 Hence, it might be more important to optimize the job dispatching strategy at their arrival time.
-% The job dispatching problem in the edge computing system often consists of the following components: mobile users (MU), access points (APs) and edge servers, where APs would collect the jobs offloaded from MUs in its coverage and offload them to the edge servers.
-
 
 %NOTE: single-agent dispatching, single UE/server
-% The resource allocation problem is always joint optimization together with job offload problem, including bandwidth resources, computation resources, and etc.
 There also have been a number of works considering the centralized job dispatching with instant and complete knowledge on the states of edge computing systems. For example, in order to minimize the average job response time in the worst case, the authors in \cite{tan-online} designed an online algorithm for job dispatching in edge computing systems with fixed offloading latency. In the scenario that BSs and edge servers are connected via software defined network (SDN), the authors in \cite{IOTJ18-FanQ} proposed a heuristic algorithm to dispatch the jobs to the closest edge servers according to geographical locations. When the jobs can be dispatched to either edge servers or cloud servers with fixed offloading latency, the authors in \cite{MASS18-MengZ} formulated job dispatching problem as an integer linear programming to minimize the total offloading latency.
 In the above works, a centralized dispatcher with complete and instant knowledge of the system status is assumed in the edge computing systems, which might be impractical.
-% However, in practice, there is no centralized scheduler in the edge computing system, and the job dispatching should be decided by APs. 
 
 Hence, there are also some works considering the distributed job dispatching in edge computing systems. For example, in order to minimize a weighted sum of total energy consumption and uploading latency, the authors in \cite{ToN-Xuchen2016} proposed a distributed job dispatching algorithm based on game theory to achieve the Nash equilibrium. 
-Considering job migration at edge servers, the authors in \cite{ToN-xujie2018} optimized the edge computing performance (e.g., latency) in a distributed manner with limited energy resources via a congestion game framework.
+Considering job migration at edge servers, the authors in \cite{ToN-xujie2018} optimized the edge computing performance in a distributed manner with limited energy resources via a congestion game framework.
 However, in the above works, the latency of information exchange among APs and edge servers is ignored.
 In fact, due to the complicated network traffic, this latency might be significant, and the staleness of system state information at the dispatcher of a edge computing systems should be considered.
 
 %NOTE: stale-information based multi-agent related works
 The staleness of information sharing among APs and edge servers may degrade the performance of the job dispatching algorithm in edge computing systems.
 To the best of our knowledge, there are very limited works investigating this issue.
-For example, the authors in \cite{JSAC17-LyuX} proposed a randomized policy via Lyapunov optimization approach to stabilize the queues \accept{in a MEC system with multiple IoT devices offloading jobs to one edge server}, where \brlatency~is considered. 
-In \cite{TWC18-LyuX}, \accept{the above approach is applied to the scenario that mobile devices offload jobs to each others via D2D link.}
-% The authors used Lyapunov optimization to minimize the overall energy consumption while stabilizing the queues.
-% In the above two works, the staleness of information sharing may not impact the job dispatching in edge computing systems. Specifically, the papers \cite{JSAC17-LyuX,TWC18-LyuX} chose objectives with only queue-stability guarantee, and the upper bound of queue length could be very loose, which could not guarantee the real-time performance of offloaded jobs.
+For example, the authors in \cite{JSAC17-LyuX} proposed a randomized policy via Lyapunov optimization approach to stabilize the queues in a MEC system with multiple IoT devices offloading jobs to one edge server, where \brlatency~is considered. 
+In \cite{TWC18-LyuX}, the above approach is applied to the scenario that mobile devices offload jobs to each others via D2D link.
 In the above two works, there is one centralized dispatcher in the system and the objective is to stabilize the transmission queues.
 Hence, the existence of \brlatency~may not raise significant challenge to the algorithm design with Lyapunov optimization.
 However, the design of distributed dispatchers with \brlatency~could be more challenging.

@@ -35,7 +35,7 @@ Hence,
 Each AP immediately dispatches each type of received jobs to one edge server.
 Different types of jobs may have different distributions of the input data size.
 Moreover, due to the random traffic in the network, the job uploading from one AP to one edge server consumes a random number of time slots.
-It is assumed that the distributions of uploading time are independent for each job.
+It is assumed that the random uploading latency are independent for each job.
 Specifically, let $\mathbb{U}_{k,m,j}(\Xi)$ be the uploading latency distribution of the type-$j$ jobs from the $k$-th AP to the $m$-th edge server with support $\set{1, \dots, \Xi}$ ($\forall k\in\apSet, m\in\esSet, j\in\jSpace$), whose expectation is denoted as $u_{k,m,j}$.
 
 %NOTE: [processing process]
@@ -44,7 +44,7 @@ For each job type, the uploaded jobs are computed in a First-Come-First-Serve (F
 Hence, a processing queue with a maximum job number $L_{max}$ is established for each VM.
 The arrival jobs will be discarded when the processing queue is full.
 Furthermore, we adopt the \emph{unrelated machines assumption} as in \cite{tan-online}, and assume that the computation time of different job types on different edge servers follows independent memoryless geometric distribution 
-\footnote{{In this paper, we adopt the memoryless geometric distribution to simplify the elaboration of notations. In fact, the proposed algorithm can be easily extended to other distributions.}}
+\footnote{In this paper, we adopt the memoryless geometric distribution to simplify the elaboration of notations. In fact, the proposed algorithm can be easily extended to other distributions.}
 with different expectations \cite{TOWC18-HuangKb}.
 Let $\mathbb{G}(1/c_{m,j})$ be the distribution of the computation time slots for the type-$j$ jobs on the $m$-th edge server, where $\mathbb{G}$ denotes the geometric distribution, and $c_{m,j}$ is the expectation.
 Let $f_{m,j}$ be its probability mass function (PMF), we have
@@ -123,14 +123,6 @@ Specifically, the \emph{conflict AP sets} and the \emph{observed state informati
     \end{align}
 \end{definition}
 
-% \begin{figure}[tp]
-%     \centering
-%     \includegraphics[width=0.45\textwidth]{images/conflict.pdf}
-%     \caption{The Example Illustration of \emph{Conflict AP set} and \emph{Potential AP set}.}
-%     \label{fig:}
-% \end{figure}
-
-% Hence, we refer to the partial state information as \emph{observed state information} (OSI) and the definition is given as follows.
 \begin{definition}[Observed State Information]
     The observed state information (OSI) of the $k$-th AP ($\forall k\in\apSet$) at the $t$-th broadcast interval is defined as the aggregation of LSIs of the APs in {conflict AP set} and the edge servers in {candidate server set} of the $k$-th AP, i.e.,
     \begin{align}
@@ -150,7 +142,7 @@ Specifically, the \emph{conflict AP sets} and the \emph{observed state informati
     \label{fig:brd-timeline}
 \end{figure*}
 
-The $k$-th AP is able to collect its OSI at the $\mathcal{D}_{k}(t)$-th time slots of the $t$-th broadcast interval, where the broadcast latency $\mathcal{D}_{k}(t)$ is a random variable.
+The $k$-th AP is able to collect its OSI at the $\mathcal{D}_{k}(t)$-th time slots of the $t$-th broadcast interval, where the \brlatency~$\mathcal{D}_{k}(t)$ is a random variable.
 It is assumed that $\mathcal{D}_{k}(t)$ follows identical and independent distribution in different broadcast interval.
 We refer to $\mathcal{D}_{k}(t)$ as the \brlatency~of the $k$-th AP at the $t$-th broadcast interval.
 An example is given below to demonstrate how the \brlatency~affects the reception of OSI and the update of the dispatching strategy.
@@ -160,5 +152,5 @@ An example is given below to demonstrate how the \brlatency~affects the receptio
     At the beginning of the $t$-th broadcast interval, the dispatching actions $\mathcal{A}_{1}(t)$ is adopted by the $1$-st AP.
     Then after $\mathcal{D}_{1}(t)$ time slots, it updates the dispatching actions to $\mathcal{A}_{1}(t+1)$ based on the OSI.
     At the start of the $(t+1)$-th broadcast interval, it will firstly keep the previous actions, and then updates the actions immediately $\mathcal{D}_{1}(t+1)$ time slots later which is denotes as $\mathcal{A}(t+2)$.
-    {The signaling latency $\mathcal{D}_1(t)$ and $\mathcal{D}_1(t+1)$ can be different.}
+    The signaling latency $\mathcal{D}_1(t)$ and $\mathcal{D}_1(t+1)$ can be different.
 \end{example}
