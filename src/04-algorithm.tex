@@ -209,7 +209,6 @@ The optimization of $\tilde{\mathcal{A}}_{y}(t)$ for the $y$-th AP ($\forall y\i
 As a result, the overall algorithm of job dispatching is elaborated in Algorithm \ref{alg_1}.
 \begin{algorithm}[ht]
     \caption{Online Alternative Actions Update Algorithm}\label{alg_1}
-    % \tann{(line-by-line explanation of the algorithm is necessary.)}
     \DontPrintSemicolon % Some LaTeX compilers require you to use \dontprintsemicolon instead
     % \KwIn{$\Stat(t), \Delay(t)$}
     % \KwOut{$\tilde{\mathcal{A}}(t)$}
@@ -272,7 +271,6 @@ Finally, we have the following conclusion on the performance of the above propos
         Due to the \emph{Policy Improvement Property} in \cite{dp-control}, we have $W_{\tilde{\Policy}}(\Stat) \leq W_{\Baseline}(\Stat)$.
     }
 \end{proof}
-% \tann{(Give an explanation briefly what this upper bound means. ) Therefore, The cost? of our algorithm is upper bounded by ... , which means...}
 \accept{
     Therefore, the performance of the proposed algorithm is upper bounded by $W_{\Baseline}(\Stat)$ ($\forall \Stat$) which means it is always better than the baseline policy. 
 }

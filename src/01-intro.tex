@@ -1,7 +1,7 @@
 
 \section{Introduction}
 %NOTE: General Background of MEC and Motivation
-Edge computing is believed to be a promising solution for increasing computation-intensive and energy-hungry applications on mobile devices.
+Edge computing is a promising solution for increasing computation-intensive and energy-hungry applications on mobile devices.
 Large amount of mobile devices can connect to the access points (APs) which functions as gateway to aggregate and offload jobs to the edge servers \cite{MEC-SURVEY}.
 The edge servers are deployed in closer proximity to APs than cloud infrastructure, which alleviate the communication overhead and enable offloading of time-sensitive jobs.
 However, the edge servers are always deployed with limited computation resources.
@@ -14,23 +14,23 @@ The existing literature, such as \cite{tan-online,MOBIHOC19-ZhouZ,IOTJ18-FanQ,TO
 However, according to the MAN performance analysis research in \cite{MAN-LATENCY}, the transmission latency will vary a lot with respect to different hours of day and devices' locations in a MAN.
 This brings new challenges to the job dispatcher design in the edge computing network.
 Firstly, the centralized dispatcher design is discouraged with outdated system information and unpredictable signaling latency.
-Secondly, the cooperation of distributed dispatchers suffers from significant signaling overhead and the random transmission latency causes the inconsistency of system information at different dispatchers.
+Secondly, the cooperation of distributed dispatchers suffers from significant signaling overhead, and the random transmission latency causes the inconsistency of system information at different dispatchers.
 
 %NOTE: Our contributions
 In this paper, we would like to shed some lights on the above challenging distributed dispatcher design via POMDP problem formulation and a novel low-complexity approximate MDP solution framework.
-Specifically, the signaling latency among APs and edge servers and job uploading latency from APs to edge servers are assumed to be random, and our contributions in this new optimization scenario are summarized as follows.
+Specifically, the signaling latency among APs and edge servers and job uploading latency from APs to edge servers are assumed to be random, and hence each AP can only observe part of the system state with random latency.
+Our contributions in this new optimization scenario are summarized as follows.
 \begin{itemize}
-    \item We propose a novel low-complexity distributed solution framework for the dispatcher design at the APs, where each AP collects the information only from the APs and edge servers in a close proximity and make dispatching decision with random signaling latency. We directly derive the expression of approximate value function and obtain distributed dispatching policy via one-step policy iteration. Thus, the complicated POMDP solution or value iteration is avoided. To our best knowledge, this is the first work to address the cooperative distributed multi-agent optimization problem under MDP framework.
+    \item We propose a novel low-complexity distributed solution framework for the dispatcher design at the APs, where each AP collects the information only from the APs and edge servers in a close proximity and make dispatching decision with random signaling latency. We directly derive the expression of approximate value function and obtain distributed dispatching policy via alternative policy iteration. Thus, the complicated POMDP solution or value iteration is avoided. To our best knowledge, this is the first work to address the cooperative distributed multi-agent optimization problem under MDP framework.
     \item We derive an analytical cost lower bound for the proposed distributed dispatching policy in the above novel solution framework. In the conventional approximate MDP method, the performance is usually evaluated via numerical method, and it is hard to obtain analytical performance bound.
 \end{itemize}
 
 The remainder of this paper is organized as follows.
-In Section \ref{sec:review}, we review on the related works.
-In Section \ref{sec:model}, we illustrate the system model and broadcast information sharing design.
-In Section \ref{sec:formulation}, we formulate the global optimization problem of joint optimization on dispatching decisions of all APs.
-In Section \ref{sec:algorithm}, we argue that the global joint optimization of all APs is impractical and then decouple the problem into optimization over individual APs.
-We introduce a low-complexity algorithm in Section V and then show the numerical analysis in Section \ref{sec:evaluation}.
-In Section \ref{sec:conclusion}, the conclusion is given.
+In Section \ref{sec:review}, the related works are elaborated.
+In Section \ref{sec:model}, we illustrate the system model and the signaling model with random latency.
+In Section \ref{sec:formulation}, we formulate the global optimization of dispatching decisions at all APs as an POMDP.
+In Section \ref{sec:algorithm}, we introduce the novel low-complexity distributed solution framework for the above POMDP.
+The numerical analysis of the proposed solution is provided in Section \ref{sec:evaluation}, and the conclusion is drawn in Section \ref{sec:conclusion}.
 
 \section{Related Works}
 \label{sec:review}
@@ -60,7 +60,6 @@ For example, the authors in \cite{JSAC17-LyuX} proposed a randomized policy via 
 In \cite{TWC18-LyuX}, \accept{the above approach is applied to the scenario that mobile devices offload jobs to each others via D2D link.}
 % The authors used Lyapunov optimization to minimize the overall energy consumption while stabilizing the queues.
 % In the above two works, the staleness of information sharing may not impact the job dispatching in edge computing systems. Specifically, the papers \cite{JSAC17-LyuX,TWC18-LyuX} chose objectives with only queue-stability guarantee, and the upper bound of queue length could be very loose, which could not guarantee the real-time performance of offloaded jobs.
-% Hence, in our problem, we target at optimizing the average job response time while analyzing the queueing process on edge servers under random uploading distribution and dispatching decisions to be optimized.
 In the above two works, there is one centralized dispatcher in the system and the objective is to stabilize the transmission queues.
 Hence, the existence of \brlatency~may not raise significant challenge to the algorithm design with Lyapunov optimization.
 However, the design of distributed dispatchers with \brlatency~could be more challenging.
