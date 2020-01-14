@@ -78,7 +78,6 @@ Moreover, the explicit expressions of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and 
     \end{align}
     where $\mat{I}$ is the identity matrix, and $\vecG{\Theta}^{(k, \Baseline)}_{m,j}(t)$ and $\Gamma^{(k)}_{m,j}$ are defined below.
     \begin{itemize}
-        % \item $\vecG{\Theta}^{(k, \Baseline)}_{m,j}(t) \in \mathbb{R}^{(\Xi+1) \times 1}$ denotes the probability vector under baseline $\Baseline$
         \item {$\vecG{\Theta}^{(k,\Baseline)}_{m,j}(t) \define \Bracket{
             \theta^{(k,\Baseline)}_{m,j}(0,t),
             \theta^{(k,\Baseline)}_{m,j}(1,t),
@@ -95,11 +94,7 @@ Moreover, the explicit expressions of $\tilde{W}^{\AP}_{k,m,j}(\Stat(t+1))$ and 
             \end{cases}
         \end{align}
         \item $\Gamma^{(k)}_{m,j} \in \mathbb{R}^{(\Xi+1)\times(\Xi+1)}$ denotes the transition matrix whose entries are provided in Appendix \ref{append_1}.
-        % and $\bar{p}^{(k)}_{m,j,\xi} \define 1 - \Pr\{U^{(k)}_{m,j} < \xi+1 | U^{(k)}_{m,j}>\xi\}$.
     \end{itemize}
-    % \begin{align}
-    %     \vec{\Theta}_{m,j}^{(k)}(t+1) = {\Gamma}^{(k)}_{m,j}(\Pi_{t,k}) \times \vec{\Theta}_{m,j}^{(k)}(t).
-    % \end{align}
 \end{lemma}
 \begin{proof}
     Please refer to Appendix \ref{append_1}.
@@ -232,7 +227,6 @@ As a result, the overall algorithm of job dispatching is elaborated in Algorithm
                 $\hat{\mathcal{A}}_{y}(t+1) \gets \hat{\mathcal{A}}_{y}(t)$
             }
         }
-        
         % \Return $\tilde{\mathcal{A}}(t+1)$\;
     }
 \end{algorithm}
